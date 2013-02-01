@@ -5,12 +5,12 @@
 		{% if back_bundle %}
 			{% bundle_url back_bundle "main_list" as back_url %}
 			{% if back_url %}
-				<a data-auto-tag="{{ back_bundle.get_title }}" href="{{ back_url }}" class="back">{{ back_bundle.get_title }}</a>
+				<a href="{{ back_url }}" class="back">{{ back_bundle.get_title }}</a>
 			{% endif %}
 		{% else %}
 			<a href="/admin/" class="back">Dashboard</a>
 		{% endif %}
-		<h2 data-auto-tag="{{bundle.get_title}}{% if obj %}, {{obj}}{% endif %}">
+		<h2 data-auto-tag="{{ auto_tags }}">
 			{% if obj %}
 				{{ obj }}
 			{% else %}
