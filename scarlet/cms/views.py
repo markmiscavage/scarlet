@@ -208,9 +208,9 @@ class CMSView(BaseView):
         import re
         # text is parsed in two steps:
         # the first step extract every single world that is 3 > chars long
-        # and that contains only alphanumeric characters and dashes
-        single_worlds = set([ w for w in tags_string.split()
-                          if len(w) > 3 and re.match("^[A-Za-z0-9_-]*$", w) ])
+        # and that contains only alphanumeric characters, underscores and dashes
+        single_worlds = set([ w for w in re.split(';|,|\*|\n| ',tags_string)
+                          if len(w) >= 3 and re.match("^[A-Za-z0-9_-]*$", w) ])
         # the second step divide the original string using comma as separator
         comma_separated = set(tags_string.split(","))
         # resulting set are merged using union
