@@ -5,7 +5,7 @@
 
 	{% if obj %}
 		{% if subitem %}
-			<h4 data-auto-tag="{{ bundle.get_title }}, {{obj}}">Edit {{ obj }}</h4>
+			<h4 data-auto-tag="{{ auto_tags }}">Edit {{ obj }}</h4>
 		{% endif %}
 	{% else %}
 		<h4>Add New {{ model_name }}</h4>

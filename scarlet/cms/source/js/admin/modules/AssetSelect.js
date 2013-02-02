@@ -75,14 +75,6 @@ define(
 
 				$('[data-auto-tag]').each(function (i, dom) {
 					var allTags = ($(dom).data('auto-tag') || '').toLowerCase().split(',');
-					var newTags = allTags.join(' ').replace(/\s+/g, ' ').split(' ');
-
-					while (newTags.length) {
-						var tag = newTags.shift();
-						if (tag.match(/[a-z0-9]/i) && tag.length > 3) {
-							tags.push(tag);
-						}
-					}
 					tags = tags.concat(allTags);
 				});
 

@@ -196,26 +196,6 @@ class CMSView(BaseView):
         """
         self.extra_render_data.update(kwargs)
 
-
-    def _tokenize_tags(self, tags_string):
-        """
-        This internal method is responsible to extract
-        usable tags from a text.
-        :param tags_string: a string of text
-        :return: a string of comma separated tags
-        """
-
-        import re
-        # text is parsed in two steps:
-        # the first step extract every single world that is 3 > chars long
-        # and that contains only alphanumeric characters, underscores and dashes
-        single_worlds = set([ w for w in re.split(';|,|\*|\n| ',tags_string)
-                          if len(w) >= 3 and re.match("^[A-Za-z0-9_-]*$", w) ])
-        # the second step divide the original string using comma as separator
-        comma_separated = set(tags_string.split(","))
-        # resulting set are merged using union
-        return ",".join(single_worlds | comma_separated)
-
     def get_tags(self, **kwargs):
         """
         This method return a list of tags to use in the template
@@ -223,20 +203,29 @@ class CMSView(BaseView):
         """
         # base implementation parse bundle title,
         # back_bundle title and object __unicode__
+        from helpers import tokenize_tags
         tags_string = self.bundle.get_title()
         try:
-            tags_string = "%s,%s" % (tags_string, self.object.__unicode__())
+            tags_string = u"%s,%s" % (tags_string, self.object)
         except:
             pass
         try:
-            tags_string = "%s,%s" % (tags_string,
-                                     self.bundle.main_list.get_bundle(
-                                         self.bundle,{}, self.kwargs
-                                     ).get_title())
+            tags_string = u"%s,%s" % (
+                tags_string, self.get_back_bundle().get_title())
         except:
             pass
-        tags_list = self._tokenize_tags(tags_string) # parse the text
+        tags_list = tokenize_tags(tags_string) # parse the text
         return tags_list
+
+    def get_back_bundle(self):
+        try:
+            obj = self.object
+        except:
+            obj = False
+        if obj and getattr(self.bundle, 'main_list', None):
+            main_list = self.bundle.main_list
+            return main_list.get_bundle(self.bundle, {}, self.kwargs)
+        return u""
 
     def get_render_data(self, **kwargs):
         """
@@ -265,17 +254,14 @@ class CMSView(BaseView):
             'url_params': self.kwargs,
             'user': self.request.user,
             'object_header_tmpl': self.object_header_tmpl,
-            'auto_tags': self.get_tags
+            'auto_tags': ",".join(self.get_tags())
         })
 
         if not 'base' in data:
             data['base'] = self.base_template
 
         if not 'back_bundle' in data:
-            if 'obj' in data and getattr(self.bundle, 'main_list', None):
-                main_list = self.bundle.main_list
-                data['back_bundle'] = main_list.get_bundle(self.bundle,
-                                                           {}, self.kwargs)
+            data['back_bundle'] = self.get_back_bundle()
 
         return super(CMSView, self).get_render_data(**data)
 
