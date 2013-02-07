@@ -199,22 +199,27 @@ class CMSView(BaseView):
     def get_tags(self, **kwargs):
         """
         This method return a list of tags to use in the template
-        :return: string of comma separated tags
+        :return: list of tags
         """
         # base implementation parse bundle title,
         # back_bundle title and object __unicode__
+
         from helpers import tokenize_tags
-        tags_string = self.bundle.get_title()
+        tags_string = u"%s" % self.bundle.get_title() \
+            if type(self.bundle.get_title()) == str else u""
         try:
-            tags_string = u"%s,%s" % (tags_string, self.object)
+            object_title = u"%s" % self.object if self.object else u""
+            tags_string = u"%s,%s" % (tags_string, object_title)
         except:
             pass
         try:
-            tags_string = u"%s,%s" % (
-                tags_string, self.get_back_bundle().get_title())
+            back_bundle_title = self.get_back_bundle().get_title() \
+            if type(self.get_back_bundle().get_title()) == str else u""
+            tags_string = u"%s,%s" % (tags_string, back_bundle_title)
         except:
             pass
         tags_list = tokenize_tags(tags_string) # parse the text
+
         return tags_list
 
     def get_back_bundle(self):
@@ -1044,6 +1049,10 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         Returns the results of calling the `success_response` method.
         """
 
+        new_object = False
+        if not self.object:
+            new_object = True
+
         with transaction.commit_on_success():
             self.object = self.save_form(form)
             self.save_formsets(form, formsets)
@@ -1052,7 +1061,41 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
             self.log_action(self.object, CMSLog.SAVE, url=url)
             msg = self.write_message()
 
+        from assets.models import Asset
+        auto_tags = form.data.get("auto_tags", False)
+        new_tags = self.get_tags()
+
+        if auto_tags and new_object:
+            for key, value in form.cleaned_data.iteritems():
+                if value.__class__ == Asset:
+                    value.tags.add(*new_tags)
+
+        elif auto_tags:
+            from taggit.models import Tag
+            # the alternative of this is to use a custom SQL expression like:
+            # SELECT object_id from taggit_taggeditem
+            # WHERE taggit_taggeditem.tag_id IN (TAG ID 1, TAG ID 2, TAG ID N)
+            # GROUP BY object_id HAVING COUNT(*) = NUMBER OF TAGS
+            tags = []
+            skip_update = False
+            for name in auto_tags.split(","):
+                try:
+                    tag =  Tag.objects.get(name=name)
+                    tags.append(tag)
+                except:
+                    skip_update = True
+
+            if not skip_update:
+                assets = reduce(lambda x, y: x & y,
+                    [Asset.objects.filter(tags=tag) for tag in tags])
+
+                new_tags = self.get_tags()
+
+                for asset in assets:
+                    asset.tags.add(*new_tags)
+
         return self.success_response(msg)
+
 
     def success_response(self, message=None):
         """

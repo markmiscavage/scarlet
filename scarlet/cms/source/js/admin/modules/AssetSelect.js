@@ -68,20 +68,28 @@ define(
 				this.input.select2('data', data);
 			},
 
-			_autoTag : function () {
-				var dom = this.dom.find('a.button'),
-					params = this._unparam(dom[0].search),
-					tags = ($(this.dom).data('tags') || '').toLowerCase().split(',');
+            _autoTag : function () {
+                var dom = this.dom.find('a.button'),
+                    params = this._unparam(dom[0].search),
+                    tags = ($(this.dom).data('tags') || '').toLowerCase().split(',');
 
-				$('[data-auto-tag]').each(function (i, dom) {
-					var allTags = ($(dom).data('auto-tag') || '').toLowerCase().split(',');
-					tags = tags.concat(allTags);
-				});
+                $('[data-auto-tag]').each(function (i, dom) {
+                    var data_auto_tag = $(dom).data('auto-tag');
+                    if (data_auto_tag) {
+                        var allTags = data_auto_tag.toLowerCase().split(',');
+                        while (allTags.length) {
+                            var tag = allTags.shift();
+                            if (tag.match(/[a-z0-9]/i) && tag.length > 3) {
+                                tags.push(tag);
+                            }
+                        }
+                        tags = tags.concat(allTags);
+                    }
+                });
 
-				params.tags = tags.join(',');
-
-				dom[0].search = this._param(params);
-			},
+                params.tags = encodeURIComponent(tags.join(','));
+                dom[0].search = this._param(params);
+            },
 
 			_param : function (obj) {
 				var op = [],
