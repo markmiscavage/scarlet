@@ -1040,6 +1040,12 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         for formset in formsets.values():
             formset.save()
 
+    def update_object_assets(self, form, new_tags):
+        from assets.models import Asset
+        for key, value in form.cleaned_data.iteritems():
+            if value.__class__ == Asset:
+                value.tags.add(*new_tags)
+
     def form_valid(self, form, formsets):
         """
         Response for valid form. In one transaction this will
@@ -1048,6 +1054,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
 
         Returns the results of calling the `success_response` method.
         """
+        from assets.models import Asset
 
         # check if it's a new object before it save the form
         new_object = False
@@ -1063,7 +1070,6 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
             msg = self.write_message()
 
         # get old and new tags
-        from assets.models import Asset
         auto_tags = form.data.get("auto_tags", False) # old tags
         new_tags = self.get_tags() # new tags
 
@@ -1071,9 +1077,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         # tags from get_tags() so that every Asset
         # is (almost) uniquely associated with the object
         if auto_tags and new_object:
-            for key, value in form.cleaned_data.iteritems():
-                if value.__class__ == Asset:
-                    value.tags.add(*new_tags)
+            self.update_object_assets(form, new_tags)
         # the the objects is not new the update the assets with the auto_tags's tags
         elif auto_tags:
             from taggit.models import Tag
@@ -1100,6 +1104,11 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
                 # update all tags
                 for asset in assets:
                     asset.tags.add(*new_tags)
+
+                # update tags in object assets
+                # is not necessary to check if the the asset is changed
+                # because if the tags are the same then they will not be added
+                self.update_object_assets(form, new_tags)
 
         return self.success_response(msg)
 
