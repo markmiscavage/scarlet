@@ -1049,6 +1049,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         Returns the results of calling the `success_response` method.
         """
 
+        # check if it's a new object before it save the form
         new_object = False
         if not self.object:
             new_object = True
@@ -1061,36 +1062,42 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
             self.log_action(self.object, CMSLog.SAVE, url=url)
             msg = self.write_message()
 
+        # get old and new tags
         from assets.models import Asset
-        auto_tags = form.data.get("auto_tags", False)
-        new_tags = self.get_tags()
+        auto_tags = form.data.get("auto_tags", False) # old tags
+        new_tags = self.get_tags() # new tags
 
+        # this update Assets in new objects with
+        # tags from get_tags() so that every Asset
+        # is (almost) uniquely associated with the object
         if auto_tags and new_object:
             for key, value in form.cleaned_data.iteritems():
                 if value.__class__ == Asset:
                     value.tags.add(*new_tags)
-
+        # the the objects is not new the update the assets with the auto_tags's tags
         elif auto_tags:
             from taggit.models import Tag
-            # the alternative of this is to use a custom SQL expression like:
-            # SELECT object_id from taggit_taggeditem
-            # WHERE taggit_taggeditem.tag_id IN (TAG ID 1, TAG ID 2, TAG ID N)
-            # GROUP BY object_id HAVING COUNT(*) = NUMBER OF TAGS
             tags = []
             skip_update = False
+            # retrieve all tags
             for name in auto_tags.split(","):
                 try:
                     tag =  Tag.objects.get(name=name)
                     tags.append(tag)
                 except:
+                    # if a tag is not found then something went wrong,
+                    # so do nothing
                     skip_update = True
 
             if not skip_update:
+                # the alternative of this is to use a custom SQL expression like:
+                # SELECT object_id from taggit_taggeditem
+                # WHERE taggit_taggeditem.tag_id IN (TAG ID 1, TAG ID 2, TAG ID N)
+                # GROUP BY object_id HAVING COUNT(*) = NUMBER OF TAGS
                 assets = reduce(lambda x, y: x & y,
                     [Asset.objects.filter(tags=tag) for tag in tags])
 
-                new_tags = self.get_tags()
-
+                # update all tags
                 for asset in assets:
                     asset.tags.add(*new_tags)
 
