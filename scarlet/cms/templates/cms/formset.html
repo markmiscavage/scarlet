@@ -1,0 +1,26 @@
+{{ form.non_field_errors }}
+
+{% if formset.can_delete %}
+	<div class="widget-formset-delete">
+		<b>X</b>
+		{{ form.DELETE }}
+	</div>
+{% endif %}
+{% for field in form %}
+	{{ field.errors }}
+	{% if field.name != 'DELETE' %}
+		{% if field.field.is_order_field %}
+			<div class="widget-formset-order">
+				{{ field }}
+			</div>
+		{% else %}
+			{% if not field.is_hidden %}
+				{{ field.label_tag }}
+				{% if field.field.help_text %}
+					<em class="help">{{ field.field.help_text|safe }}</em>
+				{% endif %}
+			{% endif %}
+			{{ field }}
+		{% endif %}
+	{% endif %}
+{% endfor %}

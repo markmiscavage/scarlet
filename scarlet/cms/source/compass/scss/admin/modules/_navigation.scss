@@ -1,0 +1,200 @@
+nav[role='dashboard'] {
+	@include clearfix;
+	background-color: #fff;
+	@include background-image(linear-gradient(rgba($gray, 0.8), #fff, rgba($gray, 0.8)));
+	border: solid $gray;
+	border-width: 2px 0;
+	margin: 0 auto;
+	padding: $spacer 0;
+
+	ul {
+		display: block;
+		margin: 0 auto;
+		padding: 0;
+		max-width: $width;
+
+		li {
+			float: left;
+			display: inline-block;
+			font: 26px/1 AvenirBook;
+			text-transform: uppercase;
+			margin: $spacer;
+			padding: 0;
+			width: 31%;
+			// width: 400px;
+
+			ul {
+				@include border-radius($gridlet*3);
+				background-color: rgba($gray, 0.7);
+				display: block;
+				padding: $gridlet*2;
+				margin: 0;
+				margin-top: $gridlet*2;
+
+				li {
+					border: 0;
+					float: none;
+					clear: none;
+					display: block;
+					text-transform: none;
+					font: 18px/1 AvenirRoman;
+					margin: 0 auto !important;
+					padding: 0;
+					width: auto;
+
+					&:first-of-type a {
+						@include border-top-radius($gridlet*2);
+					}
+
+					&:last-of-type a {
+						@include border-bottom-radius($gridlet*2);
+					}
+
+					a {
+						border: 1px solid rgba($blue, 0.5);
+						border-top-color: #fff;
+						background-color: $light-blue;
+						color: $blue;
+						display: block;
+						padding: $gridlet*2 $spacer;
+
+						&:hover {
+							background-color: rgba($dark-blue, 0.5);
+							color: #fff;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+nav[role='navbar'] {
+	@include background-image(linear-gradient($gray, #fff, $gray));
+	margin: 0 auto;
+	padding: 0 $spacer;
+
+	ul {
+		display: block;
+		font: 16px/1 AvenirMedium;
+		margin: 0 auto;
+		padding: 0;
+		max-width: $width;
+
+		li {
+			border-right: 1px dotted $dark-blue;
+			color: $blue;
+			cursor: pointer;
+			display: inline-block;
+			position: relative;
+			margin: 0;
+			padding: $spacer;
+			z-index: 10;
+
+			&:after {
+				color: $blue;
+				content: "s";
+				font: 12px/1 CompassArrows;
+				padding-left: $gridlet*2;
+			}
+
+			&:hover {
+				background-color: $dark-blue;
+				color: #fff;
+
+				&:after {
+					color: #fff;
+				}
+
+				ul {
+					display: block;
+				}
+			}
+
+			&:last-of-type {
+				border-right: 0;
+			}
+
+			ul {
+				@include border-radius($gridlet);
+				@include border-top-left-radius(0);
+				background-color: $dark-blue;
+				display: none;
+				font: 16px/1 AvenirMedium;
+				padding: $gridlet;
+				margin-top: $spacer;
+				position: absolute;
+				left: 0;
+				white-space: nowrap;
+
+				li {
+					background-color: $light-blue;
+					border: 0;
+					border-top: 1px solid #fff;
+					border-bottom: 1px solid rgba($blue, 0.5);
+					color: $blue;
+					display: block;
+					padding: 0;
+
+					&:first-of-type {
+						border-top: 0;
+					}
+
+					&:last-of-type {
+						border-bottom: 0;
+					}
+
+					&:after {
+						content: "";
+					}
+
+					&:hover {
+						background-color: $light-blue; // override parent hover style
+					}
+
+					a {
+						color: $blue;
+						display: block;
+						padding: $gridlet*2 $spacer;
+
+						&:hover {
+							background-color: rgba($dark-blue, 0.5);
+							color: #fff;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+nav[role='sidebar'] {
+	@include border-radius($gridlet*3);
+	background-color: rgba($gray, 0.7);
+	float: left;
+	font: 18px/1 AvenirRoman;
+	width: 300px;
+	padding: $gridlet*2;
+
+	a {
+		border: 1px solid rgba($blue, 0.5);
+		border-top-color: #fff;
+		background-color: $light-blue;
+		color: $blue;
+		display: block;
+		padding: $spacer $spacer*2;
+
+		&:first-of-type {
+			@include border-top-radius($gridlet*2);
+		}
+
+		&:last-of-type {
+			@include border-bottom-radius($gridlet*2);
+		}
+
+		&:hover {
+			background-color: rgba($dark-blue, 0.5);
+			color: #fff;
+		}
+	}
+}

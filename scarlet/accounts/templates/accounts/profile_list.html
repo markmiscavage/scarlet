@@ -1,0 +1,57 @@
+{% extends 'accounts/base_accounts.html' %}
+{% load i18n %}
+{% load url from future %}
+
+{% block object_header %}<h2>{% trans 'Users' %}</h2>{% endblock %}
+
+{% block content %}
+<form action="" method="post">{% csrf_token %}
+<div>
+{% if form.errors %}
+    <p class="errornote">
+    {% blocktrans count counter=form.errors.items|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
+    </p>
+{% endif %}
+
+<p>{% trans 'Add Admin' %}</p>
+
+{{ form.as_p }}
+
+<div class="submit-row">
+    <input type="submit" value="{% trans 'Save' %}" class="default" />
+</div>
+
+</div>
+</form></div>
+
+<ul id="profile_list">
+  {% for profile in profile_list %}
+  <li>
+  {{ profile.user.first_name }} {{ profile.user.last_name }}
+  <a href="{% url 'accounts_profile_detail' profile.user.username %}">{% trans 'Edit' %}</a>
+  <a href="{% url 'accounts_profile_delete' profile.user.username %}">{% trans 'Delete' %}</a>
+  </li>
+  {% endfor %}
+
+</ul>
+
+{% if is_paginated %}
+<div class="pagination">
+  <span class="step-links">
+    {% if page_obj.has_previous %}
+    <a href="{% url 'accounts_profile_list_paginated' page_obj.previous_page_number %}">{% trans 'previous' %}</a>
+    {% endif %}
+
+    <span class="current">
+      {% blocktrans with page_obj.number as page and page_obj.paginator.num_pages as num_pages %}
+      Page {{ page }} of {{ num_pages }}
+      {% endblocktrans %}
+    </span>
+
+    {% if page_obj.has_next %}
+    <a href="{% url 'accounts_profile_list_paginated'  page_obj.next_page_number %}">{% trans 'next' %}</a>
+    {% endif %}
+  </span>
+</div>
+{% endif %}
+{% endblock %}

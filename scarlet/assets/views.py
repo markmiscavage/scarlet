@@ -1,0 +1,78 @@
+import logging
+
+from cms import views, renders
+from forms import AssetFilterForm, TagFilterForm
+from models import Asset
+from assets import settings
+from assets.renders import AssetRenderer
+
+from sorl.thumbnail import get_thumbnail
+
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
+
+
+class AssetListView(views.ListView):
+    """
+    A view class to manage the list of all assets
+    """
+    display_fields = ('user_filename',)
+    paginate_by = 100
+    filter_form = AssetFilterForm
+
+    def __init__(self, *args, **kwargs):
+        super(AssetListView, self).__init__(*args, **kwargs)
+        self.renders['choices'] = AssetRenderer()
+
+    def get_queryset(self, **filter_kwargs):
+        qs = super(AssetListView, self).get_queryset(**filter_kwargs)
+        return qs.distinct()
+
+class AssetFormView(views.FormView):
+    """
+    A view class to manage the asset form
+    """
+    def __init__(self, *args, **kwargs):
+        super(AssetFormView, self).__init__(*args, **kwargs)
+        self.renders['popup'] = renders.PopupRender(
+                redirect_template='assets/asset_uploaded.html',
+                template=self.default_template
+        )
+
+    def get_form_kwargs(self):
+        kwargs = super(AssetFormView, self).get_form_kwargs()
+
+        initial = {}
+        asset_type = self.request.GET.get('type', Asset.UNKNOWN)
+        if asset_type:
+            initial['type'] = asset_type
+
+        asset_tags = self.request.GET.get('tags', None)
+        if asset_tags:
+            initial['tags'] = asset_tags
+
+        if len(initial):
+            kwargs['initial'].update(initial)
+
+        return kwargs
+
+    def success_response(self, message=None):
+        try:
+            thumbnail = get_thumbnail(self.object.file.file,
+                                settings.CMS_THUMBNAIL_SIZE).url
+        except IOError:
+            thumbnail = None
+
+        context = { 'obj': self.object, 'thumb_url': thumbnail }
+
+        return self.render(self.request,
+                           redirect_url=self.get_success_url(),
+                           collect_render_data=False,
+                           **context)
+
+
+class TagListView(views.ListView):
+    display_fields = ('name',)
+    paginate_by = 100
+    filter_form = TagFilterForm

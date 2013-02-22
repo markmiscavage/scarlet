@@ -1,0 +1,110 @@
+section#object-info {
+	@include background-image(linear-gradient($blue, $dark-blue));
+	color: $light-blue;
+	font: 16px/1 AvenirMedium;
+	padding: $spacer;
+
+	&.tools {
+		min-height: 94px;
+	}
+
+	> div {
+		margin: 0 auto;
+		max-width: $width;
+		position: relative;
+	}
+
+	a.back {
+		color: $light-blue;
+		display: inline-block;
+		padding-bottom: $gridlet*2;
+
+		&:before {
+			content: "w";
+			font: 14px/1 CompassArrows;
+			padding-right: $gridlet*2;
+		}
+
+		&:hover {
+			color: #fff;
+		}
+	}
+
+	h2 {
+		@include single-text-shadow($dark-blue, 0px, 2px, 0px);
+		color: #fff;
+		display: block;
+		font: 24px/1 AvenirBlack;
+		text-transform: uppercase;
+		width: 49%;
+
+		span.actions {
+			cursor: pointer;
+			display: inline;
+			font: 16px/1 AvenirMedium;
+			position: absolute;
+			text-transform: none;
+			z-index: 1;
+
+			&:before {
+				color: $light-blue;
+				content: "s";
+				font: 12px/24px CompassArrows;
+				padding-left: $gridlet*2;
+			}
+
+			a {
+				display: none;
+
+				@include single-text-shadow(none);
+				background-color: $light-blue;
+				border: 1px solid rgba($blue, 0.5);
+				border-top-color: #fff;
+				padding: $gridlet*2 $spacer;
+			}
+
+			&:hover a {
+				display: block;
+			}
+
+			&:empty:before {
+				content: "";
+			}
+		}
+	}
+
+	nav[role='object-tools'] {
+		display: inline-block;
+		text-align: right;
+		width: 49%;
+		position: absolute;
+		top: 0;
+		right: 0;
+
+		p {
+			color: #fff;
+			font: 12px/18px AvenirMedium;
+			padding-bottom: $gridlet*2;
+		}
+
+		a {
+			border-right: 1px dotted $light-blue;
+			color: $light-blue;
+			display: inline-block;
+			padding: 0 $spacer;
+
+			&:hover {
+				color: #fff;
+			}
+		}
+
+		form {
+			display: inline-block;
+			padding-left: $spacer;
+
+			input[type='submit'] {
+				@include big-button;
+			}
+		}
+	}
+}

@@ -1,0 +1,11 @@
+{% load i18n %}
+
+<div class="widget-asset" data-api="{{ link|safe }}" data-title="{{ object.user_filename }}" data-tags="{{ asset_tags }}">
+	<div class="widget-asset-preview" style="background-image:url({{ object.file.url }})"></div>
+	<div class="widget-asset-actions">
+		{{ hidden_input }}
+        {% if add_link %}
+		<a class="button" target="_blank" href="{{ add_link }}">Upload</a>
+        {% endif %}
+	</div>
+</div>

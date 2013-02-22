@@ -1,0 +1,17 @@
+{% extends "cms/base_popup.html" %}
+
+{% load i18n %}
+
+{% block content %}
+
+<div class="widget-popup-data" data-id="{{ obj.id }}" data-text="{{ obj.user_filename }}" data-thumbnail="{{ thumb_url }}">
+
+UPLOAD COMPLETE
+
+{% if thumb_url %}
+<img src="{{ thumb_url }}" />
+{% endif %}
+
+</div>
+
+{% endblock content %}

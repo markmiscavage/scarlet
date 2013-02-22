@@ -1,0 +1,388 @@
+/*
+File: admin.scss
+Outputs: admin.css
+
+Project: RED
+
+Description:
+	Admin page styles
+
+Requires:
+	- Sass
+	- Compass
+
+*/
+
+section#main {
+	clear: both;
+
+	nav[role='sidebar'] + article {
+		@include border-radius($gridlet*2);
+		border: 1px solid $light-blue;
+		background-color: #fff;
+		margin-left: 340px;
+		padding: $spacer $spacer*2;
+	}
+
+	article {
+		position: relative;
+
+		h3 {
+			border-bottom: 1px dotted $dark-blue;
+			color: $dark-blue;
+			display: block;
+			font: 21px/36px AvenirLight;
+			text-transform: uppercase;
+			margin-bottom: $spacer;
+		}
+
+		h3 + h3,
+		h4 {
+			border-bottom: 1px dotted $dark-blue;
+			color: $dark-blue;
+			display: block;
+			font: 21px/36px AvenirLight;
+			text-transform: uppercase;
+			margin-bottom: $spacer;
+			// margin-left: $spacer*2;
+		}
+
+		a.button {
+			@include button;
+
+			& + &,
+			& + input[type='submit'] {
+				margin-left: $spacer;
+			}
+		}
+
+		hr {
+			border-bottom: 1px solid $red;
+		}
+
+		p {
+			display: inline-block;
+			margin: 0 $spacer $spacer 0;
+		}
+
+		ol {
+			li {
+				list-style: decimal;
+			}
+		}
+
+		form {
+			color: $blue;
+			font: 18px/1 AvenirRoman;
+
+			fieldset {
+				border: 0;
+				margin: 0;
+				padding: 0;
+				margin-bottom: $spacer;
+				// padding: 0 0 $gridlet*5 $gridlet*8;
+
+				& + fieldset {
+					margin-top: -$spacer;
+				}
+
+				legend {
+					margin-bottom: $gridlet*5;
+					border-bottom: 1px dotted $dark-blue;
+					color: $dark-blue;
+					display: block;
+					font: 21px/36px AvenirLight;
+					text-transform: uppercase;
+					width: 100%;
+				}
+
+				p {
+					text-align: left;
+					margin-left: $spacer*2;
+				}
+			}
+
+			p {
+				display: block;
+				margin: 0;
+				position: relative;
+				text-align: right;
+
+				&.checkbox {
+					margin-bottom: $spacer;
+
+					label {
+						position: absolute;
+						left: $gridlet*7;
+					}
+				}
+			}
+
+			label {
+				color: $dark-blue;
+				display: inline-block;
+				font: 18px/1 AvenirRoman;
+				margin-right: $gridlet*2;
+			}
+
+			em {
+				font: 14px/1 AvenirLight;
+			}
+
+			input,
+			textarea {
+				@include border-radius($gridlet);
+				border: 1px solid rgba($blue, 0.5);
+				color: $blue;
+				font: 16px/1 AvenirRoman;
+				padding: $gridlet*2 $gridlet*3;
+				outline: 0;
+				width: 100%;
+				background: #fff;
+			}
+
+			.widget-asset {
+				// @include clearfix;
+				// height: $gridlet*20;
+				margin-left: $spacer*2;
+
+				.widget-asset-preview {
+					width: $gridlet*20;
+					height: $gridlet*20;
+					background-color: #eee;
+					background-position: 50% 50%;
+					background-size: contain;
+					background-repeat: no-repeat;
+					border: 1px solid $light-blue;
+					border-radius: $gridlet;
+					box-shadow: inset 0 0 10px rgba(#000, 0.1);
+					float: left;
+				}
+
+				.widget-asset-actions {
+					margin-left: $gridlet*22;
+					max-width: $gridlet*100;
+				}
+
+				.select2-container {
+					margin-bottom: $gridlet*2;
+				}
+
+				.button {
+					@include button;
+				}
+
+				input {
+					display: none;
+				}
+			}
+
+			.widget-formset-form {
+				padding: $spacer $spacer*8 $spacer $spacer*2;
+				margin: 0;
+				position: relative;
+				background: rgba(#fff, 0.5);
+				border: 1px solid $gray;
+
+				+ .widget-formset-form {
+					margin-top: -1px;
+				}
+
+				&.odd {
+					background-color: rgba($gray, 0.5);
+				}
+
+				&.was-deleted {
+					display: none;
+				}
+
+				.api-select {
+					margin-left: 0;
+				}
+
+				.widget-formset-delete {
+					@include button;
+					position: absolute;
+					top: $spacer;
+					right: $spacer;
+					font: 18px/1 AvenirBlack;
+
+					b {
+						font-weight: normal;
+					}
+
+					input {
+						display: none;
+					}
+				}
+
+				.widget-formset-order {
+					display: none;
+				}
+			}
+
+			.widget-formset {
+				.widget-formset-forms {
+					margin-bottom: $spacer;
+				}
+
+				.widget-formset-add {
+					// margin-top: $spacer;
+				}
+
+				.button {
+					@include button;
+
+					&.add-button {
+						font: 18px/1 AvenirBlack;
+					}
+				}
+
+				.draggable {
+					cursor: move;
+				}
+			}
+
+			.api-select {
+				position: relative;
+				// margin-left: $spacer*2;
+
+				&.has-add-button {
+					padding-right: 40px;
+				}
+
+				.add-button {
+					position: absolute;
+					top: 0;
+					right: 0;
+				}
+
+				.toggle {
+					position: absolute;
+					top: -35px;
+					height: 30px;
+					right: 0;
+
+					.toggle-button {
+						float: right;
+						line-height: 28px;
+						padding: 0 10px;
+						background: #fff;
+						border: 1px solid $gray;
+						color: $gray;
+						cursor: pointer;
+
+						+ .toggle-button {
+							border-right: 0;
+						}
+
+						&.active {
+							border-color: rgba($blue, 0.5);
+							background: $light-blue;
+							color: $blue;
+						}
+
+						&.last {
+							border-radius: $gridlet 0 0 $gridlet;
+						}
+
+						&.first {
+							border-radius: 0 $gridlet $gridlet 0;
+						}
+					}
+				}
+			}
+
+			label,
+			input,
+			textarea,
+			.widget-asset,
+			.select2-container,
+			.select2-container-multi {
+				margin-bottom: $spacer;
+			}
+
+			input[type='checkbox'] {
+				margin-bottom: 0;
+			}
+
+			input[type='submit'] {
+				@include button;
+
+				&.big {
+					@include big-button;
+				}
+			}
+		}
+
+		details#filter {
+			@include user-select(none);
+			width: $width/4;
+			position: absolute;
+			top: -5px;
+			right: 0;
+			text-align: right;
+			z-index: 10000;
+
+			summary {
+				color: $blue;
+				cursor: pointer;
+				display: inline-block;
+				font: 16px/1 AvenirRoman;
+				outline: none;
+				padding: $spacer;
+
+				&:after {
+					color: $blue;
+					content: "s";
+					font: 12px/1 CompassArrows;
+					padding-left: $gridlet*2;
+				}
+
+				&::-webkit-details-marker {
+					display: none;
+				}
+			}
+
+			&[open], &.open {
+				summary {
+					background-color: $dark-blue;
+					color: #fff;
+				}
+
+				form {
+					border: 1px solid $light-blue;
+					background-color: #fff;
+					display: block;
+					padding: $spacer $spacer*2;
+					position: relative;
+					text-align: left;
+					z-index: 11000;
+
+					input[type='submit'] {
+						margin-bottom: 0;
+					}
+				}
+			}
+
+			&.filtered {
+				summary {
+					color: $red;
+
+					&:after {
+						color: $red;
+					}
+				}
+			}
+		}
+
+		div.pagination {
+			font: 14px/1 AvenirMedium;
+			text-align: right;
+
+			a {
+				font: 14px/1 CompassArrows;
+			}
+		}
+	}
+}

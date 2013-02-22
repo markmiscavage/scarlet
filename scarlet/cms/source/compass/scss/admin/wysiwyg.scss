@@ -1,0 +1,33 @@
+/*
+File: style.scss
+Outputs: style.css
+
+Project: RED
+
+Description:
+	Global styles
+
+Requires:
+	- Sass <http://sass-lang.com/>
+	- Compass <http://compass-style.org/>
+
+Requires:
+	- <caboose/_caboose.scss>
+	- <_site-settings.scss>
+
+*/
+
+// Import project settings first
+@import "site-settings";
+
+// Import Caboose
+// caboose/reset and caboose/exports are optional includes
+@import "caboose",
+		"caboose/reset",
+		"caboose/exports";
+
+// Import fonts
+@import "fonts/avenir";
+
+// Import page views
+@import "views/wysiwyg";

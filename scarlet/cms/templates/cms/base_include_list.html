@@ -1,0 +1,7 @@
+{% extends "cms/base_bundle_view.html" %}
+{% load cms %}
+
+{% block content %}
+{{ block.super }}
+{% bundle_view bundle "main" %}
+{% endblock %}

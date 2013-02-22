@@ -1,0 +1,68 @@
+{% extends base %}
+{% load cms %}
+
+{% block main_content %}
+
+	{% if obj %}
+		{% if subitem %}
+			<h4 data-auto-tag="{{ bundle.get_title }}, {{obj}}">Edit {{ obj }}</h4>
+		{% endif %}
+	{% else %}
+		<h4>Add New {{ model_name }}</h4>
+	{% endif %}
+
+
+	<form data-form-id="edit" {% if adminForm.form.is_multipart %} enctype="multipart/form-data"{% endif %} action="{{ action_url }}" method="post">
+        <input type="hidden" name="popup" value='{{ popup }}' />
+		{% csrf_token %}
+		{% if adminForm.form.non_field_errors %}
+			{{ adminForm.form.non_field_errors }}
+		{% endif %}
+
+		{% for fieldset in adminForm %}
+		<fieldset>
+			{% if fieldset.name %}<legend>{{ fieldset.name }}</legend>{% endif %}
+			{% if fieldset.description %}
+				<div class="description">{{ fieldset.description|safe }}</div>
+			{% endif %}
+
+			{% for line in fieldset %}
+				{{ line.errors }}
+				{% for field in line %}
+					<p {% if field.is_checkbox %}class="checkbox"{% endif %}>
+						{{ field.label_tag }}
+						{% if field.field.help_text %}<em class="help">{{ field.field.help_text|safe }}</em>{% endif %}
+						{{ field.field }}
+					</p>
+				{% endfor %}
+			{% endfor %}
+		</fieldset>
+		{% endfor %}
+
+		{% if formsets %}
+			{% for title, formset in formsets.items %}
+				<fieldset class="widget-formset" data-prefix="{{ formset.prefix }}">
+					{{ formset.management_form }}
+
+					<legend>{{ title }}</legend>
+
+					{{ formset.non_form_errors }}
+
+					<div class="widget-formset-forms">
+						{% for form in formset %}
+							<div class="widget-formset-form">
+								{% include "cms/formset.html" with form=form formset=formset %}
+							</div>
+						{% endfor %}
+					</div>
+					<script type="text/html" class="widget-formset-form-template">
+						{% include "cms/formset.html" with form=formset.empty_form formset=formset %}
+					</script>
+					<span class="widget-formset-add button">Add One</span>
+				</fieldset>
+			{% endfor %}
+		{% endif %}
+		<p><a class="button close-popup" href="{{ cancel_url }}">Cancel</a><input class="big" type="submit" value="Save" /></p>
+	</form>
+
+{% endblock %}

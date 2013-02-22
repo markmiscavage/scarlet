@@ -1,0 +1,17 @@
+{% extends "cms/base_site.html" %}
+
+{% block object_header %}
+{% if not object_header %}
+    {% include object_header_tmpl %}
+{% else %}
+    {{ object_header }}
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{% if subitem %}
+	<h3>{{ bundle.get_title }}</h3>
+{% endif %}
+    {% block main_content %}
+    {% endblock %}
+{% endblock %}

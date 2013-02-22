@@ -1,0 +1,53 @@
+{% extends "cms/base_site.html" %}
+
+{% block nav-role %}dashboard{% endblock %}
+
+{% block content %}
+<table id="recent-history">
+	<caption>Recent History</caption>
+	<thead>
+		<tr>
+			<td>
+				<form action="" method="get">
+					{{ form.as_p }}
+					<input type="submit" value="Filter" />
+				</form>
+			</td>
+		</tr>
+		<tr>
+			<th></th>
+			<th>Date</th>
+			<th>Type</th>
+			<th>Name</th>
+			<th>User</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for obj in page.object_list %}
+	<tr>
+		<td class="actions">{% if obj.url %}<a href="{{ obj.url }}" title="Edit">e</a>{% endif %}</td>
+		<td>{{ obj.when|date:"m/d/Y P" }}</td>
+		<td>{{ obj.model_repr }}</td>
+		<td>{{ obj.object_repr }} ({{ obj.get_action_display }})</td>
+		<td>{{ obj.user_name|title }}</td>
+	</tr>
+	{% endfor %}
+	</tbody>
+</table>
+
+{% if page.paginator.num_pages > 1 %}
+	<div class="pagination">
+		<span class="page-links">
+			{% if page.has_previous %}
+				<a href="?page={{ page.previous_page_number }}#main" title="Previous">w</a>
+			{% endif %}
+			<span class="page-current">
+				Page {{ page.number }} of {{ page.paginator.num_pages }}
+			</span>
+			{% if page.has_next %}
+				<a href="?page={{ page.next_page_number }}#main" title="Next">e</a>
+			{% endif %}
+		</span>
+	</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,56 @@
+html {
+	height: 100%;
+
+	body {
+		background: $dark-blue inline-image('../img/admin/texture-body.png') repeat;
+		color: $text-color;
+		-webkit-font-smoothing: antialiased;
+		height: 100%;
+
+		a {
+			text-decoration: none;
+
+			&, &:visited {
+				color: $blue;
+			}
+
+			&:hover {
+				color: $dark-blue;
+			}
+		}
+
+		header, footer {
+			color: $light-blue;
+
+			> div {
+				margin: 0 auto;
+				max-width: $width;
+			}
+		}
+
+		section#main {
+			@include clearfix;
+			background: $background-color inline-image('../img/admin/texture-main.png') repeat;
+			border-top: 1px solid #fff;
+			padding: $gridlet*10 $spacer;
+			position: relative;
+
+			&:before {
+				background: url('../img/admin/shadow.png') no-repeat top center;
+				content: "";
+				display: block;
+				width: 100%;
+				height: 60px;
+				pointer-events: none;
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+
+			> div {
+				margin: 0 auto;
+				max-width: $width;
+			}
+		}
+	}
+}

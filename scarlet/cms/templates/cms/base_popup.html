@@ -1,0 +1,15 @@
+{% extends "cms/base.html" %}
+
+{% block popup_header %}{% endblock popup_header %}
+{% block popup_footer %}{% endblock popup_footer %}
+
+{% block object_header %}
+{% endblock %}
+
+{% block content %}
+{% if subitem %}
+    <h3>{{ bundle.get_title }}</h3>
+{% endif %}
+    {% block main_content %}
+    {% endblock %}
+{% endblock %}
