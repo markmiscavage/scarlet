@@ -96,7 +96,7 @@ class CacheView(View):
             value = super(CacheView, self).get_as_string(request, *args,
                                                          **kwargs)
             if self.should_cache() and value and \
-                    self.request._cache_update_cache:
+                    getattr(self.request, '_cache_update_cache', False):
                 cache.set(prefix + ":string", value, self.cache_time)
 
         return value
