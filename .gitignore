@@ -84,3 +84,5 @@ pip-log.txt
 *.pyc
 
 docs/_build/*
+MANIFEST
+builder/*

@@ -1,0 +1,11 @@
+recursive-include docs *
+recursive-include tests *
+recursive-include samples *
+recursive-include scarlet *
+
+recursive-exclude builder *
+recursive-exclude docs/_build *
+recursive-exclude scarlet *.pyc
+recursive-exclude tests *.pyc
+exclude .coverage
+include MIT-LICENSE
