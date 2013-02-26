@@ -2,6 +2,9 @@ from django.template.defaulttags import kwarg_re
 from django.template import Library, TemplateSyntaxError, Node
 from django.utils.encoding import smart_str
 
+from django.contrib.auth.models import User
+from scarlet.cms.sites import site
+
 register = Library()
 
 
@@ -225,10 +228,8 @@ def can_admin(user):
     if user.is_superuser:
         return True
 
-    from accounts import groups
-
-    gs = getattr(user, 'cached_groups', None)
-    if gs is None:
-        user.cached_groups = user.groups.all()
-
-    return groups.ADMIN in [x.name for x in user.cached_groups]
+    bundle = site.get_bundle_for_model(User)
+    edit = None
+    if bundle:
+        edit = bundle.get_view_url('edit', user)
+    return edit is not None

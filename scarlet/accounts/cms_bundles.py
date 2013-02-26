@@ -85,6 +85,7 @@ class AccountBundle(bundles.Bundle):
 
     class Meta:
         model = User
+        primary_object_bundle = True
         item_views = ('password', 'edit', 'delete')
         default_kwargs = {
             'object_header_tmpl': "cms/object_header_no_preview.html"

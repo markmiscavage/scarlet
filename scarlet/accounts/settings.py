@@ -3,6 +3,11 @@
 from django.conf import settings
 gettext = lambda s: s
 
+import groups
+
+BASE_GROUPS = getattr(settings, 'ACCOUNTS_BASE_GROUPS',
+                ( groups.ADMIN,))
+
 ACCOUNTS_WELCOME_EMAIL = getattr(settings,
                                       'ACCOUNTS_WELCOME_EMAIL',
                                       False)
