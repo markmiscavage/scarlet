@@ -13,11 +13,12 @@
 
 
 	<form data-form-id="edit" {% if adminForm.form.is_multipart %} enctype="multipart/form-data"{% endif %} action="{{ action_url }}" method="post">
-        <input type="hidden" name="popup" value='{{ popup }}' />
-		{% csrf_token %}
+ 		{% csrf_token %}
 		{% if adminForm.form.non_field_errors %}
 			{{ adminForm.form.non_field_errors }}
 		{% endif %}
+        <input type="hidden" name="popup" value='{{ popup }}' />
+        <input type="hidden" name="auto_tags" value='{{ auto_tags }}' />
 
 		{% for fieldset in adminForm %}
 		<fieldset>
