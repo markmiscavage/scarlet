@@ -116,7 +116,7 @@ class AdminListRow(object):
                 except (AttributeError, ObjectDoesNotExist):
                     value = None
 
-                if f.flatchoices:
+                if hasattr(f, "flatchoices") and f.flatchoices:
                     value = dict(f.flatchoices).get(value)
                 elif isinstance(value, models.Manager):
                     value = ', '.join([unicode(x) for x in value.all()])
