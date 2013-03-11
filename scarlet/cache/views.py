@@ -134,6 +134,8 @@ class CacheView(View):
         if not response:
             response = super(CacheView, self).dispatch(self.request, *args,
                                                        **kwargs)
+            if hasattr(response, 'render') and callable(response.render):
+                response = response.render()
 
         if cache_middleware:
             response = cache_middleware.process_response(self.request,
