@@ -48,6 +48,7 @@ class AdminSite(object):
     password is changed. Defaults to 'cms/password_change_done.html'.
     :param dashboard_template: Dashboard template. Defaults to \
     cms/dashboard.html.
+    :param dashboard_home_url: Dashboard Homepage URL. Defaults to /admin/.
     """
 
     login_form = None
@@ -56,8 +57,9 @@ class AdminSite(object):
     password_change_template = None
     password_change_done_template = None
     dashboard_template = None
+    dashboard_home_url = None
 
-    def __init__(self,):
+    def __init__(self, **kwargs):
         self._registry = {}
         self._model_registry = {}
         self._titles = {}
@@ -314,11 +316,13 @@ class AdminSite(object):
             page_number = 1
 
         page = paginator.page(page_number)
+        home_url = self.dashboard_home_url or "/admin/"
 
         return TemplateResponse(request, [template], {
                             'dashboard': dashboard,
                             'page': page,
-                            'form': form})
+                            'form': form,
+                            'home_url': home_url})
 
 # This global object represents the default admin site, for the common case.
 # You can instantiate AdminSite in your own code to create a custom admin site.
