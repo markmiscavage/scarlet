@@ -3,7 +3,6 @@ from django.template import Library, TemplateSyntaxError, Node
 from django.utils.encoding import smart_str
 
 from django.contrib.auth.models import User
-from scarlet.cms.sites import site
 
 register = Library()
 
@@ -216,8 +215,8 @@ def bundle_url(parser, token):
     return URLNode(bundle, viewname, kwargs, asvar)
 
 
-@register.filter
-def can_admin(user):
+@register.assignment_tag
+def user_url(user, bundle):
     """
     Filter for a user object. Checks if a user has
     permission to change other users.
@@ -225,11 +224,9 @@ def can_admin(user):
     if not user:
         return False
 
-    if user.is_superuser:
-        return True
-
-    bundle = site.get_bundle_for_model(User)
+    bundle = bundle.admin_site.get_bundle_for_model(User)
     edit = None
+
     if bundle:
-        edit = bundle.get_view_url('edit', user)
-    return edit is not None
+        edit = bundle.get_view_url('main', user)
+    return edit

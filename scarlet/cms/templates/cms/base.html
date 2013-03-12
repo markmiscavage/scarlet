@@ -49,7 +49,8 @@
 						<p>{% trans 'Welcome back' %} <strong>{% filter force_escape %}{% firstof user.first_name user.username|title %}{% endfilter %}</strong></p>
 						{% block userlinks %}
 						<a href="{% url 'cms_password_change' %}">{% trans 'Change password' %}</a>
-						{% if request.user|can_admin %}<a href="{% url 'accounts_admin' %}">{% trans 'Administration' %}</a>{% endif %}
+                        {% user_url request.user bundle as user_url %}
+						{% if user_url %}<a href="{{ user_url }}">{% trans 'Administration' %}</a>{% endif %}
 						<a href="{% url 'cms_logout' %}">{% trans 'Logout' %}</a>
 						{% endblock %}
 					{% endif %}
