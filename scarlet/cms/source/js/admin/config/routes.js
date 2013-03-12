@@ -28,14 +28,14 @@ define(
 					},
 
 					"routes" : [
-						{
-							"viewClass" : prefix + "views/Admin",
-							"route" : /\/admin(.*)/,
-							"config" : {
-								"bodyClass" : "admin",
-								"title" : "Admin"
-							}
-						}
+                        {
+                            "viewClass" : prefix + "views/Admin",
+                            "route" : /\/.*admin(.*)/,
+                            "config" : {
+                                "bodyClass" : "admin",
+                                "title" : "Admin"
+                            }
+                        }
 					]
 				}
 			]
