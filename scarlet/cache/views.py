@@ -30,6 +30,7 @@ class CacheView(View):
 
     cache_time = 60 * 60
     max_age = 0
+    cache_middleware = None
 
     def should_cache(self):
         """
@@ -101,6 +102,23 @@ class CacheView(View):
 
         return value
 
+
+    def template_response_callback(self, response):
+        if self.cache_middleware:
+            response = self.cache_middleware.process_response(
+                self.request, response)
+
+        # We might want to cache for longer internally than we tell clients
+        max_age = get_max_age(response)
+        if max_age and self.max_age < max_age:
+            # Remove headers so patch_response works
+            for header in ('ETag', 'Last-Modified', 'Expires'):
+                if response.has_header(header):
+                    del response[header]
+            patch_response_headers(response, self.max_age)
+        return response
+
+
     def dispatch(self, request, *args, **kwargs):
         """
         Overrides Django's default dispatch to provide caching.
@@ -116,7 +134,7 @@ class CacheView(View):
         self.kwargs = kwargs
 
         response = None
-        cache_middleware = None
+
         if self.should_cache():
             prefix = "%s:%s" % (self.get_cache_version(),
                                 self.get_cache_prefix())
@@ -124,29 +142,20 @@ class CacheView(View):
             # Using middleware here since that is what the decorator uses
             # internally and it avoids making this code all complicated with
             # all sorts of wrappers.
-            cache_middleware = CacheMiddleware(cache_timeout=self.cache_time,
+            self.cache_middleware = CacheMiddleware(cache_timeout=self.cache_time,
                                               key_prefix=prefix)
 
-            response = cache_middleware.process_request(self.request)
+            response = self.cache_middleware.process_request(self.request)
         else:
             self.set_do_not_cache()
 
         if not response:
             response = super(CacheView, self).dispatch(self.request, *args,
                                                        **kwargs)
-            if hasattr(response, 'render') and callable(response.render):
-                response = response.render()
 
-        if cache_middleware:
-            response = cache_middleware.process_response(self.request,
-                                                         response)
+        if hasattr(response, 'render') and callable(response.render):
+            response.add_post_render_callback(self.template_response_callback)
+        else:
+            response = self.template_response_callback(response)
 
-        # We might want to cache for longer internally than we tell clients
-        max_age = get_max_age(response)
-        if max_age and self.max_age < max_age:
-            # Remove headers so patch_response works
-            for header in ('ETag', 'Last-Modified', 'Expires'):
-                if response.has_header(header):
-                    del response[header]
-            patch_response_headers(response, self.max_age)
         return response
