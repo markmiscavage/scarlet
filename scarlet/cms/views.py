@@ -222,7 +222,8 @@ class CMSView(BaseView):
             'bundle': self.bundle,
             'url_params': self.kwargs,
             'user': self.request.user,
-            'object_header_tmpl': self.object_header_tmpl
+            'object_header_tmpl': self.object_header_tmpl,
+            'home_url': self.bundle.admin_site.get_dashboard_home_url()
         })
 
         if not 'base' in data:

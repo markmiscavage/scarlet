@@ -8,7 +8,7 @@
 				<a data-auto-tag="{{ back_bundle.get_title }}" href="{{ back_url }}" class="back">{{ back_bundle.get_title }}</a>
 			{% endif %}
 		{% else %}
-			<a href="/admin/" class="back">Dashboard</a>
+			<a href="{{ home_url }}" class="back">Dashboard</a>
 		{% endif %}
 		<h2 data-auto-tag="{{bundle.get_title}}{% if obj %}, {{obj}}{% endif %}">
 			{% if obj %}

@@ -277,6 +277,9 @@ class AdminSite(object):
         allowed_sections = [x[2] for x in dashboard]
         return tuple(allowed_sections), tuple(allowed_titles)
 
+    def get_dashboard_home_url(self):
+        return self.dashboard_home_url or "/admin/"
+
     @never_cache
     def index(self, request, extra_context=None):
         """
@@ -316,7 +319,7 @@ class AdminSite(object):
             page_number = 1
 
         page = paginator.page(page_number)
-        home_url = self.dashboard_home_url or "/admin/"
+        home_url = self.get_dashboard_home_url()
 
         return TemplateResponse(request, [template], {
                             'dashboard': dashboard,
