@@ -322,9 +322,8 @@ class AdminSite(object):
 
         return TemplateResponse(request, [template], {
                             'dashboard': dashboard,
-                            'current_app': self.name,
                             'page': page, 'bundle' : self._registry.values()[0],
-                            'form': form})
+                            'form': form}, current_app = self.name)
 
 # This global object represents the default admin site, for the common case.
 # You can instantiate AdminSite in your own code to create a custom admin site.
