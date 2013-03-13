@@ -57,13 +57,13 @@ class AdminSite(object):
     password_change_template = None
     password_change_done_template = None
     dashboard_template = None
-    dashboard_home_url = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, name='admin'):
         self._registry = {}
         self._model_registry = {}
         self._titles = {}
         self._order = {}
+        self.name = name
 
     def register_model(self, model, bundle):
         """
@@ -146,8 +146,8 @@ class AdminSite(object):
             if manager:
                 manager.activate(BaseVersionedModel.DRAFT)
             if not self.has_permission(request):
-                if request.path == reverse('cms_logout'):
-                    index_path = reverse('cms_index')
+                if request.path == reverse('admin:cms_logout', current_app=self.name):
+                    index_path = reverse('admin:cms_index', current_app=self.name)
                     return HttpResponseRedirect(index_path)
                 return self.login(request)
             return view(request, *args, **kwargs)
@@ -192,7 +192,7 @@ class AdminSite(object):
 
     @property
     def urls(self):
-        return self.get_urls()
+        return self.get_urls(), 'admin', self.name
 
     def password_change(self, request):
         """
@@ -201,10 +201,11 @@ class AdminSite(object):
         Uses the default auth views.
         """
         from django.contrib.auth.views import password_change
-        url = reverse('cms_password_change_done')
+        url = reverse('admin:cms_password_change_done', current_app=self.name)
         defaults = {
             'post_change_redirect': url,
-            'template_name': 'cms/password_change_form.html'
+            'template_name': 'cms/password_change_form.html',
+            'current_app': self.name,
         }
         if self.password_change_template is not None:
             defaults['template_name'] = self.password_change_template
@@ -217,7 +218,8 @@ class AdminSite(object):
         from django.contrib.auth.views import password_change_done
         defaults = {
             'extra_context': extra_context or {},
-            'template_name': 'cms/password_change_done.html'
+            'template_name': 'cms/password_change_done.html',
+            'current_app': self.name,
         }
         if self.password_change_done_template is not None:
             defaults['template_name'] = self.password_change_done_template
@@ -233,7 +235,8 @@ class AdminSite(object):
         from django.contrib.auth.views import logout
         defaults = {
             'extra_context': extra_context or {},
-            'template_name': 'cms/logged_out.html'
+            'template_name': 'cms/logged_out.html',
+            'current_app': self.name,
         }
         if self.logout_template is not None:
             defaults['template_name'] = self.logout_template
@@ -277,9 +280,6 @@ class AdminSite(object):
         allowed_sections = [x[2] for x in dashboard]
         return tuple(allowed_sections), tuple(allowed_titles)
 
-    def get_dashboard_home_url(self):
-        return self.dashboard_home_url or "/admin/"
-
     @never_cache
     def index(self, request, extra_context=None):
         """
@@ -319,11 +319,10 @@ class AdminSite(object):
             page_number = 1
 
         page = paginator.page(page_number)
-        home_url = self.get_dashboard_home_url()
 
         return TemplateResponse(request, [template], {
                             'dashboard': dashboard,
-                            'home_url': home_url,
+                            'current_app': self.name,
                             'page': page, 'bundle' : self._registry.values()[0],
                             'form': form})
 

@@ -357,7 +357,8 @@ class Bundle(object):
 
     def _render_view_as_string(self, view, name, request, url_kwargs):
         url_kwargs = view.get_url_kwargs()
-        url = reverse(name, kwargs=url_kwargs)
+        url = reverse("admin:%s" % name, kwargs=url_kwargs,
+                        current_app=self.admin_site.name)
         view.add_to_render_data(action_url=url)
         return mark_safe(view.get(request, **url_kwargs))
 
@@ -410,7 +411,8 @@ class Bundle(object):
 
             # Get kwargs from view
             url_kwargs = view.get_url_kwargs(context_kwargs, **url_kwargs)
-            url = reverse(url_name, kwargs=url_kwargs)
+            url = reverse("admin:%s" % url_name, kwargs=url_kwargs,
+                          current_app=self.admin_site.name)
             return url
 
     def _view_uses_name_as_url_kwarg(self, view_name):
