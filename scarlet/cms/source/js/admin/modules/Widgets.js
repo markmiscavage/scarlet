@@ -45,12 +45,14 @@ define([],
 				dom.find("[data-date-format]").each(function (i, el) {
 					el = $(el);
 					el.attr('placeholder', el.data('date-format').toUpperCase());
-					el.pickadate({
-						format: 'yyyy-mm-dd',
-						format_submit: false,
-						month_prev: 'w',
-						month_next: 'e',
-					});
+					if (!Modernizr.inputtypes.date) { // Use plugin if browser lacks native support for input type="date"
+						el.pickadate({
+							format: 'yyyy-mm-dd',
+							format_submit: false,
+							month_prev: 'w',
+							month_next: 'e',
+						});
+					}
 				});
 			},
 

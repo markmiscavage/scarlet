@@ -13,6 +13,7 @@ from django.utils.dateparse import parse_time
 from django.contrib.admin.widgets import url_params_from_lookup_dict
 
 class DateWidget(widgets.TextInput):
+    input_type = 'date'
     """
     Widget for date fields. Sets a **data-date-format**
     attribute to "yyyy-mm-dd"
