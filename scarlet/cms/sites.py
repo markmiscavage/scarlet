@@ -58,7 +58,7 @@ class AdminSite(object):
     password_change_done_template = None
     dashboard_template = None
 
-    def __init__(self, name='admin'):
+    def __init__(self, name='default'):
         self._registry = {}
         self._model_registry = {}
         self._titles = {}
