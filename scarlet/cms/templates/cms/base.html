@@ -43,7 +43,7 @@
 		{% block popup_header %}
 		<header>
 			<div>
-				<h1><a href="{% url 'admin:cms_index' %}">{% block branding %}{% endblock %}</a></h1>
+				<h1>{% block branding %}<a href="{% url 'admin:cms_index' %}">Lionsgate</a>{% endblock %}</h1>
 				<nav role="user-tools">
 					{% if user.is_active and user.is_staff %}
 						<p>{% trans 'Welcome back' %} <strong>{% filter force_escape %}{% firstof user.first_name user.username|title %}{% endfilter %}</strong></p>
