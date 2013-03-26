@@ -9,7 +9,7 @@
                 <input type="radio" name="version" id="version_{{ v.vid }}" value="{{ v.vid }}" /><label for="version_{{ v.vid }}">{{ v.status_line }}</label>
             {% endfor %}
 
-            <p><a href="{{ done_url }} ">Cancel</a>
+            <p><a class="button" href="{{ done_url }} ">Cancel</a>
                <input type="submit" name="revert" value="Revert" />
                <input type="submit" name="delete" value="Delete" /></p>
         {% else %}
