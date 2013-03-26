@@ -121,11 +121,17 @@ section#main {
 				text-align: right;
 
 				&.checkbox {
-					margin-bottom: $spacer;
+					margin-bottom: $spacer * 3;
 
 					label {
 						position: absolute;
 						left: $gridlet*7;
+					}
+
+					.help {
+						position: absolute;
+						top: 25px;
+						left: 21px;
 					}
 				}
 			}
