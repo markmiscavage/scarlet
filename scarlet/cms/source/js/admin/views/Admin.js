@@ -17,7 +17,17 @@ define(
 			widgets : null,
 
 			init : function () {
+				this.sup();
 
+				this.tableDnD();
+
+				// widgets
+				this.widgets = new Widgets();
+				this.publish(WidgetEvents.RENDER, {
+					dom : document
+				});
+
+				this.transitionIn();
 			},
 
 			tableDnD : function () {
@@ -36,20 +46,8 @@ define(
 				});
 			},
 
-			loadComplete : function () {
-				this.tableDnD();
-
-				// widgets
-				this.widgets = new Widgets();
-				this.publish(WidgetEvents.RENDER, {
-					dom : document
-				});
-
-				this.sup();
-			},
-
 			update : function () {
-				console.log("UPDATE");
+
 			},
 
 			transitionIn : function () {

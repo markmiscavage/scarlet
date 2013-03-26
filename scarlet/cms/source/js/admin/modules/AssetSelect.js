@@ -71,7 +71,16 @@ define(
 			_autoTag : function () {
 				var dom = this.dom.find('a.button'),
 					params = this._unparam(dom[0].search),
-					tags = ($(this.dom).data('tags') || '').toLowerCase().split(',');
+					tags = ($(this.dom).data('tags') || '').toLowerCase().split(','),
+					cleanArray = function (actual) {
+						var newArray = [];
+						for (var i = 0; i < actual.length; i++) {
+							if (actual[i] && actual[i].length > 0) {
+								newArray.push(actual[i]);
+							}
+						}
+						return newArray;
+					};
 
 				$('[data-auto-tag]').each(function (i, dom) {
 					var allTags = ($(dom).data('auto-tag') || '').toLowerCase().split(',');
@@ -83,8 +92,13 @@ define(
 							tags.push(tag);
 						}
 					}
+
+					tags = cleanArray(tags);
+					allTags = cleanArray(allTags);
+
 					tags = tags.concat(allTags);
 				});
+
 
 				params.tags = tags.join(',');
 

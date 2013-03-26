@@ -151,6 +151,8 @@ class ChoicesRender(object):
         attr = label.attr
         if label.attr == '__unicode__':
             attr = force_unicode(slugify(label.name))
+        if hasattr(attr, '__call__'):
+            attr = attr.__name__
         return attr
 
     def get_object_list(self, adm_list):
@@ -268,7 +270,7 @@ class ChoicesRender(object):
         adm_list = kwargs['list']
         data['fields'] = self.get_fields(adm_list)
         data['results'] = self.get_object_list(adm_list)
-
+        print data
         return http.HttpResponse(json.dumps(data, cls=DjangoJSONEncoder))
 
 
