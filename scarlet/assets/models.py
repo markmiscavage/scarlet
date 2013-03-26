@@ -55,7 +55,6 @@ class Asset(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
-    @property
     def url(self):
         """
         This is a wrapper of file.url
