@@ -55,6 +55,13 @@ class Asset(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
+    @property
+    def url(self):
+        """
+        This is a wrapper of file.url
+        """
+        return self.file.url
+
     def generate_slug(self):
         return str(uuid.uuid1())
 
