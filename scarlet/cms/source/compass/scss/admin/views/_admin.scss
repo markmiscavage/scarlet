@@ -63,6 +63,18 @@ section#main {
 		p {
 			display: inline-block;
 			margin: 0 $spacer $spacer 0;
+
+			a {
+				&.button {
+					margin-left: 10px;
+				}
+			}
+
+			a:first-child {
+				&.button {
+					margin-left: 0;
+				}
+			}
 		}
 
 		ol {
