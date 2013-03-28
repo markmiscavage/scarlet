@@ -13,7 +13,7 @@ This is an attempt to create a content administration interface that is based ar
 Bundles
 -------------
 
-The key building block is a :py:class:`Bundle <cms.bundles.Bundle>`. A bundle is a class that is meant to group together :py:class:`CMSView <cms.views.CMSView>` instances and other bundle classes. It contains some methods to help the views know where to find each other, keep track of their url parameters and provide page navigation and headers.
+The key building block is a :py:class:`Bundle <scarlet.cms.bundles.Bundle>`. A bundle is a class that is meant to group together :py:class:`CMSView <scarlet.cms.views.CMSView>` instances and other bundle classes. It contains some methods to help the views know where to find each other, keep track of their url parameters and provide page navigation and headers.
 
 These views and sub bundles are specified as class attributes when creating a new Bundle class. For example:
 
@@ -26,27 +26,27 @@ These views and sub bundles are specified as class attributes when creating a ne
 
 Bundles are stored in a file named cms_bundles.py in your application.
 
-Each bundle contains a options :py:class:`Meta <cms.options.Meta>` class stored at _meta. This class allows you configure behaviour for the bundle as well as pass arguments to all or specific views within the bundle. See the :py:class:`Meta <cms.options.Meta>` documentation for details.
+Each bundle contains a options :py:class:`Meta <scarlet.cms.options.Meta>` class stored at _meta. This class allows you configure behaviour for the bundle as well as pass arguments to all or specific views within the bundle. See the :py:class:`Meta <scarlet.cms.options.Meta>` documentation for details.
 
-Each bundle ensures that each view it contains has a unique url name. Since these names are not always obvious and can get rather long it is impractical to refer views by name. Instead you can get the url for a related view by using the :py:meth:`get_view_url <cms.bundles.Bundle.get_view_url>` method. This will also make sure the requesting user has the necessary permissions to view the requested url. There is a template tag :py:func:`bundle_url <cms.templatetags.cms.bundle_url>` that can be used to call this method.
+Each bundle ensures that each view it contains has a unique url name. Since these names are not always obvious and can get rather long it is impractical to refer views by name. Instead you can get the url for a related view by using the :py:meth:`get_view_url <scarlet.cms.bundles.Bundle.get_view_url>` method. This will also make sure the requesting user has the necessary permissions to view the requested url. There is a template tag :py:func:`bundle_url <scarlet.cms.templatetags.cms.bundle_url>` that can be used to call this method.
 
-Similarly each named url parameter must be unique to avoid conflicts. Bundles keep track of the names of the url groups that are used to get to it in it's url_params property. View or subbundles that need additional url parameters are refered to as item views and should be added to the `item_views` sequence on the bundles :py:class:`Meta <cms.options.Meta>` class. See the :py:class:`Meta <cms.options.Meta>` class documents for details on how to control that regular expression.
+Similarly each named url parameter must be unique to avoid conflicts. Bundles keep track of the names of the url groups that are used to get to it in it's url_params property. View or subbundles that need additional url parameters are refered to as item views and should be added to the `item_views` sequence on the bundles :py:class:`Meta <scarlet.cms.options.Meta>` class. See the :py:class:`Meta <scarlet.cms.options.Meta>` class documents for details on how to control that regular expression.
 
-You can also use :py:class:`URLAlias <cms.bundles.URLAlias>` to specify that a attribute should point to a different view on the same bundle or on a different bundle.
+You can also use :py:class:`URLAlias <scarlet.cms.bundles.URLAlias>` to specify that a attribute should point to a different view on the same bundle or on a different bundle.
 
-Bundles can also render their views as a string instead of as a response. The logic works much the same as getting a url. Unlike the normal dispatch method, this will always call the `get` method of a view and never a `post` or any of the other attributes as any actions that modify data should take place on the original url and not when being rendered this way. Methods that vary their behavior on `request.method` checks shoud also include a `self.can_submit` if they can be called by multiple http request methods.  There is a template tag :py:func:`bundle_view <cms.templatetags.cms.bundle_view>` that can be used to call this method.
+Bundles can also render their views as a string instead of as a response. The logic works much the same as getting a url. Unlike the normal dispatch method, this will always call the `get` method of a view and never a `post` or any of the other attributes as any actions that modify data should take place on the original url and not when being rendered this way. Methods that vary their behavior on `request.method` checks shoud also include a `self.can_submit` if they can be called by multiple http request methods.  There is a template tag :py:func:`bundle_view <scarlet.cms.templatetags.cms.bundle_view>` that can be used to call this method.
 
 .. _default_bundles_class:
 
 Default bundle classes
 ~~~~~~~~~~~~~~~~~~~~~~
 
-The default :py:class:`Bundle <cms.bundles.Bundle>` class has four views:
+The default :py:class:`Bundle <scarlet.cms.bundles.Bundle>` class has four views:
 
- * **main** - a :py:class:`ListView <cms.views.ListView>`
- * **add** - a :py:class:`FormView <cms.views.FormView>`
- * **edit** - a :py:class:`FormView <cms.views.FormView>`.
- * **delete** - a :py:class:`ListView <cms.views.DeleteView>`
+ * **main** - a :py:class:`ListView <scarlet.cms.views.ListView>`
+ * **add** - a :py:class:`FormView <scarlet.cms.views.FormView>`
+ * **edit** - a :py:class:`FormView <scarlet.cms.views.FormView>`.
+ * **delete** - a :py:class:`ListView <scarlet.cms.views.DeleteView>`
 
 The items views are 'edit' and 'delete'.
 
@@ -55,44 +55,44 @@ The items views are 'edit' and 'delete'.
 Other Bundles
 ~~~~~~~~~~~~~
 
-* :py:class:`BlankBundle <cms.bundles.BlankBundle>` is a bundle that does not declare any views. You can use it to add all your views manually.
-* :py:class:`VersionedBundle <cms.bundles.VersionedBundle>` adds the following item views for managing versioned models:
-     * **publish** - a :py:class:`PublishView <cms.views.PublishView>`
-     * **versions** - a :py:class:`UnPublishView <cms.views.UnPublishView>`
-     * **unpublish** - a :py:class:`VersionsList <cms.views.VersionsList>`.
-* :py:class:`DelegatedObjectBundle <cms.bundles.DelegatedObjectBundle>`. This bundle delegates all the normal item views to the sub bundle specified by edit. Used when your 'edit' view is a :py:class:`ObjectOnlyBundle <cms.bundles.ObjectOnlyBundle>` sub bundle.
-* :py:class:`ObjectOnlyBundle <cms.bundles.ObjectOnlyBundle>`. A bundle that doesn't have a list or add views. Points the 'main_list' attribute to it's parent bundle.
-* :py:class:`VersionedObjectOnlyBundle <cms.bundles.VersionedObjectOnlyBundle>`. Same as ObjectOnlyBundle but adds version management views.
-* :py:class:`ChildBundle <cms.bundles.ChildBundle>`. Default setup for child bundles, without delegating the rendering of the page header to it's parent.
-* :py:class:`ParentVersionedBundle <cms.bundles.ParentVersionedBundle>`. Like child bundle except it delegates rendering of the page header to it's parent.
+* :py:class:`BlankBundle <scarlet.cms.bundles.BlankBundle>` is a bundle that does not declare any views. You can use it to add all your views manually.
+* :py:class:`VersionedBundle <scarlet.cms.bundles.VersionedBundle>` adds the following item views for managing versioned models:
+     * **publish** - a :py:class:`PublishView <scarlet.cms.views.PublishView>`
+     * **versions** - a :py:class:`UnPublishView <scarlet.cms.views.UnPublishView>`
+     * **unpublish** - a :py:class:`VersionsList <scarlet.cms.views.VersionsList>`.
+* :py:class:`DelegatedObjectBundle <scarlet.cms.bundles.DelegatedObjectBundle>`. This bundle delegates all the normal item views to the sub bundle specified by edit. Used when your 'edit' view is a :py:class:`ObjectOnlyBundle <scarlet.cms.bundles.ObjectOnlyBundle>` sub bundle.
+* :py:class:`ObjectOnlyBundle <scarlet.cms.bundles.ObjectOnlyBundle>`. A bundle that doesn't have a list or add views. Points the 'main_list' attribute to it's parent bundle.
+* :py:class:`VersionedObjectOnlyBundle <scarlet.cms.bundles.VersionedObjectOnlyBundle>`. Same as ObjectOnlyBundle but adds version management views.
+* :py:class:`ChildBundle <scarlet.cms.bundles.ChildBundle>`. Default setup for child bundles, without delegating the rendering of the page header to it's parent.
+* :py:class:`ParentVersionedBundle <scarlet.cms.bundles.ParentVersionedBundle>`. Like child bundle except it delegates rendering of the page header to it's parent.
 
 .. _cms_views:
 
 Views
 -----
 
-All views that are included in bundles should inhert from :py:class:`CMSView <cms.views.CMSView>`. These views use render classes to render their responses. Most use :py:class:`CMSRender <cms.renders.CMSRender>`. A view is made aware of the bundle and the slug_url_kwarg attributes as calculated by the bundle.
+All views that are included in bundles should inhert from :py:class:`CMSView <scarlet.cms.views.CMSView>`. These views use render classes to render their responses. Most use :py:class:`CMSRender <scarlet.cms.renders.CMSRender>`. A view is made aware of the bundle and the slug_url_kwarg attributes as calculated by the bundle.
 
 There a few default classes included that extend django's generic views to perform common tasks.
 
-* :py:class:`FormView <cms.views.FormView>`
-* :py:class:`ListView <cms.views.ListView>`
-* :py:class:`DeleteView <cms.views.DeleteView>`
+* :py:class:`FormView <scarlet.cms.views.FormView>`
+* :py:class:`ListView <scarlet.cms.views.ListView>`
+* :py:class:`DeleteView <scarlet.cms.views.DeleteView>`
 
 There are also of default views particular to versioned models.
 
-* :py:class:`PublishView <cms.views.PublishView>`
-* :py:class:`UnPublishView <cms.views.UnPublishView>`
-* :py:class:`VersionsList <cms.views.VersionsList>`
+* :py:class:`PublishView <scarlet.cms.views.PublishView>`
+* :py:class:`UnPublishView <scarlet.cms.views.UnPublishView>`
+* :py:class:`VersionsList <scarlet.cms.views.VersionsList>`
 
 Base Templates
 ~~~~~~~~~~~~~~
 
 The cms site is structured with the following main components:
 
- * **Site navigation** - This is the main navigation for the site. This is defined by the :py:meth:`get_dashboard_urls <cms.bundles.Bundle.get_dashboard_urls>` of the registered bundles.
- * **Local navigation** - This is defined by the navigation and dashboard attributes of the current view. See :py:meth:`get_navigation <cms.bundles.Bundle.get_navigation>` for details.
- * **Page header** - This is the title block on every page. The content that gets rendering is controlled by the :py:meth:`get_object_header_view <cms.bundles.Bundle.get_object_header_view>` method of the bundle.
+ * **Site navigation** - This is the main navigation for the site. This is defined by the :py:meth:`get_dashboard_urls <scarlet.cms.bundles.Bundle.get_dashboard_urls>` of the registered bundles.
+ * **Local navigation** - This is defined by the navigation and dashboard attributes of the current view. See :py:meth:`get_navigation <scarlet.cms.bundles.Bundle.get_navigation>` for details.
+ * **Page header** - This is the title block on every page. The content that gets rendering is controlled by the :py:meth:`get_object_header_view <scarlet.cms.bundles.Bundle.get_object_header_view>` method of the bundle.
  * **Page content** - This is the main content of the view.
 
 This structure is set the following two templates:
@@ -100,7 +100,7 @@ This structure is set the following two templates:
  * *base.html* - Main base templates most other inherit from this one.
  * *base_site.html* - This template should be customized with any specific site branding you need.
 
-:py:class:`CMSView <cms.views.CMSView>` classes can set a `base_template` attribute to set the base template used for that view. Typically this would be one of:
+:py:class:`CMSView <scarlet.cms.views.CMSView>` classes can set a `base_template` attribute to set the base template used for that view. Typically this would be one of:
 
  * *base_bundle_view.html* - The base template for views that include site headers and navigation.
  * *base_include_list.html* - Renders the related main list after the main content. Used as the base template for some add/edit forms.
@@ -136,35 +136,35 @@ Preview links are added to the object lists and the object header for objects th
     1. Are rendered by a bundle with a preview view.
     2. The object has a `get_absolute_url` value.
 
-A custom preview view is useful for when you only want to preview part of what will be a full page. When providing a custom preview view you should use :py:class:`PreviewWrapper <cms.views.PreviewWrapper>` passing it a :py:class:`SiteView <cms.views.SiteView>` view it can render as a string. For example:
+A custom preview view is useful for when you only want to preview part of what will be a full page. When providing a custom preview view you should use :py:class:`PreviewWrapper <scarlet.cms.views.PreviewWrapper>` passing it a :py:class:`SiteView <scarlet.cms.views.SiteView>` view it can render as a string. For example:
 
 ::
 
     views.PreviewWrapper(preview_view=PostView)
 
-The url arguments passed are calculated by the  The :py:meth:`get_preview_kwargs <cms.views.PreviewWrapper.get_preview_kwargs>` method.
+The url arguments passed are calculated by the  The :py:meth:`get_preview_kwargs <scarlet.cms.views.PreviewWrapper.get_preview_kwargs>` method.
 
 Fields and Widgets
 ~~~~~~~~~~~~~~~~~~
 
 The CMS provides some default fields and widgets.
 
- * :py:class:`OrderField <cms.fields.OrderField>` - A PositiveIntegerField that set's itself to be the default ordering field of any model it is added to. When used with a bundle that uses :py:class:`Orderable <cms.options.Orderable>` in it's meta class, pagination is disabled and the rows can be reordered with a drag and drop interface.
- * :py:class:`HTMLTextField <cms.fields.HTMLTextField>` - A text field that will be rendered in the CMS as a WYSIWYG field.
- * :py:class:`DateWidget <cms.widgets.DateWidget>`, :py:class:`TimeChoiceWidget <cms.widgets.TimeChoiceWidget>` and :py:class:`SplitDateTime <cms.widgets.SplitDateTime>` are used as the field widgets for DateFields, TimeFields and DateTimeFields respectively.
- * When a form contains ForeignKey or ModelChoiceField field, if a bundle for the related model has been registered as a 'primary_model_bundle', a :py:class:`APIChoiceWidget <cms.widgets.APIChoiceWidget>` or :py:class:`APIModelChoiceWidget <cms.widgets.APIModelChoiceWidget>`. This provides a paginated searchable drop down using :py:class:`ChoicesRender <cms.renders.ChoicesRender>` and a popup add link using :py:class:`PopupRender <cms.renders.PopupRender>`.
+ * :py:class:`OrderField <scarlet.cms.fields.OrderField>` - A PositiveIntegerField that set's itself to be the default ordering field of any model it is added to. When used with a bundle that uses :py:class:`Orderable <scarlet.cms.options.Orderable>` in it's meta class, pagination is disabled and the rows can be reordered with a drag and drop interface.
+ * :py:class:`HTMLTextField <scarlet.cms.fields.HTMLTextField>` - A text field that will be rendered in the CMS as a WYSIWYG field.
+ * :py:class:`DateWidget <scarlet.cms.widgets.DateWidget>`, :py:class:`TimeChoiceWidget <scarlet.cms.widgets.TimeChoiceWidget>` and :py:class:`SplitDateTime <scarlet.cms.widgets.SplitDateTime>` are used as the field widgets for DateFields, TimeFields and DateTimeFields respectively.
+ * When a form contains ForeignKey or ModelChoiceField field, if a bundle for the related model has been registered as a 'primary_model_bundle', a :py:class:`APIChoiceWidget <scarlet.cms.widgets.APIChoiceWidget>` or :py:class:`APIModelChoiceWidget <scarlet.cms.widgets.APIModelChoiceWidget>`. This provides a paginated searchable drop down using :py:class:`ChoicesRender <scarlet.cms.renders.ChoicesRender>` and a popup add link using :py:class:`PopupRender <scarlet.cms.renders.PopupRender>`.
 
 
 Admin Site
 ----------
 
-:py:class:`AdminSite <cms.sites.AdminSite>` is very similar to the django admin site class. The main difference is that bundles are registered with a slug instead of by model. Slugs must be unique. The default site also includes a dashboard the contents of which are gathered from registered bundles. It also displays the change log.
+:py:class:`AdminSite <scarlet.cms.sites.AdminSite>` is very similar to the django admin site class. The main difference is that bundles are registered with a slug instead of by model. Slugs must be unique. The default site also includes a dashboard the contents of which are gathered from registered bundles. It also displays the change log.
 
 You register a bundle like this:
 
 ::
 
-    from cms import site
+    from scarlet.cms import site
     site.register(slug, bundle_instance, order)
 
 

@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
@@ -6,11 +8,9 @@ from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 
-from accounts.utils import generate_sha1, get_protocol, get_datetime_now
-from accounts.managers import AccountsManager, AccountsBaseProfileManager
-from accounts import settings as accounts_settings
-
-import datetime
+from .utils import generate_sha1, get_protocol, get_datetime_now
+from .managers import AccountsManager, AccountsBaseProfileManager
+from .import settings as accounts_settings
 
 PROFILE_PERMISSIONS = (
             ('view_profile', 'Can view profile'),

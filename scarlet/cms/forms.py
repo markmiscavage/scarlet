@@ -1,7 +1,7 @@
 from django import forms
 from django.db.models import Q, F
 
-import widgets
+from . import widgets
 
 class BaseFilterForm(forms.Form):
     """

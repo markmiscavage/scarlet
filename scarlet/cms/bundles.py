@@ -8,9 +8,9 @@ from django.utils.safestring import mark_safe
 from django import http
 from django.utils.decorators import classonlymethod
 
-import views
-import options
-import helpers
+from . import views
+from . import options
+from . import helpers
 
 # Constant that defines a attribute points to it's parent
 PARENT = 'parent'

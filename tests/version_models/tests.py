@@ -6,8 +6,8 @@ from django.utils import timezone, formats
 from django.core.exceptions import ValidationError
 from django.db import models as dbmodels
 
-from versioning.models import VersionView
-from versioning import manager
+from scarlet.versioning.models import VersionView
+from scarlet.versioning import manager
 
 import models
 

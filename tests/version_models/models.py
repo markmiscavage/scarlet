@@ -1,7 +1,7 @@
 from django.db import models
 
-from versioning import fields
-from versioning.models import VersionView, Cloneable, BaseModel
+from scarlet.versioning import fields
+from scarlet.versioning.models import VersionView, Cloneable, BaseModel
 
 
 class NameModel(models.Model):

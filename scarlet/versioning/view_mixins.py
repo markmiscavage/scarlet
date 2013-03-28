@@ -1,7 +1,7 @@
 from django import http
 from django.views.generic.detail import SingleObjectMixin
 
-import manager
+from . import manager
 
 
 class PreviewableObject(SingleObjectMixin):

@@ -1,6 +1,9 @@
 import logging
+
 from django import forms
-from cms import views, renders
+
+from scarlet.cms import views, renders
+
 from models import *
 
 class EditAuthorForm(forms.ModelForm):

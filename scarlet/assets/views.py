@@ -1,13 +1,16 @@
 import logging
 
-from cms import views, renders
-from forms import AssetFilterForm, TagFilterForm
-from models import Asset
-from assets import settings
-from assets.renders import AssetRenderer
+try:
+    from ..cms import views, renders
+except ValueError:
+    from cms import views, renders
 
 from sorl.thumbnail import get_thumbnail
 
+from .forms import AssetFilterForm, TagFilterForm
+from .models import Asset
+from .renders import AssetRenderer
+from . import settings
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)

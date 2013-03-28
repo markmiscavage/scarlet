@@ -6,9 +6,10 @@ from django.db import models
 from django.contrib.admin.util import label_for_field
 from django.db.models.fields import FieldDoesNotExist
 from django.utils.text import capfirst
+from django.core.exceptions import ObjectDoesNotExist
 
-import widgets
-import fields
+from . import widgets
+from . import fields
 
 FORMFIELD_FOR_DBFIELD_DEFAULTS = {
     models.ForeignKey:       {'widget': widgets.APIChoiceWidget},

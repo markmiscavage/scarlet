@@ -5,10 +5,10 @@ from django.db import models
 from django.core.files.uploadedfile import UploadedFile
 
 from taggit.managers import TaggableManager
-
-from assets import settings
-from assets.managers import AssetManager
 from sorl.thumbnail import delete
+
+from . import settings
+from .managers import AssetManager
 
 
 class Asset(models.Model):

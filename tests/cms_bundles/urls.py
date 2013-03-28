@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import include, patterns, url
 
-import cms
+from scarlet import cms
 
 cms.autodiscover()
 urlpatterns = patterns('',

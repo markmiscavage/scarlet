@@ -32,16 +32,16 @@ Django is not a that type of architecture. The class of problems we are trying t
 The Solution
 ------------
 
-So how do we invalidate all the cached objects that contain our model? Well, we map cached objects to models. Lets assume that all your saves are done through the admin and you are using :py:class:`ModelAdmin <cache.admin.ModelAdmin>`.
+So how do we invalidate all the cached objects that contain our model? Well, we map cached objects to models. Lets assume that all your saves are done through the admin and you are using :py:class:`ModelAdmin <scarlet.cache.admin.ModelAdmin>`.
 
 Here's simple example:
 
 ::
 
-    from cache import cache_manager
+    from scarlet.cache import cache_manager
     cache_manager.register('company_list', Person, values=['employees'], instance_values=['pk'])
 
-This creates a :py:class:`CacheGroup <cache.groups.CacheGroup>` named 'company_list' and registers the Person model with it, and tells the group to track the model based upon it's primary key and to also track a value 'employees' that will be incremented any time a Person model is saved.
+This creates a :py:class:`CacheGroup <scarlet.cache.groups.CacheGroup>` named 'company_list' and registers the Person model with it, and tells the group to track the model based upon it's primary key and to also track a value 'employees' that will be incremented any time a Person model is saved.
 
 Lets say you have a list page at '/person/' you can do
 
@@ -66,13 +66,13 @@ Details
 Cache Groups
 -------------
 
-A :py:class:`CacheGroup <cache.groups.CacheGroup>` tracks versions for a collection of models. When creating a cache group you must specify a key. This should be unique to this group as this will be used to prefix all version values in your cache.
+A :py:class:`CacheGroup <scarlet.cache.groups.CacheGroup>` tracks versions for a collection of models. When creating a cache group you must specify a key. This should be unique to this group as this will be used to prefix all version values in your cache.
 
-You register a model by calling :py:meth:`register <cache.groups.CacheGroup.register>` or :py:meth:`register_models <cache.groups.CacheGroup.register_models>` passing the values and instance values you would like tracked. See the :py:meth:`register <cache.groups.CacheGroup.register>` method documentation for details.
+You register a model by calling :py:meth:`register <scarlet.cache.groups.CacheGroup.register>` or :py:meth:`register_models <scarlet.cache.groups.CacheGroup.register_models>` passing the values and instance values you would like tracked. See the :py:meth:`register <scarlet.cache.groups.CacheGroup.register>` method documentation for details.
 
-To invalidate a cache use the method :py:meth:`invalidate_cache <cache.groups.CacheGroup.invalidate_cache>`.
+To invalidate a cache use the method :py:meth:`invalidate_cache <scarlet.cache.groups.CacheGroup.invalidate_cache>`.
 
-To get a string that can be used as a prefix for django's cache keys call :py:meth:`get_version <cache.groups.CacheGroup.get_version>`.
+To get a string that can be used as a prefix for django's cache keys call :py:meth:`get_version <scarlet.cache.groups.CacheGroup.get_version>`.
 
 
 Example
@@ -174,31 +174,31 @@ Running invalidate_cache on a model that was registered with now values will als
 Manager
 ----------
 
-A :py:class:`CacheManager <cache.manager.CacheManager>` is where you register all the :py:class:`CacheGroup <cache.groups.CacheGroup>` instances that you would like to be considered when a purge request is received. Similar to the django admin, most implementations would only have one instance of this class that all managers would be registered with. If you don't need any customizations you can simply register with the default instance
+A :py:class:`CacheManager <scarlet.cache.manager.CacheManager>` is where you register all the :py:class:`CacheGroup <scarlet.cache.groups.CacheGroup>` instances that you would like to be considered when a purge request is received. Similar to the django admin, most implementations would only have one instance of this class that all managers would be registered with. If you don't need any customizations you can simply register with the default instance
 
 ::
 
-    from cache.manager import cache_manager
+    from scarlet.cache.manager import cache_manager
     cache_manager.register_model('key', MyModel, MyModel2, instance_value=['pk'])
 
 or
 
 ::
 
-    from cache.manager import cache_manager
-    from cache.groups import CacheGroup
+    from scarlet.cache.manager import cache_manager
+    from scarlet.cache.groups import CacheGroup
     m = CacheGroup('key')
     cache_manager.register_cache(m)
 
-You can get the group registered for a key by calling :py:meth:`get_group  <cache.manager.CacheManager.get_group>`
+You can get the group registered for a key by calling :py:meth:`get_group  <scarlet.cache.manager.CacheManager.get_group>`
 
-To invalidate across all groups use the :py:meth:`invalidate_cache <cache.manager.CacheManager.invalidate_cache>` method. This will find all registered groups for the given model and call the invalidate_cache method on each of them.
+To invalidate across all groups use the :py:meth:`invalidate_cache <scarlet.cache.manager.CacheManager.invalidate_cache>` method. This will find all registered groups for the given model and call the invalidate_cache method on each of them.
 
 
 Views
 =====
 
-:py:class:`CacheView <cache.views.CacheView>` is a class based view that overrides the default dispatch method to determine the cache_prefix. It calls two methods :py:meth:`get_cache_version <cache.views.CacheView.get_cache_version>` and :py:meth:`get_cache_prefix <cache.views.CacheView.get_cache_prefix>` the results of those two functions are combined and passed to the standard django caching middleware.
+:py:class:`CacheView <scarlet.cache.views.CacheView>` is a class based view that overrides the default dispatch method to determine the cache_prefix. It calls two methods :py:meth:`get_cache_version <scarlet.cache.views.CacheView.get_cache_version>` and :py:meth:`get_cache_prefix <scarlet.cache.views.CacheView.get_cache_prefix>` the results of those two functions are combined and passed to the standard django caching middleware.
 
 Here is a sample get_cache_version function
 
@@ -209,16 +209,16 @@ Here is a sample get_cache_version function
         return cache_manager.get_group('key').get_version(slug)
 
 
-As with all class based views decorating individual methods does not work well so you want a certain response or method to not be cached, call :py:meth:`set_do_not_cache <cache.views.CacheView.set_do_not_cache>`
+As with all class based views decorating individual methods does not work well so you want a certain response or method to not be cached, call :py:meth:`set_do_not_cache <scarlet.cache.views.CacheView.set_do_not_cache>`
 
 Admin
 =====
 
-:py:class:`ModelAdmin <cache.admin.ModelAdmin>` is an extension of the default django ModelAdmin that will call invalidate_cache after a deleting or saving a model. In order to insure that these do not get called until after all m2m relationships have been updated, the update and add hooks are placed in the response_xxx methods.
+:py:class:`ModelAdmin <scarlet.cache.admin.ModelAdmin>` is an extension of the default django ModelAdmin that will call invalidate_cache after a deleting or saving a model. In order to insure that these do not get called until after all m2m relationships have been updated, the update and add hooks are placed in the response_xxx methods.
 
 When creating a ModelAdmin you should ensure that the cache_manager attribute is set to the correct manager.
 
-:py:meth:`invalidate_cache <cache.admin.ModelAdmin.invalidate_cache>` simply calls this manager and passes the instance if it knows about it. The default implementation will set force_all to True if it receives a queryset instead of a instance.
+:py:meth:`invalidate_cache <scarlet.cache.admin.ModelAdmin.invalidate_cache>` simply calls this manager and passes the instance if it knows about it. The default implementation will set force_all to True if it receives a queryset instead of a instance.
 
 If you want to invalidate additional values that have not been registered, override this method to provide that functionality. For example:
 
@@ -230,7 +230,7 @@ If you want to invalidate additional values that have not been registered, overr
         super(MyAdmin, self).invalidate_cache(obj=obj, extra=extra, force_all=force_all)
 
 
-:py:class:`AdminSite <cache.admin.AdminSite>` is a simple extension of the default django AdminSite that calls invalidate_cache if the default delete action is run. If your admin site includes other default actions you should ensure that they call invalidate_cache when appropriate.
+:py:class:`AdminSite <scarlet.cache.admin.AdminSite>` is a simple extension of the default django AdminSite that calls invalidate_cache if the default delete action is run. If your admin site includes other default actions you should ensure that they call invalidate_cache when appropriate.
 
 Limitations and Drawbacks
 =========================

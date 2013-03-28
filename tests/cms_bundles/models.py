@@ -1,7 +1,8 @@
 from django.db import models
-from versioning import fields
-from versioning.models import VersionView, Cloneable
-from cms.fields import OrderField
+
+from scarlet.versioning import fields
+from scarlet.versioning.models import VersionView, Cloneable
+from scarlet.cms.fields import OrderField
 
 
 class Author(models.Model):

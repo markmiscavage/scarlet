@@ -1,7 +1,7 @@
 from django.db import models
 from django import forms
 
-import widgets
+from . import widgets
 
 class OrderFormField(forms.IntegerField):
     """

@@ -1,7 +1,8 @@
 from django import forms
-from cms import views, renders
+
 from models import *
 
+from scarlet.cms import views, renders
 
 class PostsListView(views.ListView):
     """
@@ -14,4 +15,3 @@ class PostsListView(views.ListView):
     def __init__(self, *args, **kwargs):
         super(PostsListView, self).__init__(*args, **kwargs)
         #self.renders['choices'] = AssetRenderer()
-

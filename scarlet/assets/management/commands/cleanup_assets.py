@@ -1,10 +1,11 @@
-from django.core.management.base import BaseCommand
-from assets.models import Asset
-
 import time
 import gc
 import os
 import shutil
+
+from django.core.management.base import BaseCommand
+
+from ...models import Asset
 
 # http://djangosnippets.org/snippets/1949/ + IndexError fix
 def queryset_iterator(queryset, chunksize=1000):

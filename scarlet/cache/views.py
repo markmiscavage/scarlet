@@ -1,5 +1,8 @@
 try:
-    from cms.views import SiteView as View
+    try:
+        from ..cms.views import SiteView as View
+    except ValueError:
+        from cms.views import SiteView as View
 except ImportError:
     from django.views.generic import View
 

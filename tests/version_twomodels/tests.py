@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.utils import timezone, formats
 from django.core.exceptions import ValidationError
 
-from versioning.models import published_signal, BaseModel, VersionModel
+from scarlet.versioning.models import published_signal, BaseModel, VersionModel
 
 import models
 

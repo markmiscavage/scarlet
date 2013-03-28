@@ -6,7 +6,7 @@ from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from django.contrib.auth.models import Group, User
 from django.utils.translation import ugettext_lazy
 
-from manager import cache_manager
+from .manager import cache_manager
 
 
 def clear_cache_delete_selected(modeladmin, request, queryset):

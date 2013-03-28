@@ -17,14 +17,13 @@ from django.contrib.admin.util import flatten_fieldsets
 from django.db.models.fields import FieldDoesNotExist
 from django.db import models
 
-import fields
-import helpers
-import renders
-import transaction
-import widgets
-
-from forms import WhenForm, LazyFormSetFactory, VersionFilterForm
-from models import CMSLog
+from . import fields
+from . import helpers
+from . import renders
+from . import transaction
+from . import widgets
+from .forms import WhenForm, LazyFormSetFactory, VersionFilterForm
+from .models import CMSLog
 
 
 class BaseView(generic.base.View):
