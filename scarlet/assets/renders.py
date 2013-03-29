@@ -1,7 +1,11 @@
-from cms import renders
-from assets import settings
+try:
+    from ..cms import renders
+except ValueError:
+    from cms import renders
+
 from sorl.thumbnail import get_thumbnail
 
+from . import settings
 
 class AssetRenderer(renders.ChoicesRender):
     def get_object_list(self, adm_list):

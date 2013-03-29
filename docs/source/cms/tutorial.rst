@@ -42,11 +42,13 @@ Then we have to create our models:
 
     from django.db import models
     from django.contrib.auth.models import User
-    from assets.fields import AssetsFileField
-    from assets.models import Asset
-    from versioning import fields
-    from versioning.models import VersionView, Cloneable
-    from cms.fields import OrderField
+
+    from scarlet.assets.fields import AssetsFileField
+    from scarlet.assets.models import Asset
+    from scarlet.versioning import fields
+    from scarlet.versioning.models import VersionView, Cloneable
+    from scarlet.cms.fields import OrderField
+
     from taggit.managers import TaggableManager
 
 
@@ -99,27 +101,17 @@ Then we have to create our models:
             else:
                 return unicode(self.image)
 
-
-    class Comment(Cloneable):
-        post = fields.FKToVersion(Post)
-        user = models.ForeignKey(User)
-        text = models.TextField()
-
-        def __unicode__(self):
-            return u"%s" % (self.text[:20],)
-
-    Post.register_related(related_name='comment')
     Post.register_related(related_name='postimage')
 
 As you can see these are normal django models with a couple of important differences:
 
-* some models subclass :py:class:`VersionView <versioning.models.VersionView>` (Category, Post)
-  and :py:class:`Cloneable <versioning.models.Cloneable>` (PostImage, Comment) instead of models.Model,
+* some models subclass :py:class:`VersionView <scarlet.versioning.models.VersionView>` (Category, Post)
+  and :py:class:`Cloneable <scarlet.versioning.models.Cloneable>` PostImage instead of models.Model,
   this is how we tell the CMS to make this model versionable. Here you can find more about the :ref:`versioning` system.
-* there are some custom fields to manage assets (:py:class:`AssetsFileField <assets.fields.AssetsFileField>`),
-  ordering (:py:class:`OrderField <cms.fields.OrderField>`) and Foreign Key relation
-  with other models that have to be cloned when we create a new version of a versioned model object (:py:class:`FKToVersion <versioning.fields.FKToVersion>`).
-* The last two lines are necessary to tell the CMS to clone the related Models when you create a new version of a Post model instance.
+* there are some custom fields to manage assets (:py:class:`AssetsFileField <scarlet.assets.fields.AssetsFileField>`),
+  ordering (:py:class:`OrderField <scarlet.cms.fields.OrderField>`) and Foreign Key relation
+  with other models that have to be cloned when we create a new version of a versioned model object (:py:class:`FKToVersion <scarlet.versioning.fields.FKToVersion>`).
+* The last line is necessary to tell the CMS to clone the related Models when you create a new version of a Post model instance.
 
 
 Creating the Admin
@@ -135,21 +127,21 @@ The most basic example is the following:
         class Meta:
             model = MyModel
 
-This way we create a :py:class:`Bundle <cms.bundles.Bundle>` that contains the basic CRUD views:
+This way we create a :py:class:`Bundle <scarlet.cms.bundles.Bundle>` that contains the basic CRUD views:
 
- * **main** - a :py:class:`ListView <cms.views.ListView>`
- * **add** - a :py:class:`FormView <cms.views.FormView>`
- * **edit** - a :py:class:`FormView <cms.views.FormView>`.
- * **delete** - a :py:class:`ListView <cms.views.DeleteView>`
+ * **main** - a :py:class:`ListView <scarlet.cms.views.ListView>`
+ * **add** - a :py:class:`FormView <scarlet.cms.views.FormView>`
+ * **edit** - a :py:class:`FormView <scarlet.cms.views.FormView>`.
+ * **delete** - a :py:class:`ListView <scarlet.cms.views.DeleteView>`
 
-Just like in ModelAdmin, we have the possibility to specify options using the class :py:class:`Meta <cms.options.Meta>`  inside our Bundle class.
+Just like in ModelAdmin, we have the possibility to specify options using the class :py:class:`Meta <scarlet.cms.options.Meta>`  inside our Bundle class.
 
 
 Then we register our bundle using the provided AdminSite:
 
 ::
 
-    from cms import site
+    from scarlet.cms import site
     site.register("mybundle",  MyBundle(name='mybundle', title="My Bundle"), order=1)
 
 Where the first parameter is a unique slug, the second one is an instance of the bundle and the third one is the order that we assign to the bundle in the user interface.
@@ -158,16 +150,13 @@ So let's create a cms_bundles.py for our Blog application:
 
 ::
 
-    from cms import bundles, site, forms, options, views
-    from blog.models import Post, PostImage, Comment, Category, Author
     from django.forms.models import inlineformset_factory
+
+    from scarlet.cms import bundles, site, forms, options, views
+
+    from models import Post, PostImage, Category, Author
     from views import PostsListView
     from forms import EditAuthorForm
-
-
-    comments_formset = forms.LazyFormSetFactory(
-        inlineformset_factory, Post, Comment)
-
 
     postimages_formset = forms.LazyFormSetFactory(
         inlineformset_factory, Post, PostImage, can_order=True)
@@ -217,7 +206,7 @@ So let's create a cms_bundles.py for our Blog application:
         )
 
         main = views.FormView(redirect_to_view=None,formsets={
-            "Comments": comments_formset, "Images": postimages_formset},
+            "Images": postimages_formset},
             fieldsets=DEFAULT_FIELDS)
 
         edit = bundles.PARENT
@@ -284,7 +273,7 @@ In the bundle we also define:
    and show a couple of messages when there are no categories or authors defined.
  * `author` and `category` as sub bundle, using Bundle `as_subbundle` class method.
  * `preview` that is responsible to show a preview page of the current object.
-   We pass to it the :py:class:`ListView <cms.views.ListView>` class, that render the page with the object.
+   We pass to it the :py:class:`ListView <scarlet.cms.views.ListView>` class, that render the page with the object.
  * `edit` as sub bundle of BlogEditBundle.
  * using Meta, we are also telling that the model we are working on is Post and that this bundle is the 'primary' one.
 
@@ -300,9 +289,9 @@ This task is done subclassing :py:class:`ObjectOnlyBundle <cms.bundles.ObjectOnl
         ('seo', 'Page SEO', None),
     )
 
-The value types are the same as dashboard. BlogBundle subclass :py:class:`DelegatedObjectBundle <cms.bundles.DelegatedObjectBundle>` that delegates all the normal item views to the sub bundle specified by edit.
+The value types are the same as dashboard. BlogBundle subclass :py:class:`DelegatedObjectBundle <scarlet.cms.bundles.DelegatedObjectBundle>` that delegates all the normal item views to the sub bundle specified by edit.
 
-Other the that, we define the main FormView to display comments and picture as inline formset,
+Other the that, we define the main FormView to display pictures as inline formset,
 and to show an additional SEO section in the secondary menu. Model fields of the SEO section are part of the Post model.
 
 

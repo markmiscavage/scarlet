@@ -12,7 +12,7 @@ if [ $TESTDIR = "." ]; then
 else
     PYPATH="$PWD:$PWD/$TESTDIR"
 fi
-PYPATH="$PYPATH:$PWD/$TESTDIR/../scarlet"
+PYPATH="$PYPATH:$PWD/$TESTDIR/../"
 if [ -z $PYTHONPATH ]; then
     PYTHONPATH="$PYPATH"
 else
@@ -67,7 +67,7 @@ do
     esac
 done
 
-if [ -n $COVERAGE ]; then
+if [ $COVERAGE ]; then
     TEST_RUNNER="$COVERAGE run --source=$TESTDIR/../scarlet -- $TEST_RUNNER"
 fi
 
@@ -80,10 +80,9 @@ if [ -z $test_to_run ]; then
         fi
     done
 else
-    echo "$TEST_RUNNER test $test_to_run --settings=$SETTINGS"
     $TEST_RUNNER test "$test_to_run" "--settings=$SETTINGS"
 fi
 
-if [ -n $COVERAGE ]; then
+if [ $COVERAGE ]; then
     $COVERAGE report -m
 fi

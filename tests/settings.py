@@ -3,7 +3,7 @@ SECRET_KEY = "Please do not spew DeprecationWarnings"
 # Must use the versioning backend
 DATABASES = {
     'default': {
-        'ENGINE': 'versioning.postgres_backend',
+        'ENGINE': 'scarlet.versioning.postgres_backend',
         'NAME': 'cms',
         'USER': '',
         'PASSWORD': '',
@@ -19,12 +19,12 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'sorl.thumbnail',
     'taggit',
-    'accounts',
-    'assets',
-    'cache',
-    'cms',
-    'scheduling',
-    'versioning',
+    'scarlet.accounts',
+    'scarlet.assets',
+    'scarlet.cache',
+    'scarlet.cms',
+    'scarlet.scheduling',
+    'scarlet.versioning',
     'version_models',
     'version_twomodels',
     'cms_bundles',

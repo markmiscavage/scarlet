@@ -5,29 +5,29 @@ Version Models
 Models
 ======
 
-.. automodule:: versioning.models
+.. automodule:: scarlet.versioning.models
     :members:
 
-.. automodule:: versioning.fields
+.. automodule:: scarlet.versioning.fields
     :members:
 
 Managers
 ========
 
-.. automodule:: versioning.manager
+.. automodule:: scarlet.versioning.manager
     :members:
 
 Middleware
 ==========
 
-.. automodule:: versioning.middleware
+.. automodule:: scarlet.versioning.middleware
     :members:
 
 Views
 =====
 
-.. automodule:: versioning.views
+.. automodule:: scarlet.versioning.views
     :members:
 
-.. automodule:: versioning.view_mixins
+.. automodule:: scarlet.versioning.view_mixins
     :members:

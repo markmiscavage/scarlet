@@ -10,12 +10,16 @@ from django.template.response import TemplateResponse
 from django.utils.translation import ugettext as _
 from django import forms
 
-import models
-from forms import BaseFilterForm
+from . import models
+from . forms import BaseFilterForm
 
 try:
-    from versioning import manager
-    from versioning.models import BaseVersionedModel
+    try:
+        from ..versioning import manager
+        from ..versioning.models import BaseVersionedModel
+    except ValueError:
+        from versioning import manager
+        from versioning.models import BaseVersionedModel
 except ImportError:
     manager = None
 
@@ -48,6 +52,7 @@ class AdminSite(object):
     password is changed. Defaults to 'cms/password_change_done.html'.
     :param dashboard_template: Dashboard template. Defaults to \
     cms/dashboard.html.
+    :param dashboard_home_url: Dashboard Homepage URL. Defaults to /admin/.
     """
 
     login_form = None
@@ -57,11 +62,12 @@ class AdminSite(object):
     password_change_done_template = None
     dashboard_template = None
 
-    def __init__(self,):
+    def __init__(self, name='default'):
         self._registry = {}
         self._model_registry = {}
         self._titles = {}
         self._order = {}
+        self.name = name
 
     def register_model(self, model, bundle):
         """
@@ -144,8 +150,8 @@ class AdminSite(object):
             if manager:
                 manager.activate(BaseVersionedModel.DRAFT)
             if not self.has_permission(request):
-                if request.path == reverse('cms_logout'):
-                    index_path = reverse('cms_index')
+                if request.path == reverse('admin:cms_logout', current_app=self.name):
+                    index_path = reverse('admin:cms_index', current_app=self.name)
                     return HttpResponseRedirect(index_path)
                 return self.login(request)
             return view(request, *args, **kwargs)
@@ -190,7 +196,7 @@ class AdminSite(object):
 
     @property
     def urls(self):
-        return self.get_urls()
+        return self.get_urls(), 'admin', self.name
 
     def password_change(self, request):
         """
@@ -199,10 +205,11 @@ class AdminSite(object):
         Uses the default auth views.
         """
         from django.contrib.auth.views import password_change
-        url = reverse('cms_password_change_done')
+        url = reverse('admin:cms_password_change_done', current_app=self.name)
         defaults = {
             'post_change_redirect': url,
-            'template_name': 'cms/password_change_form.html'
+            'template_name': 'cms/password_change_form.html',
+            'current_app': self.name,
         }
         if self.password_change_template is not None:
             defaults['template_name'] = self.password_change_template
@@ -215,7 +222,8 @@ class AdminSite(object):
         from django.contrib.auth.views import password_change_done
         defaults = {
             'extra_context': extra_context or {},
-            'template_name': 'cms/password_change_done.html'
+            'template_name': 'cms/password_change_done.html',
+            'current_app': self.name,
         }
         if self.password_change_done_template is not None:
             defaults['template_name'] = self.password_change_done_template
@@ -231,7 +239,8 @@ class AdminSite(object):
         from django.contrib.auth.views import logout
         defaults = {
             'extra_context': extra_context or {},
-            'template_name': 'cms/logged_out.html'
+            'template_name': 'cms/logged_out.html',
+            'current_app': self.name,
         }
         if self.logout_template is not None:
             defaults['template_name'] = self.logout_template
@@ -317,8 +326,8 @@ class AdminSite(object):
 
         return TemplateResponse(request, [template], {
                             'dashboard': dashboard,
-                            'page': page,
-                            'form': form})
+                            'page': page, 'bundle' : self._registry.values()[0],
+                            'form': form}, current_app = self.name)
 
 # This global object represents the default admin site, for the common case.
 # You can instantiate AdminSite in your own code to create a custom admin site.

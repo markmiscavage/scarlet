@@ -2,8 +2,8 @@ from django.core.management.base import BaseCommand
 from django.db.models.loading import get_models
 from django.db import transaction
 
-from assets.models import Asset
-from assets.fields import AssetsFileField
+from ...models import Asset
+from ...fields import AssetsFileField
 
 class Command(BaseCommand):
     args = None

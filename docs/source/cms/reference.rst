@@ -4,123 +4,123 @@ CMS Code Reference
 Bundle
 ------
 
-.. autoclass:: cms.bundles.Bundle
+.. autoclass:: scarlet.cms.bundles.Bundle
     :members:
 
-.. autoclass:: cms.bundles.BundleMeta
+.. autoclass:: scarlet.cms.bundles.BundleMeta
     :members:
 
-.. autoclass:: cms.bundles.ChildBundle
+.. autoclass:: scarlet.cms.bundles.ChildBundle
     :members:
 
-.. autoclass:: cms.bundles.VersionedBundle
+.. autoclass:: scarlet.cms.bundles.VersionedBundle
     :members:
 
-.. autoclass:: cms.bundles.ParentVersionedBundle
+.. autoclass:: scarlet.cms.bundles.ParentVersionedBundle
     :members:
 
-.. autoclass:: cms.bundles.ObjectOnlyBundle
+.. autoclass:: scarlet.cms.bundles.ObjectOnlyBundle
     :members:
 
-.. autoclass:: cms.bundles.VersionedObjectOnlyBundle
+.. autoclass:: scarlet.cms.bundles.VersionedObjectOnlyBundle
     :members:
 
-.. autoclass:: cms.bundles.DelegatedObjectBundle
+.. autoclass:: scarlet.cms.bundles.DelegatedObjectBundle
     :members:
 
-.. autoclass:: cms.bundles.BlankBundle
+.. autoclass:: scarlet.cms.bundles.BlankBundle
     :members:
 
-.. autoclass:: cms.bundles.URLAlias
+.. autoclass:: scarlet.cms.bundles.URLAlias
     :members:
 
-.. automodule:: cms.options
+.. automodule:: scarlet.cms.options
     :members:
 
 Template tags
 ~~~~~~~~~~~~~
 
-.. automodule:: cms.templatetags.cms
+.. automodule:: scarlet.cms.templatetags.cms
     :members:
 
 Views
 -----
 
-.. autoclass:: cms.views.BaseView
+.. autoclass:: scarlet.cms.views.BaseView
     :members:
 
-.. autoclass:: cms.views.SiteView
+.. autoclass:: scarlet.cms.views.SiteView
     :members:
 
-.. autoclass:: cms.views.CMSView
+.. autoclass:: scarlet.cms.views.CMSView
     :members:
 
-.. autoclass:: cms.views.ModelCMSView
+.. autoclass:: scarlet.cms.views.ModelCMSView
     :members:
 
-.. autoclass:: cms.views.ModelCMSMixin
+.. autoclass:: scarlet.cms.views.ModelCMSMixin
     :members:
 
-.. autoclass:: cms.views.ListView
+.. autoclass:: scarlet.cms.views.ListView
     :members:
 
-.. autoclass:: cms.views.FormView
+.. autoclass:: scarlet.cms.views.FormView
     :members:
 
-.. autoclass:: cms.views.DeleteView
+.. autoclass:: scarlet.cms.views.DeleteView
     :members:
 
-.. autoclass:: cms.views.PreviewWrapper
+.. autoclass:: scarlet.cms.views.PreviewWrapper
     :members:
 
-.. autoclass:: cms.views.PublishView
+.. autoclass:: scarlet.cms.views.PublishView
     :members:
 
-.. autoclass:: cms.views.UnPublishView
+.. autoclass:: scarlet.cms.views.UnPublishView
     :members:
 
-.. autoclass:: cms.views.VersionsList
+.. autoclass:: scarlet.cms.views.VersionsList
     :members:
 
 
 Forms
 ~~~~~
 
-.. automodule:: cms.forms
+.. automodule:: scarlet.cms.forms
     :members:
 
 Fields
 ~~~~~~
 
-.. automodule:: cms.fields
+.. automodule:: scarlet.cms.fields
     :members:
 
 Widgets
 ~~~~~~~
 
-.. automodule:: cms.widgets
+.. automodule:: scarlet.cms.widgets
     :members:
 
 Renderers
 ~~~~~~~~~
 
-.. autoclass:: cms.renders.RenderResponse
+.. autoclass:: scarlet.cms.renders.RenderResponse
     :members:
 
-.. autoclass:: cms.renders.CMSRender
+.. autoclass:: scarlet.cms.renders.CMSRender
     :members:
 
-.. autoclass:: cms.renders.RenderString
+.. autoclass:: scarlet.cms.renders.RenderString
     :members:
 
-.. autoclass:: cms.renders.PopupRender
+.. autoclass:: scarlet.cms.renders.PopupRender
     :members:
 
-.. autoclass:: cms.renders.ChoicesRender
+.. autoclass:: scarlet.cms.renders.ChoicesRender
     :members:
 
 Sites
 -----
 
-.. automodule:: cms.sites
+.. automodule:: scarlet.cms.sites
     :members:

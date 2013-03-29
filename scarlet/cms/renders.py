@@ -30,6 +30,10 @@ class RenderResponse(object):
         for key, value in kwargs.iteritems():
             setattr(self, key, value)
 
+    def get_context_instance(self, request, **kwargs):
+        current_app = kwargs.get('current_app')
+        return RequestContext(request, current_app=current_app)
+
     def update_kwargs(self, request, **kwargs):
         """
         Hook for adding data to the context before
@@ -60,8 +64,9 @@ class RenderResponse(object):
             return self.redirect(request, redirect_url, **kwargs)
 
         kwargs = self.update_kwargs(request, **kwargs)
+        context_instance=self.get_context_instance(request, **kwargs)
         return render_to_response(self.template, kwargs,
-                                  context_instance=RequestContext(request))
+                        context_instance=context_instance)
 
     def redirect(self, request, url, **kwargs):
         """
@@ -146,6 +151,8 @@ class ChoicesRender(object):
         attr = label.attr
         if label.attr == '__unicode__':
             attr = force_unicode(slugify(label.name))
+        if hasattr(attr, '__call__'):
+            attr = attr.__name__
         return attr
 
     def get_object_list(self, adm_list):
@@ -263,7 +270,7 @@ class ChoicesRender(object):
         adm_list = kwargs['list']
         data['fields'] = self.get_fields(adm_list)
         data['results'] = self.get_object_list(adm_list)
-
+        print data
         return http.HttpResponse(json.dumps(data, cls=DjangoJSONEncoder))
 
 
@@ -276,8 +283,9 @@ class RenderString(RenderResponse):
 
     def render(self, request, **kwargs):
         kwargs = self.update_kwargs(request, **kwargs)
+        context_instance=self.get_context_instance(request, **kwargs)
         return render_to_string(self.template, kwargs,
-                                context_instance=RequestContext(request))
+                                context_instance=context_instance)
 
 class PopupRender(RenderResponse):
     """
@@ -298,5 +306,6 @@ class PopupRender(RenderResponse):
         return kwargs
 
     def redirect(self, request, url, **kwargs):
+        context_instance=self.get_context_instance(request, **kwargs)
         return render_to_response(self.redirect_template, kwargs,
-                                  context_instance=RequestContext(request))
+                                  context_instance=context_instance)

@@ -7,7 +7,7 @@
     {% if not protected %}
     <p>This will delete {{ obj }}. Are you sure?</p>
     {% bundle_url bundle "main_list" as cancel_url %}
-    <p><a href="{{ cancel_url }} ">Cancel</a>
+    <p><a class="button" href="{{ cancel_url }} ">Cancel</a>
     <input type="submit" name='delete' value="Yes" /></p>
     {% else %}
 

@@ -6,9 +6,10 @@ from django.db import models
 from django.contrib.admin.util import label_for_field
 from django.db.models.fields import FieldDoesNotExist
 from django.utils.text import capfirst
+from django.core.exceptions import ObjectDoesNotExist
 
-import widgets
-import fields
+from . import widgets
+from . import fields
 
 FORMFIELD_FOR_DBFIELD_DEFAULTS = {
     models.ForeignKey:       {'widget': widgets.APIChoiceWidget},
@@ -116,7 +117,7 @@ class AdminListRow(object):
                 except (AttributeError, ObjectDoesNotExist):
                     value = None
 
-                if f.flatchoices:
+                if hasattr(f, "flatchoices") and f.flatchoices:
                     value = dict(f.flatchoices).get(value)
                 elif isinstance(value, models.Manager):
                     value = ', '.join([unicode(x) for x in value.all()])

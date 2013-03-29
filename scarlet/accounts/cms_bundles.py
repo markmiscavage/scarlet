@@ -1,12 +1,14 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AdminPasswordChangeForm
 
-from cms import site, bundles, views
+try:
+    from ..cms import site, bundles, views
+except ValueError:
+    from cms import site, bundles, views
 
-from accounts import signals as accounts_signals
-
-import forms
-import groups
+from . import signals as accounts_signals
+from . import forms
+from . import groups
 
 
 class AddView(views.FormView):
@@ -85,7 +87,7 @@ class AccountBundle(bundles.Bundle):
 
     class Meta:
         model = User
-        primary_object_bundle = True
+        primary_model_bundle = True
         item_views = ('password', 'edit', 'delete')
         default_kwargs = {
             'object_header_tmpl': "cms/object_header_no_preview.html"

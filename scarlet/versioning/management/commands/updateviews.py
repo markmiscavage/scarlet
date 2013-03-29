@@ -1,4 +1,4 @@
-from versioning.management import update_schema
+from ...management import update_schema
 
 from django.core.management.base import BaseCommand
 

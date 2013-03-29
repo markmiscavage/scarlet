@@ -5,9 +5,9 @@ from django.contrib.auth.models import User, Group
 from django.utils.hashcompat import sha_constructor
 from django.utils.safestring import mark_safe
 
-from accounts import settings as accounts_settings
-from accounts.models import AccountsSignup
-from accounts.utils import get_profile_model
+from . import settings as accounts_settings
+from .models import AccountsSignup
+from .utils import get_profile_model
 
 import random
 

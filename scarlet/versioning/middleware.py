@@ -1,5 +1,5 @@
-import manager
-import models
+from . import manager
+from . import models
 
 SESSION_KEY = 'show_drafts'
 

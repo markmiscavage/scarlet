@@ -86,3 +86,4 @@ pip-log.txt
 docs/_build/*
 MANIFEST
 builder/*
+env

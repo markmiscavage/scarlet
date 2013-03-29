@@ -10,7 +10,7 @@ class DatabaseWrapper(DatabaseWrapper):
         self.schema = self.UNTOUCHED
 
     def _cursor(self):
-        from versioning.manager import get_schema
+        from ..manager import get_schema
 
         cursor = super(DatabaseWrapper, self)._cursor()
         schema = get_schema()
@@ -57,7 +57,7 @@ class ViewDatabaseCreation(DatabaseCreation):
         return ret_val
 
     def sql_for_pending_references(self, model, style, pending_references):
-        from versioning.fields import FKToVersion
+        from ..fields import FKToVersion
 
         # Hack to create references after the fact.
         changed = []

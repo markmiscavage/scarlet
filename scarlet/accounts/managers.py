@@ -4,9 +4,9 @@ from django.db import models
 from django.contrib.auth.models import User, UserManager, Permission
 from django.contrib.contenttypes.models import ContentType
 
-from accounts import settings as accounts_settings
-from accounts.utils import generate_sha1, get_profile_model
-from accounts import signals as accounts_signals
+from .import settings as accounts_settings
+from .utils import generate_sha1, get_profile_model
+from .import signals as accounts_signals
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 
@@ -63,11 +63,12 @@ class AccountsManager(UserManager):
 
         # All users have an empty profile
         profile_model = get_profile_model()
-        try:
-            new_profile = new_user.get_profile()
-        except profile_model.DoesNotExist:
-            new_profile = profile_model(user=new_user)
-            new_profile.save(using=self._db)
+        if profile_model:
+            try:
+                new_profile = new_user.get_profile()
+            except profile_model.DoesNotExist:
+                new_profile = profile_model(user=new_user)
+                new_profile.save(using=self._db)
 
         # Give permissions to view and change profile
         for perm in ASSIGNED_PERMISSIONS['profile']:

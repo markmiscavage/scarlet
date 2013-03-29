@@ -1,3 +1,4 @@
+{% load url from future %}
 {% load cms %}
 <section id="object-info" {% if obj %}class="tools"{% endif %}>
 	<div>
@@ -8,7 +9,7 @@
 				<a href="{{ back_url }}" class="back">{{ back_bundle.get_title }}</a>
 			{% endif %}
 		{% else %}
-			<a href="/admin/" class="back">Dashboard</a>
+			<a href="{% url 'admin:cms_index' %}" class="back">Dashboard</a>
 		{% endif %}
 		<h2 data-auto-tag="{{ auto_tags }}">
 			{% if obj %}

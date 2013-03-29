@@ -1,4 +1,4 @@
-from middleware import SESSION_KEY
+from .middleware import SESSION_KEY
 from django.shortcuts import redirect
 
 

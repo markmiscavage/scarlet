@@ -8,10 +8,13 @@ from django.utils.datastructures import SortedDict
 from django.utils import formats
 from django.core.exceptions import ValidationError
 
-from scheduling.models import Schedulable
+try:
+    from ..scheduling.models import Schedulable
+except ValueError:
+    from scheduling.models import Schedulable
 
-from transactions import xact
-import manager
+from .transactions import xact
+from . import manager
 
 
 class Cloneable(models.Model):
@@ -950,7 +953,10 @@ class VersionView(BaseVersionedModel):
     @classmethod
     def invalidate_cache(cls, sender, instance, **kwargs):
         try:
-            from cache import cache_manager
+            try:
+                from ..cache import cache_manager
+            except ValueError:
+                from cache import cache_manager
             cache_manager.invalidate_cache(cls, instance=instance)
         except ImportError:
             pass

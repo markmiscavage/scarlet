@@ -1,11 +1,14 @@
 from taggit.models import Tag
 
-from assets.views import AssetListView, AssetFormView, TagListView
+from views import AssetListView, AssetFormView, TagListView
 
-from cms import site, bundles, views
+try:
+    from ..cms import site, bundles, views
+except ValueError:
+    from cms import site, bundles, views
 
-import models
-import forms
+from . import models
+from . import forms
 
 
 class AssetBundle(bundles.Bundle):
