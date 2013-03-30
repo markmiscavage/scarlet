@@ -270,7 +270,6 @@ class ChoicesRender(object):
         adm_list = kwargs['list']
         data['fields'] = self.get_fields(adm_list)
         data['results'] = self.get_object_list(adm_list)
-        print data
         return http.HttpResponse(json.dumps(data, cls=DjangoJSONEncoder))
 
 
