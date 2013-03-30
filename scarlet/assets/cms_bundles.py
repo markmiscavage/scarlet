@@ -1,6 +1,4 @@
-from taggit.models import Tag
-
-from views import AssetListView, AssetFormView, TagListView
+from views import AssetListView, AssetFormView
 
 try:
     from ..cms import site, bundles, views
@@ -22,13 +20,3 @@ class AssetBundle(bundles.Bundle):
         model = models.Asset
 
 site.register('assets', AssetBundle(name='assets'), 20)
-
-
-class TagBundle(bundles.Bundle):
-    main = TagListView()
-
-    class Meta:
-        primary_model_bundle = False
-        model = Tag
-
-site.register('tags', TagBundle(name='tags'), 20)

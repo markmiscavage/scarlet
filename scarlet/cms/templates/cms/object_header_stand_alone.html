@@ -1,6 +1,6 @@
 {% extends "cms/object_header.html" %}
 {% load cms %}
 {% block header %}
-    <h2 data-auto-tag="{{ auto_tags }}">{% if obj %}{{ obj }}{% else %}{{ bundle.get_title }}{% endif %}</h2>
+    <h2 data-auto-tag="{{ view_tags }}">{% if obj %}{{ obj }}{% else %}{{ bundle.get_title }}{% endif %}</h2>
     <hr/>
 {% endblock %}

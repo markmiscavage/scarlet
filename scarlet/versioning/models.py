@@ -406,6 +406,7 @@ class VersionViewMeta(models.base.ModelBase):
         models.signals.post_delete.connect(mod.handle_post_delete_signal,
                             sender=mod,
                             dispatch_uid=mod.__name__ + "post_delete")
+
         return mod
 
 
@@ -874,8 +875,10 @@ class VersionView(BaseVersionedModel):
     should_save_base = property(_get_should_save_base, _set_should_save_base)
 
     def save(self, *args, **kwargs):
-        last_save = kwargs.pop('last_save', timezone.now())
+        models.signals.pre_save.send(sender=self.__class__, instance=self,
+            raw=kwargs.get('raw'), using=kwargs.get('using'))
 
+        last_save = kwargs.pop('last_save', timezone.now())
         with xact():
             # Make sure we have a state
             if not self.vid:
@@ -920,6 +923,8 @@ class VersionView(BaseVersionedModel):
             self._state = version._state
             self.state = version.state
             self.last_save = version.last_save
+        models.signals.post_save.send(sender=self.__class__, instance=self,
+            raw=kwargs.get('raw'), using=kwargs.get('using'))
 
     def validate_unique(self, *args, **kwargs):
         """

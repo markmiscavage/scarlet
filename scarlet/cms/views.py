@@ -16,6 +16,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.contrib.admin.util import flatten_fieldsets
 from django.db.models.fields import FieldDoesNotExist
 from django.db import models
+from django.utils.encoding import force_unicode
 
 from . import fields
 from . import helpers
@@ -24,7 +25,7 @@ from . import transaction
 from . import widgets
 from .forms import WhenForm, LazyFormSetFactory, VersionFilterForm
 from .models import CMSLog
-
+from .internal_tags import handler as tag_handler
 
 class BaseView(generic.base.View):
     """
@@ -195,31 +196,19 @@ class CMSView(BaseView):
         """
         self.extra_render_data.update(kwargs)
 
-    def get_tags(self, **kwargs):
+    def get_tags(self, view_object=None):
         """
         This method return a list of tags to use in the template
         :return: list of tags
         """
-        # base implementation parse bundle title,
-        # back_bundle title and object __unicode__
+        tags = [force_unicode(self.bundle.get_title())]
+        back_bundle = self.get_back_bundle()
+        if back_bundle and back_bundle != self.bundle:
+            tags.append(force_unicode(back_bundle.get_title()))
+        if view_object:
+            tags.append(force_unicode(view_object))
 
-        from helpers import tokenize_tags
-        tags_string = u"%s" % self.bundle.get_title() \
-            if type(self.bundle.get_title()) == str else u""
-        try:
-            object_title = u"%s" % self.object if self.object else u""
-            tags_string = u"%s,%s" % (tags_string, object_title)
-        except:
-            pass
-        try:
-            back_bundle_title = self.get_back_bundle().get_title() \
-            if type(self.get_back_bundle().get_title()) == str else u""
-            tags_string = u"%s,%s" % (tags_string, back_bundle_title)
-        except:
-            pass
-        tags_list = tokenize_tags(tags_string) # parse the text
-
-        return tags_list
+        return tags
 
     def get_back_bundle(self):
         try:
@@ -251,6 +240,7 @@ class CMSView(BaseView):
         admin_site's home page.
         """
 
+        obj = getattr(self, 'object', None)
         data = dict(self.extra_render_data)
         data.update(kwargs)
         data.update({
@@ -259,7 +249,7 @@ class CMSView(BaseView):
             'url_params': self.kwargs,
             'user': self.request.user,
             'object_header_tmpl': self.object_header_tmpl,
-            'auto_tags': ",".join(self.get_tags())
+            'view_tags': tag_handler.tags_to_string(self.get_tags(obj))
         })
 
         if not 'base' in data:
@@ -1031,20 +1021,15 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
 
         return obj
 
-    def save_formsets(self, form, formsets):
+    def save_formsets(self, form, formsets, auto_tags=None):
         """
         Hook for saving formsets. Loops through
         all the given formsets and calls their
         save method.
         """
         for formset in formsets.values():
+            tag_handler.set_auto_tags_for_formset(formset, auto_tags)
             formset.save()
-
-    def update_object_assets(self, form, new_tags):
-        from assets.models import Asset
-        for key, value in form.cleaned_data.iteritems():
-            if value.__class__ == Asset:
-                value.tags.add(*new_tags)
 
     def form_valid(self, form, formsets):
         """
@@ -1054,61 +1039,27 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
 
         Returns the results of calling the `success_response` method.
         """
-        from assets.models import Asset
-
         # check if it's a new object before it save the form
         new_object = False
         if not self.object:
             new_object = True
 
+        auto_tags, changed_tags, old_tags = tag_handler.get_tags_from_data(form.data,
+                                                    self.get_tags(form.instance))
+        tag_handler.set_auto_tags_for_form(form, auto_tags)
+
         with transaction.commit_on_success():
             self.object = self.save_form(form)
-            self.save_formsets(form, formsets)
+            self.save_formsets(form, formsets, auto_tags=auto_tags)
 
             url = self.get_object_url()
             self.log_action(self.object, CMSLog.SAVE, url=url)
             msg = self.write_message()
 
         # get old and new tags
-        auto_tags = form.data.get("auto_tags", False) # old tags
-        new_tags = self.get_tags() # new tags
+        if not new_object and changed_tags:
+            tag_handler.update_changed_tags(changed_tags, old_tags)
 
-        # this update Assets in new objects with
-        # tags from get_tags() so that every Asset
-        # is (almost) uniquely associated with the object
-        if auto_tags and new_object:
-            self.update_object_assets(form, new_tags)
-        # the the objects is not new the update the assets with the auto_tags's tags
-        elif auto_tags:
-            from taggit.models import Tag
-            tags = []
-            skip_update = False
-            # retrieve all tags
-            for name in auto_tags.split(","):
-                try:
-                    tag =  Tag.objects.get(name=name)
-                    tags.append(tag)
-                except:
-                    # if a tag is not found then something went wrong,
-                    # so do nothing
-                    skip_update = True
-
-            if not skip_update:
-                # the alternative of this is to use a custom SQL expression like:
-                # SELECT object_id from taggit_taggeditem
-                # WHERE taggit_taggeditem.tag_id IN (TAG ID 1, TAG ID 2, TAG ID N)
-                # GROUP BY object_id HAVING COUNT(*) = NUMBER OF TAGS
-                assets = reduce(lambda x, y: x & y,
-                    [Asset.objects.filter(tags=tag) for tag in tags])
-
-                # update all tags
-                for asset in assets:
-                    asset.tags.add(*new_tags)
-
-                # update tags in object assets
-                # is not necessary to check if the the asset is changed
-                # because if the tags are the same then they will not be added
-                self.update_object_assets(form, new_tags)
 
         return self.success_response(msg)
 

@@ -7,7 +7,7 @@ except ValueError:
 
 from sorl.thumbnail import get_thumbnail
 
-from .forms import AssetFilterForm, TagFilterForm
+from .forms import AssetFilterForm
 from .models import Asset
 from .renders import AssetRenderer
 from . import settings
@@ -73,9 +73,3 @@ class AssetFormView(views.FormView):
                            redirect_url=self.get_success_url(),
                            collect_render_data=False,
                            **context)
-
-
-class TagListView(views.ListView):
-    display_fields = ('name',)
-    paginate_by = 100
-    filter_form = TagFilterForm

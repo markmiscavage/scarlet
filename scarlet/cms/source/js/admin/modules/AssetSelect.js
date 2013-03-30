@@ -26,7 +26,7 @@ define(
 				this.dom = dom;
 				this.input = dom.find('input');
 				this.preview = dom.find('.widget-asset-preview');
-
+                this._autoTag();
 				this._initSelect2();
 			},
 
@@ -49,7 +49,7 @@ define(
 
 				this.input.on('change', this.onChange);
 
-				this._autoTag();
+				this._tag();
 
 				this.dom.on('click', '.button', this._openPopup);
 			},
@@ -69,10 +69,7 @@ define(
 			},
 
             _autoTag : function () {
-                var dom = this.dom.find('a.button'),
-                    params = this._unparam(dom[0].search),
-                    tags = ($(this.dom).data('tags') || '').toLowerCase().split(',');
-
+                var tags = [];
                 $('[data-auto-tag]').each(function (i, dom) {
                     var data_auto_tag = $(dom).data('auto-tag');
                     if (data_auto_tag) {
@@ -86,7 +83,16 @@ define(
                         tags = tags.concat(allTags);
                     }
                 });
+                $('#auto_tags').val(tags.join(','));
+                this._auto_tags = tags;
+            },
 
+            _tag : function () {
+                var dom = this.dom.find('a.button'),
+                    params = this._unparam(dom[0].search),
+                    tags = ($(this.dom).data('tags') || '').toLowerCase().split(',');
+
+                tags = tags.concat(this._all_tags);
                 params.tags = encodeURIComponent(tags.join(','));
                 dom[0].search = this._param(params);
             },

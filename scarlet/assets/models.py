@@ -4,14 +4,17 @@ import uuid
 from django.db import models
 from django.core.files.uploadedfile import UploadedFile
 
-from taggit.managers import TaggableManager
 from sorl.thumbnail import delete
 
 from . import settings
 from .managers import AssetManager
 
+try:
+    from ..cms.internal_tags.models import AutoTagModel
+except ValueError:
+    from cms.internal_tags.models import AutoTagModel
 
-class Asset(models.Model):
+class Asset(AutoTagModel):
     UNKNOWN = 'unknown'
     IMAGE = 'image'
     DOCUMENT = 'document'
@@ -50,10 +53,10 @@ class Asset(models.Model):
     type = models.CharField(max_length=255, choices=TYPES, db_index=True)
     slug = models.SlugField(unique=True, max_length=255)
     user_filename = models.CharField(max_length=255)
-    tags = TaggableManager()
-    objects = AssetManager()
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+
+    objects = AssetManager()
 
     def url(self):
         """

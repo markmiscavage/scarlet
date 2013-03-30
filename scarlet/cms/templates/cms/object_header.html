@@ -11,7 +11,7 @@
 		{% else %}
 			<a href="{% url 'admin:cms_index' %}" class="back">Dashboard</a>
 		{% endif %}
-		<h2 data-auto-tag="{{ auto_tags }}">
+		<h2 data-auto-tag="{{ view_tags }}">
 			{% if obj %}
 				{{ obj }}
 			{% else %}
