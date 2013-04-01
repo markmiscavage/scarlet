@@ -41,6 +41,40 @@ class ModelStructureTests(unittest.TestCase):
                 class Meta:
                     _base_model = BadCustomModel
 
+    def testNoConcreteModels(self):
+        """
+        Version Views can't inherit from concrete models
+        """
+
+        with self.assertRaises(TypeError):
+            class Bad(VersionView, models.ConcreteModel):
+                test = dbmodels.CharField(max_length=20)
+
+    def testTooManyBaseVersionedModels(self):
+        class V1(models.BaseVersionedModel):
+            name = dbmodels.CharField(max_length=255)
+            class Meta:
+                abstract = True
+
+        class V2(models.BaseVersionedModel):
+            code = dbmodels.CharField(max_length=255)
+            class Meta:
+                abstract = True
+
+        with self.assertRaises(TypeError):
+            class BadBases(VersionView, V1, V2):
+                test = dbmodels.CharField(max_length=20)
+
+
+    def testM2MOnVersioned(self):
+        with self.assertRaises(TypeError):
+            class BadM2M(VersionView):
+                m2 = dbmodels.ManyToManyField('Author')
+
+    def testNoBaseModel(self):
+        with self.assertRaises(TypeError):
+            class BadBase(VersionView, models.BaseModel):
+                name = dbmodels.CharField(max_length=255)
 
 class ModelTests(TestCase):
     fixtures = ('test_data.json',)
