@@ -1437,6 +1437,19 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
                         form_class, fields=self.change_fields, extra=0,
                         **kwargs)
 
+    def _add_formset_id(self, data, queryset):
+        q = None
+        key = self.model._meta.pk.name
+        for k, v in data.items():
+            if k.endswith('-%s' % key):
+                new_q = models.Q(**{key: v})
+                if q:
+                    q = q | new_q
+                else:
+                    q = new_q
+        queryset = queryset.filter(q)
+        return queryset
+
     def get_formset(self, data=None, queryset=None):
         """
         Returns an instantiated FormSet if available.
@@ -1452,17 +1465,8 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
         if FormSet:
             if data:
-                q = None
-                key = self.model._meta.pk.name
-                for k, v in data.items():
-                    if k.endswith('-%s' % key):
-                        new_q = models.Q(**{ key : v })
-                        if q:
-                            q = q|new_q
-                        else:
-                            q = new_q
+                queryset = self._add_formset_id(data, queryset)
 
-                queryset = queryset.filter(q)
             return FormSet(data, queryset=queryset)
 
     def get_visible_fields(self, formset):
@@ -1507,6 +1511,18 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
         return queryset
 
+    def _paginate_queryset(self, queryset):
+        page_size = self.get_paginate_by(queryset)
+        paginator = None
+        if page_size:
+            paginator, page, queryset, is_paginated = self.paginate_queryset(
+                queryset, page_size)
+            is_paginated = True
+        else:
+            page = None
+            is_paginated = False
+        return is_paginated, page, paginator, queryset
+
     def get_list_data(self, request, **kwargs):
         """
         Returns the data needed for displaying the list.
@@ -1535,20 +1551,11 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         queryset = self._sort_queryset(self.object_list, sort_field,
                                        order_type)
 
-        page_size = self.get_paginate_by(queryset)
-        paginator = None
-        if page_size:
-            paginator, page, queryset, is_paginated = self.paginate_queryset(
-                                                        queryset, page_size)
-            is_paginated = True
-        else:
-            page = None
-            is_paginated = False
-
         if self.request.method == 'POST' and self.can_submit:
-            formset = self.get_formset(data=self.request.POST,
-                                       queryset=queryset)
+            formset = self.get_formset(data=self.request.POST, queryset=queryset)
+            is_paginated, page, paginator, queryset = self._paginate_queryset(queryset)
         else:
+            is_paginated, page, paginator, queryset = self._paginate_queryset(queryset)
             formset = self.get_formset(queryset=queryset)
 
         visible_fields = self.get_visible_fields(formset)
