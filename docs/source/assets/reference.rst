@@ -5,28 +5,28 @@ Assets Code Reference
 Models
 ======
 
-.. automodule:: assets.models
+.. automodule:: scarlet.assets.models
     :members:
 
-.. automodule:: assets.fields
+.. automodule:: scarlet.assets.fields
     :members:
 
 Managers
 ========
 
-.. automodule:: assets.managers
+.. automodule:: scarlet.assets.managers
     :members:
 
 
 Views
 =====
 
-.. automodule:: assets.views
+.. automodule:: scarlet.assets.views
     :members:
 
 
 Forms
 =====
 
-.. automodule:: assets.forms
+.. automodule:: scarlet.assets.forms
     :members:

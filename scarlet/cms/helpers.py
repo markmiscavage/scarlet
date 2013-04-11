@@ -6,9 +6,10 @@ from django.db import models
 from django.contrib.admin.util import label_for_field
 from django.db.models.fields import FieldDoesNotExist
 from django.utils.text import capfirst
+from django.core.exceptions import ObjectDoesNotExist
 
-import widgets
-import fields
+from . import widgets
+from . import fields
 
 FORMFIELD_FOR_DBFIELD_DEFAULTS = {
     models.ForeignKey:       {'widget': widgets.APIChoiceWidget},
@@ -50,7 +51,11 @@ class AdminList(object):
         """
         Get field label for fields
         """
-        model = self.object_list.model
+
+        if type(self.object_list) == type([]):
+            model = self.formset.model
+        else:
+            model = self.object_list.model
 
         for field in self.visible_fields:
             name = None

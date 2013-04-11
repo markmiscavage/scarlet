@@ -4,9 +4,9 @@ from django.db import models
 from django.contrib.auth.models import User, UserManager, Permission
 from django.contrib.contenttypes.models import ContentType
 
-from accounts import settings as accounts_settings
-from accounts.utils import generate_sha1, get_profile_model
-from accounts import signals as accounts_signals
+from .import settings as accounts_settings
+from .utils import generate_sha1, get_profile_model
+from .import signals as accounts_signals
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 

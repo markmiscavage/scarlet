@@ -1,6 +1,6 @@
 from django.db import models
 
-from versioning.models import VersionModel, Cloneable, BaseModel
+from scarlet.versioning.models import VersionModel, Cloneable, BaseModel
 
 
 class NameModel(models.Model):

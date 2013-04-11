@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import url, patterns
 
-import views
+from . import views
 
 # Unused views
 p_list = (

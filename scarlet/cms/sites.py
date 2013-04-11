@@ -10,12 +10,16 @@ from django.template.response import TemplateResponse
 from django.utils.translation import ugettext as _
 from django import forms
 
-import models
-from forms import BaseFilterForm
+from . import models
+from . forms import BaseFilterForm
 
 try:
-    from versioning import manager
-    from versioning.models import BaseVersionedModel
+    try:
+        from ..versioning import manager
+        from ..versioning.models import BaseVersionedModel
+    except ValueError:
+        from versioning import manager
+        from versioning.models import BaseVersionedModel
 except ImportError:
     manager = None
 

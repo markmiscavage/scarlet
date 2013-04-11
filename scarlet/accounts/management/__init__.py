@@ -2,7 +2,7 @@ from django.db.models.signals import post_syncdb
 from django.contrib import auth
 from django.contrib.auth.models import Group
 
-from scarlet.accounts import settings
+from .. import settings
 
 
 def ensure_groups(app, created_models, verbosity, **kwargs):

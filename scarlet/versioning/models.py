@@ -8,10 +8,13 @@ from django.utils.datastructures import SortedDict
 from django.utils import formats
 from django.core.exceptions import ValidationError
 
-from scheduling.models import Schedulable
+try:
+    from ..scheduling.models import Schedulable
+except ValueError:
+    from scheduling.models import Schedulable
 
-from transactions import xact
-import manager
+from .transactions import xact
+from . import manager
 
 
 class Cloneable(models.Model):
@@ -254,8 +257,33 @@ def add_managers(attrs):
     attrs['_base_manager'] = models.Manager()
     return attrs
 
+class SharedMeta(models.base.ModelBase):
+    def add_to_class(cls, name, value):
+        if not cls._meta.abstract:
+            version_model = cls.version_model
+            base_model = cls.base_model
 
-class VersionViewMeta(models.base.ModelBase):
+            if isinstance(value, models.ManyToManyField) or \
+                    isinstance(value, models.ForeignKey):
+                if version_model:
+                    if isinstance(value, models.ManyToManyField):
+                        from fields import M2MFromVersion
+                        if not isinstance(value, M2MFromVersion):
+                            raise TypeError('The model %s cannot contain a ManyToManyField use M2MFromVersion instead' % name)
+                        value.db_table = version_model._meta.get_field(name).m2m_db_table()
+                else:
+                    if value.rel.related_name and not \
+                                value.rel.related_name.endswith('+'):
+                        value.rel.related_name = "%s_version" % value.rel.related_name
+
+                # relationships to self should always point
+                # to the base model
+                if value.rel.to == related.RECURSIVE_RELATIONSHIP_CONSTANT:
+                    value.rel.to = base_model
+
+        return super(SharedMeta, cls).add_to_class(name, value)
+
+class VersionViewMeta(SharedMeta):
     """
     Meta class for models that are implementing the
     database view to hide the fact there are two
@@ -271,7 +299,6 @@ class VersionViewMeta(models.base.ModelBase):
             attrs['Meta'] = meta
             return super(VersionViewMeta, cls).__new__(cls, name,
                                             bases, attrs)
-
         # List of non field attrs we want to copy
         copy_attrs = attrs.pop('_copy_extra_attrs', [])
 
@@ -330,46 +357,42 @@ class VersionViewMeta(models.base.ModelBase):
         versioned_attrs = add_managers(versioned_attrs)
 
         # Copy all the fields
-        m2m_fields = []
         for k, v in attrs.items():
             if k in copy_attrs:
                 versioned_attrs[k] = copy.deepcopy(v)
             elif isinstance(v, Field):
                 v = copy.deepcopy(v)
-                if isinstance(v, models.ManyToManyField) or \
-                        isinstance(v, models.ForeignKey):
-                    if isinstance(v, models.ManyToManyField):
-                        from fields import M2MFromVersion
-                        if not isinstance(v, M2MFromVersion):
-                            raise TypeError('The model %s cannot contain a ManyToManyField use M2MFromVersion instead' % name)
-                        m2m_fields.append(k)
-
-                    if v.rel.related_name and not \
-                                v.rel.related_name.endswith('+'):
-                        v.rel.related_name = "%s_version" % v.rel.related_name
-
-                    # relationships to self should always point
-                    # to the base model
-                    if v.rel.to == related.RECURSIVE_RELATIONSHIP_CONSTANT:
-                        v.rel.to = base_model
-
                 versioned_attrs[k] = v
 
         version_bases = [BaseVersionedModel]
+        custom_version = False
         for base in bases:
-            if not issubclass(base, BaseModel) and \
-               not issubclass(base, BaseVersionedModel):
+            if issubclass(base, models.Model) and not base._meta.abstract:
+                raise TypeError('You cannot use a non abstract base model %r with a VersionView model %s.' % (base, name))
+
+            if issubclass(base, BaseModel):
+                raise TypeError("VersionView model %r can't inherit from a BaseModel %r" % (cls, base))
+
+            if issubclass(base, BaseVersionedModel):
+                if not issubclass(base.__metaclass__, VersionViewMeta):
+                    if custom_version:
+                        raise TypeError("Django inheritence will only allow VersionView model %r to inherit from one and only one BaseVersionedModel" % cls)
+                    else:
+                        version_bases[0] = base
+                        custom_version = True
+            else:
                 version_bases.append(base)
 
-        version_model = type("%s_version" % name,
+        version_bases.append(type("%sVersionReferences" % name, (object,), {
+            '__module__': attrs.get('__module__'),
+            'base_model': base_model,
+            'version_model': None
+        }))
+        version_model = SharedMeta("%s_version" % name,
                                   tuple(version_bases), versioned_attrs)
 
         # Make sure the managed = False is set
         attrs['Meta'] = get_meta(meta, managed=False)
-
-        # Copy the table name to be the same as the version
-        for m2m in m2m_fields:
-            attrs[m2m].db_table = version_model._meta.get_field(m2m).m2m_db_table()
 
         attrs = add_managers(attrs)
 
@@ -377,6 +400,13 @@ class VersionViewMeta(models.base.ModelBase):
         for base in bases:
             if not issubclass(base, BaseModel):
                 new_bases.append(base)
+
+        new_bases.append(type("%sReferences" % name, (object,), {
+            '__module__': attrs.get('__module__'),
+            'base_model': base_model,
+            'version_model': version_model
+        }))
+
         mod = super(VersionViewMeta, cls).__new__(cls, name,
                                             tuple(new_bases), attrs)
 
@@ -950,7 +980,10 @@ class VersionView(BaseVersionedModel):
     @classmethod
     def invalidate_cache(cls, sender, instance, **kwargs):
         try:
-            from cache import cache_manager
+            try:
+                from ..cache import cache_manager
+            except ValueError:
+                from cache import cache_manager
             cache_manager.invalidate_cache(cls, instance=instance)
         except ImportError:
             pass

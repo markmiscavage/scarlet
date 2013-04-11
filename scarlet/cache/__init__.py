@@ -1,4 +1,4 @@
-from manager import cache_manager
+from .manager import cache_manager
 
 def autodiscover():
     """

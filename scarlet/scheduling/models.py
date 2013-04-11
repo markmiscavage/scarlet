@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 
-import fields
+from . import fields
 
 logger = logging.getLogger(__name__)
 

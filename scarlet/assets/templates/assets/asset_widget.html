@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <div class="widget-asset" data-api="{{ link|safe }}" data-title="{{ object.user_filename }}" data-tags="{{ asset_tags }}">
-	<div class="widget-asset-preview" style="background-image:url({{ object.file.url }})"></div>
+	<div class="widget-asset-preview" style="background-image:url({{ object.url }})"></div>
 	<div class="widget-asset-actions">
 		{{ hidden_input }}
         {% if add_link %}

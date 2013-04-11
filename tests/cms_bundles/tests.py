@@ -1,13 +1,15 @@
-from cms import bundles, views
+import datetime
+import unittest
 
 from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth.models import User
 
+from scarlet.cms import bundles, views
+
 from models import *
 
-import datetime
-import unittest
+
 
 class BundleViewsTestCase(TestCase):
     def setup_test_user(self):

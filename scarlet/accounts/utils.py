@@ -1,12 +1,11 @@
+import random
+
 from django.conf import settings
 from django.utils.hashcompat import sha_constructor
 from django.contrib.auth.models import SiteProfileNotAvailable
 from django.db.models import get_model
 
-from accounts import settings as accounts_settings
-
-import random
-
+from . import settings as accounts_settings
 
 def signin_redirect(redirect=None, user=None):
     """

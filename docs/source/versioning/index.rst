@@ -7,11 +7,12 @@ Versioning
 Basic Implementation
 ====================
 
-This versioning module is to provide a versioning control capability on top of Django models.
 
-Each model must be separated into two database tables, the base table that contains the data that does not change from version to version, and the version table that contains the data that can change and is versioned. For example, you will find two tables (book_base and book_version) for a Book model with versioning capability.
+This versioning module provides versioning control capability to of Django models.
 
-Behind each row of the "book_base" table, there is the "book_version" table which contains all the different versions of the book. Each row or the "version" table represents a specific version of a book, and it has an object_id which is a foreign key pointing to a book item in the "base" table. "version" table use "vid" as its primary key.
+Each model must be separated into two database tables, the base table that contains the data that does not change from version to version, and the version table that contains the data that can change and is versioned. For example, a book object would require two tables; book_base and book_version.
+
+Behind each row of the "book_base" table, there is the "book_version" table which contains each version of the book. Each row in the "version" table represents a specific version of a book, and it has a foreign key pointing to a book item in the "base" table. "version" table use "vid" as its primary key.
 
 Each version can have a different STATE such as:
  * **published:** viewable to public audience.
@@ -38,12 +39,12 @@ Other method to know are:
 Uniqueness
 ----------
 
-RDBMs/Django's uniqueness checks do not work for versions since you want multiple versions that have the same value, but only if they point to the same item. The version models override :py:meth:`validate_unique <versioning.models.BaseVersionedModel.validate_unique>` to allow you to perform some validation, though remember that since these checks are not implemented at the database level, they are subject to race conditions.
+RDBMs/Django's uniqueness checks do not work for versions since you want multiple versions that have the same value, but only if they point to the same item. The version models override :py:meth:`validate_unique <versioning.models.BaseVersionedModel.validate_unique>` to allow you to perform some validation. It should be noted that since these checks are not implemented at the database level, they are subject to race conditions.
 
 Transactions
 ------------
 
-It is important that many of the methods referenced above run in a transaction where all there changes will be rolled back if there is an error. In order to be sure that those methods run in a transaction regardless of where there are called from we use the chainable context manager provided in versioning.transactions.xact in place of django's default transaction management. That will start it's own transaction if called directly but use the existing transaction if called by a different piece of code that already has an open transaction. For this reason if you are opening transactions in your own code use the versioning.transactions.xact the context manager.
+Many of the methods referenced above run within a transaction. All the changes will be rolled back if there is an error. In order to be sure that those methods run in a transaction regardless of where there are called from we use the chainable context manager provided in versioning.transactions.xact in place of django's default transaction management. That will start it's own transaction if called directly but use the existing transaction if called by a different piece of code that already has an open transaction. For this reason if you are opening transactions in your own code use the versioning.transactions.xact the context manager.
 
 Cloning
 =======
@@ -109,7 +110,7 @@ Assume that we want to build a Book model which has chapters, and each book can 
         number = models.PositiveIntegerField()
         text = models.TextField()
 
-After we install these models and do syncdb, we will have 'chapter' table, 'author_base' and 'author_version' tables, and 'book_base' and 'book_version' tables in our database.
+After we install these models and do syncdb, we will have a 'chapter' table, 'author_base' and 'author_version' tables, and 'book_base' and 'book_version' tables in our database.
 
 Let's add some data:
 
@@ -146,9 +147,9 @@ Lets publish this.
     hemingway.publish()
     mt.publish()
 
-Here the base tables don't really change but now if you look at the version tables there are now two copies of each versionable item each with a different vid but with an object_id that points to the same id on the base table.
+Here the base tables don't really change but if you look at the version tables there are now two copies of each versionable item each with a different vid but with an object_id that points to the same id on the base table.
 
-For example for old man we now have
+For the book old man we now have
 
 ========== ========= =====
 state      object_id vid
@@ -166,7 +167,7 @@ id  from_id to_id
 4    5       5
 === ======= =====
 
-There is now a separate row that makes a relation between the book version vid 5 and the author id 5. In this way we can have a separate set of relations for each version of the book. This is because we used the M2MFromVersion if we had used a normal ManyToManyField the from_id would point to the object_id (3) and there would only be one row.
+There is now a separate row that makes a relation between the book version vid 5 and the author id 5. In this way we can have a separate set of relations for each version of the book. This is because we used the M2MFromVersion. If we had used a normal ManyToManyField the from_id would point to the object_id (3) and there would only be one row.
 
 Similarly there are now rows in the chapter table that point to the different vid's of our book.
 

@@ -2,20 +2,20 @@
 Caching
 ==============
 
-.. automodule:: cache.groups
+.. automodule:: scarlet.cache.groups
     :members:
 
-.. automodule:: cache.manager
+.. automodule:: scarlet.cache.manager
     :members:
 
 Admin Site
 ==========
 
-.. automodule:: cache.admin
+.. automodule:: scarlet.cache.admin
     :members:
 
 Views
 ==========
 
-.. automodule:: cache.views
+.. automodule:: scarlet.cache.views
     :members:

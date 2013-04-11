@@ -1,7 +1,7 @@
 from django.http import HttpResponsePermanentRedirect
 from django.utils.decorators import available_attrs
 
-from accounts import settings as accounts_settings
+from . import settings as accounts_settings
 
 from django.utils.functional import wraps
 

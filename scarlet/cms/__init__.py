@@ -1,4 +1,4 @@
-from sites import site
+from .sites import site
 
 
 def autodiscover():

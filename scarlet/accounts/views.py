@@ -12,13 +12,13 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.http import HttpResponseForbidden, Http404
 
-from accounts.forms import (SignupForm, AuthenticationForm,
+from .forms import (SignupForm, AuthenticationForm,
                            ChangeEmailForm, EditProfileForm)
-from accounts.models import AccountsSignup
-from accounts.decorators import secure_required
-from accounts.utils import signin_redirect, get_profile_model
-from accounts import signals as accounts_signals
-from accounts import settings as accounts_settings
+from .models import AccountsSignup
+from .decorators import secure_required
+from .utils import signin_redirect, get_profile_model
+from .import signals as accounts_signals
+from .import settings as accounts_settings
 
 
 class ExtraContextTemplateView(TemplateView):

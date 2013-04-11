@@ -1,4 +1,4 @@
-from groups import CacheGroup
+from .groups import CacheGroup
 
 
 class CacheManager(object):

@@ -3,9 +3,12 @@ from django.db import models
 
 from taggit.utils import parse_tags
 
-from models import Asset
+try:
+    from ..cms.forms import BaseFilterForm
+except ValueError:
+    from cms.forms import BaseFilterForm
 
-from cms.forms import BaseFilterForm
+from .models import Asset
 
 
 class UploadAssetForm(forms.ModelForm):

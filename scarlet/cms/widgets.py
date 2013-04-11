@@ -7,17 +7,17 @@ from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
 from django.core.urlresolvers import reverse
-from django.utils import timezone
 from django.utils.dateparse import parse_time
 
 from django.contrib.admin.widgets import url_params_from_lookup_dict
 
 class DateWidget(widgets.TextInput):
-    input_type = 'date'
     """
     Widget for date fields. Sets a **data-date-format**
     attribute to "yyyy-mm-dd"
     """
+
+    input_type = 'date'
 
     def __init__(self, *args, **kwargs):
         super(DateWidget, self).__init__(*args, **kwargs)

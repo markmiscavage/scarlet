@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.fields import related
 
-from models import VersionView
+from .models import VersionView
 
 
 class FKToVersion(models.ForeignKey):

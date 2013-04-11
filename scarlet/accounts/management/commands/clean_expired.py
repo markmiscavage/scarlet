@@ -1,6 +1,6 @@
 from django.core.management.base import NoArgsCommand
 
-from accounts.models import AccountsSignup
+from ...models import AccountsSignup
 
 
 class Command(NoArgsCommand):

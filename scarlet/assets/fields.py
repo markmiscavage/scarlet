@@ -1,16 +1,18 @@
 import urllib
+import logging
 
 from django import forms
-from django.contrib.admin.sites import site
 from django.db import models
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
-from cms.widgets import APIChoiceWidget, APIModelChoiceWidget
+try:
+    from ..cms.widgets import APIChoiceWidget, APIModelChoiceWidget
+except ValueError:
+    from cms.widgets import APIChoiceWidget, APIModelChoiceWidget
 
-from assets.models import Asset
+from .models import Asset
 
-import logging
 logger = logging.getLogger(__name__)
 
 

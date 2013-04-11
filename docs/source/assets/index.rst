@@ -7,7 +7,7 @@ Introduction
 
 Assets are files uploaded by a CMS user, and can include images, documents, audio, and video.
 
-The assets module manages all of the assets used by the public website.  
+The assets module manages all of the assets used by the public website.
 
 It supports searching assets by tag or file type, and allows for dynamic image resizing.
 
@@ -29,17 +29,17 @@ Requirements
 Setup
 -----
 
-Edit your ``settings.py`` and add ``sorl.thumbnail``, ``taggit``, and ``assets`` to your ``INSTALLED_APPS``::
+Edit your ``settings.py`` and add ``sorl.thumbnail``, ``taggit``, and ``scarlet.assets`` to your ``INSTALLED_APPS``::
 
     INSTALLED_APPS = (
         ...
         'taggit',
-        'sorl.thumbnail',        
-        'assets',
+        'sorl.thumbnail',
+        'scarlet.assets',
     )
 
 If using Redis for the image thumbnail store (recommended), add the following to your settings file::
-    
+
     THUMBNAIL_KVSTORE = 'sorl.thumbnail.kvstores.redis_kvstore.KVStore'
 
 Run syncdb to create the DB tables::
@@ -50,7 +50,7 @@ Run syncdb to create the DB tables::
 Implementation
 ==============
 
-The assets module utilizes Django's normal file handling mechanism.  Information about an asset is stored in the :py:class:`Asset` model, which includes a Django :py:class:`FileField` as one of its fields.
+The assets module utilizes Django's normal file handling mechanism.  Information about an asset is stored in the :py:class:`Asset <scarlet.assets.models.Asset>` model, which includes a Django FileField as one of its fields.
 
 It is not directory-based, meaning all files are physically stored under one location specified in settings.  By default, uploaded filenames are renamed with a random string, with file extension preserved.
 
@@ -62,7 +62,7 @@ The assets module utlizes the CMS bundles framework.  It registers a bundle with
 AssetsFileField
 ---------------
 
-The assets model integrates with other models by exposing the :py:class:`AssetsFileField` model field.  Simply include one or more of these fields in your model, specifying optional attributes.  For example::
+The assets model integrates with other models by exposing the :py:class:`AssetsFileField <scarlet.assets.fields.AssetsFileField>` model field.  Simply include one or more of these fields in your model, specifying optional attributes.  For example::
 
     class Movie(models.Model):
         name = models.CharField(max_length=255, db_index=True)
