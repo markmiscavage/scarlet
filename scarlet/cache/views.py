@@ -9,7 +9,7 @@ except ImportError:
 from django.middleware.cache import CacheMiddleware
 from django.utils.cache import patch_response_headers, get_max_age, patch_vary_headers
 from django.core.cache import cache
-
+from django.conf import settings
 
 class CacheView(View):
     """
@@ -76,6 +76,9 @@ class CacheView(View):
         be extended to differentiate on other criteria
         like mobile os' for example.
         """
+
+        if settings.CACHE_MIDDLEWARE_KEY_PREFIX:
+            prefix += settings.CACHE_MIDDLEWARE_KEY_PREFIX
 
         if self.request.is_ajax():
             prefix += 'ajax'
