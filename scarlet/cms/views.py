@@ -732,6 +732,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
     formsets = {}
     redirect_to_view = "main"
     cancel_view = "main"
+    readonly_fields = None
 
     force_instance_values = {}
 
@@ -749,6 +750,13 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
             for k, v in self.formsets.items():
                 if not isinstance(v, LazyFormSetFactory):
                     raise TypeError('%s must be a LazyFormSetFactory instance' % k)
+
+
+    def get_readonly_fields(self):
+        """
+        Hook for specifying custom readonly fields.
+        """
+        return self.readonly_fields
 
     def get_force_instance_values(self):
         """
@@ -840,6 +848,11 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         fields = form.base_fields.keys()
+
+        readonly_fields = self.get_readonly_fields()
+        if readonly_fields:
+            fields.extend(readonly_fields)
+
         return [(None, {'fields': fields})]
 
     def get_form_class(self):
@@ -859,6 +872,27 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         exclude = None
         if self.parent_field:
             exclude = (self.parent_field,)
+
+        readonly_fields = self.get_readonly_fields()
+        if readonly_fields:
+            if exclude:
+                exclude = list(exclude)
+            else:
+                exclude = []
+
+            for field in readonly_fields:
+                try:
+                    try:
+                        f = self.model._meta.get_field(field)
+                        if fields:
+                            fields.remove(field)
+                        else:
+                            exclude.append(field)
+                    except models.FieldDoesNotExist:
+                        if fields:
+                            fields.remove(field)
+                except ValueError:
+                    pass
 
         params = {'fields': fields,
                   'exclude': exclude,

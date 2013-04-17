@@ -1,4 +1,5 @@
 from django import forms
+from django.forms.util import flatatt
 from django.utils.encoding import force_unicode
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
@@ -17,7 +18,6 @@ FORMFIELD_FOR_DBFIELD_DEFAULTS = {
                               'widget': widgets.SplitDateTime()},
     models.DateField:        {'widget': widgets.DateWidget},
 }
-
 
 class AdminList(object):
     ASC = 'asc'
@@ -114,30 +114,7 @@ class AdminListRow(object):
         if self.form and self.form.fields.get(field):
             return AdminField(self.form, field, is_first=(i == 0))
         else:
-            try:
-                f = self.instance._meta.get_field(field)
-                try:
-                    value = getattr(self.instance, field)
-                except (AttributeError, ObjectDoesNotExist):
-                    value = None
-
-                if hasattr(f, "flatchoices") and f.flatchoices:
-                    value = dict(f.flatchoices).get(value)
-                elif isinstance(value, models.Manager):
-                    value = ', '.join([unicode(x) for x in value.all()])
-
-            except models.FieldDoesNotExist:
-                # For non-field values, the value is either a method, property or
-                # returned via a callable.
-                if callable(field):
-                    value = field(self.instance)
-                else:
-                    attr = getattr(self.instance, field)
-                    if callable(attr):
-                        value = attr()
-                    else:
-                        value = attr
-            return value
+            return get_field_value(field, self.instance)
 
     def __iter__(self):
         for i, field in enumerate(self.visible_fields):
@@ -190,11 +167,16 @@ class Fieldline(object):
 
     def __iter__(self):
         for i, field in enumerate(self.fields):
-                yield AdminField(self.form, field, is_first=(i == 0))
+            cls = ReadOnlyField
+            if (type(field) == str or type(field) == unicode) and \
+                                        field in self.form.fields:
+                cls = AdminField
+            yield cls(self.form, field, is_first=(i == 0))
 
     def errors(self):
+        fields = [f for f in self.fields if f in self.form.fields]
         return mark_safe(u'\n'.join([self.form[f].errors.as_ul()
-                         for f in self.fields]))
+                         for f in fields]))
 
 
 class AdminField(object):
@@ -205,6 +187,7 @@ class AdminField(object):
                                       forms.CheckboxInput)
         self.is_order_field = isinstance(self.field.field,
                                         fields.OrderFormField)
+
 
     def label_tag(self):
         classes = []
@@ -223,6 +206,41 @@ class AdminField(object):
     def errors(self):
         return mark_safe(self.field.errors.as_ul())
 
+
+class InnerField(object):
+    def __init__(self, field, instance):
+        if callable(field):
+            class_name = field.__name__ != '<lambda>' and field.__name__ or ''
+        else:
+            class_name = field
+
+        self.name = class_name
+        self.label = label_for_field(field, instance.__class__)
+        self.field_repr = get_field_value(field, instance)
+        self.help_text = get_field_attr(field, instance, "help_text", "")
+
+    def __unicode__(self):
+        return force_unicode(self.field_repr)
+
+class ReadOnlyField(object):
+    def __init__(self, form, field, is_first):
+        self.field = InnerField(field, form.instance)
+        self.form = form
+        self.is_first = is_first
+        self.is_checkbox = False
+        self.is_readonly = True
+
+    def label_tag(self):
+        attrs = {}
+        if not self.is_first:
+            attrs["class"] = "inline"
+        label = self.field.label
+        return mark_safe('<label{0}>{1}:</label>'.format(
+                           conditional_escape(flatatt(attrs)),
+                           capfirst(conditional_escape(force_unicode(label)))))
+
+    def errors(self):
+        return []
 
 def normalize_fieldsets(fieldsets):
     """
@@ -264,6 +282,46 @@ def get_sort_field(attr, model):
             return attr
     except FieldDoesNotExist:
         return None
+
+def get_field_value(field, instance):
+    try:
+        f = instance._meta.get_field(field)
+        try:
+            value = getattr(instance, field)
+        except (AttributeError, ObjectDoesNotExist):
+            value = None
+
+        if hasattr(f, "flatchoices") and f.flatchoices:
+            value = dict(f.flatchoices).get(value)
+        elif isinstance(value, models.Manager):
+            value = ', '.join([unicode(x) for x in value.all()])
+
+    except models.FieldDoesNotExist:
+        # For non-field values, the value is either a method, property or
+        # returned via a callable.
+        if callable(field):
+            value = field(instance)
+        else:
+            attr = getattr(instance, field)
+            if callable(attr):
+                value = attr()
+            else:
+                value = attr
+    return value
+
+def get_field_attr(field, instance, attr, default=""):
+    value = default
+    try:
+        f = instance._meta.get_field(field)
+        value = getattr(f, attr, default)
+    except models.FieldDoesNotExist:
+        if callable(field):
+            value = getattr(field, attr, default)
+        else:
+            p = getattr(instance, field)
+            if callable(p):
+                value = getattr(p, attr, default)
+    return value
 
 def pluralize(value, custom_plural):
     if custom_plural:
