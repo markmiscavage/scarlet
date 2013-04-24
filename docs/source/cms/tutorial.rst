@@ -19,10 +19,10 @@ Create an admin interface with the CMS is very similar the classic django admin 
 
 * instead of creating an admin.py file, you create a cms_bundles.py inside your app folder.
 * instead or registering the models using ModelAdmin class, you use Bundles class to embed views or other bundles (as sub_bundle);
-  this approach is really powerful because allows you to create very complex hierarchical structures. The Bundles class already contains the
+  this approach is really powerful because it allows you to create very complex hierarchical structures. The Bundles class already contains the
   basic CRUD functionality, that you can extend or replace if you want.
 
-IMPORTANT: At this moment the CMS works only with PostgreSQL database. This first version of the CSM does not support South migrations;
+IMPORTANT: At this moment the CMS works only with PostgreSQL database. This first version of the CMS does not support South migrations;
 we are planning to implement migrations as soon as they will be integrated into Django's core.
 
 
@@ -105,11 +105,11 @@ Then we have to create our models:
 
 As you can see these are normal django models with a couple of important differences:
 
-* some models subclass :py:class:`VersionView <scarlet.versioning.models.VersionView>` (Category, Post)
-  and :py:class:`Cloneable <scarlet.versioning.models.Cloneable>` PostImage instead of models.Model,
+* Some models subclass :py:class:`VersionView <scarlet.versioning.models.VersionView>` (Category, Post)
+  and :py:class:`Cloneable <scarlet.versioning.models.Cloneable>` (PostImage) instead of models.Model,
   this is how we tell the CMS to make this model versionable. Here you can find more about the :ref:`versioning` system.
-* there are some custom fields to manage assets (:py:class:`AssetsFileField <scarlet.assets.fields.AssetsFileField>`),
-  ordering (:py:class:`OrderField <scarlet.cms.fields.OrderField>`) and Foreign Key relation
+* There are some custom fields to manage assets (:py:class:`AssetsFileField <scarlet.assets.fields.AssetsFileField>`),
+  ordering (:py:class:`OrderField <scarlet.cms.fields.OrderField>`), and Foreign Key relation
   with other models that have to be cloned when we create a new version of a versioned model object (:py:class:`FKToVersion <scarlet.versioning.fields.FKToVersion>`).
 * The last line is necessary to tell the CMS to clone the related Models when you create a new version of a Post model instance.
 
