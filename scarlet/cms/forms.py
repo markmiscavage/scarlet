@@ -1,5 +1,6 @@
 from django import forms
 from django.db.models import Q, F
+from django.core.validators import EMPTY_VALUES
 
 from . import widgets
 
@@ -43,9 +44,12 @@ class BaseFilterForm(forms.Form):
         if self.is_valid():
             filter_kwargs = {}
             for field in self.get_filter_fields():
-                # Blank or false means none, remove it
+                empty_values = EMPTY_VALUES
+                if hasattr(self.fields[field], 'empty_values'):
+                    empty_values = self.fields[field].empty_values
+
                 value = self.cleaned_data.get(field)
-                if value:
+                if not value in empty_values:
                     if self.search_fields and field in self.search_fields:
                         filter_kwargs["%s__icontains" % field] = value
                     else:
