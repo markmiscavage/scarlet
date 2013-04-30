@@ -463,9 +463,13 @@ class ModelCMSMixin(object):
         if url:
             url = urlparse.urlparse(url).path
 
+        rep = unicode(instance)
+        if rep:
+            rep = rep[:255]
+
         log = CMSLog(action=action, url=url, section=section,
                      model_repr=instance._meta.verbose_name,
-                     object_repr=unicode(instance),
+                     object_repr=rep,
                      user_name=self.request.user.username,
                      action_date=action_date)
         log.save()
