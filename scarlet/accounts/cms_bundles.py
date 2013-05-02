@@ -33,6 +33,7 @@ class AddView(views.FormView):
 
 class PasswordView(views.FormView):
     redirect_to_view = "edit"
+    context_object_name = "object"
 
     def get_form_class(self):
         return AdminPasswordChangeForm
@@ -72,8 +73,9 @@ class AccountBundle(bundles.Bundle):
             }),
             ("Groups", {
                 'fields': ('groups',)
-            }),
-    ))
+            }),),
+        context_object_name = "object"
+    )
     password = PasswordView()
     main = views.ListView(paginate_by=100,
             display_fields=('username', 'first_name',
