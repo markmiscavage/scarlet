@@ -33,6 +33,7 @@ class UpdateAssetForm(forms.ModelForm):
         super(UpdateAssetForm, self).__init__(*args, **kwargs)
         self.fields['tags'].widget.attrs['class'] = 'widget-tags'
 
+
 class AssetFilterForm(TaggedRelationFilterForm):
     """
     Form for handling asset filtering by fields
