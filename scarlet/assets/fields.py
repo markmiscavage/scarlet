@@ -1,7 +1,5 @@
-import urllib
 import logging
 
-from django import forms
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.db import models
@@ -21,6 +19,7 @@ from .models import Asset
 
 logger = logging.getLogger(__name__)
 
+
 class AssetsFileWidget(TaggedRelationWidget):
 
     def get_qs(self):
@@ -39,7 +38,8 @@ class AssetsFileWidget(TaggedRelationWidget):
         obj = self.obj_for_value(value)
 
         # Go directly to parent of APIChoiceWidget to get input
-        hidden_input = super(APIChoiceWidget, self).render(name, value, attrs=attrs)
+        hidden_input = super(APIChoiceWidget, self).render(
+            name, value, attrs=attrs)
 
         context = {
             'hidden_input': hidden_input,
@@ -47,7 +47,7 @@ class AssetsFileWidget(TaggedRelationWidget):
             'asset_type': self.asset_type,
             'asset_tags': self.tags,
             'link': self.get_api_link(),
-            'add_link' : self.get_add_link()
+            'add_link': self.get_add_link()
         }
         html = render_to_string('assets/asset_widget.html', context)
         return mark_safe(html)
@@ -65,6 +65,7 @@ class AssetsFileFormField(TaggedRelationFormField):
         widget.required = self.required
         widget.asset_type = self.asset_type
         return {}
+
 
 class AssetsFileField(TaggedRelationField):
     default_form_class = AssetsFileFormField
