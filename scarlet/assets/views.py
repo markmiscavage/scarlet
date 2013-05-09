@@ -32,6 +32,7 @@ class AssetListView(views.ListView):
         qs = super(AssetListView, self).get_queryset(**filter_kwargs)
         return qs.distinct()
 
+
 class AssetFormView(views.FormView):
     """
     A view class to manage the asset form
@@ -67,7 +68,7 @@ class AssetFormView(views.FormView):
         except IOError:
             thumbnail = None
 
-        context = { 'obj': self.object, 'thumb_url': thumbnail }
+        context = {'obj': self.object, 'thumb_url': thumbnail}
 
         return self.render(self.request,
                            redirect_url=self.get_success_url(),
