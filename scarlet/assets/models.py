@@ -14,6 +14,7 @@ try:
 except ValueError:
     from cms.internal_tags.models import AutoTagModel
 
+
 class Asset(AutoTagModel):
     UNKNOWN = 'unknown'
     IMAGE = 'image'
@@ -91,7 +92,6 @@ class Asset(AutoTagModel):
 
         file_changed = True
         if self.pk:
-            old_value = getattr(self.__class__._default_manager.get(pk=self.pk), 'file')
             new_value = getattr(self, 'file')
             if hasattr(new_value, "file"):
                 file_changed = isinstance(new_value.file, UploadedFile)
