@@ -7,13 +7,15 @@ from . fields import TaggedRelationFormField
 
 from taggit.models import Tag, TaggedItem
 from taggit.managers import TaggableManager
-from taggit.utils import parse_tags
+
 
 def get_model():
     return Tag
 
+
 def get_tag_manager():
     return TaggableManager()
+
 
 def tokenize_tags(tags_string):
     """
@@ -26,15 +28,17 @@ def tokenize_tags(tags_string):
     # the first step extract every single world that is 3 > chars long
     # and that contains only alphanumeric characters, underscores and dashes
     tags_string = tags_string.lower().strip(",")
-    single_worlds = set([ w for w in re.split(';|,|\*|\n| ',tags_string)
-                          if len(w) >= 3 and re.match("^[A-Za-z0-9_-]*$", w) ])
+    single_worlds = set([w for w in re.split(';|,|\*|\n| ', tags_string)
+                          if len(w) >= 3 and re.match("^[A-Za-z0-9_-]*$", w)])
     # the second step divide the original string using comma as separator
     comma_separated = set([t for t in tags_string.split(",") if t])
     # resulting set are merged using union
     return list(single_worlds | comma_separated)
 
+
 def tags_to_string(tags):
     return ','.join(tags).lower()
+
 
 def set_auto_tags_for_form(form, auto_tags):
     for name, field in form.fields.items():
@@ -43,9 +47,11 @@ def set_auto_tags_for_form(form, auto_tags):
                     form.cleaned_data.get(name):
             form.cleaned_data[name].auto_tags = auto_tags
 
-def set_auto_tags_for_formset( formset, auto_tags):
+
+def set_auto_tags_for_formset(formset, auto_tags):
     for form in formset:
         set_auto_tags_for_form(form, auto_tags)
+
 
 def update_changed_tags(new_tags, old_tags):
     args = None
@@ -54,12 +60,12 @@ def update_changed_tags(new_tags, old_tags):
         if not args:
             args = q
         else:
-            args = q|args
+            args = q | args
 
-    types = qs = TaggedItem.objects.filter(args).values('content_type',
-                                    'object_id').annotate(models.Count('content_type'))
-    add_tags = [ Tag.objects.get_or_create(name=tag) \
-                                for tag in new_tags ]
+    types = TaggedItem.objects.filter(args).values('content_type',
+                            'object_id').annotate(models.Count('content_type'))
+    add_tags = [Tag.objects.get_or_create(name=tag) \
+                                for tag in new_tags]
 
     mapping = {}
     for t in types:
@@ -72,6 +78,7 @@ def update_changed_tags(new_tags, old_tags):
         m = t.model_class()
         for ins in m.objects.filter(pk__in=ids):
             ins.tags.add(tag)
+
 
 def get_tags_from_data(data, view_tags):
     view_tags = set(tokenize_tags(','.join(view_tags)))

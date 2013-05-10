@@ -2,6 +2,7 @@ from django.db import models
 
 from . import handler
 
+
 class AutoTagModel(models.Model):
     tags = handler.get_tag_manager()
 
@@ -22,11 +23,12 @@ class AutoTagModel(models.Model):
             for t in handler.get_model().objects.filter(name__in=needed_tags):
                 existing_tags[t.name] = t
 
-            current_tags = set([ t.pk for t in self.tags.all()])
+            current_tags = set([t.pk for t in self.tags.all()])
             for tag in needed_tags:
                 t = existing_tags.get(tag)
                 if not t:
-                    t, created = handler.get_model().objects.get_or_create(name=tag)
+                    t, created = handler.get_model().objects.get_or_create(
+                        name=tag)
 
                 if not t.pk in current_tags:
                     self.tags.add(t)
