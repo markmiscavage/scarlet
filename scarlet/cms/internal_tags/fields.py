@@ -1,20 +1,16 @@
-import re
 import urllib
 import logging
-
 from django import forms
-from django.forms import widgets
-from django.contrib.admin.sites import site
 from django.db import models
-from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
-from django.core import signals
+from django.utils.html import conditional_escape
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import pre_save
 
 from .. widgets import APIChoiceWidget, APIModelChoiceWidget
 
 logger = logging.getLogger(__name__)
+
 
 class TaggedRelationWidget(APIModelChoiceWidget):
     template = u'<div class="api-select" data-tags="%(tags)s" data-title="%(value)s" data-api="%(link)s" data-add="%(add_link)s">%(input)s</div>'
@@ -24,7 +20,8 @@ class TaggedRelationWidget(APIModelChoiceWidget):
         super(TaggedRelationWidget, self).__init__(*args, **kwargs)
         if self.attrs:
             self.tags = handler.tags_to_string(self.attrs.pop('tags', []))
-            self.required_tags = handler.tags_to_string(self.attrs.pop('required_tags', []))
+            self.required_tags = handler.tags_to_string(
+                self.attrs.pop('required_tags', []))
         else:
             self.tags = ''
             self.required_tags = ''
@@ -61,8 +58,8 @@ class TaggedRelationWidget(APIModelChoiceWidget):
                                                           attrs=attrs),
             'value': conditional_escape(self.label_for_value(value)),
             'link': self.get_api_link(),
-            'add_link' : self.get_add_link(),
-            'tags' : self.tags
+            'add_link': self.get_add_link(),
+            'tags': self.tags
         }
         return mark_safe(self.template % data)
 
@@ -126,8 +123,8 @@ class TaggedRelationField(models.ForeignKey):
     def get_formfield_defaults(self):
         return {
             'form_class': self.default_form_class,
-            'tags' : self.tags,
-            'required_tags' : self.required_tags
+            'tags': self.tags,
+            'required_tags': self.required_tags
         }
 
     def formfield(self, **kwargs):
@@ -138,8 +135,10 @@ class TaggedRelationField(models.ForeignKey):
         return super(TaggedRelationField, self).formfield(**defaults)
 
     def contribute_to_class(self, cls, *args, **kwargs):
-        super(TaggedRelationField, self).contribute_to_class(cls, *args, **kwargs)
+        super(TaggedRelationField, self).contribute_to_class(
+            cls, *args, **kwargs)
         pre_save.connect(save_auto_tags, sender=cls)
+
 
 def save_auto_tags(sender, instance, **kwargs):
     if not getattr(sender._meta, '_view_model', None):
