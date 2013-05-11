@@ -27,6 +27,7 @@ from .forms import WhenForm, LazyFormSetFactory, VersionFilterForm
 from .models import CMSLog
 from .internal_tags import handler as tag_handler
 
+
 class BaseView(generic.base.View):
     """
     Base view for all Views. This is a class based view
@@ -80,6 +81,7 @@ class BaseView(generic.base.View):
             kwargs = self.get_render_data(**kwargs)
 
         return render.render(request, **kwargs)
+
 
 class SiteView(BaseView):
     """
@@ -184,7 +186,7 @@ class CMSView(BaseView):
         redirect_url = self.request.REQUEST.get(self.ORIGIN_ARGUMENT)
         if redirect_url:
             base = self.request.path.split('/')
-            if len(base) > 1 and redirect_url.startswith('/%s' %base[1]):
+            if len(base) > 1 and redirect_url.startswith('/%s' % base[1]):
                 return redirect_url
 
         return default_url
@@ -772,7 +774,8 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         if self.formsets:
             for k, v in self.formsets.items():
                 if not isinstance(v, LazyFormSetFactory):
-                    raise TypeError('%s must be a LazyFormSetFactory instance' % k)
+                    raise TypeError(
+                        '%s must be a LazyFormSetFactory instance' % k)
 
     def get_force_instance_values(self):
         """
@@ -1044,8 +1047,8 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         if not self.object:
             new_object = True
 
-        auto_tags, changed_tags, old_tags = tag_handler.get_tags_from_data(form.data,
-                                                    self.get_tags(form.instance))
+        auto_tags, changed_tags, old_tags = tag_handler.get_tags_from_data(
+            form.data, self.get_tags(form.instance))
         tag_handler.set_auto_tags_for_form(form, auto_tags)
 
         with transaction.commit_on_success():
@@ -1060,9 +1063,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         if not new_object and changed_tags:
             tag_handler.update_changed_tags(changed_tags, old_tags)
 
-
         return self.success_response(msg)
-
 
     def success_response(self, message=None):
         """
@@ -1486,7 +1487,7 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
             return None
 
         FormSet = self.get_formset_class()
-        if queryset == None:
+        if queryset is None:
             queryset = self.get_queryset()
 
         if FormSet:
@@ -1495,9 +1496,9 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
                 key = self.model._meta.pk.name
                 for k, v in data.items():
                     if k.endswith('-%s' % key):
-                        new_q = models.Q(**{ key : v })
+                        new_q = models.Q(**{key: v})
                         if q:
-                            q = q|new_q
+                            q = q | new_q
                         else:
                             q = new_q
 
@@ -1617,8 +1618,8 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         origin_qs = self._get_query_string(self.request, False)
         context = {
             'query_string': self._get_query_string(self.request),
-            'origin_qs': self.request.path+origin_qs,
-            'origin_var' : self.ORIGIN_ARGUMENT,
+            'origin_qs': self.request.path + origin_qs,
+            'origin_var': self.ORIGIN_ARGUMENT,
             'action_links': self.get_actions()
         }
         context.update(kwargs)
@@ -1674,7 +1675,6 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
                         changecount += 1
                         self.log_action(obj, CMSLog.SAVE, url=url,
                                         update_parent=changecount == 1)
-
 
             return self.render(request, redirect_url=url,
                            message="%s items updated" % changecount,
@@ -1767,9 +1767,11 @@ class PublishView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
                 self.object.purge_archives()
                 object_url = self.get_object_url()
                 if self.object.state == self.object.PUBLISHED:
-                    self.log_action(self.object, CMSLog.PUBLISH, url=object_url)
+                    self.log_action(
+                        self.object, CMSLog.PUBLISH, url=object_url)
                 else:
-                    self.log_action(self.object, CMSLog.SCHEDULE, url=object_url)
+                    self.log_action(
+                        self.object, CMSLog.SCHEDULE, url=object_url)
 
                 message = "%s %s" % (self.object, self.object.state)
                 self.write_message(message=message)
@@ -1860,7 +1862,6 @@ class VersionsList(PublishView):
         versions = self._get_versions()
         return self.render(request, obj=self.object, versions=versions,
                            done_url=self.get_done_url())
-
 
     def revert(self, version, url):
         """
