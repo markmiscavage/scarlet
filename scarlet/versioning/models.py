@@ -241,11 +241,11 @@ def get_meta(meta, **kwargs):
     new_meta = type('Meta', (object,), {})
     if meta:
         for k, v in meta.__dict__.items():
-            if v:
+            if v is not None:
                 setattr(new_meta, k, v)
 
     for k, v in kwargs.items():
-        if v:
+        if v is not None:
             setattr(new_meta, k, v)
     return new_meta
 
