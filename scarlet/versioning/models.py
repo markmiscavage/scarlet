@@ -241,11 +241,11 @@ def get_meta(meta, **kwargs):
     new_meta = type('Meta', (object,), {})
     if meta:
         for k, v in meta.__dict__.items():
-            if v != None:
+            if v:
                 setattr(new_meta, k, v)
 
     for k, v in kwargs.items():
-        if v != None:
+        if v:
             setattr(new_meta, k, v)
     return new_meta
 
@@ -499,7 +499,7 @@ class BaseModel(models.Model):
         return None
 
     def _get_version(self):
-        if self._version == None:
+        if self._version is None:
             self._version = self.get_version()
         return self._version
 
