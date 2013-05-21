@@ -16,7 +16,7 @@
 	<details id="filter" {% if filter_form.has_changed %}class="filtered"{% endif %}>
 		<summary>
 			{% if filter_form.has_changed %}
-				<a class="filter-clear" href="./">Clear</a>
+				<a class="filter-clear" href="{{ request.path }}">Clear</a>
 			{% endif %}
 			Filter
 		</summary>
