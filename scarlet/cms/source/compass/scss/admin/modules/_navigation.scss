@@ -135,6 +135,7 @@ nav[role='navbar'] {
 					color: $blue;
 					display: block;
 					padding: 0;
+					height: 30px;
 
 					&:first-of-type {
 						border-top: 0;
@@ -149,7 +150,8 @@ nav[role='navbar'] {
 					}
 
 					&:hover {
-						background-color: $light-blue; // override parent hover style
+						border-color: transparent;
+						background-color: mix($light-blue, $dark-blue, 50%); // override parent hover style
 					}
 
 					a {
@@ -158,7 +160,6 @@ nav[role='navbar'] {
 						padding: $gridlet*2 $spacer;
 
 						&:hover {
-							background-color: rgba($dark-blue, 0.5);
 							color: #fff;
 						}
 					}

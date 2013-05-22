@@ -40,69 +40,71 @@
 		{% block extrahead %}{% endblock %}
 	</head>
 	<body class="{% block page_class %}page{% endblock page_class %}">
-		{% block popup_header %}
-		<header>
-			<div>
-				<h1>{% block branding %}<a href="{% url 'admin:cms_index' %}">Lionsgate</a>{% endblock %}</h1>
-				<nav role="user-tools">
-					{% if user.is_active and user.is_staff %}
-						<p>{% trans 'Welcome back' %} <strong>{% filter force_escape %}{% firstof user.first_name user.username|title %}{% endfilter %}</strong></p>
-						{% block userlinks %}
-						<a href="{% url 'admin:cms_password_change' %}">{% trans 'Change password' %}</a>
-                        {% user_url request.user bundle as user_url %}
-						{% if user_url %}<a href="{{ user_url }}">{% trans 'Administration' %}</a>{% endif %}
-						<a href="{% url 'admin:cms_logout' %}">{% trans 'Logout' %}</a>
-						{% endblock %}
-					{% endif %}
-					{% block nav-global %}{% endblock %}
-				</nav>
-			</div>
-		</header>
-		<nav role="{% block nav-role %}navbar{% endblock %}">
-			{% block dashboard %}
-			<ul>
-			{% for navs in dashboard %}
-				<li>{{ navs.0 }}<ul>
-				{% for nav in navs.1 %}
-					<li><a href="{{ nav.0 }}">{{ nav.1 }}</a></li>
-				{% endfor %}
-				</ul></li>
-			{% endfor %}
-			</ul>
-			{% endblock %}
-		</nav>
-		{% block object_header %}{% endblock %}
-		{% endblock popup_header %}
-		<section id="main" role="main">
-			<div>
-			{% block messages %}
-				{% if messages %}
-				<ul class="messagelist">
-				{% for message in messages %}
-					<li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
+		<div id="container">
+			{% block popup_header %}
+			<header>
+				<div>
+					<h1>{% block branding %}<a href="{% url 'admin:cms_index' %}">Lionsgate</a>{% endblock %}</h1>
+					<nav role="user-tools">
+						{% if user.is_active and user.is_staff %}
+							<p>{% trans 'Welcome back' %} <strong>{% filter force_escape %}{% firstof user.first_name user.username|title %}{% endfilter %}</strong></p>
+							{% block userlinks %}
+							<a href="{% url 'admin:cms_password_change' %}">{% trans 'Change password' %}</a>
+	                        {% user_url request.user bundle as user_url %}
+							{% if user_url %}<a href="{{ user_url }}">{% trans 'Administration' %}</a>{% endif %}
+							<a href="{% url 'admin:cms_logout' %}">{% trans 'Logout' %}</a>
+							{% endblock %}
+						{% endif %}
+						{% block nav-global %}{% endblock %}
+					</nav>
+				</div>
+			</header>
+			<nav role="{% block nav-role %}navbar{% endblock %}">
+				{% block dashboard %}
+				<ul>
+				{% for navs in dashboard %}
+					<li>{{ navs.0 }}<ul>
+					{% for nav in navs.1 %}
+						<li><a href="{{ nav.0 }}">{{ nav.1 }}</a></li>
+					{% endfor %}
+					</ul></li>
 				{% endfor %}
 				</ul>
-				{% endif %}
-			{% endblock messages %}
-
-			{% block aside %}
-				{% if navigation %}
-				<nav role="sidebar">
-					{% for nav in navigation %}
-						<a href="{{ nav.0 }}">{{ nav.1 }}</a>
+				{% endblock %}
+			</nav>
+			{% block object_header %}{% endblock %}
+			{% endblock popup_header %}
+			<section id="main" role="main">
+				<div>
+				{% block messages %}
+					{% if messages %}
+					<ul class="messagelist">
+					{% for message in messages %}
+						<li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
 					{% endfor %}
-				</nav>
-				{% endif %}
-			{% endblock %}
+					</ul>
+					{% endif %}
+				{% endblock messages %}
 
-			<article id="content">
-			{% block content %}
-			{% endblock %}
-			</article>
+				{% block aside %}
+					{% if navigation %}
+					<nav role="sidebar">
+						{% for nav in navigation %}
+							<a href="{{ nav.0 }}">{{ nav.1 }}</a>
+						{% endfor %}
+					</nav>
+					{% endif %}
+				{% endblock %}
 
-			</div>
-			<article id="modal"></article>
-		</section>
+				<article id="content">
+				{% block content %}
+				{% endblock %}
+				</article>
+
+				</div>
+				<article id="modal"></article>
+			</section>
+		</div>
 		{% block popup_footer %}
 		<footer>
 			<div>

@@ -2,7 +2,7 @@ html {
 	height: 100%;
 
 	body {
-		background: $dark-blue inline-image('../img/admin/texture-body.png') repeat;
+		background: $background-color inline-image('../img/admin/texture-main.png') repeat;
 		color: $text-color;
 		-webkit-font-smoothing: antialiased;
 		height: 100%;
@@ -21,6 +21,7 @@ html {
 
 		header, footer {
 			color: $light-blue;
+			background: $dark-blue inline-image('../img/admin/texture-body.png') repeat;
 
 			> div {
 				margin: 0 auto;
@@ -28,9 +29,18 @@ html {
 			}
 		}
 
+		footer {
+			position: relative;
+			top: -77px;
+		}
+
+		#container {
+			min-height: 100%;
+			padding-bottom: 77px;
+		}
+
 		section#main {
-			@include clearfix;
-			background: $background-color inline-image('../img/admin/texture-main.png') repeat;
+			@include microfix;
 			border-top: 1px solid #fff;
 			padding: $gridlet*10 $spacer;
 			position: relative;
