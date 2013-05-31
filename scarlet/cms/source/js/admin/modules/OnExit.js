@@ -1,5 +1,4 @@
-define([],
-
+define(
 	function (require, exports, module) {
 
 		"use strict";
@@ -17,9 +16,9 @@ define([],
 			init : function (dom) {
 				// console.warn("OnExit : init(dom)", dom);
 				// console.log("forms", this.forms);
-				$('form').on('submit', this.onSubmit);
-				$(window).on('beforeunload', this.onUnload);
-				this.cacheValues();
+				// $('form').on('submit', this.onSubmit);
+				// $(window).on('beforeunload', this.onUnload);
+				// this.cacheValues();
 			},
 
 			cacheValues : function () {

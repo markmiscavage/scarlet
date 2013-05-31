@@ -68,7 +68,7 @@ do
 done
 
 if [ $COVERAGE ]; then
-    TEST_RUNNER="$COVERAGE run --source=$TESTDIR/../scarlet -- $TEST_RUNNER"
+    TEST_RUNNER="$COVERAGE run -a --source=$TESTDIR/../scarlet -- $TEST_RUNNER"
 fi
 
 test_to_run=$1

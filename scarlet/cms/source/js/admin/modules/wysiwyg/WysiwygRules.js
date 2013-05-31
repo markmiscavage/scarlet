@@ -32,7 +32,7 @@
  *    ... becomes ...
  *    <div class="wysiwyg-text-align-center">hello</div>
  */
-define([], function () {
+define(function () {
 	return {
 		/**
 		 * CSS Class white-list

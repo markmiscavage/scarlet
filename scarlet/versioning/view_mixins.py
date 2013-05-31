@@ -19,6 +19,7 @@ class PreviewableObject(SingleObjectMixin):
         """
 
         schema = manager.get_schema()
+        vid = None
         if self.request.GET.get('vid') and self.request.user.is_staff and \
                         self.request.user.is_active:
             try:
@@ -38,9 +39,9 @@ class PreviewableObject(SingleObjectMixin):
             slug = self.kwargs.get(self.slug_url_kwarg, None)
             if pk is not None:
                 if vid:
-                    queryset = queryset.filter(object_id=pk)
+                    queryset = queryset.filter(vid=vid)
                 else:
-                    queryset = queryset
+                    queryset = queryset.filter(object_id=pk)
 
             # Next, try looking up by slug.
             elif slug is not None:

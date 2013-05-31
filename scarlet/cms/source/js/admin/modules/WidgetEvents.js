@@ -1,10 +1,12 @@
-define([], function () {
+define(
+	function () {
 
-	"use strict";
+		"use strict";
 
-	var NS = "admin/modules/widget-events/";
+		var NS = "admin/modules/widget-events/";
 
-	return {
-		RENDER         : NS + "render"
-	};
-});
+		return {
+			RENDER         : NS + "render"
+		};
+	}
+);

@@ -1,8 +1,14 @@
 from django.db import models
 
 from scarlet.versioning import fields
-from scarlet.versioning.models import VersionView, Cloneable, BaseModel
+from scarlet.versioning.models import VersionView, Cloneable, BaseModel, BaseVersionedModel
 
+
+class Harmless(object):
+    is_harmless = True
+
+class ConcreteModel(models.Model):
+    name = models.CharField(max_length=255)
 
 class NameModel(models.Model):
     name = models.CharField(max_length=255)
@@ -10,15 +16,28 @@ class NameModel(models.Model):
     class Meta:
         abstract = True
 
-
-class Author(VersionView, NameModel):
+class Abstract(BaseVersionedModel, NameModel):
     associates = fields.M2MFromVersion('self', blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class AbstractM2MBook(models.Model):
+    books = fields.M2MFromVersion('Book', blank=True)
+    cartoon = fields.FKToVersion('Cartoon', blank=True, null=True)
+
+    class Meta:
+        abstract = True
+
+
+class Author(VersionView, Abstract):
 
     def __unicode__(self):
         return self.name
 
 
-class Book(VersionView, NameModel):
+class Book(VersionView, NameModel, Harmless):
     _clone_related = ['review', 'galleries']
 
     author = models.ForeignKey(Author)
@@ -36,8 +55,8 @@ class Review(Cloneable):
         return self.text
 
 
-class Store(VersionView, NameModel):
-    books = fields.M2MFromVersion(Book)
+class Store(VersionView, NameModel, AbstractM2MBook):
+    pass
 
 
 class Gallery(Cloneable):

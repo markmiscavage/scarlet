@@ -7,9 +7,9 @@ except ImportError:
     from django.views.generic import View
 
 from django.middleware.cache import CacheMiddleware
-from django.utils.cache import patch_response_headers, get_max_age
+from django.utils.cache import patch_response_headers, get_max_age, patch_vary_headers
 from django.core.cache import cache
-
+from django.conf import settings
 
 class CacheView(View):
     """
@@ -77,6 +77,9 @@ class CacheView(View):
         like mobile os' for example.
         """
 
+        if settings.CACHE_MIDDLEWARE_KEY_PREFIX:
+            prefix += settings.CACHE_MIDDLEWARE_KEY_PREFIX
+
         if self.request.is_ajax():
             prefix += 'ajax'
 
@@ -105,6 +108,21 @@ class CacheView(View):
 
         return value
 
+    def get_vary_headers(self, request, response):
+        """
+        Hook for patching the vary header
+        """
+
+        headers = []
+        accessed = False
+        try:
+            accessed = request.session.accessed
+        except AttributeError:
+            pass
+
+        if accessed:
+            headers.append("Cookie")
+        return headers
 
     def template_response_callback(self, response):
         if self.cache_middleware:
@@ -155,6 +173,10 @@ class CacheView(View):
         if not response:
             response = super(CacheView, self).dispatch(self.request, *args,
                                                        **kwargs)
+
+        headers = self.get_vary_headers(request, response)
+        if headers:
+            patch_vary_headers(response, headers)
 
         if hasattr(response, 'render') and callable(response.render):
             response.add_post_render_callback(self.template_response_callback)

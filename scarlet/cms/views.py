@@ -489,9 +489,13 @@ class ModelCMSMixin(object):
         if url:
             url = urlparse.urlparse(url).path
 
+        rep = unicode(instance)
+        if rep:
+            rep = rep[:255]
+
         log = CMSLog(action=action, url=url, section=section,
                      model_repr=instance._meta.verbose_name,
-                     object_repr=unicode(instance),
+                     object_repr=rep,
                      user_name=self.request.user.username,
                      action_date=action_date)
         log.save()
@@ -758,6 +762,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
     formsets = {}
     redirect_to_view = "main"
     cancel_view = "main"
+    readonly_fields = None
 
     force_instance_values = {}
 
@@ -776,6 +781,13 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
                 if not isinstance(v, LazyFormSetFactory):
                     raise TypeError(
                         '%s must be a LazyFormSetFactory instance' % k)
+
+
+    def get_readonly_fields(self):
+        """
+        Hook for specifying custom readonly fields.
+        """
+        return self.readonly_fields
 
     def get_force_instance_values(self):
         """
@@ -867,6 +879,11 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         fields = form.base_fields.keys()
+
+        readonly_fields = self.get_readonly_fields()
+        if readonly_fields:
+            fields.extend(readonly_fields)
+
         return [(None, {'fields': fields})]
 
     def get_form_class(self):
@@ -886,6 +903,27 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         exclude = None
         if self.parent_field:
             exclude = (self.parent_field,)
+
+        readonly_fields = self.get_readonly_fields()
+        if readonly_fields:
+            if exclude:
+                exclude = list(exclude)
+            else:
+                exclude = []
+
+            for field in readonly_fields:
+                try:
+                    try:
+                        f = self.model._meta.get_field(field)
+                        if fields:
+                            fields.remove(field)
+                        else:
+                            exclude.append(field)
+                    except models.FieldDoesNotExist:
+                        if fields:
+                            fields.remove(field)
+                except ValueError:
+                    pass
 
         params = {'fields': fields,
                   'exclude': exclude,
@@ -1477,6 +1515,19 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
                         form_class, fields=self.change_fields, extra=0,
                         **kwargs)
 
+    def _add_formset_id(self, data, queryset):
+        q = None
+        key = self.model._meta.pk.name
+        for k, v in data.items():
+            if k.endswith('-%s' % key):
+                new_q = models.Q(**{key: v})
+                if q:
+                    q = q | new_q
+                else:
+                    q = new_q
+        queryset = queryset.filter(q)
+        return queryset
+
     def get_formset(self, data=None, queryset=None):
         """
         Returns an instantiated FormSet if available.
@@ -1492,17 +1543,7 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
         if FormSet:
             if data:
-                q = None
-                key = self.model._meta.pk.name
-                for k, v in data.items():
-                    if k.endswith('-%s' % key):
-                        new_q = models.Q(**{key: v})
-                        if q:
-                            q = q | new_q
-                        else:
-                            q = new_q
-
-                queryset = queryset.filter(q)
+                queryset = self._add_formset_id(data, queryset)
             return FormSet(data, queryset=queryset)
 
     def get_visible_fields(self, formset):
@@ -1547,6 +1588,18 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
         return queryset
 
+    def _paginate_queryset(self, queryset):
+        page_size = self.get_paginate_by(queryset)
+        paginator = None
+        if page_size:
+            paginator, page, queryset, is_paginated = self.paginate_queryset(
+                queryset, page_size)
+            is_paginated = True
+        else:
+            page = None
+            is_paginated = False
+        return is_paginated, page, paginator, queryset
+
     def get_list_data(self, request, **kwargs):
         """
         Returns the data needed for displaying the list.
@@ -1575,20 +1628,11 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         queryset = self._sort_queryset(self.object_list, sort_field,
                                        order_type)
 
-        page_size = self.get_paginate_by(queryset)
-        paginator = None
-        if page_size:
-            paginator, page, queryset, is_paginated = self.paginate_queryset(
-                                                        queryset, page_size)
-            is_paginated = True
-        else:
-            page = None
-            is_paginated = False
-
         if self.request.method == 'POST' and self.can_submit:
-            formset = self.get_formset(data=self.request.POST,
-                                       queryset=queryset)
+            formset = self.get_formset(data=self.request.POST, queryset=queryset)
+            is_paginated, page, paginator, queryset = self._paginate_queryset(queryset)
         else:
+            is_paginated, page, paginator, queryset = self._paginate_queryset(queryset)
             formset = self.get_formset(queryset=queryset)
 
         visible_fields = self.get_visible_fields(formset)
