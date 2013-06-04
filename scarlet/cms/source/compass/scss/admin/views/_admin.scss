@@ -195,6 +195,23 @@ section#main {
 				}
 			}
 
+			.widget-asset-simple {
+
+			}
+
+			.widget-asset-simple-preview {
+				width: $gridlet*22;
+				height: $gridlet*22;
+				background-color: #eee;
+				background-position: 50% 50%;
+				background-size: contain;
+				background-repeat: no-repeat;
+				border: 1px solid $light-blue;
+				border-radius: $gridlet;
+				box-shadow: inset 0 0 10px rgba(#000, 0.1);
+				float: left;
+			}
+
 			.widget-formset-form {
 				padding: $spacer $spacer*8 $spacer $spacer*2;
 				margin: 0;

@@ -86,7 +86,7 @@ class RawImageWidget(ClearableFileInput):
                 raise
 
         if thumbnail:
-            data = mark_safe(u'<div class="widget-asset"><div class="asset-preview" style="background-image:url({0})"></div>{1}</div>'.format(escape(thumbnail), data))
+            data = mark_safe(u'<p class="widget-asset-simple"><span class="widget-asset-simple-preview" style="background-image:url({0})"></span>{1}</p>'.format(escape(thumbnail), data))
 
         return data
 
