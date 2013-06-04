@@ -39,7 +39,8 @@ class AssetFilterForm(TaggedRelationFilterForm):
     Form for handling asset filtering by fields
     """
     choices = [('', '---')] + list(Asset.TYPES)
-    ftype = forms.ChoiceField(required=False, choices=choices)
+    ftype = forms.ChoiceField(required=False, choices=choices,
+                                label="File Type")
 
     def get_filter(self):
         filter_kwargs = self.get_filter_kwargs()

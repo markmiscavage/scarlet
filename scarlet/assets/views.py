@@ -1,5 +1,7 @@
 import logging
 
+from django.db.models import FileField
+
 try:
     from ..cms import views, renders
 except ValueError:
@@ -11,6 +13,7 @@ from .forms import AssetFilterForm
 from .models import Asset
 from .renders import AssetRenderer
 from . import settings
+from . import fields
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -43,6 +46,11 @@ class AssetFormView(views.FormView):
                 redirect_template='assets/asset_uploaded.html',
                 template=self.default_template
         )
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if isinstance(db_field, FileField):
+            kwargs['widget'] = fields.RawImageWidget
+        return super(AssetFormView, self).formfield_for_dbfield(db_field, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(AssetFormView, self).get_form_kwargs()

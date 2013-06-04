@@ -22,6 +22,7 @@ class AssetRenderer(renders.ChoicesRender):
             data = {
                 'id': o.pk,
                 'user_filename': o.user_filename,
+                'url' : o.file.url
             }
             if thumbnail:
                 data['thumbnail'] = thumbnail
@@ -41,6 +42,11 @@ class AssetRenderer(renders.ChoicesRender):
                 'sortable': False,
                 'order_type': '',
                 'name': 'Thumbnail'
+            },
+            'url': {
+                'sortable': False,
+                'order_type': '',
+                'name': 'Url'
             }
         }
         return data, []

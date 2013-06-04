@@ -3,6 +3,8 @@ import logging
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.db import models
+from django.forms.widgets import ClearableFileInput, CheckboxInput
+from django.utils.html import escape, conditional_escape
 
 try:
     from ..cms.widgets import APIChoiceWidget
@@ -16,6 +18,9 @@ except ValueError:
                                     TaggedRelationField)
 
 from .models import Asset
+from . import settings
+
+from sorl.thumbnail import get_thumbnail
 
 logger = logging.getLogger(__name__)
 
@@ -66,6 +71,24 @@ class AssetsFileFormField(TaggedRelationFormField):
         widget.asset_type = self.asset_type
         return {}
 
+class RawImageWidget(ClearableFileInput):
+    template_with_initial = u'%(initial_text)s: %(initial)s %(clear_template)s<br />%(input_text)s: %(input)s'
+
+    def render(self, name, value, attrs=None):
+        thumbnail = None
+        data = super(RawImageWidget, self).render(name, value, attrs)
+
+        if value and hasattr(value, "url"):
+            try:
+                thumbnail = get_thumbnail(value.file,
+                                  settings.CMS_THUMBNAIL_SIZE).url
+            except Exception:
+                raise
+
+        if thumbnail:
+            data = mark_safe(u'<div class="widget-asset"><div class="asset-preview" style="background-image:url({0})"></div>{1}</div>'.format(escape(thumbnail), data))
+
+        return data
 
 class AssetsFileField(TaggedRelationField):
     default_form_class = AssetsFileFormField
