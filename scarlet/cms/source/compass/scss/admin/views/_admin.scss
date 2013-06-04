@@ -365,6 +365,11 @@ section#main {
 			text-align: right;
 			z-index: 10000;
 
+			.filter-clear {
+				margin-right: 20px;
+				color: $red;
+			}
+
 			summary {
 				color: $blue;
 				cursor: pointer;
@@ -386,6 +391,10 @@ section#main {
 			}
 
 			&[open], &.open {
+				.filter-clear {
+					display: none;
+				}
+
 				summary {
 					background-color: $dark-blue;
 					color: #fff;
@@ -402,16 +411,6 @@ section#main {
 
 					input[type='submit'] {
 						margin-bottom: 0;
-					}
-				}
-			}
-
-			&.filtered {
-				summary {
-					color: $red;
-
-					&:after {
-						color: $red;
 					}
 				}
 			}
