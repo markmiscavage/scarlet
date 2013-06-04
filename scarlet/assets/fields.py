@@ -72,7 +72,7 @@ class AssetsFileFormField(TaggedRelationFormField):
         return {}
 
 class RawImageWidget(ClearableFileInput):
-    template_with_initial = u'%(initial_text)s: %(initial)s %(clear_template)s<br />%(input_text)s: %(input)s'
+    template_with_initial = u'%(initial_text)s: %(initial)s %(clear_template)s<br />%(input)s'
 
     def render(self, name, value, attrs=None):
         thumbnail = None
