@@ -11,3 +11,6 @@ CMS_THUMBNAIL_SIZE = getattr(settings, 'ASSETS_CMS_THUMBNAIL_SIZE', '80x80')
 # EXTRA SETTINGS
 # Convert Filename (UUID)
 HASH_FILENAME = getattr(settings, "ASSETS_HASH_FILENAME", True)
+
+# Append a qs to assets urls for cache busting
+USE_CACHE_BUST = getattr(settings, "ASSETS_USE_CACHE_BUST", True)

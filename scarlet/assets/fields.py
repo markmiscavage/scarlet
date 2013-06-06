@@ -5,6 +5,7 @@ from django.utils.safestring import mark_safe
 from django.db import models
 from django.forms.widgets import ClearableFileInput, CheckboxInput
 from django.utils.html import escape, conditional_escape
+from django.db.models.signals import pre_save
 
 try:
     from ..cms.widgets import APIChoiceWidget
@@ -19,6 +20,7 @@ except ValueError:
 
 from .models import Asset
 from . import settings
+from . import utils
 
 from sorl.thumbnail import get_thumbnail
 
@@ -102,6 +104,7 @@ class AssetsFileField(TaggedRelationField):
             kwargs['on_delete'] = models.PROTECT
 
         self.asset_type = kwargs.pop('type', Asset.UNKNOWN)
+        self.denormalize = kwargs.pop('denormalize', True)
 
         return super(AssetsFileField, self).__init__(
             self.default_model_class, **kwargs)
@@ -112,3 +115,34 @@ class AssetsFileField(TaggedRelationField):
         defaults = super(AssetsFileField, self).get_formfield_defaults()
         defaults['asset_type'] = self.asset_type
         return defaults
+
+    def contribute_to_class(self, cls, name):
+        if self.denormalize:
+            denormalize_field = models.FileField(max_length=255, editable=False,
+                                                blank=self.blank,
+                                                upload_to=utils.assets_dir)
+            cache_name = self.get_denormalized_field_name(name)
+            cls.add_to_class(cache_name,
+                             denormalize_field)
+
+            setattr(cls, "{0}_url".format(name),
+                    utils.partial(utils.asset_url, cache_name))
+
+            pre_save.connect(denormalize_assets, sender=cls)
+
+        # add the date field normally
+        super(AssetsFileField, self).contribute_to_class(cls, name)
+
+    def get_denormalized_field_name(self, name):
+        return u"{0}_cache".format(name)
+
+def denormalize_assets(sender, instance, **kwargs):
+    for field in instance._meta.fields:
+        if isinstance(field, AssetsFileField):
+            cache_name = field.get_denormalized_field_name(field.name)
+            try:
+                asset_ins = getattr(instance, field.name)
+                if asset_ins and field.denormalize:
+                    setattr(instance, cache_name, asset_ins.file.name)
+            except ObjectDoesNotExist:
+                    setattr(instance, cache_name, "")
