@@ -65,3 +65,12 @@ class SwitchSchema(object):
 
     def __exit__(self, etype, value, traceback):
         _mode.schema = self.old_schema
+
+class SwitchSchemaManager(SwitchSchema):
+    def __enter__(self):
+        _mode.schema = self.schema
+        _mode.current_state = self.schema
+
+    def __exit__(self, etype, value, traceback):
+        _mode.schema = self.old_schema
+        _mode.current_state = self.old_schema

@@ -10,6 +10,8 @@ from sorl.thumbnail import delete
 from . import settings
 from .managers import AssetManager
 from . import utils
+from ..versioning import manager
+
 try:
     from ..cms.internal_tags.models import AutoTagModel
 except ValueError:
@@ -99,15 +101,17 @@ class Asset(AutoTagModel):
         super(Asset, self).save(*args, **kwargs)
 
         if self.__original_file and self.file.name != self.__original_file.name:
-            for related in self.__class__._meta.get_all_related_objects(
-                    include_hidden=True):
-                field = related.field
-                if getattr(field, 'denormalize'):
-                    related.model.objects.filter(**{
-                        field.name: self.pk
-                    }).update(**{
-                        field.get_denormalized_field_name(field.name): self.file.name
-                    })
+            with manager.SwitchSchemaManager(None):
+                for related in self.__class__._meta.get_all_related_objects(
+                        include_hidden=True):
+                    field = related.field
+                    if getattr(field, 'denormalize'):
+                        related.model.objects.filter(**{
+                            field.name: self.pk
+                        }).update(**{
+                            field.get_denormalized_field_name(field.name): self.file.name
+                        })
+
 
     def delete(self, *args, **kwargs):
         """
