@@ -1,0 +1,67 @@
+{% extends "cms/base_popup.html" %}
+
+{% block page_class %}media{% endblock page_class %}
+
+{% block popup_header %}
+<ul data-tabs-container=".media-container" class="widget-tabs tabs">
+	<li><a data-tabs-content="> .video" href="#">Video</a></li>
+	{% comment %}
+	{% endcomment %}
+	<li><a data-tabs-content="> .images" href="#">Images</a></li>
+</ul>
+{% endblock popup_header %}
+
+{% block content %}
+
+<div class="media-container">
+
+	<div class="video">
+
+		<ul data-tabs-container=".video-container" class="widget-tabs sub-tabs">
+			<li><a class="button active" data-tabs-content="> .youtube" href="#">Embed Url</a></li>
+		</ul>
+
+		<div class="video-container">
+			<form class="youtube">
+
+				<label>YouTube URL:
+					<input type="text" name="src">
+				</label>
+
+				<hr>
+
+				<label>Preview:
+					<div class="preview"></div>
+				</label>
+
+				<label>Width (px):
+					<input type="text" name="width">
+				</label>
+				<label>Height (px):
+					<input type="text" name="width">
+				</label>
+
+				<label>
+					<input type="checkbox" name="proportion">
+					Constrain Proportions
+				</label>
+
+				<p><a class="button" href="#">Cancel</a>
+				<input class="big" type="submit" name="isnert" value="Insert" /></p>
+
+			</form>
+		</div>
+
+	</div>
+
+	{% comment %}
+	{% endcomment %}
+	<div class="images" style="display: none;">
+
+		Image Stuff
+
+	</div>
+
+</div>
+
+{% endblock content %}

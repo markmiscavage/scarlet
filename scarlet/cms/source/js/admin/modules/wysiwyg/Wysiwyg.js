@@ -4,11 +4,12 @@ define(
 		"rosy/base/DOMClass",
 		"$",
 		"wysihtml5",
+		"./commands/commands",
 		"./WysiwygRules",
 		"text!./toolbar.html"
 	],
 
-	function (DOMClass, $, wysihtml5, wysihtml5ParserRules, toolbar) {
+	function (DOMClass, $, wysihtml5, commands, wysihtml5ParserRules, toolbar) {
 
 		"use strict";
 

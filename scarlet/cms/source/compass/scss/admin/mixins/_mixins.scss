@@ -82,7 +82,7 @@
 	padding: $gridlet*2 $gridlet*3;
 	width: auto;
 
-	&:hover {
+	&:hover, &.active {
 		background-color: $blue;
 		color: $light-blue;
 	}

@@ -7,12 +7,16 @@
 		<a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2">h2</a>
 		<a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3">h3</a>
 		<a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h4">h4</a>
+		<a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="blockquote">“</a>
 		<a class="spacer" data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="p">p</a>
 		<a data-wysihtml5-command="insertUnorderedList">ul</a>
 		<a class="spacer" data-wysihtml5-command="insertOrderedList">ol</a>
 		<a data-wysihtml5-command="undo">undo</a>
 		<a class="spacer" data-wysihtml5-command="redo">redo</a>
 		<a class="spacer" data-wysihtml5-action="change_view">view html</a>
+		<a data-wysihtml5-command="insertImage">image</a>
+		<a data-wysihtml5-command="insertVideo">video</a>
+		<a class="spacer" data-wysihtml5-command="insertMedia" data-wysihtml5-command-value='{"mediaUrl":"/"}'>insert media</a>
 	</div>
 	<div class="wysiwyg-modals">
 		<div class="modal" data-wysihtml5-dialog="createLink" style="display: none;">
@@ -21,5 +25,28 @@
 			<a data-wysihtml5-dialog-action="save">OK</a>
 			<a data-wysihtml5-dialog-action="cancel">Cancel</a>
 		</div>
+		<div class="modal" data-wysihtml5-dialog="insertImage" style="display: none;">
+			<label>Image URL:
+				<input data-wysihtml5-dialog-field="src" placeholder="http://">
+			</label>
+
+			<label>Width:
+				<input data-wysihtml5-dialog-field="width">
+			</label>
+
+			<label>Height:
+				<input data-wysihtml5-dialog-field="height">
+			</label>
+
+			<label>Title:
+				<input data-wysihtml5-dialog-field="alt">
+			</label>
+
+			<br>
+
+			<a data-wysihtml5-dialog-action="save">OK</a>
+			<a data-wysihtml5-dialog-action="cancel">Cancel</a>
+		</div>
+
 	</div>
 </div>

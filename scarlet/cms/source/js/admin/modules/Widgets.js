@@ -10,6 +10,7 @@ define(
 			AssetSelect          = require("./AssetSelect"),
 			ApiSelect            = require("./ApiSelect"),
 			Formset              = require("./Formset"),
+			Tabs                 = require("./Tabs"),
 			Wysiwyg              = require("./wysiwyg/Wysiwyg"),
 			WidgetEvents         = require("./WidgetEvents"),
 			WindowPopup          = require("./WindowPopup"),
@@ -30,6 +31,7 @@ define(
 				this._renderApiSelect(dom);
 				this._renderDatePicker(dom);
 				this._renderWysiwig(dom);
+				this._renderTabs(dom);
 
 				this._handlePopup(dom);
 			},
@@ -95,6 +97,12 @@ define(
 
 				dom.find('.widget-popup-data').each(function (i, dom) {
 					WindowPopup.respond($(dom).data());
+				});
+			},
+
+			_renderTabs : function (dom) {
+				dom.find(".widget-tabs").each(function (i, el) {
+					var tabs = new Tabs($(el));
 				});
 			}
 		});

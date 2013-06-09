@@ -9,6 +9,8 @@ from django.views.decorators.cache import never_cache
 from django.template.response import TemplateResponse
 from django.utils.translation import ugettext as _
 from django import forms
+from django.views.generic import TemplateView
+
 
 from . import models
 from . forms import BaseFilterForm
@@ -189,6 +191,7 @@ class AdminSite(object):
             url(r'^password_change/done/$',
                 wrap(self.password_change_done, cacheable=True),
                 name='cms_password_change_done'),
+            url(r'^test/$', TemplateView.as_view(template_name='cms/insert_media.html')),
         )
 
         # Add in each model's views.
