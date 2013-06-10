@@ -191,7 +191,6 @@ class AdminSite(object):
             url(r'^password_change/done/$',
                 wrap(self.password_change_done, cacheable=True),
                 name='cms_password_change_done'),
-            url(r'^test/$', TemplateView.as_view(template_name='cms/insert_media.html')),
         )
 
         # Add in each model's views.
