@@ -2,8 +2,8 @@ from django.forms.models import inlineformset_factory
 
 from scarlet.cms import bundles, site, forms, options, views, renders
 
-from models import Post, PostImage, Comment, Category, Author
-from views import PostsListView
+from models import Post, PostImage, Comment, Category, Author, DummyModel
+from views import PostsListView, EditAgainView
 from forms import EditAuthorForm
 
 
@@ -52,6 +52,21 @@ class AuthorBundle(bundles.Bundle):
     class Meta():
         model = Author
         primary_model_bundle = True
+
+class DummyAliasBundle(bundles.Bundle):
+    dummy_edit = views.FormView()
+    edit = bundles.URLAlias(alias_to = "dummy_edit")
+
+    class Meta():
+        model = DummyModel
+        item_views = ('dummy_edit', 'delete')
+
+class DummyRedirectorBundle(bundles.Bundle):
+    edit = EditAgainView()
+
+    class Meta():
+        model = DummyModel
+        item_views = ('edit', 'delete')
 
 
 DEFAULT_FIELDS =(
@@ -108,6 +123,8 @@ class BlogBundle(bundles.DelegatedObjectBundle):
     dashboard = (
         ('main',),
         ('author',),
+        ('dummy_alias',),
+        ('dummy_redirector',),
         ('category',),
     )
 
@@ -115,6 +132,8 @@ class BlogBundle(bundles.DelegatedObjectBundle):
     add = PostAddView(fieldsets=DEFAULT_FIELDS)
     edit = BlogEditBundle.as_subbundle(name='post', title="Post")
     author = AuthorBundle.as_subbundle(name='author', title='Author')
+    dummy_alias = DummyAliasBundle.as_subbundle(name='dummy_alias', title='Dummy Alias')
+    dummy_redirector = DummyRedirectorBundle.as_subbundle(name='dummy_redirector', title='Dummy Redirect')
     category = CategoryBundle.as_subbundle(name='category', title='Category')
     preview = views.PreviewWrapper(preview_view=PostsListView,
         pass_through_kwarg=None)
