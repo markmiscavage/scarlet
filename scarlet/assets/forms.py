@@ -6,14 +6,15 @@ try:
 except ValueError:
     from cms.internal_tags.forms import TaggedRelationFilterForm
 
-from .models import Asset
+from . import get_asset_model
+from . models import AssetBase
 
 class UploadAssetForm(forms.ModelForm):
     """
     Form for handling new asset creation
     """
     class Meta:
-        model = Asset
+        model = get_asset_model()
         fields = ('type', 'file', 'tags')
 
     def __init__(self, *args, **kwargs):
@@ -26,7 +27,7 @@ class UpdateAssetForm(forms.ModelForm):
     Form for handling asset updates
     """
     class Meta:
-        model = Asset
+        model = get_asset_model()
         fields = ('file', 'tags')
 
     def __init__(self, *args, **kwargs):
@@ -38,7 +39,7 @@ class AssetFilterForm(TaggedRelationFilterForm):
     """
     Form for handling asset filtering by fields
     """
-    choices = [('', '---')] + list(Asset.TYPES)
+    choices = [('', '---')] + list(AssetBase.TYPES)
     ftype = forms.ChoiceField(required=False, choices=choices,
                                 label="File Type")
 

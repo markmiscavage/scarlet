@@ -1,6 +1,7 @@
 from functools import wraps
 import os
 import random
+import urlparse
 
 from django.core.cache import cache
 
@@ -22,25 +23,10 @@ def assets_dir(instance, filename):
     else:
         return instance.slug + ext
 
-def asset_url(self, name, cbversion=None):
-    url = ""
-    f_obj = getattr(self, name)
+def get_size_filename(filename, size_name):
+    filename, ext = os.path.splitext(filename)
+    return filename + "_" + size_name + ext
 
-    if f_obj:
-        url = f_obj.url
-
-        if settings.USE_CACHE_BUST:
-            if not cbversion:
-                if getattr(self, 'cbversion', None):
-                    cbversion = getattr(self, 'cbversion')
-
-            if not cbversion:
-                cbversion = get_cache_bust_version(url)
-
-    if cbversion:
-        url = "{0}?v={1}".format(url, cbversion)
-
-    return url
 
 def get_cache_bust_version(url):
     key = "cbversion.{0}".format(url)
@@ -50,7 +36,13 @@ def get_cache_bust_version(url):
         value = update_cache_bust_version(url, random.randint(0, 60))
     return value
 
-def update_cache_bust_version(url, value):
+def update_cache_bust_version(url, value=None):
     key = "cbversion.{0}".format(url)
+    if not value:
+        value = cache.get(key)
+    if value:
+        value = int(value) + 1
+    else:
+        value = 1
     cache.set(key, value, 60*60*24*60)
     return value

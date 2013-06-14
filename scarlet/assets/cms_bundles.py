@@ -5,22 +5,15 @@ try:
 except ValueError:
     from cms import site, bundles, views
 
-from . import models
+from . import get_asset_model
 from . import forms
 from .views import AssetListView, AssetFormView
 from . import settings
 
-from sorl.thumbnail import get_thumbnail
 
 def preview(obj):
     if obj.type == obj.IMAGE:
-        thumbmail = None
-        try:
-            thumbnail = get_thumbnail(obj.file.file,
-                                  settings.CMS_THUMBNAIL_SIZE).url
-        except:
-            pass
-
+        thumbnail = obj.file.admin_url()
         if thumbnail:
             return mark_safe('<img src="{0}" />'.format(thumbnail))
 
@@ -34,6 +27,6 @@ class AssetBundle(bundles.Bundle):
 
     class Meta:
         primary_model_bundle = True
-        model = models.Asset
+        model = get_asset_model()
 
 site.register('assets', AssetBundle(name='assets'), 20)

@@ -7,13 +7,12 @@ try:
 except ValueError:
     from cms import views, renders
 
-from sorl.thumbnail import get_thumbnail
-
 from .forms import AssetFilterForm
-from .models import Asset
+from .models import AssetBase
 from .renders import AssetRenderer
 from . import settings
 from . import fields
+from . import widgets
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -49,14 +48,14 @@ class AssetFormView(views.FormView):
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if isinstance(db_field, FileField):
-            kwargs['widget'] = fields.RawImageWidget
+            kwargs['widget'] = widgets.RawImageWidget
         return super(AssetFormView, self).formfield_for_dbfield(db_field, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(AssetFormView, self).get_form_kwargs()
 
         initial = {}
-        asset_type = self.request.GET.get('type', Asset.UNKNOWN)
+        asset_type = self.request.GET.get('type', AssetBase.UNKNOWN)
         if asset_type:
             initial['type'] = asset_type
 
@@ -70,11 +69,8 @@ class AssetFormView(views.FormView):
         return kwargs
 
     def success_response(self, message=None):
-        try:
-            thumbnail = get_thumbnail(self.object.file.file,
-                                settings.CMS_THUMBNAIL_SIZE).url
-        except IOError:
-            thumbnail = None
+        if hasattr(self.object.file, 'admin_url'):
+            thumbnail = self.object.file.admin_url
 
         context = {'obj': self.object, 'thumb_url': thumbnail}
 

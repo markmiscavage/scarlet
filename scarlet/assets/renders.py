@@ -3,8 +3,6 @@ try:
 except ValueError:
     from cms import renders
 
-from sorl.thumbnail import get_thumbnail
-
 from . import settings
 
 class AssetRenderer(renders.ChoicesRender):
@@ -13,11 +11,8 @@ class AssetRenderer(renders.ChoicesRender):
         for row in adm_list:
             o = row.instance
 
-            try:
-                thumbnail = get_thumbnail(o.file.file,
-                                          settings.CMS_THUMBNAIL_SIZE).url
-            except:
-                thumbnail = None
+            if hasattr(o.file, 'admin_url'):
+                thumbnail = o.file.admin_url()
 
             data = {
                 'id': o.pk,

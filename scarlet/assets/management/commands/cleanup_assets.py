@@ -5,7 +5,7 @@ import shutil
 
 from django.core.management.base import BaseCommand
 
-from ...models import Asset
+from ... import get_asset_model
 
 # http://djangosnippets.org/snippets/1949/ + IndexError fix
 def queryset_iterator(queryset, chunksize=1000):
@@ -42,7 +42,7 @@ class Command(BaseCommand):
         t1 = time.time()
 
         # Process all assets
-        qs = queryset_iterator(Asset.objects.all(), self.ASSET_CHUNKSIZE)
+        qs = queryset_iterator(get_asset_model().objects.all(), self.ASSET_CHUNKSIZE)
         for asset in qs:
             try:
                 with open(asset.file.path) as f:

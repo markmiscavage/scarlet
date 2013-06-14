@@ -5,11 +5,14 @@ from django.db import models
 from django.core.files.uploadedfile import UploadedFile
 from django.db.models.deletion import Collector
 
-from sorl.thumbnail import delete
 
+from . import get_image_cropper
 from . import settings
-from .managers import AssetManager
 from . import utils
+from . import signals
+from .managers import AssetManager
+from .fields import AssetRealFileField
+
 from ..versioning import manager
 
 try:
@@ -17,33 +20,23 @@ try:
 except ValueError:
     from cms.internal_tags.models import AutoTagModel
 
-class Asset(AutoTagModel):
+class AssetBase(AutoTagModel):
     UNKNOWN = 'unknown'
     IMAGE = 'image'
     DOCUMENT = 'document'
     AUDIO = 'audio'
     VIDEO = 'video'
 
-    TYPES = (
-        (UNKNOWN, 'Unknown'),
+    TYPES = settings.ASSET_TYPES and settings.ASSET_TYPES or \
+        ((UNKNOWN, 'Unknown'),
         (IMAGE, 'Image'),
         (DOCUMENT, 'Document'),
         (AUDIO, 'Audio'),
-        (VIDEO, 'Video'),
-    )
+        (VIDEO, 'Video'),)
 
     __original_file = None
 
-    def __init__(self, *args, **kwargs):
-        super(Asset, self).__init__(*args, **kwargs)
-        self.__original_file = self.file
-
-    def rename_file(self):
-        if self.type == self.DOCUMENT:
-            return False
-        return settings.HASH_FILENAME
-
-    file = models.FileField(upload_to=utils.assets_dir)
+    file = AssetRealFileField(upload_to=utils.assets_dir)
     type = models.CharField(max_length=255, choices=TYPES, db_index=True)
     slug = models.SlugField(unique=True, max_length=255)
     user_filename = models.CharField(max_length=255)
@@ -53,11 +46,23 @@ class Asset(AutoTagModel):
 
     objects = AssetManager()
 
+    class Meta:
+        abstract = True
+
+    def __init__(self, *args, **kwargs):
+        super(AssetBase, self).__init__(*args, **kwargs)
+        self.__original_file = self.file
+
+    def rename_file(self):
+        if self.type == self.DOCUMENT:
+            return False
+        return settings.HASH_FILENAME
+
     def url(self):
         """
         This is a wrapper of file.url
         """
-        return utils.asset_url(self, 'file', version=self.cbversion)
+        return self.file.url
 
     def generate_slug(self):
         return str(uuid.uuid1())
@@ -68,8 +73,51 @@ class Asset(AutoTagModel):
     def delete_real_file(self, file_obj):
         storage, path = file_obj.storage, file_obj.path
         storage.delete(path)
-        # Tell sorl to remove reference
-        delete(file_obj, delete_file=False)
+        signals.file_removed.send(file_obj.name)
+
+    def _can_crop(self):
+        return self.type == self.IMAGE
+
+    def reset_crops(self):
+        """
+        Reset all known crops to the default crop.
+        """
+
+        if self._can_crop():
+            crops = set(self.imagedetail_set.values_list('name', flat=True))
+            crops = crops.union(set(get_image_cropper().required_crops()))
+            length = len(crops)
+            for i, size in enumerate(crops):
+                last = i==(length-1)
+                spec = get_image_cropper().create_crop(size, self.file)
+                ImageDetail.save_crop_spec(self, spec,
+                                           update_version=last)
+
+    def ensure_crops(self, *required_crops):
+        """
+        Make sure a crop exists for each crop in required_crops.
+        Existing crops will not be changed.
+        """
+
+        if self._can_crop():
+            required_crops = set(required_crops).union(
+                                 set(get_image_cropper().required_crops()))
+            crops = set(self.imagedetail_set.all().values_list('name', flat=True))
+            needed = required_crops.difference(crops)
+            length = len(needed)
+            for i, size in enumerate(needed):
+                last = i==(length-1)
+                spec = get_image_cropper().create_crop(size, self.file)
+                ImageDetail.save_crop_spec(self, spec,
+                                           update_version=last)
+
+    def create_crop(self, name, x, x2, y, y2):
+        """
+        Create a crop for this asset.
+        """
+        if self._can_crop():
+            spec = get_image_cropper().create_crop(size, self.file)
+            ImageDetail.save_crop_spec(self, spec)
 
     def save(self, *args, **kwargs):
         """
@@ -90,27 +138,32 @@ class Asset(AutoTagModel):
             if hasattr(new_value, "file"):
                 file_changed = isinstance(new_value.file, UploadedFile)
         else:
-            self.cbversion = 1
+            self.cbversion = 0
 
         if file_changed:
             self.user_filename = os.path.basename(self.file.name)
-            if file_changed and self.pk:
-                self.cbversion = self.cbversion + 1
-                utils.update_cache_bust_version(self.file.url, self.cbversion)
+            self.cbversion = self.cbversion + 1
 
-        super(Asset, self).save(*args, **kwargs)
+        super(AssetBase, self).save(*args, **kwargs)
+
+        if file_changed:
+            signals.file_saved.send(self.file.name)
+            utils.update_cache_bust_version(self.file.url, self.cbversion)
+            self.reset_crops()
 
         if self.__original_file and self.file.name != self.__original_file.name:
             with manager.SwitchSchemaManager(None):
                 for related in self.__class__._meta.get_all_related_objects(
                         include_hidden=True):
                     field = related.field
-                    if getattr(field, 'denormalize'):
-                        related.model.objects.filter(**{
-                            field.name: self.pk
-                        }).update(**{
-                            field.get_denormalized_field_name(field.name): self.file.name
-                        })
+                    if getattr(field, 'denormalize', None):
+                        cname = field.get_denormalized_field_name(field.name)
+                        if getattr(field, 'denormalize'):
+                            related.model.objects.filter(**{
+                                field.name: self.pk
+                            }).update(**{
+                                cname : self.file.name
+                            })
 
 
     def delete(self, *args, **kwargs):
@@ -120,8 +173,48 @@ class Asset(AutoTagModel):
         Calls super to actually delete the object.
         """
         file_obj = self.file
-        super(Asset, self).delete(*args, **kwargs)
+        super(AssetBase, self).delete(*args, **kwargs)
         self.delete_real_file(file_obj)
 
     def __unicode__(self):
         return '%s' % (self.user_filename)
+
+
+class ImageDetailBase(models.Model):
+    image = models.ForeignKey(settings.ASSET_MODEL)
+    width = models.PositiveIntegerField()
+    height = models.PositiveIntegerField()
+
+    name = models.CharField(max_length=255)
+    editable = models.BooleanField()
+
+    x = models.PositiveIntegerField(null=True)
+    x2 = models.PositiveIntegerField(null=True)
+    y = models.PositiveIntegerField(null=True)
+    y2 = models.PositiveIntegerField(null=True)
+
+    class Meta:
+        abstract = True
+
+    @classmethod
+    def save_crop_spec(cls, asset, spec, update_version=True):
+        if spec:
+            cdict = spec.__dict__
+            updated = cls.objects.filter(image=asset,
+                                         name=cdict['name']).update(**cdict)
+            if not updated:
+                cls(image=asset, **cdict).save()
+
+            if update_version:
+                asset.__class__.objects.filter(pk=asset.pk
+                        ).update(cbversion=models.F('cbversion')+1)
+
+class Asset(AssetBase):
+    class Meta:
+        abstract = False
+
+
+class ImageDetail(ImageDetailBase):
+
+    class Meta:
+        abstract = False

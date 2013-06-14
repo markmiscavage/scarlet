@@ -1,67 +1,28 @@
 import logging
+import urlparse
 
-from django.template.loader import render_to_string
-from django.utils.safestring import mark_safe
 from django.db import models
-from django.forms.widgets import ClearableFileInput, CheckboxInput
-from django.utils.html import escape, conditional_escape
 from django.db.models.signals import pre_save
+from django.db.models.fields.files import FieldFile
+from django.core.exceptions import ObjectDoesNotExist
 
 try:
-    from ..cms.widgets import APIChoiceWidget
     from ..cms.internal_tags.fields import (TaggedRelationFormField,
-                                    TaggedRelationWidget,
                                     TaggedRelationField)
 except ValueError:
-    from cms.widgets import APIChoiceWidget
     from cms.internal_tags.fields import (TaggedRelationFormField,
-                                    TaggedRelationWidget,
                                     TaggedRelationField)
 
-from .models import Asset
 from . import settings
 from . import utils
-
-from sorl.thumbnail import get_thumbnail
+from . import widgets
+from . import get_asset_model, get_image_cropper
 
 logger = logging.getLogger(__name__)
 
 
-class AssetsFileWidget(TaggedRelationWidget):
-
-    def get_qs(self):
-        qs = super(AssetsFileWidget, self).get_qs()
-        if self.asset_type:
-            qs['ftype'] = self.asset_type
-        return qs
-
-    def get_add_qs(self):
-        qs = self.get_qs()
-        if 'ftype' in qs:
-            qs['type'] = qs.pop('ftype')
-        return qs
-
-    def render(self, name, value, attrs=None):
-        obj = self.obj_for_value(value)
-
-        # Go directly to parent of APIChoiceWidget to get input
-        hidden_input = super(APIChoiceWidget, self).render(
-            name, value, attrs=attrs)
-
-        context = {
-            'hidden_input': hidden_input,
-            'object': obj,
-            'asset_type': self.asset_type,
-            'asset_tags': self.tags,
-            'link': self.get_api_link(),
-            'add_link': self.get_add_link()
-        }
-        html = render_to_string('assets/asset_widget.html', context)
-        return mark_safe(html)
-
-
 class AssetsFileFormField(TaggedRelationFormField):
-    widget = AssetsFileWidget
+    widget = widgets.AssetsFileWidget
 
     def __init__(self, **kwargs):
         # Type/Tags
@@ -73,29 +34,52 @@ class AssetsFileFormField(TaggedRelationFormField):
         widget.asset_type = self.asset_type
         return {}
 
-class RawImageWidget(ClearableFileInput):
-    template_with_initial = u'%(initial_text)s: %(initial)s %(clear_template)s<br />%(input)s'
 
-    def render(self, name, value, attrs=None):
-        thumbnail = None
-        data = super(RawImageWidget, self).render(name, value, attrs)
+class AssetFieldFile(FieldFile):
 
-        if value and hasattr(value, "url"):
-            try:
-                thumbnail = get_thumbnail(value.file,
-                                  settings.CMS_THUMBNAIL_SIZE).url
-            except Exception:
-                raise
+    def __init__(self, *args, **kwargs):
+        super(AssetFieldFile, self).__init__(*args, **kwargs)
+        sizes = getattr(self.field, 'image_sizes', [])
+        sizes.extend(get_image_cropper().required_crops())
 
-        if thumbnail:
-            data = mark_safe(u'<p class="widget-asset-simple"><span class="widget-asset-simple-preview" style="background-image:url({0})"></span>{1}</p>'.format(escape(thumbnail), data))
+        for size in sizes:
+            setattr(self, "{0}_url".format(size),
+                    utils.partial(self._get_url, version=size))
 
-        return data
+    def get_version(version, cbversion=None):
+        return self._get_url(version, cbversion=cbversion)
+
+    def _get_url(self, version=None, cbversion=None):
+        if not self:
+            return ""
+
+        url = super(AssetFieldFile, self)._get_url()
+        if url:
+            if version:
+                url_parts = list(urlparse.urlsplit(url))
+                url_parts[2] = utils.get_size_filename(url_parts[2], version)
+                url = urlparse.urlunsplit(url_parts)
+            if settings.USE_CACHE_BUST:
+                if not cbversion:
+                    if getattr(self.instance, 'cbversion', None):
+                        cbversion = getattr(self.instance, 'cbversion')
+
+                if not cbversion:
+                    cbversion = utils.get_cache_bust_version(url)
+
+        if cbversion:
+            url = "{0}?v={1}".format(url, cbversion)
+        return url
+    url = property(_get_url)
+
+
+class AssetRealFileField(models.FileField):
+    attr_class = AssetFieldFile
+
 
 class AssetsFileField(TaggedRelationField):
     default_form_class = AssetsFileFormField
-    default_model_class = Asset
-
+    default_cache_field_class = AssetRealFileField
     def __init__(self, *args, **kwargs):
         if not 'related_name' in kwargs:
             kwargs['related_name'] = '+'
@@ -103,11 +87,26 @@ class AssetsFileField(TaggedRelationField):
         if not 'on_delete' in kwargs:
             kwargs['on_delete'] = models.PROTECT
 
-        self.asset_type = kwargs.pop('type', Asset.UNKNOWN)
+        self.cache_field_class = kwargs.pop('cache_field_class',
+                                            self.default_cache_field_class)
+        self.asset_type = kwargs.pop('type', 'unknown')
         self.denormalize = kwargs.pop('denormalize', True)
 
+        image_sizes = kwargs.pop('image_sizes', [])
+        cropper = get_image_cropper()
+
+        self.image_sizes = []
+        if isinstance(image_sizes, dict):
+            if v and isinstance(v, dict):
+                cropper.register(CropConfig(k, **v))
+                self.image_sizes.append(k)
+        else:
+            for c in image_sizes:
+                cropper.register(c)
+                self.image_sizes.append(c.name)
+
         return super(AssetsFileField, self).__init__(
-            self.default_model_class, **kwargs)
+            get_asset_model(), **kwargs)
 
     def get_formfield_defaults(self):
         # This is a fairly standard way to set up some defaults
@@ -118,19 +117,15 @@ class AssetsFileField(TaggedRelationField):
 
     def contribute_to_class(self, cls, name):
         if self.denormalize:
-            denormalize_field = models.FileField(max_length=255, editable=False,
+            denormalize_field = self.cache_field_class(max_length=255,
+                                                editable=False,
                                                 blank=self.blank,
                                                 upload_to=utils.assets_dir)
             cache_name = self.get_denormalized_field_name(name)
-            cls.add_to_class(cache_name,
-                             denormalize_field)
-
-            setattr(cls, "{0}_url".format(name),
-                    utils.partial(utils.asset_url, cache_name))
-
+            cls.add_to_class(cache_name, denormalize_field)
             pre_save.connect(denormalize_assets, sender=cls)
 
-        # add the date field normally
+        # add the field normally
         super(AssetsFileField, self).contribute_to_class(cls, name)
 
     def get_denormalized_field_name(self, name):
@@ -143,6 +138,9 @@ def denormalize_assets(sender, instance, **kwargs):
             try:
                 asset_ins = getattr(instance, field.name)
                 if asset_ins and field.denormalize:
-                    setattr(instance, cache_name, asset_ins.file.name)
+                    cache_ins = getattr(instance, cache_name, None)
+                    if not cache_ins or cache_ins.name != asset_ins.file.name:
+                        setattr(instance, cache_name, asset_ins.file.name)
+                        asset_ins.ensure_crops(*field.image_sizes)
             except ObjectDoesNotExist:
                     setattr(instance, cache_name, "")
