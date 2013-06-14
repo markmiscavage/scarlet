@@ -11,6 +11,8 @@ define(
 			ApiSelect            = require("./ApiSelect"),
 			Formset              = require("./Formset"),
 			Tabs                 = require("./Tabs"),
+			InsertVideo          = require("./InsertVideo"),
+			InsertImage          = require("./InsertImage"),
 			Wysiwyg              = require("./wysiwyg/Wysiwyg"),
 			WidgetEvents         = require("./WidgetEvents"),
 			WindowPopup          = require("./WindowPopup"),
@@ -32,6 +34,8 @@ define(
 				this._renderDatePicker(dom);
 				this._renderWysiwig(dom);
 				this._renderTabs(dom);
+				this._renderInsertVideo(dom);
+				this._renderInsertImage(dom);
 
 				this._handlePopup(dom);
 			},
@@ -104,7 +108,23 @@ define(
 				dom.find(".widget-tabs").each(function (i, el) {
 					var tabs = new Tabs($(el));
 				});
-			}
+			},
+
+			_renderInsertVideo : function (dom) {
+				dom.find(".widget-insert-video").each(function (i, el) {
+					var insertVideo = new InsertVideo({
+						$dom : $(el)
+					});
+				});
+			},
+
+			_renderInsertImage : function (dom) {
+				dom.find(".widget-insert-image").each(function (i, el) {
+					var insertImage = new InsertImage({
+						$dom : $(el)
+					});
+				});
+			},
 		});
 	}
 );

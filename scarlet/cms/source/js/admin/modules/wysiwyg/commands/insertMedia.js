@@ -1,16 +1,17 @@
+// Insert Media WYSIHTML5 Command Module
 define(
 	[
-		"rosy/base/Class",
+		"$",
 		"admin/modules/WindowPopup",
 		"wysihtml5"
 	],
-	function (Class, WindowPopup, wysihtml5) {
-
-		var NODE_NAME = "IFRAME";
+	function ($, WindowPopup, wysihtml5) {
 
 		return {
 
-			launchWindow : function (url, width, height, top, left) {
+			// Launches a centered popup.
+			launchWindow : function (url, width, height, top, left, cb) {
+
 				left = left || (screen.width) ? (screen.width - width) / 2 : 0;
 				top = top || (screen.height) ? (screen.height - height) / 2 : 0;
 
@@ -26,19 +27,25 @@ define(
 					'menubar=no',
 					'toolbar=no',
 					'resizable=no'
-				].join(','));
+				].join(','), cb);
 
 			},
 
+			// Base execute (executes when "insert media" is clicked)
 			exec : function (composer, command, value) {
 
+				// `value` should be a valid JSON string.
 				try {
 					value = JSON.parse(value);
 				} catch (e) {
-					throw "You must pass a valid JSON Object to the insertMedia command-value data attribute.";
+					throw "You must pass valid JSON to the insertMedia `command-value` data attribute.";
 				}
 
-				this.launchWindow(value.mediaUrl, 1025, 600);
+				// Launches a popup, given a URL.
+				this.launchWindow(value.mediaUrl, 1025, 600, null, null, function (data) {
+					// Inserts the response form the popup as a DOM node
+					composer.selection.insertNode($(data)[0]);
+				});
 
 			}
 
