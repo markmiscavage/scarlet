@@ -13,7 +13,10 @@ from . import signals
 from .managers import AssetManager
 from .fields import AssetRealFileField
 
-from ..versioning import manager
+try:
+    from ..versioning import manager
+except ValueError:
+    from versioning import manager
 
 try:
     from ..cms.internal_tags.models import AutoTagModel
