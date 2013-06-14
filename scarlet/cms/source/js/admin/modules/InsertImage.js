@@ -9,6 +9,11 @@ define(
 
 		return Insert.extend({
 
+			bindInputs : function () {
+				this.sup();
+				this.$dom.find('[data-respond=\"true\"]').on("change", this.onInput);
+			},
+
 			onInput : function (e) {
 
 				var $target = $(e.currentTarget),
@@ -16,6 +21,12 @@ define(
 					value = $(e.currentTarget).val(),
 					$preview = this.$dom.find(".image-preview"),
 					$img = $preview.find('img');
+
+				if ($target.attr('data-src')) {
+					$preview.empty();
+					$img = $preview.find('img');
+					value = $target.attr('data-src');
+				}
 
 				if (!$img.length) {
 
