@@ -1,7 +1,7 @@
 from .internal_tags.forms import TagFilterForm
 from .internal_tags import handler
 
-from . import views, bundles, sites
+from . import views, bundles
 from . import site
 
 class TagListView(views.ListView):
@@ -18,6 +18,8 @@ class TagBundle(bundles.Bundle):
         model = handler.get_model()
 
 class EmbedView(views.CMSView):
+    base_template = 'cms/partial.html'
+
     def get(self, request, *args, **kwargs):
         tags = request.GET.get('tags')
         return self.render(request, tags=tags)
@@ -26,7 +28,4 @@ class WYSIWYG(bundles.BlankBundle):
     main = EmbedView(default_template='cms/insert_media.html')
 
 site.register('tags', TagBundle(name='tags'), 20)
-try:
-    site.register('wysiwyg', WYSIWYG(name='wysiwyg'), 21)
-except sites.AlreadyRegistered:
-    pass
+site.register('wysiwyg', WYSIWYG(name='wysiwyg'), 21)
