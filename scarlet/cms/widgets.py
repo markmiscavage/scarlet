@@ -8,6 +8,7 @@ from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
 from django.core.urlresolvers import reverse
 from django.utils.dateparse import parse_time
+from django.template.loader import render_to_string
 
 from django.contrib.admin.widgets import url_params_from_lookup_dict
 
@@ -339,6 +340,7 @@ class HTMLWidget(widgets.Textarea):
     WYSIWYG Widget. Adds *widget-wysiwyg* to the class attribute
     in the rendered html.
     """
+    template = "cms/toolbar.html"
 
     def __init__(self, *args, **kwargs):
         super(HTMLWidget, self).__init__(*args, **kwargs)
@@ -346,3 +348,7 @@ class HTMLWidget(widgets.Textarea):
         if self.attrs.get('class'):
             classes.append(self.attrs.get('class'))
         self.attrs['class'] = " ".join(classes)
+
+    def render(self, *args, **kwargs):
+        text = super(HTMLWidget, self).render(*args, **kwargs)
+        return mark_safe(u"{1} {0}".format(text, render_to_string(self.template)))

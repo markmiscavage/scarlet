@@ -36,4 +36,25 @@ class AssetBundle(bundles.Bundle):
         primary_model_bundle = True
         model = models.Asset
 
+class EmbedView(views.CMSView):
+    def get(self, request, *args, **kwargs):
+        tags = request.GET.get('tags')
+        bundle = self.bundle.admin_site.get_bundle_for_model(models.Asset)
+        api_link = ''
+        if bundle:
+            api_link = bundle.get_view_url("main", request.user)
+            if api_link:
+                api_link = "{0}?type=choices&ftype=image".format(api_link)
+
+        return self.render(request, tags=tags, api_link=api_link)
+
+class WYSIWYG(bundles.BlankBundle):
+    main = EmbedView(default_template='cms/insert_media.html')
+
+try:
+    site.unregister('wysiwyg')
+except:
+    pass
+
+site.register('wysiwyg', WYSIWYG(name='wysiwyg'), 21)
 site.register('assets', AssetBundle(name='assets'), 20)
