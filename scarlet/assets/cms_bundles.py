@@ -1,9 +1,9 @@
 from django.utils.safestring import mark_safe
 
 try:
-    from ..cms import site, bundles, views
+    from ..cms import site, bundles, views, cms_bundles
 except ValueError:
-    from cms import site, bundles, views
+    from cms import site, bundles, views, cms_bundles
 
 from . import models
 from . import forms
@@ -36,7 +36,8 @@ class AssetBundle(bundles.Bundle):
         primary_model_bundle = True
         model = models.Asset
 
-class EmbedView(views.CMSView):
+class EmbedView(cms_bundles.EmbedView):
+
     def get(self, request, *args, **kwargs):
         tags = request.GET.get('tags')
         bundle = self.bundle.admin_site.get_bundle_for_model(models.Asset)
@@ -48,13 +49,10 @@ class EmbedView(views.CMSView):
 
         return self.render(request, tags=tags, api_link=api_link)
 
-class WYSIWYG(bundles.BlankBundle):
+class WYSIWYG(cms_bundles.WYSIWYG):
     main = EmbedView(default_template='cms/insert_media.html')
 
-try:
-    site.unregister('wysiwyg')
-except:
-    pass
 
+site.unregister('wysiwyg')
 site.register('wysiwyg', WYSIWYG(name='wysiwyg'), 21)
 site.register('assets', AssetBundle(name='assets'), 20)
