@@ -33,8 +33,16 @@
 
 			<div class="widget-insert-image embed-url">
 				<form>
-				{% if api_link %}<div class="widget-asset" data-api="{{ api_link }}>
-				</div>{% endif %}
+
+					{% if api_link %}
+						<div class="widget-asset" data-api="{{ api_link }}">
+							<div class="widget-asset-preview" style="background-image:url({{ object.url }})"></div>
+							<div class="widget-asset-actions">
+								<input data-attribute="src" type="hidden" name="title_image" value="6" id="tester" style="display: none;">
+								<a class="button" target="_blank" href="{{ add_link }}">Upload</a>
+							</div>
+						</div>
+					{% endif %}
 
 					<div style="clear:both;"></div>
 

@@ -5,11 +5,10 @@ define(
 		"$",
 		"wysihtml5",
 		"./commands/commands",
-		"./WysiwygRules",
-		"text!./toolbar.html"
+		"./WysiwygRules"
 	],
 
-	function (DOMClass, $, wysihtml5, commands, wysihtml5ParserRules, toolbar) {
+	function (DOMClass, $, wysihtml5, commands, wysihtml5ParserRules) {
 
 		"use strict";
 
@@ -19,13 +18,14 @@ define(
 
 			dom : null,
 			toolbar : null,
+			textarea : null,
 
 			count : 0,
 
 			init : function (dom) {
 				this.dom = dom;
-
-				this.toolbar = $(toolbar);
+				this.toolbar = this.dom.find('.wysiwyg-toolbar');
+				this.textarea = this.dom.find('.wysiwyg-textarea');
 
 				this._initWysihtml5();
 			},
@@ -36,10 +36,8 @@ define(
 					toolbarId = id + '-toolbar',
 					editor;
 
-				this.dom.before(this.toolbar);
-
 				this.toolbar.attr('id', toolbarId);
-				this.dom.attr('id', textareaId);
+				this.textarea.attr('id', textareaId);
 
 				editor = new wysihtml5.Editor(textareaId, {
 					parserRules: wysihtml5ParserRules,

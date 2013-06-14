@@ -344,11 +344,11 @@ class HTMLWidget(widgets.Textarea):
 
     def __init__(self, *args, **kwargs):
         super(HTMLWidget, self).__init__(*args, **kwargs)
-        classes = ["widget-wysiwyg"]
+        classes = ["wysiwyg-textarea"]
         if self.attrs.get('class'):
             classes.append(self.attrs.get('class'))
         self.attrs['class'] = " ".join(classes)
 
     def render(self, *args, **kwargs):
         text = super(HTMLWidget, self).render(*args, **kwargs)
-        return mark_safe(u"{1} {0}".format(text, render_to_string(self.template)))
+        return mark_safe(u"<div class=\"widget-wysiwyg\">{1} {0}</div>".format(text, render_to_string(self.template)))
