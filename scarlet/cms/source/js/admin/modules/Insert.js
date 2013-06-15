@@ -37,11 +37,15 @@ define(
 			bindInputs : function () {
 				this.vars.$inputs.on("keypress paste", this.onDelayInput);
 				this.vars.$form.on("submit", this.onSubmit);
+				this.vars.$form.find(".cancel").on("click", this.onCancel);
 				this.$dom.find(".constrain").on("change", this.onConstrainChange);
 			},
 
 			unbindInputs : function () {
 				this.vars.$inputs.off();
+				this.vars.$form.off();
+				this.vars.$form.find(".cancel").off();
+				this.$dom.find(".constrain").off();
 			},
 
 			// Helper to delay onInput call on paste
@@ -88,6 +92,10 @@ define(
 			onSubmit : function (e) {
 				e.preventDefault();
 				WindowPopup.respond(this.vars.$node);
+			},
+
+			onCancel : function () {
+				window.close();
 			},
 
 			destroy : function () {
