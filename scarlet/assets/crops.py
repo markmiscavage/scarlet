@@ -29,44 +29,68 @@ class CropConfig(object):
         self.quality=quality
         self.editable=editable
 
-    def _coordinates_for_width(w, h):
-        r = self.width / w
-        new_height = (r * h)
-        diff = h - new_height
-        x = 0
-        x2 = w * r
-        y = diff / 2
-        y2 = new_height + (diff/2)
-        return x, x2, y, y2
-
-    def _coordinates_for_height(w, h):
-        r = self.height / h
-        new_width = (r * h)
-        diff = h - new_height
-        x = diff / 2
-        x2 = new_width + (diff/2)
-        y = 0
-        y2 = r * h
-        return x, x2, y, y2
+    def _crop_coordinates(self, ratio, current_size, needed_size):
+        diff = current_size - (needed_size / ratio)
+        if diff:
+            point = int(diff / 2)
+            point2 = (needed_size / ratio) + int(diff / 2)
+        else:
+            point = 0
+            point2 = current_size
+        return point, point2
 
     def get_crop_spec(self, im, x=None, x2=None, y=None, y2=None):
         """
         Returns the default crop points for this image.
-
-        TODO: Calculate coordinates for the crop
         """
-        width, height = 100, 100
-        x, y = 0, 0
-        x2, y2 = 100, 100
+        w, h = [float(v) for v in im.size]
+        upscale = self.upscale
+        if x and x2 and y and y2:
+            upscale = True
+            w = x2-x
+            h = y2-y
+        else:
+            x = 0
+            x2 = w
+            y = 0
+            y2 = h
+
+        if self.width and self.height:
+            ry = self.height / h
+            rx = self.width / w
+            if rx < ry:
+                ratio = ry
+                x, x2 = self._crop_coordinates(ratio, w, self.width)
+            else:
+                ratio = rx
+                y, y2 = self._crop_coordinates(ratio, h, self.height)
+
+            width = self.width
+            height = self.height
+        elif self.width:
+            ratio = self.width / w
+            width = self.width
+            height = int(h * ratio)
+        else:
+            ratio = self.height / h
+            width = int(w * ratio)
+            height = self.height
+
+        if ratio > 1 and not upscale:
+            return
+
+        x, x2, y, y2 = int(x),int(x2),int(y),int(y2)
         return CropSpec(name=self.name,
                         editable=self.editable,
                         width=width,height=height,
                         x=x,x2=x2,y=y,y2=y2)
 
     def process_image(self, im, crop_spec=None):
-        if crop_spec:
+        if not crop_spec:
             crop_spec = self.get_crop_spec(im)
-        return scale_and_crop(im, crop_spec)
+
+        if crop_spec:
+            return scale_and_crop(im, crop_spec)
 
 class Cropper(object):
     _registry = {}
@@ -139,7 +163,6 @@ class Cropper(object):
             url = self.storage.url(filename)
             utils.update_cache_bust_version(url)
             signals.file_saved.send(filename)
-            print 'hi'
         finally:
             tmpfile.close()
 
