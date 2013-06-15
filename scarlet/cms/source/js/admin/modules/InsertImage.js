@@ -54,6 +54,8 @@ define(
 
 				if (attribute === "width" || attribute === "height") {
 
+					attribute = attribute.replace("px", "");
+
 					if (this.vars.constrain) {
 						this.constrainProportion(attribute, value);
 					}

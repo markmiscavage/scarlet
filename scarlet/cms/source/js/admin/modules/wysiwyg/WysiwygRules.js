@@ -175,6 +175,7 @@ define(function () {
 				"check_attributes": {
 					"width": "numbers",
 					"alt": "alt",
+					"title": "alt",
 					"src": "src", // if you compiled master manually then change this from 'url' to 'src'
 					"height": "numbers"
 				},

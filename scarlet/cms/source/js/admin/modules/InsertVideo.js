@@ -10,8 +10,10 @@ define(
 		return Insert.extend({
 
 			vars : {
-				width : 560,
-				height : 315,
+				size : {
+					width : 560,
+					height : 315
+				},
 				providers : [
 					{
 						name : "youtube",
@@ -50,14 +52,16 @@ define(
 
 					this.vars.$node = $video;
 
-					this.setAttribute("width", this.vars.width);
-					this.setAttribute("height", this.vars.height);
+					this.setAttribute("width", this.vars.size.width);
+					this.setAttribute("height", this.vars.size.height);
 
 				} else {
 					this.vars.$node = $video;
 				}
 
 				if (attribute === "width" || attribute === "height") {
+
+					attribute = attribute.replace("px", "");
 
 					if (this.vars.constrain) {
 						this.constrainProportion(attribute, value);

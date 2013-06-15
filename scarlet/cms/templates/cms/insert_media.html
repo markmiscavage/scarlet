@@ -17,15 +17,66 @@
 
 		<ul data-tabs-container=".image-container" class="widget-tabs sub-tabs">
 			<li><a class="button active" data-tabs-content="> .embed-url" href="#">Embed URL</a></li>
-			<li><a class="button" data-tabs-content="> .library" href="#">Library</a></li>
+			{% if api_link %}
+				<li><a class="button" data-tabs-content="> .library" href="#">Library</a></li>
+			{% endif %}
 		</ul>
 
 		<div class="image-container">
 
+			<div class="widget-insert-image embed-url">
+				<form>
+
+					<p class="row">
+						<label class="image-url full">URL:
+							<input data-attribute="src" type="text" />
+						</label>
+					</p>
+
+					<hr>
+
+					<p class="row">
+						<label class="full">Title:
+							<input data-attribute="title" type="text" />
+						</label>
+					</p>
+
+					<p class="row">
+						<label class="full">Alt Text:
+							<input data-attribute="alt" type="text" />
+						</label>
+					</p>
+
+					<div class="preview-container">Preview:
+						<div class="image-preview"></div>
+					</div>
+
+					<p class="row">
+						<label class="col inline">Width (px):
+							<input data-attribute="width" type="text" name="width" class="image-size">
+						</label>
+						<label class="col inline">Height (px):
+							<input data-attribute="height" type="text" name="height" class="image-size">
+						</label>
+					</p>
+
+					<p class="row">
+						<label class="inline">
+							<input type="checkbox" name="constrain" class="constrain">
+							Constrain Proportions
+						</label>
+					</p>
+
+					<p><a class="button" href="#">Cancel</a>
+					<input class="big" type="submit" name="insert" value="Insert" /></p>
+
+				</form>
+			</div>
+
+			{% if api_link %}
 			<div class="widget-insert-image library" style="display: none;">
 				<form>
 
-					{% if api_link %}
 						<div class="widget-asset" data-api="{{ api_link }}">
 							<div class="widget-asset-preview" style="background-image:url({{ object.url }})"></div>
 							<div class="widget-asset-actions">
@@ -35,20 +86,17 @@
 								{% endif %}
 							</div>
 						</div>
-					{% endif %}
-
-					<div style="clear:both;"></div>
 
 					<hr>
 
 					<p class="row">
-						<label>Title:
+						<label class="full">Title:
 							<input data-attribute="title" type="text" />
 						</label>
 					</p>
 
 					<p class="row">
-						<label>Alt Text:
+						<label class="full">Alt Text:
 							<input data-attribute="alt" type="text" />
 						</label>
 					</p>
@@ -79,55 +127,7 @@
 
 				</form>
 			</div>
-
-			<div class="widget-insert-image embed-url">
-				<form>
-
-					<p class="row">
-						<label class="image-url">URL:
-							<input data-attribute="src" type="text" />
-						</label>
-					</p>
-
-					<hr>
-
-					<p class="row">
-						<label>Title:
-							<input data-attribute="title" type="text" />
-						</label>
-					</p>
-
-					<p class="row">
-						<label>Alt Text:
-							<input data-attribute="alt" type="text" />
-						</label>
-					</p>
-
-					<div class="preview-container">Preview:
-						<div class="image-preview"></div>
-					</div>
-
-					<p class="row">
-						<label class="col inline">Width (px):
-							<input data-attribute="width" type="text" name="width" class="image-size">
-						</label>
-						<label class="col inline">Height (px):
-							<input data-attribute="height" type="text" name="height" class="image-size">
-						</label>
-					</p>
-
-					<p class="row">
-						<label class="inline">
-							<input type="checkbox" name="constrain" class="constrain">
-							Constrain Proportions
-						</label>
-					</p>
-
-					<p><a class="button" href="#">Cancel</a>
-					<input class="big" type="submit" name="insert" value="Insert" /></p>
-
-				</form>
-			</div>
+			{% endif %}
 
 		</div>
 
@@ -143,7 +143,7 @@
 			<div class="widget-insert-video">
 				<form class="youtube">
 
-					<label class="youtube-url">Video URL:
+					<label class="youtube-url full">Video URL:
 						<input data-attribute="src" class="video-input" type="text" name="src">
 					</label>
 

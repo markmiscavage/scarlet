@@ -35,7 +35,7 @@ body.insert-media section#main article {
 		}
 	}
 
-	.youtube-url {
+	.full {
 		width: 100%;
 
 		input {
@@ -43,8 +43,16 @@ body.insert-media section#main article {
 		}
 	}
 
+	input[type="text"] {
+
+	}
+
 	.preview-container {
 		// display: none;
 		margin-bottom: $spacer;
+	}
+
+	.widget-asset {
+		@include clearfix;
 	}
 }
