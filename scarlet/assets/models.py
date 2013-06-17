@@ -40,6 +40,7 @@ class AssetBase(AutoTagModel):
 
     __original_file = None
 
+    title = models.CharField(max_length=255)
     file = AssetRealFileField(upload_to=utils.assets_dir)
     type = models.CharField(max_length=255, choices=TYPES, db_index=True)
     slug = models.SlugField(unique=True, max_length=255)
@@ -144,6 +145,9 @@ class AssetBase(AutoTagModel):
         if file_changed:
             self.user_filename = os.path.basename(self.file.name)
             self.cbversion = self.cbversion + 1
+
+        if not self.title:
+            self.title = self.user_filename
 
         super(AssetBase, self).save(*args, **kwargs)
 
