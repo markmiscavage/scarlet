@@ -125,6 +125,8 @@ class Cropper(object):
         """
         Generate Version for an Image.
         value has to be a serverpath relative to MEDIA_ROOT.
+
+        Returns the spec for the crop that was created.
         """
 
         if not name in self._registry:
@@ -173,7 +175,8 @@ def scale_and_crop(im, crop_spec):
     w, h = [float(v) for v in im.size]
     im = im.crop((crop_spec.x, crop_spec.y, crop_spec.x2, crop_spec.y2))
 
-    im = im.resize((crop_spec.width, crop_spec.height),
+    if crop_spec.width and crop_spec.height:
+        im = im.resize((crop_spec.width, crop_spec.height),
                    resample=Image.ANTIALIAS)
 
     return im

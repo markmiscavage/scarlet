@@ -10,6 +10,7 @@ from . import get_image_cropper
 from . import settings
 from . import utils
 from . import signals
+from . import tasks
 from .managers import AssetManager
 from .fields import AssetRealFileField
 
@@ -84,35 +85,32 @@ class AssetBase(AutoTagModel):
     def reset_crops(self):
         """
         Reset all known crops to the default crop.
+
+        Done async if settings.ASYNC_CROPS is True and celery is
+        installed.
         """
 
         if self._can_crop():
-            crops = set(self.imagedetail_set.values_list('name', flat=True))
-            crops = crops.union(set(get_image_cropper().required_crops()))
-            length = len(crops)
-            for i, size in enumerate(crops):
-                last = i==(length-1)
-                spec = get_image_cropper().create_crop(size, self.file)
-                ImageDetail.save_crop_spec(self, spec,
-                                           update_version=last)
+            if settings.ASYNC_CROPS:
+                # this means that we are using celery
+                tasks.reset_crops.apply_async(args=[self.pk], countdown=5)
+            else:
+                tasks.reset_crops(self.pk, asset=self)
 
     def ensure_crops(self, *required_crops):
         """
         Make sure a crop exists for each crop in required_crops.
         Existing crops will not be changed.
-        """
 
+        Done async if settings.ASYNC_CROPS is True and celery is
+        installed.
+        """
         if self._can_crop():
-            required_crops = set(required_crops).union(
-                                 set(get_image_cropper().required_crops()))
-            crops = set(self.imagedetail_set.all().values_list('name', flat=True))
-            needed = required_crops.difference(crops)
-            length = len(needed)
-            for i, size in enumerate(needed):
-                last = i==(length-1)
-                spec = get_image_cropper().create_crop(size, self.file)
-                ImageDetail.save_crop_spec(self, spec,
-                                           update_version=last)
+            if settings.ASYNC_CROPS:
+                # this means that we are using celery
+                tasks.ensure_crops.apply_async(args=[self.pk]+required_crops, countdown=5)
+            else:
+                tasks.ensure_crops(self, *required_crops)
 
     def create_crop(self, name, x, x2, y, y2):
         """
