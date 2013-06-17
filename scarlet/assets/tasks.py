@@ -1,17 +1,23 @@
-try:
-    from celery import task
-except:
-    from .utils import partial as task
-
 from . import get_asset_model, get_image_cropper
+from . import settings
 
-@task
+def optional_celery(**kparms):
+    name = kparms.pop('name', None)
+
+    def wrapped(func):
+        def inner(*args, **kw):
+            return func(*args, **kw)
+        return inner
+
+    if settings.CELERY:
+        wrapper = settings.CELERY.task(**kparms)
+    else:
+        wrapper = wrapped
+    return wrapper
+
+
+@optional_celery(name='assets_ensure_crops')
 def ensure_crops(asset_id, *required_crops, **kwargs):
-    """
-    Make sure a crop exists for each crop in required_crops.
-    Existing crops will not be changed.
-    """
-
     asset = kwargs.pop('asset', None)
     if not asset:
         asset = get_asset_model().objects.get(pk=asset_id)
@@ -30,15 +36,8 @@ def ensure_crops(asset_id, *required_crops, **kwargs):
                                    update_version=last)
 
 
-@task
-def reset_crops(asset_id, asset=None):
-    """
-    Reset all known crops to the default crop.
-
-    Done async if settings.ASYNC_CROPS is True and celery is
-    installed.
-    """
-
+@optional_celery(name='assets_reset_crops')
+def reset_crops(asset_id, asset=None, **kwargs):
     if not asset:
         asset = get_asset_model().objects.get(pk=asset_id)
 

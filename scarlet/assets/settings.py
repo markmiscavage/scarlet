@@ -27,4 +27,4 @@ IMAGE_SIZES = getattr(settings, "IMAGE_SIZES", DEFAULT_IMAGE_SIZES)
 
 IMAGE_CROPPER = '.crops.cropper'
 
-ASYNC_CROPS = getattr(settings, "ASYNC_CROPS", False)
+CELERY = getattr(settings, "ASSET_CELERY", None)

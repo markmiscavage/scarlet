@@ -7,10 +7,10 @@ from django.db.models.deletion import Collector
 
 
 from . import get_image_cropper
+from . import tasks
 from . import settings
 from . import utils
 from . import signals
-from . import tasks
 from .managers import AssetManager
 from .fields import AssetRealFileField
 
@@ -87,12 +87,12 @@ class AssetBase(AutoTagModel):
         """
         Reset all known crops to the default crop.
 
-        Done async if settings.ASYNC_CROPS is True and celery is
-        installed.
+        If settings.ASSET_CELERY is specified then
+        the task will be run async
         """
 
         if self._can_crop():
-            if settings.ASYNC_CROPS:
+            if settings.CELERY:
                 # this means that we are using celery
                 tasks.reset_crops.apply_async(args=[self.pk], countdown=5)
             else:
@@ -103,11 +103,11 @@ class AssetBase(AutoTagModel):
         Make sure a crop exists for each crop in required_crops.
         Existing crops will not be changed.
 
-        Done async if settings.ASYNC_CROPS is True and celery is
-        installed.
+        If settings.ASSET_CELERY is specified then
+        the task will be run async
         """
         if self._can_crop():
-            if settings.ASYNC_CROPS:
+            if settings.CELERY:
                 # this means that we are using celery
                 tasks.ensure_crops.apply_async(args=[self.pk]+required_crops, countdown=5)
             else:
