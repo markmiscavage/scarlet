@@ -204,7 +204,7 @@ class ImageDetailBase(models.Model):
     @classmethod
     def save_crop_spec(cls, asset, spec, update_version=True):
         if spec:
-            cdict = spec.__dict__
+            cdict = spec.to_dict()
             updated = cls.objects.filter(image=asset,
                                          name=cdict['name']).update(**cdict)
             if not updated:

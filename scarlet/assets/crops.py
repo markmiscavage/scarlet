@@ -16,8 +16,10 @@ from . import utils
 from . import signals
 from . import settings
 
-CropSpec = namedtuple('CropSpec', ['name','editable', 'width',
-                                   'height','x', 'x2', 'y', 'y2'])
+class CropSpec(namedtuple('CropSpec', ['name','editable', 'width',
+                                   'height','x', 'x2', 'y', 'y2'])):
+    def to_dict(self):
+        return self._asdict()
 
 class CropConfig(object):
     def __init__(self, name, width=None, height=None,
