@@ -3,7 +3,7 @@ from django.forms.models import inlineformset_factory
 from scarlet.cms import bundles, site, forms, options, views, renders
 
 from models import Post, PostImage, Comment, Category, Author, DummyModel
-from views import PostsListView, EditAgainView
+from views import PostsListView
 from forms import EditAuthorForm
 
 
@@ -37,7 +37,6 @@ class CommentBundle(bundles.ParentVersionedBundle):
         return super(CommentBundle, self).get_object_header_view(
             *args, **kwargs)
 
-
     class Meta:
         model = Comment
         parent_field = "post"
@@ -46,12 +45,10 @@ class CommentBundle(bundles.ParentVersionedBundle):
 class AuthorBundle(bundles.Bundle):
     navigation = bundles.PARENT
     edit = views.FormView(form_class=EditAuthorForm)
+    main = views.ListView(filter_form = forms.search_form('name', 'bio', paginate_by = 3))
 
-    main = views.ListView(display_fields=('name',))
-
-    class Meta():
+    class Meta:
         model = Author
-        primary_model_bundle = True
 
 class DummyAliasBundle(bundles.Bundle):
     dummy_edit = views.FormView()
@@ -62,7 +59,7 @@ class DummyAliasBundle(bundles.Bundle):
         item_views = ('dummy_edit', 'delete')
 
 class DummyRedirectorBundle(bundles.Bundle):
-    edit = EditAgainView()
+    edit = views.FormView(redirect_to_view='edit')
 
     class Meta():
         model = DummyModel
@@ -143,4 +140,12 @@ class BlogBundle(bundles.DelegatedObjectBundle):
         primary_model_bundle = True
         item_views = list(options.VersionMeta.item_views) + ['preview']
 
+class BigAuthorBundle(bundles.DelegatedObjectBundle):
+    dashboard = (
+        ('author',),
+    )
+
+    author = AuthorBundle.as_subbundle(name='author', title='Author')
+
 site.register("blog", BlogBundle(name='blog'), order=10)
+site.register("authoronly", BigAuthorBundle(name='authoronly'), order=10)

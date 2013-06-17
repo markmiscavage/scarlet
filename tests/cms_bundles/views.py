@@ -16,5 +16,3 @@ class PostsListView(views.ListView):
         super(PostsListView, self).__init__(*args, **kwargs)
         #self.renders['choices'] = AssetRenderer()
 
-class EditAgainView(views.FormView):
-	redirect_to_view = "edit"

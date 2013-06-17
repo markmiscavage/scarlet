@@ -3,7 +3,7 @@ import unittest
 import json
 
 from django.test import TestCase
-from django.test.client import Client
+from django.test.client import Client, RequestFactory
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.template import TemplateDoesNotExist
@@ -128,16 +128,16 @@ class BundleViewsTestCase(TestCaseDeactivate):
         a = Category.objects.filter(category='Cat')
         self.assertEqual(a.count(), 1)
 
-        #edit author - good
+        #edit category - good
         resp = self.client.post('/admin/blog/category/%s/edit/' % a[0].pk, 
                         data= {'view_tags':'categorys,cat', 'category':'Kat'})
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(Category.objects.filter(category='Kat').count(), 1)
         self.assertEqual(Category.objects.filter(category='Cat').count(), 0)
 
-        #edit author - bad
+        #edit category - bad
         a = Category.objects.filter(category='Kat')
-        resp = self.client.post('/admin/blog/author/%s/edit/' % a[0].pk, 
+        resp = self.client.post('/admin/blog/category/%s/edit/' % a[0].pk, 
                         data= {'view_tags':'categorys,kat', 'category' : ''})
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(Category.objects.filter(category='Kat').count(), 1)
@@ -354,7 +354,6 @@ class BundleTestCase(TestCaseDeactivate):
         self.tb3 = TestBundle3(name='test2', title='Test3 Title', title_plural='Test3 Titles',
                     parent=None, attr_on_parent=None, site=None)
 
-
     def test_bundles(self):
 
         self.tb1.name = 'test1 change'
@@ -385,7 +384,8 @@ class BundleTestCase(TestCaseDeactivate):
         self.assertEquals(self.tb2.name, 'test2')
         self.assertEquals(self.tb3.name, 'test3')
 
-class TestBundleRedirects(TestCaseDeactivate):
+
+class BundleURLTestCase(TestCaseDeactivate):
 
     def setup_test_user(self):
         user = User.objects.create_user('tester', 'tester@example.com', '1234')
@@ -400,30 +400,6 @@ class TestBundleRedirects(TestCaseDeactivate):
 
         self.dummy = DummyModel.objects.create(name='A')
 
-    def test_redirects(self):
-        #Dummy_Redirector should redirect from an edit page back to the same edit page upon save.
-        resp = self.client.post('/admin/blog/dummy_redirector/%s/edit/' % self.dummy.pk, data = 
-                    {'view_tags' : 'dummy redirects, a' ,'name' : 'B'})
-        self.assertEqual(resp.status_code, 302)
-        self.assertEqual(DummyModel.objects.filter(name='B').count(), 1)
-        self.assertEqual(DummyModel.objects.filter(name='A').count(), 0)
-        self.assertEqual((resp['Location'])[resp['Location'].find('/admin/'):], '/admin/blog/dummy_redirector/%s/edit/' % self.dummy.pk)
-
-    def test_URLAlias(self):
-        #Dummy_Alias makes 'edit' an alias for 'dummy_edit', and all edits should be made at the latter URL
-        resp = self.client.post('/admin/blog/dummy_alias/%s/dummy_edit/' % self.dummy.pk, data = 
-                    {'view_tags' : 'dummy aliases, b', 'name' : 'C'})
-        self.assertEqual(resp.status_code, 302)
-        self.assertEqual(DummyModel.objects.filter(name='C').count(), 1)
-        self.assertEqual(DummyModel.objects.filter(name='D').count(), 0)
-
-
-
-
-
-class TestBasicModelOps(TestCaseDeactivate):
-
-    def setUp(self):
         author = Author.objects.create(
                     name='Joe Tester',
                     bio='I like testing.'
@@ -447,42 +423,95 @@ class TestBasicModelOps(TestCaseDeactivate):
                     description='This is a test description for the post object.'
                 )
 
-        # Create a post image
-        post_image = PostImage.objects.create(
-                    post=self.post,
-                    caption='This is a test caption for the post image object.'
+
+    def test_redirects(self):
+        #Dummy_Redirector should redirect from an edit page back to the same edit page upon save.
+        resp = self.client.post('/admin/blog/dummy_redirector/%s/edit/' % self.dummy.pk, data = 
+                    {'view_tags' : 'dummy redirects, a' ,'name' : 'B'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(DummyModel.objects.filter(name='B').count(), 1)
+        self.assertEqual(DummyModel.objects.filter(name='A').count(), 0)
+        self.assertEqual((resp['Location'])[resp['Location'].find('/admin/'):], '/admin/blog/dummy_redirector/%s/edit/' % self.dummy.pk)
+
+    def test_URLAlias(self):
+        #Dummy_Alias makes 'edit' an alias for 'dummy_edit', and all edits should be made at the latter URL
+        resp = self.client.post('/admin/blog/dummy_alias/%s/dummy_edit/' % self.dummy.pk, data = 
+                    {'view_tags' : 'dummy aliases, b', 'name' : 'C'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(DummyModel.objects.filter(name='C').count(), 1)
+        self.assertEqual(DummyModel.objects.filter(name='D').count(), 0)
+
+    def test_bundle_independence(self):
+        #test bundles that use the same subbundle have independent URLs
+        resp = self.client.get('/admin/blog/author/')
+        self.assertEqual(resp.status_code, 200)
+        resp = self.client.get('/admin/authoronly/author/')
+        self.assertEqual(resp.status_code, 200)
+
+        resp = self.client.post('/admin/blog/author/add/', data = {'view_tags' : 'authors', 'name' : 'Two', 'bio' : '2'} )
+        self.assertEqual(resp.status_code, 302)
+        a = Author.objects.filter(name='Two')
+        self.assertEqual(a.count(), 1)
+        resp = self.client.get('/admin/blog/author/%s/edit/' % a[0].pk)
+        self.assertEqual(resp.status_code, 200)
+        resp = self.client.get('/admin/authoronly/author/%s/edit/' % a[0].pk)
+
+        resp = self.client.post('/admin/authoronly/author/add/', data = {'view_tags' : 'authors', 'name' : 'Three', 'bio' : '3'} )
+        self.assertEqual(resp.status_code, 302)
+        a = Author.objects.filter(name='Three')
+        self.assertEqual(a.count(), 1)
+        resp = self.client.get('/admin/authoronly/author/%s/edit/' % a[0].pk)
+        self.assertEqual(resp.status_code, 200)
+        resp = self.client.get('/admin/blog/author/%s/edit/' % a[0].pk)
+        self.assertEqual(resp.status_code, 200)
+
+
+class FilterTestCase(TestCaseDeactivate):
+    def setup_test_user(self):
+        user = User.objects.create_user('tester', 'tester@example.com', '1234')
+        user.is_staff = True
+        user.save()
+        self.client.login(username='tester', password='1234')
+        self.user = user
+
+    def setUp(self):
+        self.client = Client()
+        self.setup_test_user()
+
+        self.author1 = Author.objects.create(
+                    name='authornumberone',
+                    bio='ab'
                 )
+        self.author2 = Author.objects.create(
+                    name='authornumbertwo',
+                    bio='bb')
+        self.author3 = Author.objects.create(
+                    name='authornumberthree',
+                    bio='ca')
 
-        # create a comment
-        comment = Comment.objects.create(
-                    post=self.post,
-                    name='Test Commenter',
-                    text='Test comment.  Great blog post!'
-                )
+    def test_filter(self):
+        resp = self.client.get('/admin/blog/author/?name=&bio=a&search=')
+        self.assertContains(resp, 'authornumberone')
+        self.assertContains(resp, 'authornumberthree')
+        self.assertNotContains(resp, 'authornumbertwo')
 
-    def test_create(self):
-        self.assertEquals(self.post.author.name, 'Joe Tester')
-        self.assertEquals(self.post.author.bio, 'I like testing.')
-        self.assertEquals(self.post.title, 'Title Test')
-        self.assertEquals(self.post.body, 'This is a test body for the post object.')
-        self.assertEquals(self.post.category.category, 'Category Test')
-        self.assertEquals(self.post.category.slug, 'category_test')
-        self.assertEquals(self.post.keywords, 'keywords test')
-        self.assertEquals(self.post.slug, 'Slug Test')
+        resp = self.client.get('/admin/blog/author/?name=number&bio=&search=')
+        self.assertContains(resp, 'authornumberone')
+        self.assertContains(resp, 'authornumbertwo')
+        self.assertContains(resp, 'authornumberthree')
 
-    def test_edit(self):
-        self.post.author.bio = "I love testing"
-        self.post.title = "Test Title"
-        self.post.category.category = "New Category"
-        self.post.keywords = "keywords test kittens"
-        self.assertEquals(self.post.author.bio, "I love testing")
-        self.assertEquals(self.post.title, "Test Title")
-        self.assertEquals(self.post.category.category, "New Category")
-        self.assertEquals(self.post.keywords, "keywords test kittens")
+        resp = self.client.get('/admin/blog/author/?name=&bio=&search=')
+        self.assertContains(resp, 'authornumberone')
+        self.assertContains(resp, 'authornumbertwo')
+        self.assertContains(resp, 'authornumberthree')
 
+        resp = self.client.get('/admin/blog/author/?name=number&bio=ab&search=')
+        self.assertContains(resp, 'authornumberone')
+        self.assertNotContains(resp, 'authornumbertwo')
+        self.assertNotContains(resp, 'authornumberthree')
 
-    def test_delete(self):
-        self.post.author.delete()
-        self.assertFalse(Author.objects.filter(name='Joe Tester').exists())
-        self.post.delete()
-        self.assertFalse(Post.objects.filter(description='This is a test description for the post object.').exists())
+        resp = self.client.get('/admin/blog/author/?name=a&bio=&search=')
+        self.assertContains(resp, 'authornumberone')
+        self.assertContains(resp, 'authornumbertwo')
+        self.assertContains(resp, 'authornumberthree')
+
