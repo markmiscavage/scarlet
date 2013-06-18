@@ -76,8 +76,7 @@ class AssetBase(AutoTagModel):
         pass
 
     def delete_real_file(self, file_obj):
-        storage, path = file_obj.storage, file_obj.path
-        storage.delete(path)
+        file_obj.storage.delete(file_obj.name)
         signals.file_removed.send(file_obj.name)
 
     def _can_crop(self):
@@ -217,6 +216,7 @@ class ImageDetailBase(models.Model):
             if update_version:
                 asset.__class__.objects.filter(pk=asset.pk
                         ).update(cbversion=models.F('cbversion')+1)
+
 
 class Asset(AssetBase):
     class Meta:
