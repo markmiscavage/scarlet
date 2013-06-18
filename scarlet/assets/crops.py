@@ -47,7 +47,7 @@ class CropConfig(object):
         """
         w, h = [float(v) for v in im.size]
         upscale = self.upscale
-        if x and x2 and y and y2:
+        if x != None and x2 and y != None and y2:
             upscale = True
             w = x2-x
             h = y2-y
@@ -138,7 +138,7 @@ class Cropper(object):
         im = Image.open(file_obj)
         config = self._registry[name]
 
-        if x and x2 and y and y2 and not config.editable:
+        if x != None and x2 and y != None and y2 and not config.editable:
             # You can't ask for something special
             # for non editable images
             return
@@ -148,6 +148,21 @@ class Cropper(object):
         if image:
             crop_name = utils.get_size_filename(file_obj.name, name)
             self._save_file(image, crop_name)
+            return crop_spec
+
+    def replace_image(self, file_obj,
+                    x=None, x2=None, y=None, y2=None):
+        assert x != None and x2 and y != None and y2
+
+        file_obj.seek(0)
+        im = Image.open(file_obj)
+
+        crop_spec = CropSpec(x=x,x2=x2,y=y,y2=y2,
+                             width=x2-x,height=y2-y,name='original',
+                             editable=False)
+        image = scale_and_crop(im, crop_spec=crop_spec)
+        if image:
+            self._save_file(image, file_obj.name)
             return crop_spec
 
     def _save_file(self, im, filename, quality=90):
@@ -174,7 +189,6 @@ def scale_and_crop(im, crop_spec):
     """
     Scale and Crop.
     """
-    w, h = [float(v) for v in im.size]
     im = im.crop((crop_spec.x, crop_spec.y, crop_spec.x2, crop_spec.y2))
 
     if crop_spec.width and crop_spec.height:

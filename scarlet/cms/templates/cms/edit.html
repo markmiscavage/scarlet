@@ -3,6 +3,7 @@
 
 {% block main_content %}
 
+	{% block form_title %}
 	{% if obj %}
 		{% if subitem %}
 			<h4 data-auto-tag="{{ view_tags }}">Edit {{ obj }}</h4>
@@ -10,16 +11,17 @@
 	{% else %}
 		<h4>Add New {{ model_name }}</h4>
 	{% endif %}
-
+	{% endblock form_title %}
 
 	<form data-form-id="edit" {% if adminForm.form.is_multipart %} enctype="multipart/form-data"{% endif %} action="{{ action_url }}" method="post">
+	{% block form %}
  		{% csrf_token %}
 		{% if adminForm.form.non_field_errors %}
 			{{ adminForm.form.non_field_errors }}
 		{% endif %}
-        <input type="hidden" name="popup" value='{{ popup }}' />
-        <input type="hidden" id="auto_tags" name="auto_tags" value='' />
-        <input type="hidden" id="view_tags" name="view_tags" value='{{ view_tags }}' />
+		<input type="hidden" name="popup" value='{{ popup }}' />
+		<input type="hidden" id="auto_tags" name="auto_tags" value='' />
+		<input type="hidden" id="view_tags" name="view_tags" value='{{ view_tags }}' />
 
 		{% for fieldset in adminForm %}
 		<fieldset>
@@ -40,7 +42,9 @@
 			{% endfor %}
 		</fieldset>
 		{% endfor %}
+	{% endblock form %}
 
+	{% block formsets %}
 		{% if formsets %}
 			{% for title, formset in formsets.items %}
 				<fieldset class="widget-formset" data-prefix="{{ formset.prefix }}">
@@ -64,7 +68,10 @@
 				</fieldset>
 			{% endfor %}
 		{% endif %}
+	{% endblock formsets %}
+
+	{% block submit %}
 		<p><a class="button close-popup" href="{{ cancel_url }}">Cancel</a><input class="big" type="submit" value="Save" /></p>
 	</form>
-
+	{% endblock submit %}
 {% endblock %}

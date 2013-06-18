@@ -52,3 +52,20 @@ class AssetFilterForm(TaggedRelationFilterForm):
             args.append(models.Q(type=ftype))
 
         return args
+
+class CropForm(forms.Form):
+    x = forms.IntegerField()
+    x2 = forms.IntegerField()
+    y = forms.IntegerField()
+    y2 = forms.IntegerField()
+
+
+    def check_params(self, v, v2):
+        if v != None and v2 != None and v2 <= v:
+            raise forms.ValidationError("Invalid parameters")
+
+    def clean(self):
+        cleaned_data = super(CropForm, self).clean()
+        self.check_params(cleaned_data.get('x'), cleaned_data.get('x2'))
+        self.check_params(cleaned_data.get('y'), cleaned_data.get('y2'))
+        return cleaned_data

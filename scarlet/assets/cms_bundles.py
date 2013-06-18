@@ -7,8 +7,9 @@ except ValueError:
 
 from . import get_asset_model
 from . import forms
-from .views import AssetListView, AssetFormView
+from .views import AssetListView, AssetFormView, CropView, CropVersionView
 from . import settings
+from . import models
 
 
 def preview(obj):
@@ -19,13 +20,33 @@ def preview(obj):
 
     return ""
 
-class AssetBundle(bundles.Bundle):
+class CropBundle(bundles.BlankBundle):
+    navigation = bundles.PARENT
+    object_view = bundles.PARENT
 
-    main = AssetListView(display_fields=(preview, "user_filename", "modified","type"))
-    add = AssetFormView(force_add=True, form_class=forms.UploadAssetForm)
-    edit = AssetFormView(form_class=forms.UpdateAssetForm)
+    edit_asset = bundles.URLAlias(bundle_attr=bundles.PARENT,
+                                  alias_to="edit")
+
+    main = views.ListView(allow_empty=False,
+                         base_template="cms/partial.html",
+                          base_filter_kwargs={'editable': True})
+    edit = CropVersionView()
 
     class Meta:
+        parent_field = 'image'
+        model = models.ImageDetail
+
+class AssetBundle(bundles.Bundle):
+
+    main = AssetListView(display_fields=(preview, "title", "user_filename",
+                                         "modified","type"))
+    add = AssetFormView(force_add=True, form_class=forms.UploadAssetForm)
+    edit = AssetFormView(form_class=forms.UpdateAssetForm)
+    crop = CropView(default_template="assets/crop.html")
+    crops = CropBundle.as_subbundle(name='crops')
+
+    class Meta:
+        item_views = ('edit', 'crop', 'crops', 'delete')
         primary_model_bundle = True
         model = get_asset_model()
 

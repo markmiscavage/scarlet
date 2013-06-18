@@ -1,0 +1,7 @@
+{% extends "cms/edit.html" %}
+{% load cms %}
+
+{% block form %}
+{% csrf_token %}
+{{ form }}
+{% endblock form %}

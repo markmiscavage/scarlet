@@ -4,7 +4,7 @@ import uuid
 from django.db import models
 from django.core.files.uploadedfile import UploadedFile
 from django.db.models.deletion import Collector
-
+from django.forms.forms import pretty_name
 
 from . import get_image_cropper
 from . import tasks
@@ -118,7 +118,8 @@ class AssetBase(AutoTagModel):
         Create a crop for this asset.
         """
         if self._can_crop():
-            spec = get_image_cropper().create_crop(size, self.file)
+            spec = get_image_cropper().create_crop(name, self.file, x=x,
+                                                   x2=x2, y=y, y2=y2)
             ImageDetail.save_crop_spec(self, spec)
 
     def save(self, *args, **kwargs):
@@ -191,7 +192,7 @@ class ImageDetailBase(models.Model):
     height = models.PositiveIntegerField()
 
     name = models.CharField(max_length=255)
-    editable = models.BooleanField()
+    editable = models.BooleanField(editable=False)
 
     x = models.PositiveIntegerField(null=True)
     x2 = models.PositiveIntegerField(null=True)
@@ -200,6 +201,9 @@ class ImageDetailBase(models.Model):
 
     class Meta:
         abstract = True
+
+    def __unicode__(self):
+        return pretty_name(self.name)
 
     @classmethod
     def save_crop_spec(cls, asset, spec, update_version=True):

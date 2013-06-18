@@ -1,0 +1,12 @@
+{% extends "cms/edit.html" %}
+{% load cms %}
+
+{% block formsets %}
+{% if crops %}
+<ul>
+{% for crop in crops %}
+    <li><a href="../crops/{{ crop.pk }}/edit/">{{ crop.name }}</a></li>
+{% endfor %}
+</ul>
+{% endif %}
+{% endblock formsets %}
