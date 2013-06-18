@@ -308,6 +308,55 @@ class BundleViewsTestCase(TestCaseDeactivate):
         resp = self.client.get('/admin/blog/%s/edit/delete/' % self.post.pk)
         self.assertEqual(resp.status_code, 200)
 
+class MiscViewTestCase(TestCaseDeactivate):
+
+    def setup_test_user(self):
+        user = User.objects.create_user('tester', 'tester@example.com', '1234')
+        user.is_staff = True
+        user.save()
+        self.client.login(username='tester', password='1234')
+        self.user = user
+
+    def setUp(self):
+        self.client = Client()
+        self.setup_test_user()
+        self.cat1 = Category.objects.create(category='One')
+        self.cat2 = Category.objects.create(category='Two')
+        self.cat3 = Category.objects.create(category='Three')
+
+    def test_pagination(self):
+        resp = self.client.get('/admin/blog/category/')
+        self.assertContains(resp, 'Three')
+        self.assertNotContains(resp, 'Two')
+        self.assertNotContains(resp, 'One')
+
+        for x in range (1, Category.objects.all().count()):
+            resp = self.client.get('/admin/blog/category/?page=%d' % x)
+            self.assertEquals(resp.status_code, 200)
+
+    def test_listviewformsets(self):
+        resp = self.client.post('/admin/blog/category/', data = {'form-TOTAL_FORMS' : '1', 'form-INITIAL_FORMS' : '1',
+             'form-0-id' : self.cat1.pk, 'form-0-category' : "Uno"})
+        self.assertEqual(resp.status_code, 302)
+        c = Category.objects.filter(category = "Uno")
+        self.assertEqual(c.count(), 1)
+        self.assertEqual(Category.objects.filter(category = "One").count(), 0)
+
+        resp = self.client.post('/admin/blog/category/', data = {'form-TOTAL_FORMS' : '1', 'form-INITIAL_FORMS' : '1',
+             'form-0-id' : self.cat2.pk, 'form-0-category' : ""})
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Category.objects.filter(category = "").count(), 0)
+        self.assertEqual(Category.objects.filter(category = "Two").count(), 1)
+
+        resp = self.client.post('/admin/blog/category/?page=2', data = {'form-TOTAL_FORMS' : '1', 'form-INITIAL_FORMS' : '1',
+             'form-0-id' : self.cat2.pk, 'form-0-category' : "Dos"})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Category.objects.filter(category="Dos").count(), 1)
+        self.assertEqual(Category.objects.filter(category="Two").count(), 0)
+
+
+
+
 
 class TestMainBundle(bundles.Bundle):
     navigation = bundles.PARENT
@@ -450,6 +499,7 @@ class BundleURLTestCase(TestCaseDeactivate):
 
         resp = self.client.post('/admin/blog/author/add/', data = {'view_tags' : 'authors', 'name' : 'Two', 'bio' : '2'} )
         self.assertEqual(resp.status_code, 302)
+        self.assertEqual((resp['Location'])[resp['Location'].find('/admin/'):], '/admin/blog/author/')
         a = Author.objects.filter(name='Two')
         self.assertEqual(a.count(), 1)
         resp = self.client.get('/admin/blog/author/%s/edit/' % a[0].pk)
@@ -458,6 +508,7 @@ class BundleURLTestCase(TestCaseDeactivate):
 
         resp = self.client.post('/admin/authoronly/author/add/', data = {'view_tags' : 'authors', 'name' : 'Three', 'bio' : '3'} )
         self.assertEqual(resp.status_code, 302)
+        self.assertEqual((resp['Location'])[resp['Location'].find('/admin/'):], '/admin/authoronly/author/')
         a = Author.objects.filter(name='Three')
         self.assertEqual(a.count(), 1)
         resp = self.client.get('/admin/authoronly/author/%s/edit/' % a[0].pk)

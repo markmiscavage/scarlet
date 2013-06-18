@@ -6,7 +6,6 @@ from models import Post, PostImage, Comment, Category, Author, DummyModel
 from views import PostsListView
 from forms import EditAuthorForm
 
-
 postimages_formset = forms.LazyFormSetFactory(
     inlineformset_factory, Post, PostImage, can_order=True)
 
@@ -20,6 +19,7 @@ class PostImageBundle(bundles.Bundle):
 
 class CategoryBundle(bundles.Bundle):
     navigation = bundles.PARENT
+    main = views.ListView(paginate_by = 1, display_fields=('category',), change_fields=('category',))
 
     class Meta:
         model = Category
@@ -45,7 +45,7 @@ class CommentBundle(bundles.ParentVersionedBundle):
 class AuthorBundle(bundles.Bundle):
     navigation = bundles.PARENT
     edit = views.FormView(form_class=EditAuthorForm)
-    main = views.ListView(filter_form = forms.search_form('name', 'bio', paginate_by = 3))
+    main = views.ListView(filter_form = forms.search_form('name', 'bio',))
 
     class Meta:
         model = Author
@@ -72,7 +72,6 @@ DEFAULT_FIELDS =(
                    'author','category', ) # add 'tags' when it will work
     }),
     )
-
 
 class PostDeleteView(views.DeleteView):
     def __init__(self, *args, **kwargs):
