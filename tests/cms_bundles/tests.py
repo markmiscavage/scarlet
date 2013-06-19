@@ -325,14 +325,17 @@ class MiscViewTestCase(TestCaseDeactivate):
         self.cat3 = Category.objects.create(category='Three')
 
     def test_pagination(self):
-        resp = self.client.get('/admin/blog/category/')
-        self.assertContains(resp, 'Three')
-        self.assertNotContains(resp, 'Two')
-        self.assertNotContains(resp, 'One')
+        #objects appear on pages in opposite order than they were added
+        nums = {1 : "Three", 2 : "Two", 3 : "One"}
 
         for x in range (1, Category.objects.all().count()):
             resp = self.client.get('/admin/blog/category/?page=%d' % x)
-            self.assertEquals(resp.status_code, 200)
+            self.assertEqual(resp.status_code, 200)
+            for y in range(1, Category.objects.all().count()):
+                if (x == y):
+                    self.assertContains(resp, nums[x])
+                else:
+                    self.assertNotContains(resp, nums[y])
 
     def test_listviewformsets(self):
         resp = self.client.post('/admin/blog/category/', data = {'form-TOTAL_FORMS' : '1', 'form-INITIAL_FORMS' : '1',
