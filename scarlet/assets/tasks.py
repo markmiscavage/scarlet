@@ -9,7 +9,11 @@ def optional_celery(**kparms):
             return func(*args, **kw)
         return inner
 
-    if settings.CELERY:
+    if settings.USE_CELERY_DECORATOR:
+        from celery import task
+        wrapper = task(**kparms)
+
+    elif settings.CELERY:
         wrapper = settings.CELERY.task(**kparms)
     else:
         wrapper = wrapped

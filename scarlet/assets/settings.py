@@ -28,3 +28,4 @@ IMAGE_SIZES = getattr(settings, "IMAGE_SIZES", DEFAULT_IMAGE_SIZES)
 IMAGE_CROPPER = '.crops.cropper'
 
 CELERY = getattr(settings, "ASSET_CELERY", None)
+USE_CELERY_DECORATOR = getattr(settings, "ASSET_USE_CELERY_DECORATOR", False)

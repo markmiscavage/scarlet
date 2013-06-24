@@ -91,7 +91,7 @@ class AssetBase(AutoTagModel):
         """
 
         if self._can_crop():
-            if settings.CELERY:
+            if settings.CELERY or settings.USE_CELERY_DECORATOR:
                 # this means that we are using celery
                 tasks.reset_crops.apply_async(args=[self.pk], countdown=5)
             else:
@@ -106,9 +106,10 @@ class AssetBase(AutoTagModel):
         the task will be run async
         """
         if self._can_crop():
-            if settings.CELERY:
+            if settings.CELERY or settings.USE_CELERY_DECORATOR:
                 # this means that we are using celery
-                tasks.ensure_crops.apply_async(args=[self.pk]+required_crops, countdown=5)
+                args = [self.pk]+list(required_crops)
+                tasks.ensure_crops.apply_async(args=args, countdown=5)
             else:
                 tasks.ensure_crops(self.pk, *required_crops)
 
