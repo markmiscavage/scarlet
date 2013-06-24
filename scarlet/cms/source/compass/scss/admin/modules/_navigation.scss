@@ -199,3 +199,43 @@ nav[role='sidebar'] {
 		}
 	}
 }
+
+// Considering tabs as a form of navigation.
+.tabs {
+	background: rgba(#000, 0.2);
+	margin: 0;
+	padding: $spacer $spacer 0;
+	white-space: nowrap;
+	overflow: auto;
+
+	> li {
+		@include inline-block(bottom);
+		margin-right: $gridlet;
+
+		> a {
+			display: block;
+			padding: 10px 15px 8px;
+			background: $light-blue;
+			@include border-top-radius($gridlet*2);
+			border: 1px solid rgba($blue, 0.5);
+			border-top-color: #fff;
+			border-bottom: none;
+
+			&:hover,
+			&.active {
+				background-color: rgba($dark-blue, 0.5);
+				color: #fff;
+			}
+		}
+	}
+}
+
+.sub-tabs {
+	margin: 0 0 $spacer*2;
+	padding: 0;
+
+	> li  {
+		@include inline-block(top);
+		margin-right: $gridlet;
+	}
+}

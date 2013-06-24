@@ -1,0 +1,181 @@
+{% extends "cms/base_popup.html" %}
+
+{% block page_class %}insert-media{% endblock page_class %}
+
+{% block popup_header %}
+<ul data-tabs-container=".media-container" class="widget-tabs tabs">
+	<li><a class="active" data-tabs-content="> .images" href="#">Images</a></li>
+	<li><a data-tabs-content="> .video" href="#">Video</a></li>
+</ul>
+{% endblock popup_header %}
+
+{% block content %}
+
+<div class="media-container">
+
+	<div class="images">
+
+		<ul data-tabs-container=".image-container" class="widget-tabs sub-tabs">
+			<li><a class="button active" data-tabs-content="> .embed-url" href="#">Embed URL</a></li>
+			{% if api_link %}
+				<li><a class="button" data-tabs-content="> .library" href="#">Library</a></li>
+			{% endif %}
+		</ul>
+
+		<div class="image-container">
+
+			<div class="widget-insert-image embed-url">
+				<form>
+
+					<p class="row">
+						<label class="image-url full">URL:
+							<input data-attribute="src" type="text" />
+						</label>
+					</p>
+
+					<hr>
+
+					<p class="row">
+						<label class="full">Title:
+							<input data-attribute="title" type="text" />
+						</label>
+					</p>
+
+					<p class="row">
+						<label class="full">Alt Text:
+							<input data-attribute="alt" type="text" />
+						</label>
+					</p>
+
+					<div class="preview-container">Preview:
+						<div class="image-preview"></div>
+					</div>
+
+					<p class="row">
+						<label class="col inline">Width (px):
+							<input data-attribute="width" type="text" name="width" class="image-size">
+						</label>
+						<label class="col inline">Height (px):
+							<input data-attribute="height" type="text" name="height" class="image-size">
+						</label>
+					</p>
+
+					<p class="row">
+						<label class="inline">
+							<input type="checkbox" name="constrain" class="constrain">
+							Constrain Proportions
+						</label>
+					</p>
+
+					<p><a class="button cancel" href="#">Cancel</a>
+					<input class="big" type="submit" name="insert" value="Insert" /></p>
+
+				</form>
+			</div>
+
+			{% if api_link %}
+			<div class="widget-insert-image library" style="display: none;">
+				<form>
+
+						<div class="widget-asset" data-api="{{ api_link }}">
+							<div class="widget-asset-preview" style="background-image:url({{ object.url }})"></div>
+							<div class="widget-asset-actions">
+								<input data-respond="true" data-attribute="src" type="hidden" value="">
+								{% if add_link %}
+									<a class="button" target="_blank" href="{{ add_link }}">Upload</a>
+								{% endif %}
+							</div>
+						</div>
+
+					<hr>
+
+					<p class="row">
+						<label class="full">Title:
+							<input data-attribute="title" type="text" />
+						</label>
+					</p>
+
+					<p class="row">
+						<label class="full">Alt Text:
+							<input data-attribute="alt" type="text" />
+						</label>
+					</p>
+
+					<div class="preview-container">Preview:
+						<div class="image-preview"></div>
+					</div>
+
+					<p class="row">
+						<label class="col inline">Width (px):
+							<input data-attribute="width" type="text" name="width" class="image-size">
+						</label>
+						<label class="col inline">Height (px):
+							<input data-attribute="height" type="text" name="height" class="image-size">
+						</label>
+					</p>
+
+					<p class="row">
+						<label class="inline">
+							<input type="checkbox" name="constrain" class="constrain">
+							Constrain Proportions
+						</label>
+					</p>
+
+					<p><a class="button cancel" href="#">Cancel</a>
+					<input class="big" type="submit" name="insert" value="Insert" /></p>
+
+
+				</form>
+			</div>
+			{% endif %}
+
+		</div>
+
+	</div>
+
+	<div class="video" style="display: none;">
+
+		<ul data-tabs-container=".video-container" class="widget-tabs sub-tabs">
+			<li><a class="button active" data-tabs-content="> .youtube" href="#">Embed URL</a></li>
+		</ul>
+
+		<div class="video-container">
+			<div class="widget-insert-video">
+				<form class="youtube">
+
+					<label class="youtube-url full">Video URL:
+						<input data-attribute="src" class="video-input" type="text" name="src">
+					</label>
+
+					<hr>
+
+					<div class="preview-container">Preview:
+						<div class="video-preview"></div>
+					</div>
+
+					<p class="row">
+						<label class="col inline">Width (px):
+							<input data-attribute="width" type="text" name="width">
+						</label>
+						<label class="col inline">Height (px):
+							<input data-attribute="height" type="text" name="height">
+						</label>
+					</p>
+
+					<label class="inline">
+						<input type="checkbox" name="constrain" class="constrain">
+						Constrain Proportions
+					</label>
+
+					<p><a class="button cancel" href="#">Cancel</a>
+					<input class="big" type="submit" name="insert" value="Insert" /></p>
+
+				</form>
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+{% endblock content %}

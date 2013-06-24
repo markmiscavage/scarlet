@@ -1,0 +1,58 @@
+// NOTE: Specificity should be rewritten as .insert-media
+// but it's being overwritten by another "section#main article" selector
+body.insert-media section#main article {
+
+	hr {
+		border-color: rgba(#000, 0.25);
+		margin-bottom: $spacer;
+	}
+
+	.row {
+		text-align: left;
+	}
+
+	.col {
+		@include inline-block(top);
+		width: 50%;
+		margin: 0;
+		padding: 0 10px;
+
+		&:first-child {
+			padding-left: 0;
+		}
+
+		&:last-child {
+			padding-right: 0;
+		}
+	}
+
+	label.inline {
+		vertical-align: middle;
+
+		input {
+			display: inline;
+			width: auto;
+		}
+	}
+
+	.full {
+		width: 100%;
+
+		input {
+			margin-top: $spacer;
+		}
+	}
+
+	input[type="text"] {
+
+	}
+
+	.preview-container {
+		// display: none;
+		margin-bottom: $spacer;
+	}
+
+	.widget-asset {
+		@include clearfix;
+	}
+}

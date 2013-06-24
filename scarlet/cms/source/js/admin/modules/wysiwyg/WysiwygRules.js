@@ -150,7 +150,14 @@ define(function () {
 				"rename_tag": "span"
 			},
 			"iframe": {
-				"remove": 1
+				"remove" : 0,
+				"check_attributes": {
+					"src": "href",
+					"width" : "numbers",
+					"height" : "numbers",
+					"frameborder" : "numbers",
+					"allowfullscreen" : "alt"
+				}
 			},
 			"figcaption": {
 				"rename_tag": "div"
@@ -168,6 +175,7 @@ define(function () {
 				"check_attributes": {
 					"width": "numbers",
 					"alt": "alt",
+					"title": "alt",
 					"src": "src", // if you compiled master manually then change this from 'url' to 'src'
 					"height": "numbers"
 				},
