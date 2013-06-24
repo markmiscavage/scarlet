@@ -28,6 +28,7 @@ define(
 				],
 			},
 
+			// Generates or updates the iframe with the latest input value.
 			onInput : function (e) {
 
 				var $target = $(e.currentTarget),
@@ -61,7 +62,7 @@ define(
 
 				if (attribute === "width" || attribute === "height") {
 
-					attribute = attribute.replace("px", "");
+					value = value.replace("px", "");
 
 					if (this.vars.constrain) {
 						this.constrainProportion(attribute, value);
@@ -75,6 +76,8 @@ define(
 
 			},
 
+			// Validates the video URL to a matching provider.
+			// Useful for video URLs that are not necessarily "embeddable" URLs.
 			validateVideo : function (url) {
 
 				var i = 0,

@@ -56,13 +56,18 @@ define(
 				});
 			},
 
+			// NOTE: this method must be overwritten by the extending class.
 			onInput : function (e) {
 				throw "You must override the `onInput` method.";
 			},
 
+			// Helper to constrain proportions
+			// given a dimension("width" || "height") and integer value.
 			constrainProportion : function (dimension, value) {
 
-				if (!this.vars.$node) {
+				value = parseInt(value, 10);
+
+				if (!this.vars.$node || isNaN(value)) {
 					return;
 				}
 
@@ -78,6 +83,7 @@ define(
 
 			},
 
+			// Helper to set a given attribute
 			setAttribute : function (attr, val) {
 				this.vars.$inputs.filter("[data-attribute=\"" + attr + "\"]").val(val);
 				this.vars.$node.attr(attr, val);
