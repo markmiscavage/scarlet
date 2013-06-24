@@ -9,11 +9,13 @@ define(
 
 		return Insert.extend({
 
+			// Extending to bind to a special data-respond attribute for Select2.
 			bindInputs : function () {
 				this.sup();
 				this.$dom.find('[data-respond=\"true\"]').on("change", this.onInput);
 			},
 
+			// Generates or updates the image with the latest input value.
 			onInput : function (e) {
 
 				var $target = $(e.currentTarget),
@@ -22,6 +24,7 @@ define(
 					$preview = this.$dom.find(".image-preview"),
 					$img = $preview.find('img');
 
+				// Adjusts the source to come from the data attribute.
 				if ($target.attr('data-src')) {
 					$preview.empty();
 					$img = $preview.find('img');
@@ -54,7 +57,7 @@ define(
 
 				if (attribute === "width" || attribute === "height") {
 
-					attribute = attribute.replace("px", "");
+					value = value.replace("px", "");
 
 					if (this.vars.constrain) {
 						this.constrainProportion(attribute, value);

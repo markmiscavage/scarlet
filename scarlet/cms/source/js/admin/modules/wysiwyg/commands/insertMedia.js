@@ -34,7 +34,7 @@ define(
 			// Base execute (executes when "insert media" is clicked)
 			exec : function (composer, command, value) {
 
-				// `value` should be a valid JSON string.
+				// `value` should be valid JSON
 				try {
 					value = JSON.parse(value);
 				} catch (e) {
@@ -43,6 +43,7 @@ define(
 
 				// Launches a popup, given a URL.
 				this.launchWindow(value.mediaUrl, 1025, 600, null, null, function (data) {
+
 					// Inserts the response form the popup as a DOM node
 					composer.selection.insertNode($(data)[0]);
 				});
