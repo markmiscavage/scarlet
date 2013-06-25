@@ -54,7 +54,7 @@ class EmbedView(cms_bundles.EmbedView):
 
     def get(self, request, *args, **kwargs):
         tags = request.GET.get('tags')
-        bundle = self.bundle.admin_site.get_bundle_for_model(models.Asset)
+        bundle = self.bundle.admin_site.get_bundle_for_model(get_asset_model())
         api_link = ''
         if bundle:
             api_link = bundle.get_view_url("main", request.user)
