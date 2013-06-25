@@ -95,7 +95,7 @@ class AssetBase(AutoTagModel):
                 # this means that we are using celery
                 tasks.reset_crops.apply_async(args=[self.pk], countdown=5)
             else:
-                tasks.reset_crops(self.pk, asset=self)
+                tasks.reset_crops(None, asset=self)
 
     def ensure_crops(self, *required_crops):
         """
@@ -111,7 +111,7 @@ class AssetBase(AutoTagModel):
                 args = [self.pk]+list(required_crops)
                 tasks.ensure_crops.apply_async(args=args, countdown=5)
             else:
-                tasks.ensure_crops(self.pk, *required_crops)
+                tasks.ensure_crops(None, *required_crops, asset=self)
 
     def create_crop(self, name, x, x2, y, y2):
         """

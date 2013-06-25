@@ -23,7 +23,7 @@ def optional_celery(**kparms):
 @optional_celery(name='assets_ensure_crops')
 def ensure_crops(asset_id, *required_crops, **kwargs):
     asset = kwargs.pop('asset', None)
-    if not asset:
+    if not asset or asset_id:
         asset = get_asset_model().objects.get(pk=asset_id)
 
     required_crops = set(required_crops).union(
@@ -42,7 +42,7 @@ def ensure_crops(asset_id, *required_crops, **kwargs):
 
 @optional_celery(name='assets_reset_crops')
 def reset_crops(asset_id, asset=None, **kwargs):
-    if not asset:
+    if not asset or asset_id:
         asset = get_asset_model().objects.get(pk=asset_id)
 
     crops = set(asset.imagedetail_set.values_list('name', flat=True))
