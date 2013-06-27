@@ -82,7 +82,7 @@ class AdminList(object):
 
                 # change order_type so that next sorting on the same
                 # field will give reversed results
-                if sortable == self.sort_field:
+                if sortable and field == self.sort_field:
                     cur_sorted = True
                     if self.order_type == self.ASC:
                         stype = self.DESC
@@ -273,6 +273,10 @@ def get_sort_field(attr, model):
     Currently returns attr if it is a field on
     the given model.
 
+    If the models has an attribute matching that name
+    and that value has an attribute 'sort_field' than
+    that value is used.
+
     TODO: Provide a way to sort based on a non field
     attribute.
     """
@@ -281,6 +285,10 @@ def get_sort_field(attr, model):
         if model._meta.get_field(attr):
             return attr
     except FieldDoesNotExist:
+        if isinstance(attr, basestring):
+            val = getattr(model, attr, None)
+            if val and hasattr(val, 'sort_field'):
+                return getattr(model, attr).sort_field
         return None
 
 def get_field_value(field, instance):
