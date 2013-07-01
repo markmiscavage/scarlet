@@ -65,7 +65,10 @@ class AdminList(object):
                     name = f.label
 
             if name is None:
-                name = label_for_field(field, model)
+                try:
+                    name = label_for_field(field, model)
+                except AttributeError:
+                    name = ""
 
             if name == model._meta.verbose_name:
                 name = self.model_name and self.model_name or \
