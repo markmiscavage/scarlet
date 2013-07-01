@@ -61,7 +61,7 @@ robyn-local.json
 .bundle
 *.sass-cache
 # Avoid committing generated CSS
-scarlet/cms/static/*
+# scarlet/cms/static/*
 
 # Python
 *.py[co]
