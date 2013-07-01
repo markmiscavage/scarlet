@@ -46,7 +46,7 @@ class AssetFieldFile(FieldFile):
             setattr(self, "{0}_url".format(size),
                     utils.partial(self._get_url, version=size))
 
-    def get_version(version, cbversion=None):
+    def get_version(self, version, cbversion=None):
         return self._get_url(version, cbversion=cbversion)
 
     def _get_url(self, version=None, cbversion=None):
@@ -76,6 +76,9 @@ class AssetFieldFile(FieldFile):
 class AssetRealFileField(models.FileField):
     attr_class = AssetFieldFile
 
+    def __init__(self, *args, **kwargs):
+        self.image_sizes = kwargs.pop('image_sizes', [])
+        super(AssetRealFileField, self).__init__(*args, **kwargs)
 
 class AssetsFileField(TaggedRelationField):
     default_form_class = AssetsFileFormField
@@ -120,7 +123,8 @@ class AssetsFileField(TaggedRelationField):
             denormalize_field = self.cache_field_class(max_length=255,
                                                 editable=False,
                                                 blank=self.blank,
-                                                upload_to=utils.assets_dir)
+                                                upload_to=utils.assets_dir,
+                                                image_sizes=self.image_sizes)
             cache_name = self.get_denormalized_field_name(name)
             cls.add_to_class(cache_name, denormalize_field)
             pre_save.connect(denormalize_assets, sender=cls)
