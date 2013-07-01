@@ -1,0 +1,18 @@
+{
+	"name": "rosy",
+	"description": "An inheritable AMD Framework.",
+	"version": "3.0.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ff0000/rosy.git"
+	},
+	"devDependencies": {
+		"rosy-oxblood": "https://github.com/rosy-components/rosy-oxblood/tarball/master",
+		"bower": "~0.9.x"
+	},
+	"scripts": {
+		"install": "bower install",
+		"browser": "bunyip -f test/runner.html local -l 'safari|chrome|firefox'",
+		"test": "npm test rosy-oxblood"
+	}
+}

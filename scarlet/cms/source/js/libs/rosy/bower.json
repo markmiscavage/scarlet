@@ -1,0 +1,28 @@
+{
+  "name": "rosy",
+  "version": "3.0.0",
+  "main": [
+    "./config.js"
+  ],
+  "dependencies": {
+    "jquery": "http://code.jquery.com/jquery-1.9.1.js",
+    "json3": "http://cdnjs.cloudflare.com/ajax/libs/json3/3.2.4/json3.js",
+    "modernizr": "http://modernizr.com/downloads/modernizr-2.6.2.js",
+    "requirejs": "http://requirejs.org/docs/release/2.1.6/comments/require.js",
+    "requirejs-text": "https://raw.github.com/requirejs/text/2.0.6/text.js",
+    "handlebars": "https://raw.github.com/wycats/handlebars.js/1.0.0-rc.4/dist/handlebars.js",
+    "cookies": "https://raw.github.com/ScottHamper/Cookies/master/src/cookies.js"
+  },
+  "ignore": [
+    "test/**/*"
+  ],
+  "gitHead": "c64002ff4ed6924f6d060685632275a2238728ab",
+  "readme": "![Rosy](http://ff0000.github.com/rosy/rosy.png?)\n\n##### An inheritable AMD Framework.\n[![Build Status](https://secure.travis-ci.org/ff0000/rosy.png?branch=master)](http://travis-ci.org/ff0000/rosy)\n\n### Support\n\nRosy is [verified to work](https://github.com/ff0000/rosy/wiki/Unit-Tests) in the following browsers:\n\n<table>\n\t<tr>\n\t\t<td><strong>Desktop</strong></td>\n\t\t<td><strong>iOS</strong></td>\n\t\t<td><strong>Android</strong></td>\n\t</tr>\n\t<tr>\n\t\t<td>Chrome (latest)</td>\n\t\t<td>Chrome (latest)</td>\n\t\t<td>Chrome (Nexus 7)</td>\n\t</tr>\n\t<tr>\n\t\t<td>Safari (latest)</td>\n\t\t<td>Safari (latest)</td>\n\t\t<td></td>\n\t</tr>\n\t<tr>\n\t\t<td>Firefox (latest)</td>\n\t\t<td></td>\n\t\t<td></td>\n\t</tr>\n\t<tr>\n\t\t<td>Internet Explorer (7+)</td>\n\t\t<td></td>\n\t\t<td></td>\n\t</tr>\n</table>\n\n### Documentation\n\nFor documentation and implementation details, check out the [wiki.](https://github.com/ff0000/rosy/wiki)\n<br/><br/>\n\n### License\n\n**Released under the MIT License**\n\n\tCopyright (c) 2012 by RED Interactive Agency\n\n\tPermission is hereby granted, free of charge, to any person obtaining a copy\n\tof this software and associated documentation files (the \"Software\"), to deal\n\tin the Software without restriction, including without limitation the rights\n\tto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n\tcopies of the Software, and to permit persons to whom the Software is\n\tfurnished to do so, subject to the following conditions:\n\n\tThe above copyright notice and this permission notice shall be included in\n\tall copies or substantial portions of the Software.\n\n\tTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n\tIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n\tFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n\tAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n\tLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n\tOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\n\tTHE SOFTWARE.\n",
+  "readmeFilename": "README.md",
+  "_id": "rosy@3.0.0",
+  "description": "![Rosy](http://ff0000.github.com/rosy/rosy.png?)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ff0000/rosy.git"
+  }
+}
