@@ -90,4 +90,16 @@ module.exports = function (grunt) {
 		}
 	});
 
+	grunt.config.set("watch.rosy", {
+		files: [
+			path.join(source, "js", "*.js"),
+			path.join(source, "js", "admin", "**", "*.js")
+		],
+		options: {
+			interrupt: true,
+			livereload: true,
+			debounceDelay: 250
+		}
+	});
+
 };
