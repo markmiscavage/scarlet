@@ -31,5 +31,29 @@ module.exports = function (grunt) {
 		clean: true
 	});
 
-	grunt.config.set("build.caboose", ["caboose:admin"]);
+	grunt.config.set("build.caboose", {
+		"pre": ["caboose:bundle"],
+		"build": ["caboose:admin"]
+	});
+
+	grunt.config.set("watch.caboose", {
+		files: path.join(sourcePath, "**", "*.s{a,c}ss"),
+		tasks: ["caboose:admin"],
+		options: {
+			interrupt: true
+		}
+	});
+
+	grunt.config.set("watch.livereload", {
+		files: [
+			path.join(staticPath, "css", "**", "*.css"),
+			path.join(staticPath, "img", "**", "*.{png,jpg,jpeg,gif,webm,svg}")
+		],
+		options: {
+			interrupt: true,
+			livereload: true,
+			debounceDelay: 250
+		}
+	});
+
 };
