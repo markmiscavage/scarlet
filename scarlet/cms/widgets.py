@@ -36,7 +36,7 @@ class TimeChoiceWidget(widgets.Select):
     should be a number between 1 and 60. Default is 15.
     :param sec_interval: Interval for seconds in your dropdown, \
     should be a number between 1 and 60. Default is 60.
-    :param twenty_for_hour: Display time in a 24hr format? \
+    :param twenty_four_hour: Display time in a 24hr format? \
     Default is False.
     """
 
@@ -52,9 +52,10 @@ class TimeChoiceWidget(widgets.Select):
         self.choices = [(self.NOW, 'Now')]
         self.choice_values = set()
 
-        self.repr_format = "%H:%M:%S"
+        
+        self.repr_format = "%I:%M:%S %p"
         if twenty_four_hour:
-            self.repr_format = "%I:%M:%S %p"
+            self.repr_format = "%H:%M:%S"
 
         for hour in range(24):
             for min_v in range(60 / min_interval):
@@ -95,8 +96,7 @@ class SplitDateTime(widgets.SplitDateTimeWidget):
     Widget for datetime fields. Uses DateWidget, TimeChoiceWidget.
     """
 
-    def __init__(self, attrs=None):
-        widgets = [DateWidget, TimeChoiceWidget]
+    def __init__(self, widgets=(DateWidget, TimeChoiceWidget),attrs=None):
         forms.MultiWidget.__init__(self, widgets, attrs)
 
     def format_output(self, rendered_widgets):
