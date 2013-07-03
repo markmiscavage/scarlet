@@ -19,18 +19,21 @@ FORMFIELD_FOR_DBFIELD_DEFAULTS = {
     models.DateField:        {'widget': widgets.DateWidget},
 }
 
+CHECKBOX_NAME = '_selected'
+
 class AdminList(object):
     ASC = 'asc'
     DESC = 'desc'
 
     def __init__(self, formset, object_list, visible_fields, sort_field,
-                    order_type, model_name=None):
+                    order_type, model_name=None, admin_form=False):
         self.formset = formset
         self.object_list = object_list
         self.visible_fields = visible_fields
         self.order_type = order_type
         self.sort_field = sort_field
         self.model_name = model_name
+        self.admin_form = admin_form
         self.empty = len(object_list) == 0
 
         self.auto_sort = False
@@ -57,6 +60,10 @@ class AdminList(object):
         else:
             model = self.object_list.model
 
+        #blank label for checkboxes
+        if self.admin_form:
+            yield AdminListLabel("", None, None, False, False)
+
         for field in self.visible_fields:
             name = None
             if self.formset:
@@ -65,10 +72,7 @@ class AdminList(object):
                     name = f.label
 
             if name is None:
-                try:
-                    name = label_for_field(field, model)
-                except AttributeError:
-                    name = ""
+                name = label_for_field(field, model)
 
             if name == model._meta.verbose_name:
                 name = self.model_name and self.model_name or \
@@ -108,6 +112,7 @@ class AdminListLabel(object):
 
 
 class AdminListRow(object):
+
     def __init__(self, form, instance, visible_fields):
         self.form = form
         self.instance = instance

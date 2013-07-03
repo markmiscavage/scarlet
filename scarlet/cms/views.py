@@ -24,7 +24,7 @@ from . import helpers
 from . import renders
 from . import transaction
 from . import widgets
-from .forms import WhenForm, LazyFormSetFactory, VersionFilterForm, MassActionForm, ActionForm
+from .forms import WhenForm, LazyFormSetFactory, VersionFilterForm
 from .models import CMSLog
 from .internal_tags import handler as tag_handler
 
@@ -1501,7 +1501,6 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
                 params['form'] = fc
             if self.change_fields:
                 params['fields'] = self.change_fields
-
             return model_forms.modelform_factory(self.model, **params)
 
     def get_formset_class(self, **kwargs):
@@ -1601,6 +1600,17 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
             is_paginated = False
         return is_paginated, page, paginator, queryset
 
+
+    def get_action_context(self, request):
+        default_choice = (request.build_absolute_uri(), '----------')
+        act_context = [default_choice]
+        if self.bundle._meta.action_views:
+            for actv in self.bundle._meta.action_views:
+                view, name = self.bundle.get_view_and_name(actv)
+                desc = view.short_description or actv
+                act_context.append((self.bundle.get_view_url(actv, request.user), desc ))
+        return act_context
+
     def get_list_data(self, request, **kwargs):
         """
         Returns the data needed for displaying the list.
@@ -1622,6 +1632,7 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
         sort_field = None
         order_type = None
+
         if self.can_sort:
             sort_field = request.GET.get('sf')
             order_type = request.GET.get('ot', helpers.AdminList.ASC)
@@ -1632,22 +1643,26 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         if self.request.method == 'POST' and self.can_submit:
             formset = self.get_formset(data=self.request.POST, queryset=queryset)
             is_paginated, page, paginator, queryset = self._paginate_queryset(queryset)
+
         else:
             is_paginated, page, paginator, queryset = self._paginate_queryset(queryset)
             formset = self.get_formset(queryset=queryset)
 
+
         visible_fields = self.get_visible_fields(formset)
         adm_list = helpers.AdminList(formset, queryset, visible_fields,
                                        sort_field, order_type,
-                                       self.model_name)
+                                       self.model_name, self.bundle._meta.action_views)
 
         data = {
             'list': adm_list,
             'filter_form': self.get_filter_form(),
             'page_obj': page,
             'is_paginated': is_paginated,
-            'show_form': self.can_submit and formset is not None,
-            'paginator': paginator
+            'show_form': self.bundle._meta.action_views or (self.can_submit and formset is not None),
+            'paginator': paginator,
+            'checkbox_name' : helpers.CHECKBOX_NAME,
+            'actions' : self.get_action_context(request)
         }
 
         return data
@@ -1729,83 +1744,53 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
             return self.render(request, **data)
 
 
-BLANK_CHOICE_DASH = ("blank", "--------")
+class ActionView(ListView):
+    """
+    Base class for defining mass actions that can be executed in a \
+    ListView. Any ActionView subclasses should be registered with \
+    the Bundle in the Meta class. 
 
-class ActionListView(ListView):
-    actions = {}
+        i.e. (in the Bundle)
+            class Meta:
+                action_views = ['action1', 'action2']
 
-    form_class = MassActionForm
-    default_template = 'cms/actionlist.html'
+    If ListView formsets are also being used, selecting an action will \
+    override any edits for the formset. A formset will still process \
+    correctly if no action is selected. 
 
+    :param short_description: Description of action to display. \
+    Defaults to the name of the view.
+    :param redirect_to_view: Defaults to 'main'
+    """
 
-    def get_list_data(self, request, **kwargs):
-        data = super(ActionListView, self).get_list_data(request, **kwargs)
-        data.update({"actions": self.get_action_choices()})
-        return data
+    short_description = None
+    redirect_to_view = 'main'
 
-    def get_action_choices(self, default_choices = BLANK_CHOICE_DASH):
-        choices = [default_choices]
-        for name in self.actions:
-            # tuple of name, description for form view
-            choices.append((name, self.actions.get(name)[1]))
+    # Can be overriden for simple action implementation. Override post
+    # to further customize.
+    def process_action(self, request, queryset):
+        pass
 
-        return choices
+    def get_success_url(self, request):
+        if self.redirect_to_view:
+            return self.bundle.get_view_url(self.redirect_to_view, self.request.user)
+        else:
+            return self.request.build_absolute_uri()
 
-    def process_action(self, request, selected):
-        data = request.POST.copy()
-        for key in data.keys():
-            if key.startswith('form'):
-                data.pop(key)
-
-        action_form = ActionForm(data, auto_id=None)
-        action_form.fields['action'].choices = self.get_action_choices()
-
-        #If the form is valid we can handle the action
-        if action_form.is_valid():
-            action = action_form.cleaned_data['action']
-            if action == BLANK_CHOICE_DASH[0]:
-                return "No action selected"
-            func = self.actions[action][0]
-            queryset = self.get_queryset().filter(pk__in=selected)
-            func(self, request, queryset)
-            return "%s items updated" % len(selected)
-
-        return "No action selected."
 
     def post(self, request, *args, **kwargs):
-
         data = self.get_list_data(request, **kwargs)
 
-        l = data.get('list')
-        formset = None
-        if l and l.formset:
-            formset = l.formset
-
-        url = self.request.build_absolute_uri()
-        
-        #see if any items were selected 
-        selected = [request.POST.get("form-%s-id" % re.search('form-(.+?)-selected', key).group(1))
-                                     for key in request.POST if key.endswith("selected")]
-
+        selected = request.POST.getlist(helpers.CHECKBOX_NAME)
         if selected:
-            msg = self.process_action(request, selected)
-            return self.render(request, redirect_url=url, message=msg, collect_render_data=False)
+            queryset = self.get_queryset().filter(pk__in=selected)
+            self.process_action(request, queryset)
 
-        if formset and formset.is_valid():
-            changecount = 0
-            with transaction.commit_on_success():
-                for form in formset.forms:
-                    if form.has_changed():
-                        obj = form.save()
-                        changecount += 1
-                        self.log_action(obj, CMSLog.SAVE, url=url,
-                                        update_parent=changecount == 1)
+            url = self.get_success_url(request)
+            return self.render(request, redirect_url=url, collect_render_data=False)
 
-            return self.render(request, redirect_url=url,
-                                 message="%s items updated" % changecount,
-                                 collect_render_data=False)
-
-        return self.render(request, **data)
+        return self.render(request, redirect_url=self.get_success_url(request),
+                                 message="You have not selected any items.", **data)
 
 
 class PublishView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):

@@ -60,6 +60,7 @@ class Meta(object):
         'defaults',
         'default_kwargs',
         'primary_model_bundle',
+        'action_views'
     )
 
     def __init__(self):
@@ -70,6 +71,9 @@ class Meta(object):
 
         # which items are considered live actions
         self.live_views = ('delete',)
+
+        # which items should be displayed as mass actions
+        self.action_views = None
 
         # The regex that should be used to match in
         # urls the value for %s is determined by the bundle
