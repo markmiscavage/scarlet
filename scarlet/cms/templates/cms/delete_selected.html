@@ -1,0 +1,28 @@
+{% extends base %}
+{% load cms %}
+{% block main_content %}
+    <form action="{{ action_url }}" method="post">
+        {% csrf_token %}
+
+    {% if not protected %}
+    <p>This will delete the following objects: <br>
+        {% for obj in to_delete %}
+            {{ obj }}<br>
+            {% endfor %}
+        Are you sure?</p>
+        {% for obj in queryset %}
+            <input type="hidden" name="{{ action_checkbox_name }}" value="{{ obj.pk }}" />
+        {% endfor %}
+    {% bundle_url bundle "main_list" as cancel_url %}
+    <p><a class="button" href="{{ cancel_url }} ">Cancel</a>
+    <input type="submit" name='delete' value="Yes" /></p>
+    {% else %}
+
+    <p>Cannot delete some objects because the following objects depend on them.</p>
+
+    {% for p in protected %}
+    <p>{{ p }}</p>
+    {% endfor %}
+    {% endif %}
+    </form>
+{% endblock %}

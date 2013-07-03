@@ -1792,6 +1792,44 @@ class ActionView(ListView):
         return self.render(request, redirect_url=self.get_success_url(request),
                                  message="You have not selected any items.", **data)
 
+class DeleteActionView(ActionView):
+
+    short_description = "Delete"
+    default_template = 'cms/delete_selected.html'
+    def post(self, request, *args, **kwargs):
+
+        selected = request.POST.getlist(helpers.CHECKBOX_NAME)
+        queryset = self.get_queryset().filter(pk__in=selected)
+        object_class = self.bundle._meta.model
+        to_delete = []
+        for del_obj in selected:
+            to_delete.append(object_class.objects.get(pk=del_obj))
+        msg = None
+        url = None
+        if request.POST.get('delete'):
+            try:
+                count = 0
+                with transaction.commit_on_success():
+                    for obj in to_delete:
+                        self.log_action(obj, CMSLog.DELETE)
+                        count += 1
+                        obj.delete()
+                    msg = "%s objects deleted." % count
+                    url = self.get_success_url(request)
+                return self.render(request, redirect_url=url, message=msg, collect_render_data=False)
+            except models.ProtectedError, e:
+                protected = []
+                for x in e.protected_objects:
+                    if hasattr(x, 'delete_blocked_message'):
+                        protected.append(x.delete_blocked_message())
+                    else:
+                        protected.append(u"%s: %s" % (x._meta.verbose_name, x))
+                return self.render(request,protected=protected)
+
+        return self.render(request,
+                           to_delete=to_delete,
+                           message=msg, action_checkbox_name=helpers.CHECKBOX_NAME, queryset = queryset)
+
 
 class PublishView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
     """
