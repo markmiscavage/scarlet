@@ -6,7 +6,7 @@
 
     {% if not protected %}
     <p>This will delete the following objects: <br>
-        {% for obj in to_delete %}
+        {% for obj in queryset %}
             {{ obj }}<br>
             {% endfor %}
         Are you sure?</p>

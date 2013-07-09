@@ -674,7 +674,7 @@ class ModelCMSView(CMSView):
         of `self.object`.
         """
         if not message:
-            message = u"%s saved" % self.object
+                message = u"%s saved" % self.object
         messages.add_message(self.request, status, message)
         return message
 
@@ -1780,43 +1780,82 @@ class ActionView(ListView):
 
     def post(self, request, *args, **kwargs):
         data = self.get_list_data(request, **kwargs)
-
+        slug = self.kwargs.get(self.slug_url_kwarg, None)
         selected = request.POST.getlist(helpers.CHECKBOX_NAME)
+
+        # this is an action on a single object
+        if slug and not selected:
+            selected = [slug]
+
         if selected:
             queryset = self.get_queryset().filter(pk__in=selected)
-            self.process_action(request, queryset)
-
+            msg = self.process_action(request, queryset)
             url = self.get_success_url(request)
-            return self.render(request, redirect_url=url, collect_render_data=False)
-
+            self.write_message(message=msg)
+            return self.render(request, redirect_url=url, message=msg, collect_render_data=False)
+        msg = "You have not selected any items."
+        self.write_message(message=msg)
         return self.render(request, redirect_url=self.get_success_url(request),
-                                 message="You have not selected any items.", **data)
+                                 message=msg, **data)
 
 class DeleteActionView(ActionView):
 
     short_description = "Delete"
     default_template = 'cms/delete_selected.html'
-    def post(self, request, *args, **kwargs):
 
+    def get_done_url(self):
+        """
+        Returns the url to redirect to after a successful update.
+        The get_view_url will be called on the current bundle using
+        `self.redirect_to_view` as the view name.
+        """
+        data = dict(self.kwargs)
+        data.pop(self.slug_url_kwarg, None)
+        url = self.bundle.get_view_url(self.redirect_to_view,
+                                        self.request.user, data)
+        return self.customized_return_url(url)
+
+    def get(self, request, *args, **kwargs):
+        """
+        Method for handling GET requests.
+        Calls the `render` method with the following
+        items in context:
+
+        * **obj** - The obj being deleted.
+        """
+        pk = self.kwargs.get(self.slug_url_kwarg, None)
+        if pk and pk.isdigit():
+            queryset = self.get_queryset().filter(pk=pk)
+            return self.render(request, queryset=queryset)
+        return self.render(request, redirect_url = self.redirect_to_view)
+
+
+    def post(self, request, *args, **kwargs):
         selected = request.POST.getlist(helpers.CHECKBOX_NAME)
+        slug = self.kwargs.get(self.slug_url_kwarg, None)
+
+        # this is an action on a single object
+        if slug and not selected:
+            selected = [slug]
+
         queryset = self.get_queryset().filter(pk__in=selected)
         object_class = self.bundle._meta.model
         to_delete = []
-        for del_obj in selected:
-            to_delete.append(object_class.objects.get(pk=del_obj))
         msg = None
         url = None
         if request.POST.get('delete'):
             try:
                 count = 0
                 with transaction.commit_on_success():
-                    for obj in to_delete:
-                        self.log_action(obj, CMSLog.DELETE)
-                        count += 1
-                        obj.delete()
-                    msg = "%s objects deleted." % count
-                    url = self.get_success_url(request)
-                return self.render(request, redirect_url=url, message=msg, collect_render_data=False)
+                    if selected:
+                        for obj in queryset:
+                            self.log_action(obj, CMSLog.DELETE)
+                            count += 1
+                            obj.delete()
+                        msg = "%s object%s deleted." % (count, ('s' if count >1 else ''))
+                        self.write_message(message=msg)
+                        url = self.get_done_url()
+                        return self.render(request, redirect_url=url, message=msg, collect_render_data=False)
             except models.ProtectedError, e:
                 protected = []
                 for x in e.protected_objects:
@@ -1826,9 +1865,9 @@ class DeleteActionView(ActionView):
                         protected.append(u"%s: %s" % (x._meta.verbose_name, x))
                 return self.render(request,protected=protected)
 
-        return self.render(request,
-                           to_delete=to_delete,
-                           message=msg, action_checkbox_name=helpers.CHECKBOX_NAME, queryset = queryset)
+        return self.render(request, message=msg,
+                            action_checkbox_name=helpers.CHECKBOX_NAME, 
+                            queryset = queryset)
 
 
 class PublishView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):

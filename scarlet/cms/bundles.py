@@ -546,6 +546,17 @@ class Bundle(object):
                 regex = "%s%s" % (self.item_regex, regex)
         return regex
 
+    def _opt_action_regex(self, name, attname):
+        # Get regex and ignore item view status
+        regex = ''
+        if name != self.name and attname != 'main':
+            regex = "%s/" % attname
+            if hasattr(self._meta, "%s_regex_base" % attname):
+                regex = getattr(self._meta, "%s_regex_base" % attname)
+                regex = regex % {'group_name': self.name,
+                                'attname': attname}
+        return regex
+
     def get_url(self, name, view_obj, attname):
 
         def wrap(view):
@@ -563,6 +574,28 @@ class Bundle(object):
                 name=name)
         return u
 
+    def _opt_action_url(self, name, view_obj, attname):
+        # Get URL and ignore item_view status
+        def wrap(view):
+            def wrapper(*args, **kwargs):
+                return self.admin_site.admin_view(view)(*args, **kwargs)
+            return update_wrapper(wrapper, view)
+
+        regex = self._opt_action_regex(name, attname)
+        kwargs = {}
+
+        if hasattr(view_obj, 'bundle'):
+            kwargs['bundle'] = self
+
+        if hasattr(view_obj, 'slug_url_kwarg'):
+            arg = None
+            if self.parent:
+                arg = self.parent._get_slug_url_kwarg_for_name(self.attr_on_parent)
+            kwargs['slug_url_kwarg'] = arg
+
+        return url(r'^%s$' % regex, wrap(view_obj.as_view(**kwargs)), name=name)
+
+
     def get_urls(self):
         """
         Returns urls handling bundles and views.
@@ -578,6 +611,13 @@ class Bundle(object):
             if view and name:
                 parts.append(self.get_url(name, view, v))
             seen.add(v)
+
+        # Process any item views that are also action views
+        if self._meta.action_views:
+            for v in set(self._meta.action_views).intersection(seen):
+                view, name = self.get_view_and_name(v)
+                if view and name:
+                    parts.append(self._opt_action_url(name, view, v))
 
         # Process everything else that we have not seen
         for v in set(self._views).difference(seen):
