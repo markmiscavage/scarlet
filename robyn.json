@@ -63,12 +63,10 @@
 	},
 	"scripts": {
 		"install": [
-			".robyn/plugins/caboose/config/init/caboose.js",
-			".robyn/plugins/rosy/config/init/rosy.js"
+			".robyn/plugins/caboose/config/init/caboose.js"
 		],
 		"update": [
-			".robyn/plugins/caboose/config/init/caboose.js",
-			".robyn/plugins/rosy/config/init/rosy.js"
+			".robyn/plugins/caboose/config/init/caboose.js"
 		]
 	},
 	"initialized": true
