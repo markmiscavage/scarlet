@@ -1,5 +1,6 @@
 from functools import update_wrapper
 import urlparse
+from urllib import urlencode
 import copy
 import re
 
@@ -1602,7 +1603,7 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
 
     def get_action_context(self, request):
-        default_choice = (request.build_absolute_uri(), '----------')
+        default_choice = (helpers.ACTION_DEFAULT, '----------')
         act_context = [default_choice]
         if self.bundle._meta.action_views:
             for actv in self.bundle._meta.action_views:
@@ -1718,6 +1719,16 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         with django formsets and concurrent users editing the same
         objects.
         """
+        msg = None
+        action = request.POST.get('actions', None)
+        selected = request.POST.getlist(helpers.CHECKBOX_NAME)
+        if len(selected) > 0:
+            if not action == helpers.ACTION_DEFAULT:
+                sel = {helpers.CHECKBOX_NAME : ','.join(selected)}
+                qs = '?' + urlencode(sel)
+                return self.render(request, redirect_url = action + qs)
+        else:
+            msg = self.write_message(message="No items have been selected.")
 
         data = self.get_list_data(request, **kwargs)
 
@@ -1741,14 +1752,17 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
                            message="%s items updated" % changecount,
                            collect_render_data=False)
         else:
-            return self.render(request, **data)
+            return self.render(request, message = msg, **data)
 
 
-class ActionView(ListView):
+class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     """
-    Base class for defining mass actions that can be executed in a \
-    ListView. Any ActionView subclasses should be registered with \
-    the Bundle in the Meta class. 
+    Base class for defining actions that can be executed in a \
+    ListView. An ActionView subclass that will be used as a mass \
+    action should be registered with the Bundle in the Meta class. \
+    If it is going to be used as a single-item action, it should be \
+    registered as an item_view in the same way. An ActionView can be \
+    registered as both. 
 
         i.e. (in the Bundle)
             class Meta:
@@ -1761,47 +1775,48 @@ class ActionView(ListView):
     :param short_description: Description of action to display. \
     Defaults to the name of the view.
     :param redirect_to_view: Defaults to 'main'
+    :param confirmation_message: Message that the intermediate \
+    confirmation page will display to the user before action \
+    is executed.
     """
 
     short_description = None
     redirect_to_view = 'main'
+    confirmation_message = 'This will modify the following items:'
+    default_template = 'cms/action_confirmation.html'
 
     # Can be overriden for simple action implementation. Override post
     # to further customize.
     def process_action(self, request, queryset):
+        """
+        Can be overriden for simple action implementation.
+        Arguments are original request and queryset of 
+        objects to be modified by the action. Should return
+        a message to display to the user once action is
+        completed. 
+
+        """
         pass
 
-    def get_success_url(self, request):
-        if self.redirect_to_view:
-            return self.bundle.get_view_url(self.redirect_to_view, self.request.user)
-        else:
-            return self.request.build_absolute_uri()
+    def get_context_data(self, **kwargs):
+        """
+        Hook for adding arguments to the context.
+        """
+        context = {
+            'conf_msg' : self.confirmation_message,
+        }
+        context.update(kwargs)
+        return context
 
-
-    def post(self, request, *args, **kwargs):
-        data = self.get_list_data(request, **kwargs)
-        slug = self.kwargs.get(self.slug_url_kwarg, None)
-        selected = request.POST.getlist(helpers.CHECKBOX_NAME)
-
-        # this is an action on a single object
-        if slug and not selected:
-            selected = [slug]
-
-        if selected:
-            queryset = self.get_queryset().filter(pk__in=selected)
-            msg = self.process_action(request, queryset)
-            url = self.get_success_url(request)
-            self.write_message(message=msg)
-            return self.render(request, redirect_url=url, message=msg, collect_render_data=False)
-        msg = "You have not selected any items."
-        self.write_message(message=msg)
-        return self.render(request, redirect_url=self.get_success_url(request),
-                                 message=msg, **data)
-
-class DeleteActionView(ActionView):
-
-    short_description = "Delete"
-    default_template = 'cms/delete_selected.html'
+    def write_message(self, status=messages.INFO, message=None):
+        """
+        Same behavior as parent, except defaults to the message
+        "Saved" if no message is present.
+        """
+        if not message:
+            message = "Saved."
+        messages.add_message(self.request, status, message)
+        return message
 
     def get_done_url(self):
         """
@@ -1815,47 +1830,43 @@ class DeleteActionView(ActionView):
                                         self.request.user, data)
         return self.customized_return_url(url)
 
+    def get_selected(self, request):
+        queryset = None
+        slug = self.kwargs.get(self.slug_url_kwarg, None)
+        if request.GET.get(helpers.CHECKBOX_NAME):
+            selected = request.GET.get(helpers.CHECKBOX_NAME).split(',')
+        else: 
+            selected = request.POST.getlist(helpers.CHECKBOX_NAME)
+
+        #this is an action on a single object
+        if slug and not selected:
+            selected = [slug]
+
+        if selected:
+            queryset = self.get_queryset().filter(pk__in=selected)
+        return queryset
+
     def get(self, request, *args, **kwargs):
         """
         Method for handling GET requests.
         Calls the `render` method with the following
         items in context:
-
-        * **obj** - The obj being deleted.
+        queryset : Queryset of objects to perform action on
         """
-        pk = self.kwargs.get(self.slug_url_kwarg, None)
-        if pk and pk.isdigit():
-            queryset = self.get_queryset().filter(pk=pk)
-            return self.render(request, queryset=queryset)
-        return self.render(request, redirect_url = self.redirect_to_view)
-
+        return self.render(request, 
+                            action_checkbox_name=helpers.CHECKBOX_NAME, 
+                            queryset = self.get_selected(request))
 
     def post(self, request, *args, **kwargs):
-        selected = request.POST.getlist(helpers.CHECKBOX_NAME)
-        slug = self.kwargs.get(self.slug_url_kwarg, None)
-
-        # this is an action on a single object
-        if slug and not selected:
-            selected = [slug]
-
-        queryset = self.get_queryset().filter(pk__in=selected)
-        object_class = self.bundle._meta.model
-        to_delete = []
+        queryset = self.get_selected(request)
         msg = None
         url = None
-        if request.POST.get('delete'):
+        if request.POST.get('modify'):
             try:
-                count = 0
-                with transaction.commit_on_success():
-                    if selected:
-                        for obj in queryset:
-                            self.log_action(obj, CMSLog.DELETE)
-                            count += 1
-                            obj.delete()
-                        msg = "%s object%s deleted." % (count, ('s' if count >1 else ''))
-                        self.write_message(message=msg)
-                        url = self.get_done_url()
-                        return self.render(request, redirect_url=url, message=msg, collect_render_data=False)
+                msg = self.process_action(request, queryset)
+                url = self.get_done_url()
+                self.write_message(message=msg)
+                return self.render(request, redirect_url=url, message=msg)
             except models.ProtectedError, e:
                 protected = []
                 for x in e.protected_objects:
@@ -1868,6 +1879,23 @@ class DeleteActionView(ActionView):
         return self.render(request, message=msg,
                             action_checkbox_name=helpers.CHECKBOX_NAME, 
                             queryset = queryset)
+
+class DeleteActionView(ActionView):
+    """
+    View for deleting one or more objects. 
+    """
+    short_description = "Delete selected items"
+    confirmation_message = "This will delete the following items:"
+
+    def process_action(self, request, queryset):
+        count = 0
+        with transaction.commit_on_success():
+            for obj in queryset:
+                self.log_action(obj, CMSLog.DELETE)
+                count += 1
+                obj.delete()
+            msg = "%s object%s deleted." % (count, ('s' if count >1 else ''))
+            return msg
 
 
 class PublishView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):

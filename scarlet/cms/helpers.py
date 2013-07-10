@@ -20,6 +20,7 @@ FORMFIELD_FOR_DBFIELD_DEFAULTS = {
 }
 
 CHECKBOX_NAME = '_selected'
+ACTION_DEFAULT = 'action_default'
 
 class AdminList(object):
     ASC = 'asc'

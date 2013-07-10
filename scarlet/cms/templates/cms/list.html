@@ -113,15 +113,7 @@
 	{% block submit %}
 	{% if show_form and not list.empty %}
 		{% if list.admin_form %}
-			<SCRIPT LANGUAGE="JavaScript">
-	  		function AlterAction()
-	  		{
-	   			document.listform.action = 
-	        	document.listform.actions.value;
-	  		}
-			</SCRIPT>
-
-			<select name="actions" onchange = "AlterAction();">
+			<select name="actions">
 				{% for url, desc in actions %}
 					<option value="{{ url }}">{{ desc }}</option>
 				{% endfor %}
