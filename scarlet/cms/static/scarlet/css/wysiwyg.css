@@ -16,7 +16,7 @@ Requires:
 	- <_site-settings.scss>
 
 */
-/* line 1, ../../../source/scarlet/compass/scss/caboose/caboose/_reset.scss */
+/* line 1, ../compass/scss/caboose/caboose/_reset.scss */
 * {
   margin: 0;
   padding: 0;
@@ -30,41 +30,41 @@ Requires:
 }
 
 /* HTML5 display-role reset for older browsers */
-/* line 22, ../../../source/scarlet/compass/scss/caboose/caboose/_reset.scss */
+/* line 22, ../compass/scss/caboose/caboose/_reset.scss */
 article, aside, details, summary, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
   display: block;
 }
 
-/* line 26, ../../../source/scarlet/compass/scss/caboose/caboose/_reset.scss */
+/* line 26, ../compass/scss/caboose/caboose/_reset.scss */
 body {
   line-height: 1;
 }
 
-/* line 30, ../../../source/scarlet/compass/scss/caboose/caboose/_reset.scss */
+/* line 30, ../compass/scss/caboose/caboose/_reset.scss */
 ol, ul {
   list-style: none;
 }
 
-/* line 34, ../../../source/scarlet/compass/scss/caboose/caboose/_reset.scss */
+/* line 34, ../compass/scss/caboose/caboose/_reset.scss */
 blockquote, q {
   quotes: none;
 }
 
-/* line 39, ../../../source/scarlet/compass/scss/caboose/caboose/_reset.scss */
+/* line 39, ../compass/scss/caboose/caboose/_reset.scss */
 blockquote:before, blockquote:after,
 q:before, q:after {
   content: '';
   content: none;
 }
 
-/* line 44, ../../../source/scarlet/compass/scss/caboose/caboose/_reset.scss */
+/* line 44, ../compass/scss/caboose/caboose/_reset.scss */
 table {
   border-collapse: collapse;
   border-spacing: 0;
 }
 
-/* line 23, ../../../source/scarlet/compass/scss/caboose/caboose/_exports.scss */
+/* line 23, ../compass/scss/caboose/caboose/_exports.scss */
 #caboose {
   -webkit-animation-duration: 1s;
   -moz-animation-duration: 1s;
@@ -117,80 +117,80 @@ table {
   font-style: normal;
 }
 
-/* line 1, ../../../source/scarlet/compass/scss/admin/views/_wysiwyg.scss */
+/* line 1, ../compass/scss/admin/views/_wysiwyg.scss */
 body {
   font: 18px/1 AvenirRoman;
   color: #314b5d;
 }
 
-/* line 6, ../../../source/scarlet/compass/scss/admin/views/_wysiwyg.scss */
+/* line 6, ../compass/scss/admin/views/_wysiwyg.scss */
 h1 {
   font-size: 48px;
 }
 
-/* line 10, ../../../source/scarlet/compass/scss/admin/views/_wysiwyg.scss */
+/* line 10, ../compass/scss/admin/views/_wysiwyg.scss */
 h2 {
   font-size: 39px;
 }
 
-/* line 14, ../../../source/scarlet/compass/scss/admin/views/_wysiwyg.scss */
+/* line 14, ../compass/scss/admin/views/_wysiwyg.scss */
 h3 {
   font-size: 31px;
 }
 
-/* line 18, ../../../source/scarlet/compass/scss/admin/views/_wysiwyg.scss */
+/* line 18, ../compass/scss/admin/views/_wysiwyg.scss */
 h4 {
   font-size: 25px;
 }
 
-/* line 22, ../../../source/scarlet/compass/scss/admin/views/_wysiwyg.scss */
+/* line 22, ../compass/scss/admin/views/_wysiwyg.scss */
 h1, h2, h3, h4 {
   line-height: 1.2em;
   margin-bottom: 1.1em;
 }
 
-/* line 27, ../../../source/scarlet/compass/scss/admin/views/_wysiwyg.scss */
+/* line 27, ../compass/scss/admin/views/_wysiwyg.scss */
 p, li {
   line-height: 1.4em;
   margin-bottom: 1.4em;
 }
 
-/* line 32, ../../../source/scarlet/compass/scss/admin/views/_wysiwyg.scss */
+/* line 32, ../compass/scss/admin/views/_wysiwyg.scss */
 ul {
   padding-left: 40px;
   list-style: disc;
 }
-/* line 36, ../../../source/scarlet/compass/scss/admin/views/_wysiwyg.scss */
+/* line 36, ../compass/scss/admin/views/_wysiwyg.scss */
 ul ul {
   list-style: circle;
 }
 
-/* line 41, ../../../source/scarlet/compass/scss/admin/views/_wysiwyg.scss */
+/* line 41, ../compass/scss/admin/views/_wysiwyg.scss */
 ol {
   padding-left: 40px;
   list-style: decimal;
 }
-/* line 45, ../../../source/scarlet/compass/scss/admin/views/_wysiwyg.scss */
+/* line 45, ../compass/scss/admin/views/_wysiwyg.scss */
 ol ol {
   list-style: lower-alpha;
 }
 
-/* line 51, ../../../source/scarlet/compass/scss/admin/views/_wysiwyg.scss */
+/* line 51, ../compass/scss/admin/views/_wysiwyg.scss */
 ol ol, ol ul, ul ol, ul ul {
   padding-bottom: 0;
 }
 
-/* line 56, ../../../source/scarlet/compass/scss/admin/views/_wysiwyg.scss */
+/* line 56, ../compass/scss/admin/views/_wysiwyg.scss */
 b, strong {
   font-family: AvenirBlack;
 }
 
-/* line 60, ../../../source/scarlet/compass/scss/admin/views/_wysiwyg.scss */
+/* line 60, ../compass/scss/admin/views/_wysiwyg.scss */
 i, em {
   font-style: italic;
 }
 
-/* line 65, ../../../source/scarlet/compass/scss/admin/views/_wysiwyg.scss */
+/* line 65, ../compass/scss/admin/views/_wysiwyg.scss */
 a,
 a:visited {
   color: #8197a3;

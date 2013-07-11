@@ -7,7 +7,7 @@ module.exports = function (grunt) {
 
 	var cwd = process.cwd();
 
-	var sourcePath = path.join("scarlet", "cms", "source", "scarlet");
+	var sourcePath = path.join("scarlet", "cms", "static", "scarlet");
 	var staticPath = path.join("scarlet", "cms", "static", "scarlet");
 
 	// Config options

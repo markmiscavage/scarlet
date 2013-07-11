@@ -5,7 +5,7 @@ module.exports = function (grunt) {
 	var fs = require("fs"),
 		cwd = process.cwd(),
 		path = require("path"),
-		source = path.join(cwd, "scarlet", "cms", "source", "scarlet", "js"),
+		source = path.join(cwd, "scarlet", "cms", "static", "scarlet", "js"),
 		jshint = require("jshint").JSHINT;
 
 	var FILES = path.join(source, "**", "*[^.min].js");
