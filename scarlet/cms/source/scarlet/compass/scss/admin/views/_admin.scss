@@ -379,16 +379,27 @@ section#main {
 				outline: none;
 				padding: $spacer;
 
-				&:after {
+				&:hover {
+					background-color: $dark-blue;
+					color: #fff;
+				}
+
+
+				&:after,
+				&::-webkit-details-marker {
+					display: none;
+				}
+
+				i:after {
 					color: $blue;
 					content: "s";
 					font: 12px/1 CompassArrows;
 					padding-left: $gridlet*2;
 				}
+			}
 
-				&::-webkit-details-marker {
-					display: none;
-				}
+			form {
+				display: none;
 			}
 
 			&[open], &.open {

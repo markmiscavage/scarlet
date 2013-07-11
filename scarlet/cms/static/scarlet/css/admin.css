@@ -2697,26 +2697,35 @@ section#main article details#filter summary {
   padding: 12px;
 }
 /* line 382, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
-section#main article details#filter summary:after {
+section#main article details#filter summary:hover {
+  background-color: #11232e;
+  color: #fff;
+}
+/* line 389, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+section#main article details#filter summary:after, section#main article details#filter summary::-webkit-details-marker {
+  display: none;
+}
+/* line 393, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+section#main article details#filter summary i:after {
   color: #314b5d;
   content: "s";
   font: 12px/1 CompassArrows;
   padding-left: 6px;
 }
-/* line 389, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
-section#main article details#filter summary::-webkit-details-marker {
+/* line 401, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+section#main article details#filter form {
   display: none;
 }
-/* line 395, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+/* line 406, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] .filter-clear, section#main article details#filter.open .filter-clear {
   display: none;
 }
-/* line 399, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+/* line 410, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] summary, section#main article details#filter.open summary {
   background-color: #11232e;
   color: #fff;
 }
-/* line 404, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+/* line 415, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] form, section#main article details#filter.open form {
   border: 1px solid #b6cad1;
   background-color: #fff;
@@ -2726,16 +2735,16 @@ section#main article details#filter[open] form, section#main article details#fil
   right: 0;
   text-align: left;
 }
-/* line 413, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+/* line 424, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] form input[type='submit'], section#main article details#filter.open form input[type='submit'] {
   margin-bottom: 0;
 }
-/* line 420, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+/* line 431, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
 section#main article div.pagination {
   font: 14px/1 AvenirMedium;
   text-align: right;
 }
-/* line 424, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+/* line 435, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
 section#main article div.pagination a {
   font: 14px/1 CompassArrows;
 }

@@ -7,6 +7,7 @@ define(
 			$                    = require("$"),
 			jQuerySelect2        = require("$plugin!select2"),
 			jQueryPickadate      = require("$plugin!pickadate"),
+			jQueryDetails        = require("$plugin!details"),
 			AssetSelect          = require("./AssetSelect"),
 			ApiSelect            = require("./ApiSelect"),
 			Formset              = require("./Formset"),
@@ -36,6 +37,7 @@ define(
 				this._renderTabs(dom);
 				this._renderInsertVideo(dom);
 				this._renderInsertImage(dom);
+				this._renderDetails(dom);
 
 				this._handlePopup(dom);
 			},
@@ -125,6 +127,9 @@ define(
 					});
 				});
 			},
+			_renderDetails : function (dom) {
+				dom.find("details").details();
+			}
 		});
 	}
 );
