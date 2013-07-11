@@ -10,7 +10,7 @@ try:
     from PIL import Image, ImageFile
 except ImportError:
     import Image, ImageFile
-ImageFile.MAXBLOCK = 65536
+ImageFile.MAXBLOCK = 1024*1024
 
 from . import utils
 from . import signals
