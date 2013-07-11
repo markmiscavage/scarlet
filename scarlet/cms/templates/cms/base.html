@@ -40,12 +40,6 @@
 		{% block extrahead %}{% endblock %}
 	</head>
 	<body class="{% block page_class %}page{% endblock page_class %}">
-		<div>
-			DEV_STATIC_ROOT: {{settings.DEV_STATIC_ROOT}} <br/>
-			SOURCE_STATIC_ROOT: {{settings.SOURCE_STATIC_ROOT}} <br/>
-			STATICFILES_DIRS: {{settings.STATICFILES_DIRS}}<br/>
-			{{ settings }}
-		</div>
 		<div id="container">
 			{% block popup_header %}
 			<header>

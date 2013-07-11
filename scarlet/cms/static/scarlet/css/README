@@ -1,0 +1,2 @@
+CSS Files are generated from `source/scarlet/compass` using Compass + SASS.
+Edits to the files in `static/scarlet/css` will be overwritten!
