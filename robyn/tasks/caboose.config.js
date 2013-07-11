@@ -7,8 +7,8 @@ module.exports = function (grunt) {
 
 	var cwd = process.cwd();
 
-	var sourcePath = path.join("scarlet", "cms", "source");
-	var staticPath = path.join("scarlet", "cms", "static");
+	var sourcePath = path.join("scarlet", "cms", "source", "scarlet");
+	var staticPath = path.join("scarlet", "cms", "static", "scarlet");
 
 	// Config options
 	grunt.config.set("caboose", {});

@@ -6,8 +6,8 @@ module.exports = function (grunt) {
 	var fs = require("fs"),
 		cwd = process.cwd(),
 		path = require("path"),
-		output = path.join(cwd, "scarlet", "cms", "static"),
-		source = path.join(cwd, "scarlet", "cms", "source"),
+		output = path.join(cwd, "scarlet", "cms", "static", "scarlet"),
+		source = path.join(cwd, "scarlet", "cms", "source", "scarlet"),
 		rosyConfig = path.join("config.js");
 
 	// Project configuration.
