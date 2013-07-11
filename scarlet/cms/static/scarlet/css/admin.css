@@ -2675,18 +2675,19 @@ section#main article details#filter {
   -o-user-select: none;
   user-select: none;
   width: 320px;
-  position: absolute;
-  top: -5px;
-  right: 0;
   text-align: right;
-  z-index: 10000;
+  float: right;
+  clear: both;
+  display: block;
+  position: relative;
+  z-index: 2;
 }
-/* line 368, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+/* line 369, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
 section#main article details#filter .filter-clear {
   margin-right: 20px;
   color: red;
 }
-/* line 373, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+/* line 374, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary {
   color: #314b5d;
   cursor: pointer;
@@ -2695,46 +2696,46 @@ section#main article details#filter summary {
   outline: none;
   padding: 12px;
 }
-/* line 381, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+/* line 382, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary:after {
   color: #314b5d;
   content: "s";
   font: 12px/1 CompassArrows;
   padding-left: 6px;
 }
-/* line 388, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+/* line 389, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary::-webkit-details-marker {
   display: none;
 }
-/* line 394, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+/* line 395, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] .filter-clear, section#main article details#filter.open .filter-clear {
   display: none;
 }
-/* line 398, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+/* line 399, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] summary, section#main article details#filter.open summary {
   background-color: #11232e;
   color: #fff;
 }
-/* line 403, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+/* line 404, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] form, section#main article details#filter.open form {
   border: 1px solid #b6cad1;
   background-color: #fff;
   display: block;
   padding: 12px 24px;
-  position: relative;
+  position: absolute;
+  right: 0;
   text-align: left;
-  z-index: 11000;
 }
-/* line 412, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+/* line 413, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] form input[type='submit'], section#main article details#filter.open form input[type='submit'] {
   margin-bottom: 0;
 }
-/* line 419, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+/* line 420, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
 section#main article div.pagination {
   font: 14px/1 AvenirMedium;
   text-align: right;
 }
-/* line 423, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
+/* line 424, ../../../source/scarlet/compass/scss/admin/views/_admin.scss */
 section#main article div.pagination a {
   font: 14px/1 CompassArrows;
 }
