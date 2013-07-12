@@ -6,3 +6,4 @@ plugins
 libs
 test/lib
 test
+scarlet.js
