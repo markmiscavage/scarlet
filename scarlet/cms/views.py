@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_protect
 from django import forms
 from django.forms import models as model_forms
 from django.contrib import messages
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.contrib.admin.util import flatten_fieldsets
 from django.db.models.fields import FieldDoesNotExist
 from django.db import models
@@ -1722,7 +1722,7 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         msg = None
         action = request.POST.get('actions', None)
         selected = request.POST.getlist(helpers.CHECKBOX_NAME)
-        if len(selected) > 0:
+        if action and len(selected) > 0:
             if not action == helpers.ACTION_DEFAULT:
                 sel = {helpers.CHECKBOX_NAME : ','.join(selected)}
                 qs = '?' + urlencode(sel)
@@ -1785,6 +1785,7 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     confirmation_message = 'This will modify the following items:'
     default_template = 'cms/action_confirmation.html'
 
+
     # Can be overriden for simple action implementation. Override post
     # to further customize.
     def process_action(self, request, queryset):
@@ -1807,6 +1808,25 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         }
         context.update(kwargs)
         return context
+
+    def get_object(self):
+        """
+        If a single object has been requested, will set
+        `self.object` and return the queryset containing
+        the object.
+        """
+        queryset = None
+        slug = self.kwargs.get(self.slug_url_kwarg, None)
+
+        if slug is not None:
+            queryset = self.get_queryset()
+            slug_field = self.slug_field
+            queryset = queryset.filter(**{slug_field: slug})
+            try:
+                self.object = queryset.get()
+            except ObjectDoesNotExist:
+                raise http.Http404
+        return queryset
 
     def write_message(self, status=messages.INFO, message=None):
         """
@@ -1831,31 +1851,27 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         return self.customized_return_url(url)
 
     def get_selected(self, request):
-        queryset = None
-        slug = self.kwargs.get(self.slug_url_kwarg, None)
-        if request.GET.get(helpers.CHECKBOX_NAME):
-            selected = request.GET.get(helpers.CHECKBOX_NAME).split(',')
-        else: 
-            selected = request.POST.getlist(helpers.CHECKBOX_NAME)
-
-        #this is an action on a single object
-        if slug and not selected:
-            selected = [slug]
-
-        if selected:
+        queryset = self.get_object()
+        # if single-object URL not used, check for selected objects
+        if not queryset:
+            if request.GET.get(helpers.CHECKBOX_NAME):
+                selected = request.GET.get(helpers.CHECKBOX_NAME).split(',')
+            else: 
+                selected = request.POST.getlist(helpers.CHECKBOX_NAME)
             queryset = self.get_queryset().filter(pk__in=selected)
-        return queryset
+        return queryset 
 
     def get(self, request, *args, **kwargs):
         """
         Method for handling GET requests.
         Calls the `render` method with the following
         items in context:
-        queryset : Queryset of objects to perform action on
+
+        * **queryset** - Objects to perform action on
         """
-        return self.render(request, 
-                            action_checkbox_name=helpers.CHECKBOX_NAME, 
-                            queryset = self.get_selected(request))
+        selected = self.get_selected(request)
+        return self.render(request, queryset = self.get_selected(request))
+
 
     def post(self, request, *args, **kwargs):
         queryset = self.get_selected(request)
@@ -1876,9 +1892,7 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
                         protected.append(u"%s: %s" % (x._meta.verbose_name, x))
                 return self.render(request,protected=protected)
 
-        return self.render(request, message=msg,
-                            action_checkbox_name=helpers.CHECKBOX_NAME, 
-                            queryset = queryset)
+        return self.render(request, message=msg, queryset=queryset)
 
 class DeleteActionView(ActionView):
     """
