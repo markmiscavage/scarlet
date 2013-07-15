@@ -73,11 +73,11 @@ class Meta(object):
         self.live_views = ('delete',)
 
         # which items should be displayed as mass actions
-        self.action_views = None
+        self.action_views = ()
 
         # The regex that should be used to match in
         # urls the value for %s is determined by the bundle
-        self.item_regex_base = '(?P<%(name)s_pk>\d+)*/'
+        self.item_regex_base = '(?:(?P<%(name)s_pk>\d+)/)?'
 
         # the models that views are based on.
         # If not give all items are ignored.

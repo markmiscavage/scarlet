@@ -219,7 +219,7 @@ class Bundle(object):
     main = views.ListView()
     add = views.FormView(force_add=True)
     edit = views.FormView()
-    delete = views.DeleteView()
+    delete = views.DeleteActionView()
 
     main_list = URLAlias(alias_to="main")
 
@@ -254,6 +254,11 @@ class Bundle(object):
         if self._meta.model:
             if site and self._meta.primary_model_bundle:
                 site.register_model(self._meta.model, self)
+
+        # Every action view is also an item view
+        for actv in self._meta.action_views:
+            if actv not in self._meta.item_views:
+                self._meta.item_views.append(actv)
 
         for view in self._views:
             v = getattr(self, view, None)
