@@ -9,6 +9,62 @@ from forms import EditAuthorForm
 postimages_formset = forms.LazyFormSetFactory(
     inlineformset_factory, Post, PostImage, can_order=True)
 
+class CloneAction(views.ActionView):
+    short_description="Clone selected posts."
+
+    def process_action(self, request, queryset):
+        for obj in queryset:
+            post = Post.objects.create(
+                        date=obj.date,
+                        title=obj.title,
+                        slug=obj.slug,
+                        body=obj.body,
+                        author=obj.author,
+                        category=obj.category,
+                        keywords=obj.keywords,
+                        description=obj.description
+                    )
+        num = queryset.count()
+        msg = ('%s object%s have been cloned.' % (num, '' if num ==1 else 's'))
+        self.write_message(message=msg)
+        return self.render(request, redirect_url = self.get_done_url(), 
+                        message=msg)
+
+class CloneCommentAction(views.ActionView):
+    short_description="Clone selected comments."
+
+    def __init__(self, *args, **kwargs):
+        super(CloneCommentAction, self).__init__(*args, **kwargs)
+        self.renders['object_header'] = renders.RenderString(
+                                            template=self.object_header_tmpl)
+
+    def process_action(self, request, queryset):
+        for obj in queryset:
+            comment = Comment.objects.create(
+                        post = obj.post,
+                        name=obj.name,
+                        text=obj.text
+                    )
+        num = queryset.count()
+        msg = ('%s object%s have been cloned.' % (num, '' if num ==1 else 's'))
+        self.write_message(message=msg)
+        return self.render(request, redirect_url = self.get_done_url(), 
+                        message=msg)
+
+class DummyActionView(views.ActionView):
+    def process_action(self, request, queryset):
+        queryset.update(title="Dummy")
+        msg = ('%s object%s have been changed to "Dummy".' % (queryset.count(), '' if queryset.count() ==1 else 's'))
+        self.write_message(message=msg)
+        return self.render(request, redirect_url = self.get_done_url(), 
+                        message=msg)
+
+class SomethingAction(views.ActionView):
+    short_description = "It does something."
+    confirmation_message = "Sure you want to do something to the following objects?"
+
+    def process_action(self, request, queryset):
+        queryset.update(name = 'Something')
 
 class PostImageBundle(bundles.Bundle):
     navigation = bundles.PARENT
@@ -29,17 +85,15 @@ class CategoryBundle(bundles.Bundle):
 class CommentBundle(bundles.ParentVersionedBundle):
     navigation = bundles.PARENT
     object_view = bundles.PARENT
-
-    main = views.ListView(display_fields=('user', 'text'))
-
-    def get_object_header_view(self, *args, **kwargs):
-        kwargs['render_type'] = 'object_header_bare'
-        return super(CommentBundle, self).get_object_header_view(
-            *args, **kwargs)
+    clone = CloneCommentAction()
+    main = views.ListView(display_fields=('name', 'text'))
+    something = SomethingAction()
 
     class Meta:
         model = Comment
         parent_field = "post"
+        action_views = ['delete', 'clone', 'something']
+        item_views = ['edit']
 
 
 class AuthorBundle(bundles.Bundle):
@@ -73,7 +127,7 @@ DEFAULT_FIELDS =(
     }),
     )
 
-class PostDeleteView(views.DeleteView):
+class PostDeleteView(views.DeleteActionView):
     def __init__(self, *args, **kwargs):
         super(PostDeleteView, self).__init__(*args, **kwargs)
         self.renders['object_header_bare'] = renders.RenderString(
@@ -85,6 +139,7 @@ class BlogEditBundle(bundles.VersionedObjectOnlyBundle):
         ('main', 'Post Data'),
         ('comments', 'Comments'),
         ('seo', 'Page SEO'),
+        ('delete', 'Delete')
     )
 
     main = views.FormView(redirect_to_view=None,
@@ -125,6 +180,7 @@ class BlogBundle(bundles.DelegatedObjectBundle):
     )
 
     main = views.ListView(display_fields=('title', 'author'))
+    delete = views.DeleteActionView()
     add = PostAddView(fieldsets=DEFAULT_FIELDS)
     edit = BlogEditBundle.as_subbundle(name='post', title="Post")
     author = AuthorBundle.as_subbundle(name='author', title='Author')
@@ -133,11 +189,14 @@ class BlogBundle(bundles.DelegatedObjectBundle):
     category = CategoryBundle.as_subbundle(name='category', title='Category')
     preview = views.PreviewWrapper(preview_view=PostsListView,
         pass_through_kwarg=None)
+    change = DummyActionView(short_description="Change names to 'Dummy'")
+    clone = CloneAction()
 
     class Meta:
         model = Post
         primary_model_bundle = True
-        item_views = list(options.VersionMeta.item_views) + ['preview']
+        item_views = list(options.VersionMeta.item_views) + ['preview', 'delete']
+        action_views = ['change', 'delete', 'clone']
 
 class BigAuthorBundle(bundles.DelegatedObjectBundle):
     dashboard = (

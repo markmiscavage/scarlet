@@ -1,6 +1,7 @@
 import datetime
 import unittest
 import json
+from urllib import urlencode
 
 from django.test import TestCase
 from django.test.client import Client, RequestFactory
@@ -8,7 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.template import TemplateDoesNotExist
 
-from scarlet.cms import bundles, views
+from scarlet.cms import bundles, views, helpers
 from scarlet.versioning import manager
 
 from models import *
@@ -110,13 +111,12 @@ class BundleViewsTestCase(TestCaseDeactivate):
         self.assertEqual(resp.status_code, 302)
         a = Author.objects.filter(name='Doomed')
 
-        #interesting note... "No" passed to delete will still delete the object
         resp = self.client.post('/admin/blog/author/%s/delete/?o=/admin/blog/author/?' %a[0].pk,
-                             data = {'delete': ''})
+                             data = {'modify': ''})
         self.assertEqual(Author.objects.filter(name='Doomed').count(), 1)
 
         resp = self.client.post('/admin/blog/author/%s/delete/?o=/admin/blog/author/?' %a[0].pk,
-                             data = {'delete': 'Yes'})
+                             data = {'modify': 'Yes'})
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(Author.objects.filter(name='Doomed').count(), 0)
 
@@ -155,11 +155,11 @@ class BundleViewsTestCase(TestCaseDeactivate):
         a = Category.objects.filter(category = 'SadCat')
 
         resp = self.client.post('/admin/blog/category/%s/delete/?o=/admin/blog/category/?' %a[0].pk,
-                             data = {'delete': ''})
+                             data = {'modify': ''})
         self.assertEqual(Category.objects.filter(category = 'SadCat').count(), 1)
 
         resp = self.client.post('/admin/blog/category/%s/delete/?o=/admin/blog/category/?' %a[0].pk,
-                             data = {'delete': 'Yes'})
+                             data = {'modify': 'Yes'})
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(Category.objects.filter(category = 'SadCat').count(), 0)
 
@@ -251,18 +251,17 @@ class BundleViewsTestCase(TestCaseDeactivate):
         self.assertEqual(p.count(), 1)
 
         #good delete
-        self.client.post('/admin/blog/%s/edit/delete/?o=/admin/blog/?' % p[0].pk, data = {'delete' : 'Yes'})
+        self.client.post('/admin/blog/%s/edit/delete/?o=/admin/blog/?' % p[0].pk, data = {'modify' : 'Yes'})
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(Post.objects.filter(title = 'Apple').count(), 0)
 
-        #delete field not actually used
+        #bad delete
         resp = self.client.post('/admin/blog/add/', 
                             data = {'date' : '2013-06-20', 'title' : 'Apple', 
                             'body' : 'Test Body', 'author' : author.pk, 'category' : category.pk})
         self.assertEqual(resp.status_code, 302)
-        self.client.post('/admin/blog/%s/edit/delete/?o=/admin/blog/?' % p[0].pk, data = {'delete' : 'No! DO NOT DELETE'})
-        self.assertEqual(resp.status_code, 302)
-        self.assertEqual(Post.objects.filter(title='Apple').count(), 0)
+        self.client.post('/admin/blog/%s/edit/delete/?o=/admin/blog/?' % p[0].pk, data = {})
+        self.assertEqual(Post.objects.filter(title='Apple').count(), 1)
 
     def test_seo(self):
         resp = self.client.post('/admin/blog/%s/edit/seo/' % self.post.pk, data = {'view_tags' : 'posts,posts,test title', 
@@ -568,4 +567,217 @@ class FilterTestCase(TestCaseDeactivate):
         self.assertContains(resp, 'authornumberone')
         self.assertContains(resp, 'authornumbertwo')
         self.assertContains(resp, 'authornumberthree')
+
+
+class ActionViewTestCase(TestCaseDeactivate):
+    def setup_test_user(self):
+        user = User.objects.create_user('tester', 'tester@example.com', '1234')
+        user.is_staff = True
+        user.save()
+        self.client.login(username='tester', password='1234')
+        self.user = user
+
+    def setUp(self):
+        self.client = Client()
+        self.setup_test_user()
+
+        author = Author.objects.create(
+                    name='Joe Tester',
+                    bio='I like testing.'
+                )
+
+        # Create a category
+        category = Category.objects.create(
+                    category='Category Test',
+                    slug='category_test'
+                )
+
+        # Create  a post
+        self.post1 = Post.objects.create(
+                    date=datetime.datetime.now(),
+                    title='Title Test',
+                    slug='Slug Test',
+                    body='This is a test body for the post object.',
+                    author=author,
+                    category=category,
+                    keywords='keywords test',
+                    description='This is a test description for the post object.' )
+
+        self.post2 = Post.objects.create(
+                    date=datetime.datetime.now(),
+                    title='Title Test 2',
+                    slug='Slug Test',
+                    body='This is a test body for the post object.',
+                    author=author,
+                    category=category,
+                    keywords='keywords test',
+                    description='This is a test description for the post object.')
+
+        self.post3 = Post.objects.create(
+                    date=datetime.datetime.now(),
+                    title='Title Test 3',
+                    slug='Slug Test',
+                    body='This is a test body for the post object.',
+                    author=author,
+                    category=category,
+                    keywords='keywords test',
+                    description='This is a test description for the post object.')
+
+        self.comment1 = Comment.objects.create(
+                    post=self.post1,
+                    name='Commenter1',
+                    text='Cool!'
+                )
+        self.comment2 = Comment.objects.create(
+                    post=self.post1,
+                    name='Commenter2',
+                    text='Awesome!'
+                )
+        self.comment3 = Comment.objects.create(
+                    post=self.post1,
+                    name='Commenter3',
+                    text='Rad!'
+                )
+
+    def check_redirect_and_modify(self, post_to, action, selected):
+        redirect_to = post_to + action
+        qs = '?' + urlencode({helpers.CHECKBOX_NAME : ','.join(selected)})
+        resp = self.client.post(post_to, data = 
+                {helpers.CHECKBOX_NAME : ','.join(selected), 'actions' : redirect_to})
+        self.assertEqual(resp.status_code, 302)
+        #check that we were redirected to the right place
+        self.assertEqual((resp['Location'])[resp['Location'].find('/admin/'):], redirect_to + qs)
+        resp = self.client.post(redirect_to + qs, data={'modify' : 'Yes'})
+        self.assertEqual(resp.status_code, 302)
+        #check we were redirected back to the main list
+        self.assertEqual((resp['Location'])[resp['Location'].find('/admin/'):], post_to)
+        return resp
+
+
+    def test_custom_mass_action(self):
+        # test on one target
+        post_to = '/admin/blog/'
+        action = 'change/'
+        sel = [str(self.post1.pk)]
+        resp = self.check_redirect_and_modify(post_to, action, sel)
+        self.assertEqual(Post.objects.filter(title='Dummy').count(), 1)
+        self.assertEqual(Post.objects.filter(title='Title Test').count(), 0)
+
+        # multiple targets
+        sel = [str(self.post2.pk), str(self.post3.pk)]
+        resp = self.check_redirect_and_modify(post_to, action, sel)
+        self.assertEqual(Post.objects.filter(title='Dummy').count(), 3)
+        self.assertEqual(Post.objects.filter(title__icontains='Title Test').count(), 0)
+
+        # in subbundle
+        post_to = '/admin/blog/%s/edit/comments/' % self.post1.pk
+        action = 'something/'
+        sel = [str(self.comment1.pk), str(self.comment2.pk)]
+        resp = self.check_redirect_and_modify(post_to, action, sel)
+        self.assertEqual(Comment.objects.filter(name='Something').count(), 2)
+        self.assertEqual(Comment.objects.filter(name='Commenter1').count(), 0)
+        self.assertEqual(Comment.objects.filter(name='Commenter2').count(), 0)
+
+
+    def test_delete_mass_action(self):
+        post_to = '/admin/blog/'
+        action = 'delete/'
+        original_num = Post.objects.all().count()
+        sel = [str(self.post1.pk), str(self.post2.pk), str(self.post3.pk)]
+        resp = self.check_redirect_and_modify(post_to, action, sel)
+        self.assertEqual(Post.objects.all().count(), original_num - len(sel))
+
+    def test_sub_delete_mass_action(self):
+        post_to = '/admin/blog/%s/edit/comments/' % self.post1.pk
+        action = 'delete/'
+        sel = [str(self.comment1.pk), str(self.comment2.pk)]
+        original_num = Comment.objects.all().count()
+        resp = self.check_redirect_and_modify(post_to, action, sel)
+        self.assertEqual(Comment.objects.all().count(), original_num - len(sel))
+        self.assertEqual(Comment.objects.filter(name = 'Commenter1').count(), 0)
+        self.assertEqual(Comment.objects.filter(name = 'Commenter2').count(), 0)
+
+
+    def test_bad_mass_delete(self):
+        redirect_to = '/admin/blog/delete/'
+        sel = [str(self.post1.pk)]
+        qs = '?' + urlencode({helpers.CHECKBOX_NAME : ','.join(sel)})
+        original_num = Post.objects.all().count()
+        resp = self.client.post(redirect_to + qs)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Post.objects.all().count(), original_num)
+        self.assertEqual(Post.objects.filter(title="Title Test").count(), 1)
+
+        # in subbundle
+        redirect_to = '/admin/blog/%s/edit/comments/' % self.post1.pk
+        sel = [str(self.comment1.pk), str(self.comment2.pk)]
+        qs = '?' + urlencode({helpers.CHECKBOX_NAME : ','.join(sel)})
+        original_num = Comment.objects.all().count()
+        resp = self.client.post(redirect_to + qs)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Comment.objects.all().count(), original_num)
+        self.assertEqual(Comment.objects.filter(name='Commenter1').count(), 1)
+        self.assertEqual(Comment.objects.filter(name='Commenter2').count(), 1)
+
+    def test_delete_single_action(self):
+        # Using the same view as the mass action
+        # Post directly to item_view URL
+        original_num = Post.objects.all().count()
+        resp = self.client.post('/admin/blog/%s/delete/' % self.post1.pk, data={'modify' : 'Yes'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Post.objects.all().count(), original_num-1)
+        self.assertEqual(Post.objects.filter(title="Title Test").count(), 0)
+
+        #test bad delete single action
+        resp = self.client.post('/admin/blog/%s/delete/' % self.post2.pk)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Post.objects.all().count(), original_num-1)
+
+    def test_sub_delete_single_action(self):
+        original_num = Comment.objects.all().count()
+        resp = self.client.post('/admin/blog/%s/edit/comments/%s/delete/' 
+                % (self.post1.pk, self.comment1.pk), data = {'modify' : 'Yes'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Comment.objects.all().count(), original_num -1)
+        self.assertEqual(Comment.objects.filter(name="Commenter1").count(), 0)
+
+        resp = self.client.post('/admin/blog/%s/edit/comments/%s/delete/' 
+                % (self.post1.pk, self.comment2.pk))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Comment.objects.all().count(), original_num-1)
+
+    def test_custom_single_action(self):
+        resp = self.client.post('/admin/blog/%s/change/' % self.post1.pk, data={'modify' : 'Yes'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Post.objects.filter(title="Title Test").count(), 0)
+        self.assertEqual(Post.objects.filter(title="Dummy").count(), 1)
+
+        resp = self.client.post('/admin/blog/%s/change/' % self.post2.pk)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Post.objects.filter(title="Title Test 2").count(), 1)
+        self.assertEqual(Post.objects.filter(title="Dummy").count(), 1)
+
+        # in subbundle
+        resp = self.client.post('/admin/blog/%s/edit/comments/%s/something/' % (self.post1.pk, self.comment1.pk),
+                                    data = {'modify' : 'Yes'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Comment.objects.filter(name = "Commenter1").count(), 0)
+        self.assertEqual(Comment.objects.filter(name = "Something").count(), 1)
+
+        resp = self.client.post('/admin/blog/%s/edit/comments/%s/something/' % (self.post1.pk, self.comment2.pk))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Comment.objects.filter(name = "Commenter2").count(), 1)
+        self.assertEqual(Comment.objects.filter(name = "Something").count(), 1)
+
+    def test_render_subbundle(self):
+        resp = self.client.get('/admin/blog/%s/edit/comments/' % self.post1.pk)
+        # test that the parent's object header is rendered
+        self.assertContains(resp, self.post1.title)
+
+
+
+
+
+
+
 
