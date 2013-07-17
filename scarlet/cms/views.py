@@ -1915,7 +1915,7 @@ class DeleteActionView(ActionView):
                     obj.delete()
             msg = "%s object%s deleted." % (count, ('' if count ==1 else 's'))
             url = self.get_done_url()
-            return selfF.render(request, redirect_url=url, message = msg)
+            return self.render(request, redirect_url=url, message = msg)
         except models.ProtectedError, e:
             protected = []
             for x in e.protected_objects:
