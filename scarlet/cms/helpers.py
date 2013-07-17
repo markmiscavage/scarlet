@@ -27,14 +27,13 @@ class AdminList(object):
     DESC = 'desc'
 
     def __init__(self, formset, object_list, visible_fields, sort_field,
-                    order_type, model_name=None, action_form=False):
+                    order_type, model_name=None):
         self.formset = formset
         self.object_list = object_list
         self.visible_fields = visible_fields
         self.order_type = order_type
         self.sort_field = sort_field
         self.model_name = model_name
-        self.action_form = action_form
         self.empty = len(object_list) == 0
 
         self.auto_sort = False
@@ -60,10 +59,6 @@ class AdminList(object):
             model = self.formset.model
         else:
             model = self.object_list.model
-
-        #blank label for checkboxes
-        if self.action_form:
-            yield AdminListLabel("", None, None, False, False)
 
         for field in self.visible_fields:
             name = None

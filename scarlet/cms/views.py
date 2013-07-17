@@ -1280,96 +1280,96 @@ class PreviewWrapper(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
         return self.render(request, data=view(request, **kwargs))
 
 
-# class DeleteView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
-#     """
-#     View for deleting an object.
-#     Inherits from ModelCMSMixin, SingleObjectMixin and ModelCMSView.
-#     Used through out the CMS as the default object_header view so
-#     this view by default adds an `object_header` renderer that
-#     uses the `object_header_tmpl` template.
+class DeleteView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
+    """
+    View for deleting an object.
+    Inherits from ModelCMSMixin, SingleObjectMixin and ModelCMSView.
+    Used through out the CMS as the default object_header view so
+    this view by default adds an `object_header` renderer that
+    uses the `object_header_tmpl` template.
 
-#     :param default_template: Defaults to 'cms/delete.html'.
-#     :param redirect_to_view: Defaults to 'main_list'.
-#     """
+    :param default_template: Defaults to 'cms/delete.html'.
+    :param redirect_to_view: Defaults to 'main_list'.
+    """
 
-#     default_template = 'cms/delete.html'
-#     redirect_to_view = "main_list"
+    default_template = 'cms/delete.html'
+    redirect_to_view = "main_list"
 
-#     def __init__(self, *args, **kwargs):
-#         super(DeleteView, self).__init__(*args, **kwargs)
-#         self.renders['object_header'] = renders.RenderString(
-#                                             template=self.object_header_tmpl)
+    def __init__(self, *args, **kwargs):
+        super(DeleteView, self).__init__(*args, **kwargs)
+        self.renders['object_header'] = renders.RenderString(
+                                            template=self.object_header_tmpl)
 
-#     def get_done_url(self):
-#         """
-#         Returns the url to redirect to after a successful update.
-#         The get_view_url will be called on the current bundle using
-#         `self.redirect_to_view` as the view name.
-#         """
-#         data = dict(self.kwargs)
-#         data.pop(self.slug_url_kwarg, None)
-#         url = self.bundle.get_view_url(self.redirect_to_view,
-#                                         self.request.user, data)
-#         return self.customized_return_url(url)
+    def get_done_url(self):
+        """
+        Returns the url to redirect to after a successful update.
+        The get_view_url will be called on the current bundle using
+        `self.redirect_to_view` as the view name.
+        """
+        data = dict(self.kwargs)
+        data.pop(self.slug_url_kwarg, None)
+        url = self.bundle.get_view_url(self.redirect_to_view,
+                                        self.request.user, data)
+        return self.customized_return_url(url)
 
-#     def get_object(self):
-#         """
-#         Get the object for previewing.
-#         Raises a http404 error if the object is not found.
-#         """
-#         obj = super(DeleteView, self).get_object()
+    def get_object(self):
+        """
+        Get the object for previewing.
+        Raises a http404 error if the object is not found.
+        """
+        obj = super(DeleteView, self).get_object()
 
-#         if not obj:
-#             raise http.Http404
+        if not obj:
+            raise http.Http404
 
-#         return obj
+        return obj
 
-#     def get(self, request, *args, **kwargs):
-#         """
-#         Method for handling GET requests.
-#         Calls the `render` method with the following
-#         items in context:
+    def get(self, request, *args, **kwargs):
+        """
+        Method for handling GET requests.
+        Calls the `render` method with the following
+        items in context:
 
-#         * **obj** - The obj being deleted.
-#         """
+        * **obj** - The obj being deleted.
+        """
 
-#         self.object = self.get_object()
-#         return self.render(request, obj=self.object)
+        self.object = self.get_object()
+        return self.render(request, obj=self.object)
 
-#     def post(self, request, *args, **kwargs):
-#         """
-#         Method for handling POST requests.
-#         Deletes the object. Successful deletes are logged.
-#         Returns a 'render redirect' to the result of the
-#         `get_done_url` method.
+    def post(self, request, *args, **kwargs):
+        """
+        Method for handling POST requests.
+        Deletes the object. Successful deletes are logged.
+        Returns a 'render redirect' to the result of the
+        `get_done_url` method.
 
-#         If a ProtectedError is raised, the `render` method
-#         is called with message explaining the error added
-#         to the context as `protected`.
-#         """
+        If a ProtectedError is raised, the `render` method
+        is called with message explaining the error added
+        to the context as `protected`.
+        """
 
-#         self.object = self.get_object()
-#         msg = None
-#         if request.POST.get('delete'):
-#             try:
-#                 with transaction.commit_on_success():
-#                     self.log_action(self.object, CMSLog.DELETE)
-#                     msg = "%s deleted" % self.object
-#                     self.object.delete()
-#             except models.ProtectedError, e:
-#                 protected = []
-#                 for x in e.protected_objects:
-#                     if hasattr(x, 'delete_blocked_message'):
-#                         protected.append(x.delete_blocked_message())
-#                     else:
-#                         protected.append(u"%s: %s" % (x._meta.verbose_name, x))
-#                 return self.render(request, obj=self.object,
-#                                    protected=protected)
+        self.object = self.get_object()
+        msg = None
+        if request.POST.get('delete'):
+            try:
+                with transaction.commit_on_success():
+                    self.log_action(self.object, CMSLog.DELETE)
+                    msg = "%s deleted" % self.object
+                    self.object.delete()
+            except models.ProtectedError, e:
+                protected = []
+                for x in e.protected_objects:
+                    if hasattr(x, 'delete_blocked_message'):
+                        protected.append(x.delete_blocked_message())
+                    else:
+                        protected.append(u"%s: %s" % (x._meta.verbose_name, x))
+                return self.render(request, obj=self.object,
+                                   protected=protected)
 
-#         return self.render(request, redirect_url=self.get_done_url(),
-#                            obj=self.object,
-#                            message=msg,
-#                            collect_render_data=False)
+        return self.render(request, redirect_url=self.get_done_url(),
+                           obj=self.object,
+                           message=msg,
+                           collect_render_data=False)
 
 
 class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
@@ -1653,7 +1653,7 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         visible_fields = self.get_visible_fields(formset)
         adm_list = helpers.AdminList(formset, queryset, visible_fields,
                                        sort_field, order_type,
-                                       self.model_name, self.bundle._meta.action_views)
+                                       self.model_name)
 
         data = {
             'list': adm_list,
@@ -1663,7 +1663,8 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
             'show_form': self.bundle._meta.action_views or (self.can_submit and formset is not None),
             'paginator': paginator,
             'checkbox_name' : helpers.CHECKBOX_NAME,
-            'actions' : self.get_action_context(request)
+            'actions' : self.get_action_context(request),
+            'action_form' : self.bundle._meta.action_views,
         }
 
         return data
@@ -1784,7 +1785,6 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     default_template = 'cms/action_confirmation.html'
     object = None
 
-
     # Can be overriden for simple action implementation. Override post
     # to further customize.
     def process_action(self, request, queryset):
@@ -1794,7 +1794,10 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         objects to be modified by the action. Should return
         a message to display to the user once action is
         completed. 
+        :param request: Original HTTP request \
+        :param queryset: Queryset of objects to modify
 
+        Returns render response.
         """
         pass
 
@@ -1879,24 +1882,16 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
     def post(self, request, *args, **kwargs):
         queryset = self.get_selected(request)
-        msg = None
-        url = None
-        if request.POST.get('modify'):
-            try:
-                msg = self.process_action(request, queryset)
-                url = self.get_done_url()
-                self.write_message(message=msg)
-                return self.render(request, redirect_url=url, message=msg)
-            except models.ProtectedError, e:
-                protected = []
-                for x in e.protected_objects:
-                    if hasattr(x, 'delete_blocked_message'):
-                        protected.append(x.delete_blocked_message())
-                    else:
-                        protected.append(u"%s: %s" % (x._meta.verbose_name, x))
-                return self.render(request,protected=protected)
 
-        return self.render(request, message=msg, queryset=queryset)
+        if request.POST.get('modify'):
+            response = self.process_action(request, queryset)
+            if not response:
+                url = self.get_done_url()
+                return self.render(request, redirect_url=url)
+            else:
+                return response
+        else:
+            return self.render(request, queryset=queryset)
 
 class DeleteActionView(ActionView):
     """
@@ -1912,13 +1907,24 @@ class DeleteActionView(ActionView):
 
     def process_action(self, request, queryset):
         count = 0
-        with transaction.commit_on_success():
-            for obj in queryset:
-                self.log_action(obj, CMSLog.DELETE)
-                count += 1
-                obj.delete()
+        try:
+            with transaction.commit_on_success():
+                for obj in queryset:
+                    self.log_action(obj, CMSLog.DELETE)
+                    count += 1
+                    obj.delete()
             msg = "%s object%s deleted." % (count, ('' if count ==1 else 's'))
-            return msg
+            url = self.get_done_url()
+            return selfF.render(request, redirect_url=url, message = msg)
+        except models.ProtectedError, e:
+            protected = []
+            for x in e.protected_objects:
+                if hasattr(x, 'delete_blocked_message'):
+                    protected.append(x.delete_blocked_message())
+                else:
+                    protected.append(u"%s - %s" % (x._meta.verbose_name, x))
+            msg = "Cannot delete some objects because the following objects depend on them:"
+            return self.render(request, error_msg = msg, errors = protected)
 
 
 class PublishView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
