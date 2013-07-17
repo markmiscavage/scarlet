@@ -26,11 +26,11 @@ These views and sub bundles are specified as class attributes when creating a ne
 
 Bundles are stored in a file named cms_bundles.py in your application.
 
-Each bundle contains a options :py:class:`Meta <scarlet.cms.options.Meta>` class stored at _meta. This class allows you configure behaviour for the bundle as well as pass arguments to all or specific views within the bundle. See the :py:class:`Meta <scarlet.cms.options.Meta>` documentation for details.
+Each bundle contains an optional :py:class:`Meta <scarlet.cms.options.Meta>` class stored at _meta. This class allows you configure behaviour for the bundle as well as pass arguments to all or specific views within the bundle. See the :py:class:`Meta <scarlet.cms.options.Meta>` documentation for details.
 
-Each bundle ensures that each view it contains has a unique url name. Since these names are not always obvious and can get rather long it is impractical to refer views by name. Instead you can get the url for a related view by using the :py:meth:`get_view_url <scarlet.cms.bundles.Bundle.get_view_url>` method. This will also make sure the requesting user has the necessary permissions to view the requested url. There is a template tag :py:func:`bundle_url <scarlet.cms.templatetags.cms.bundle_url>` that can be used to call this method.
+Each bundle ensures that each view it contains has a unique url name. Since these names are not always obvious and can get rather long it is impractical to refer to views by name. Instead you can get the url for a related view by using the :py:meth:`get_view_url <scarlet.cms.bundles.Bundle.get_view_url>` method. This will also make sure the requesting user has the necessary permissions to view the requested url. There is a template tag :py:func:`bundle_url <scarlet.cms.templatetags.cms.bundle_url>` that can be used to call this method.
 
-Similarly each named url parameter must be unique to avoid conflicts. Bundles keep track of the names of the url groups that are used to get to it in it's url_params property. View or subbundles that need additional url parameters are refered to as item views and should be added to the `item_views` sequence on the bundles :py:class:`Meta <scarlet.cms.options.Meta>` class. See the :py:class:`Meta <scarlet.cms.options.Meta>` class documents for details on how to control that regular expression.
+Similarly each named url parameter must be unique to avoid conflicts. Bundles keep track of the names of the url groups that are used to get to it in its url_params property. Views or subbundles that need additional url parameters are refered to as item views and should be added to the `item_views` sequence on the bundles :py:class:`Meta <scarlet.cms.options.Meta>` class. See the :py:class:`Meta <scarlet.cms.options.Meta>` class documents for details on how to control that regular expression.
 
 You can also use :py:class:`URLAlias <scarlet.cms.bundles.URLAlias>` to specify that a attribute should point to a different view on the same bundle or on a different bundle.
 
@@ -97,7 +97,7 @@ The cms site is structured with the following main components:
 
 This structure is set the following two templates:
 
- * *base.html* - Main base templates most other inherit from this one.
+ * *base.html* - Main base template, most others inherit from this one.
  * *base_site.html* - This template should be customized with any specific site branding you need.
 
 :py:class:`CMSView <scarlet.cms.views.CMSView>` classes can set a `base_template` attribute to set the base template used for that view. Typically this would be one of:
@@ -108,7 +108,7 @@ This structure is set the following two templates:
 These templates are used by certain renders in special cases:
 
  * *base_popup.html* - The base template for views that are rendered as a popup. Removes object header and navigation markup.
- * *partial.html* - Base template for views when the are rendered as a string. Does not inherit from other templates.
+ * *partial.html* - Base template for views when they are rendered as a string. Does not inherit from other templates.
 
 The template to use for the object_header is specified by a `object_header_tmpl` on attribute on the view. Typically this would be one of:
 
@@ -117,7 +117,7 @@ The template to use for the object_header is specified by a `object_header_tmpl`
  * *object_header_no_preview.html* - Removes the preview link from an object header.
  * *object_header_stand_alone.html* - Object header without a back button.
 
-The `default_template` attribute of each view only renders it's page content and the other pieces are optionally added depending on the base template. These are the default templates of the various default views:
+The `default_template` attribute of each view only renders its page content and the other pieces are optionally added depending on the base template. These are the default templates of the various default views:
 
  * *delete.html* - Confirmation template for deletes.
  * *edit.html* - Add/Edit form template.

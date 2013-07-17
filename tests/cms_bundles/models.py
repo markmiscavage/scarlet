@@ -12,6 +12,12 @@ class Author(models.Model):
     def __unicode__(self):
         return u"%s" % (self.name, )
 
+class DummyModel(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return u"%s" % (self.name, )
+
 
 class Category(VersionView):
     category = models.CharField(max_length=150)
@@ -19,7 +25,6 @@ class Category(VersionView):
 
     def __unicode__(self):
         return u"%s" % self.category
-
 
 class Post(VersionView):
     date = models.DateField()
