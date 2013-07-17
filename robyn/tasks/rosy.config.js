@@ -35,7 +35,7 @@ module.exports = function (grunt) {
 			include : [rosyConfig],
 
 			// The name of the optimized file is specified by 'out'.
-			out : path.join(output, "scarlet.js"),
+			out : path.join(output, "admin.js"),
 
 			//Introduced in 2.1.2 and considered experimental.
 			//If the minifier specified in the "optimize" option supports generating
