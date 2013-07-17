@@ -1,17 +1,24 @@
 import datetime
 import unittest
+import json
 
 from django.test import TestCase
-from django.test.client import Client
+from django.test.client import Client, RequestFactory
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
+from django.template import TemplateDoesNotExist
 
 from scarlet.cms import bundles, views
+from scarlet.versioning import manager
 
 from models import *
 
+class TestCaseDeactivate(TestCase):
+    def tearDown(self):
+        manager.deactivate()
 
 
-class BundleViewsTestCase(TestCase):
+class BundleViewsTestCase(TestCaseDeactivate):
     def setup_test_user(self):
         user = User.objects.create_user('tester', 'tester@example.com', '1234')
         user.is_staff = True
@@ -69,6 +76,230 @@ class BundleViewsTestCase(TestCase):
         resp = self.client.get('/admin/blog/add/')
         self.assertEqual(resp.status_code, 200)
 
+
+    #AUTHOR
+    def test_addedit_author(self):
+        #add author - good
+        resp = self.client.post('/admin/blog/author/add/', data={'name':'John', 'bio' : 'boring'})
+        self.assertEqual(resp.status_code, 302)
+        a = Author.objects.filter(name='John')
+        self.assertEqual(a.count(), 1)
+
+        #edit author - good
+        resp = self.client.post('/admin/blog/author/%s/edit/' % a[0].pk, 
+                        data= {'view_tags':'author,john', 'name':'John', 'bio' : 'edit'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Author.objects.filter(name='John', bio='edit').count(), 1)
+        self.assertEqual(Author.objects.filter(name='John', bio='boring').count(), 0)
+
+        #edit author - bad
+        resp = self.client.post('/admin/blog/author/%s/edit/' % a[0].pk, 
+                        data= {'view_tags':'author,john', 'name':'John', 'bio' : ''})
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Author.objects.filter(name='John', bio='edit').count(), 1)
+        self.assertEqual(Author.objects.filter(name='John', bio='boring').count(), 0)
+
+    def test_addauthor_bad(self):
+        resp = self.client.post('/admin/blog/author/add/',data={'name':'Jim', 'bio' : ''})
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Author.objects.filter(name='Jim', bio = '').count(), 0)
+
+    def test_deleteauthor(self):
+        resp = self.client.post('/admin/blog/author/add/', 
+                            data={'name':'Doomed', 'bio' : 'sorry'})
+        self.assertEqual(resp.status_code, 302)
+        a = Author.objects.filter(name='Doomed')
+
+        #interesting note... "No" passed to delete will still delete the object
+        resp = self.client.post('/admin/blog/author/%s/delete/?o=/admin/blog/author/?' %a[0].pk,
+                             data = {'delete': ''})
+        self.assertEqual(Author.objects.filter(name='Doomed').count(), 1)
+
+        resp = self.client.post('/admin/blog/author/%s/delete/?o=/admin/blog/author/?' %a[0].pk,
+                             data = {'delete': 'Yes'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Author.objects.filter(name='Doomed').count(), 0)
+
+    #CATEGORY
+    def test_addedit_category(self):
+        #add category - good
+        resp = self.client.post('/admin/blog/category/add/', data={'category':'Cat'})
+        self.assertEqual(resp.status_code, 302)
+        a = Category.objects.filter(category='Cat')
+        self.assertEqual(a.count(), 1)
+
+        #edit category - good
+        resp = self.client.post('/admin/blog/category/%s/edit/' % a[0].pk, 
+                        data= {'view_tags':'categorys,cat', 'category':'Kat'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Category.objects.filter(category='Kat').count(), 1)
+        self.assertEqual(Category.objects.filter(category='Cat').count(), 0)
+
+        #edit category - bad
+        a = Category.objects.filter(category='Kat')
+        resp = self.client.post('/admin/blog/category/%s/edit/' % a[0].pk, 
+                        data= {'view_tags':'categorys,kat', 'category' : ''})
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Category.objects.filter(category='Kat').count(), 1)
+        self.assertEqual(Category.objects.filter(category='Cat').count(), 0)
+
+    def test_addcategory_bad(self):
+        resp = self.client.post('/admin/blog/category/add/',data={'category' : ''})
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Category.objects.filter(category='').count(), 0)
+
+    def test_deletecategory(self):
+        resp = self.client.post('/admin/blog/category/add/', 
+                            data={'category' : 'SadCat'})
+        self.assertEqual(resp.status_code, 302)
+        a = Category.objects.filter(category = 'SadCat')
+
+        resp = self.client.post('/admin/blog/category/%s/delete/?o=/admin/blog/category/?' %a[0].pk,
+                             data = {'delete': ''})
+        self.assertEqual(Category.objects.filter(category = 'SadCat').count(), 1)
+
+        resp = self.client.post('/admin/blog/category/%s/delete/?o=/admin/blog/category/?' %a[0].pk,
+                             data = {'delete': 'Yes'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Category.objects.filter(category = 'SadCat').count(), 0)
+
+    #POST
+    def test_addedit_post(self):
+        author = Author.objects.create(
+                    name='Joe Poster',
+                    bio='I like posting.'
+                )
+
+        category = Category.objects.create(
+                    category='Posts',
+                    slug='dumb_category'
+                )
+        # add good post
+        resp = self.client.post('/admin/blog/add/', 
+                            data = {'date' : '2013-06-20', 'title' : 'Test', 
+                            'body' : 'Test Body', 'author' : author.pk, 'category' : category.pk})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Post.objects.filter(title = 'Test').count(), 1)
+
+        # add bad posts
+        resp = self.client.post('/admin/blog/add/', 
+                            data = {'date' : '2013-06-21', 'title' : 'Test', 
+                            'body' : 'Test Body 2', 'author' : '0', 'category' : category.pk})
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Post.objects.filter(title = 'Test').count(), 1)
+
+        resp = self.client.post('/admin/blog/add/', 
+                            data = {'date' : '20130621', 'title' : 'Test', 
+                            'body' : 'Test Body 2', 'author' : '0', 'category' : category.pk})
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Post.objects.filter(title = 'Test').count(), 1)
+
+        resp = self.client.post('/admin/blog/add/', 
+                            data = {'date' : '2013-06-21', 'title' : 'Test', 
+                            'body' : '', 'author' : '0', 'category' : category.pk})
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Post.objects.filter(title = 'Test').count(), 1)
+
+        #make good edit
+        a = Post.objects.filter(title = 'Test')
+        resp = self.client.post('/admin/blog/%s/edit/' % a[0].pk, data = {
+                    'view_tags' : 'posts,posts,test', 'date' : '2013-06-20', 'title' : 'Test', 'body' : 'Test Body!',
+                    'author' : author.pk, 'category' : category.pk, 'postimageformformset-TOTAL_FORMS' : '0',
+                    'postimageformformset-INITIAL_FORMS' : '0', 'postimageformformset-MAX_NUM_FORMS' : ''})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Post.objects.filter(body = 'Test Body!').count(), 1)
+
+        #edit to create Image
+        resp = self.client.post('/admin/blog/%s/edit/' % a[0].pk, data = {
+                    'view_tags' : 'posts,posts,test', 'date' : '2013-06-20', 'title' : 'Test', 'body' : 'Test Body!',
+                    'author' : author.pk, 'category' : category.pk, 'postimageformformset-TOTAL_FORMS' : '1',
+                    'postimageformformset-INITIAL_FORMS' : '0', 'postimageformformset-MAX_NUM_FORMS' : '',
+                    'postimageformformset-0-post' : a[0].pk, 'postimageformformset-0-caption' : 'Captions are cool.',
+                    'postimageformformset-0-order' : '0', 'postimageformformset-0-id' : '',
+                    'postimageformformset-0-ORDER' : '100'})
+        self.assertEqual(resp.status_code, 302)
+        p = PostImage.objects.filter(caption = 'Captions are cool.')
+        self.assertEqual(p.count(), 1)
+
+        #edit to create bad image
+        resp = self.client.post('/admin/blog/%s/edit/' % a[0].pk, data = {
+                    'view_tags' : 'posts,posts,test', 'date' : '2013-06-20', 'title' : 'Test', 'body' : '',
+                    'author' : author.pk, 'category' : category.pk, 'postimageformformset-TOTAL_FORMS' : '1',
+                    'postimageformformset-INITIAL_FORMS' : '0', 'postimageformformset-MAX_NUM_FORMS' : '',
+                    'postimageformformset-0-post' : a[0].pk, 'postimageformformset-0-caption' : 'Captions are cool.',
+                    'postimageformformset-0-order' : '0', 'postimageformformset-0-id' : '',
+                    'postimageformformset-0-ORDER' : '0'})
+        self.assertEqual(resp.status_code, 200)
+        p = PostImage.objects.filter(caption = 'Captions are cool.')
+        self.assertEqual(p.count(), 1)
+
+    def test_delete_post(self):
+        author = Author.objects.create(
+                    name='Joe Poster',
+                    bio='I like posting.'
+                )
+
+        category = Category.objects.create(
+                    category='Posts',
+                    slug='dumb_category'
+                )
+        resp = self.client.post('/admin/blog/add/', 
+                            data = {'date' : '2013-06-20', 'title' : 'Apple', 
+                            'body' : 'Test Body', 'author' : author.pk, 'category' : category.pk})
+        self.assertEqual(resp.status_code, 302)
+        p = Post.objects.filter(title = 'Apple')
+        self.assertEqual(p.count(), 1)
+
+        #good delete
+        self.client.post('/admin/blog/%s/edit/delete/?o=/admin/blog/?' % p[0].pk, data = {'delete' : 'Yes'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Post.objects.filter(title = 'Apple').count(), 0)
+
+        #delete field not actually used
+        resp = self.client.post('/admin/blog/add/', 
+                            data = {'date' : '2013-06-20', 'title' : 'Apple', 
+                            'body' : 'Test Body', 'author' : author.pk, 'category' : category.pk})
+        self.assertEqual(resp.status_code, 302)
+        self.client.post('/admin/blog/%s/edit/delete/?o=/admin/blog/?' % p[0].pk, data = {'delete' : 'No! DO NOT DELETE'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Post.objects.filter(title='Apple').count(), 0)
+
+    def test_seo(self):
+        resp = self.client.post('/admin/blog/%s/edit/seo/' % self.post.pk, data = {'view_tags' : 'posts,posts,test title', 
+            'keywords' : 'i love keywords', 'description' : 'and descriptions' })
+        self.assertEqual(resp.status_code, 302)
+        #TODO : make sure actually in db
+
+    def test_comments(self):
+        resp = self.client.post('/admin/blog/%s/edit/comments/add/' % self.post.pk, data = {'view_tags' : 'commentses',
+                     'name' : 'Joe Ego', 'text' : 'Man, I have an awesome blog.'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Comment.objects.filter(name = 'Joe Ego').count(), 1)
+
+        #bad comment
+        resp = self.client.post('/admin/blog/%s/edit/comments/add/' % self.post.pk, data = {'view_tags' : 'commentses',
+                     'name' : 'Joe Ego', 'text' : ''})
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Comment.objects.filter(name = 'Joe Ego').count(), 1)
+
+        #edit comment
+        c = Comment.objects.filter(name = 'Joe Ego')
+        resp = self.client.post('/admin/blog/%s/edit/comments/%s/edit/' % (self.post.pk, c[0].pk), data = 
+                    {'view_tags' : 'commentses,man,i have an aweso',
+                     'name' : 'Joe Ego', 'text' : 'Man, I have the best blog.'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Comment.objects.filter(text='Man, I have the best blog.').count(), 1)
+        self.assertEqual(Comment.objects.filter(text='Man, I have an awesome blog.').count(), 0)
+
+        #bad edit
+        c = Comment.objects.filter(name = 'Joe Ego')
+        resp = self.client.post('/admin/blog/%s/edit/comments/%s/edit/' % (self.post.pk, c[0].pk), data = 
+                    {'view_tags' : 'commentses,man,i have the best',
+                     'name' : 'Joe Ego', 'text' : ''})
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Comment.objects.filter(text='Man, I have the best blog.').count(), 1)
+        self.assertEqual(Comment.objects.filter(text='').count(), 0)
+
     def test_edit(self):
         resp = self.client.get('/admin/blog/%s/edit/' % self.post.pk)
         self.assertEqual(resp.status_code, 200)
@@ -76,6 +307,58 @@ class BundleViewsTestCase(TestCase):
     def test_delete(self):
         resp = self.client.get('/admin/blog/%s/edit/delete/' % self.post.pk)
         self.assertEqual(resp.status_code, 200)
+
+class MiscViewTestCase(TestCaseDeactivate):
+
+    def setup_test_user(self):
+        user = User.objects.create_user('tester', 'tester@example.com', '1234')
+        user.is_staff = True
+        user.save()
+        self.client.login(username='tester', password='1234')
+        self.user = user
+
+    def setUp(self):
+        self.client = Client()
+        self.setup_test_user()
+        self.cat1 = Category.objects.create(category='One')
+        self.cat2 = Category.objects.create(category='Two')
+        self.cat3 = Category.objects.create(category='Three')
+
+    def test_pagination(self):
+        #objects appear on pages in opposite order than they were added
+        nums = {1 : "Three", 2 : "Two", 3 : "One"}
+
+        for x in range (1, Category.objects.all().count()):
+            resp = self.client.get('/admin/blog/category/?page=%d' % x)
+            self.assertEqual(resp.status_code, 200)
+            for y in range(1, Category.objects.all().count()):
+                if (x == y):
+                    self.assertContains(resp, nums[x])
+                else:
+                    self.assertNotContains(resp, nums[y])
+
+    def test_listviewformsets(self):
+        resp = self.client.post('/admin/blog/category/', data = {'form-TOTAL_FORMS' : '1', 'form-INITIAL_FORMS' : '1',
+             'form-0-id' : self.cat1.pk, 'form-0-category' : "Uno"})
+        self.assertEqual(resp.status_code, 302)
+        c = Category.objects.filter(category = "Uno")
+        self.assertEqual(c.count(), 1)
+        self.assertEqual(Category.objects.filter(category = "One").count(), 0)
+
+        resp = self.client.post('/admin/blog/category/', data = {'form-TOTAL_FORMS' : '1', 'form-INITIAL_FORMS' : '1',
+             'form-0-id' : self.cat2.pk, 'form-0-category' : ""})
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Category.objects.filter(category = "").count(), 0)
+        self.assertEqual(Category.objects.filter(category = "Two").count(), 1)
+
+        resp = self.client.post('/admin/blog/category/?page=2', data = {'form-TOTAL_FORMS' : '1', 'form-INITIAL_FORMS' : '1',
+             'form-0-id' : self.cat2.pk, 'form-0-category' : "Dos"})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Category.objects.filter(category="Dos").count(), 1)
+        self.assertEqual(Category.objects.filter(category="Two").count(), 0)
+
+
+
 
 
 class TestMainBundle(bundles.Bundle):
@@ -102,10 +385,12 @@ class TestBundle2(TestMainBundle):
     class Meta:
         primary_model_bundle = True
 
+class TestBundle3(TestBundle2):
+    navigation = bundles.PARENT
 
 
 
-class BundleTestCase(unittest.TestCase):
+class BundleTestCase(TestCaseDeactivate):
 
     def setUp(self):
         self.tbm = TestMainBundle(name='test-main',title='Test main Title',
@@ -118,6 +403,8 @@ class BundleTestCase(unittest.TestCase):
         self.tb2 = TestBundle2(name='test2',title='Test2 Title', title_plural='Test2 Titles',
                     parent=None, attr_on_parent=None, site=None)
 
+        self.tb3 = TestBundle3(name='test2', title='Test3 Title', title_plural='Test3 Titles',
+                    parent=None, attr_on_parent=None, site=None)
 
     def test_bundles(self):
 
@@ -135,3 +422,150 @@ class BundleTestCase(unittest.TestCase):
         self.assertEquals( self.tb1.dashboard, ())
         self.assertEquals( self.tb2.dashboard, (('main'),))
         self.assertEquals( self.tbm.dashboard, ())
+        self.assertEquals(self.tb3.dashboard, (('main',), ('tv_main', 'Landing Page',{'adm_tv_pk': 'tv_main'}),))
+
+        self.tb1.dashboard = (('main',), ('tv_main', 'Landing Page', {'adm_tv_pk' : 'tv_main'}),)
+        self.assertEquals(self.tbm.dashboard, ())
+        self.assertEquals(self.tb1.dashboard,  (('main',), ('tv_main', 'Landing Page', {'adm_tv_pk' : 'tv_main'}),))
+        self.assertEquals(self.tb2.dashboard, (('main'),))
+        self.assertEquals(self.tb3.dashboard, (('main',), ('tv_main', 'Landing Page',{'adm_tv_pk': 'tv_main'}),))
+
+        self.tb3.name = 'test3'
+        self.assertEquals(self.tbm.name, 'test-main')
+        self.assertEquals(self.tb1.name, 'test1 change')
+        self.assertEquals(self.tb2.name, 'test2')
+        self.assertEquals(self.tb3.name, 'test3')
+
+
+class BundleURLTestCase(TestCaseDeactivate):
+
+    def setup_test_user(self):
+        user = User.objects.create_user('tester', 'tester@example.com', '1234')
+        user.is_staff = True
+        user.save()
+        self.client.login(username='tester', password='1234')
+        self.user = user
+
+    def setUp(self):
+        self.client = Client()
+        self.setup_test_user()
+
+        self.dummy = DummyModel.objects.create(name='A')
+
+        author = Author.objects.create(
+                    name='Joe Tester',
+                    bio='I like testing.'
+                )
+
+        # Create a category
+        category = Category.objects.create(
+                    category='Category Test',
+                    slug='category_test'
+                )
+
+        # Create  a post
+        self.post = Post.objects.create(
+                    date=datetime.datetime.now(),
+                    title='Title Test',
+                    slug='Slug Test',
+                    body='This is a test body for the post object.',
+                    author=author,
+                    category=category,
+                    keywords='keywords test',
+                    description='This is a test description for the post object.'
+                )
+
+
+    def test_redirects(self):
+        #Dummy_Redirector should redirect from an edit page back to the same edit page upon save.
+        resp = self.client.post('/admin/blog/dummy_redirector/%s/edit/' % self.dummy.pk, data = 
+                    {'view_tags' : 'dummy redirects, a' ,'name' : 'B'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(DummyModel.objects.filter(name='B').count(), 1)
+        self.assertEqual(DummyModel.objects.filter(name='A').count(), 0)
+        self.assertEqual((resp['Location'])[resp['Location'].find('/admin/'):], '/admin/blog/dummy_redirector/%s/edit/' % self.dummy.pk)
+
+    def test_URLAlias(self):
+        #Dummy_Alias makes 'edit' an alias for 'dummy_edit', and all edits should be made at the latter URL
+        resp = self.client.post('/admin/blog/dummy_alias/%s/dummy_edit/' % self.dummy.pk, data = 
+                    {'view_tags' : 'dummy aliases, b', 'name' : 'C'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(DummyModel.objects.filter(name='C').count(), 1)
+        self.assertEqual(DummyModel.objects.filter(name='D').count(), 0)
+
+    def test_bundle_independence(self):
+        #test bundles that use the same subbundle have independent URLs
+        resp = self.client.get('/admin/blog/author/')
+        self.assertEqual(resp.status_code, 200)
+        resp = self.client.get('/admin/authoronly/author/')
+        self.assertEqual(resp.status_code, 200)
+
+        resp = self.client.post('/admin/blog/author/add/', data = {'view_tags' : 'authors', 'name' : 'Two', 'bio' : '2'} )
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual((resp['Location'])[resp['Location'].find('/admin/'):], '/admin/blog/author/')
+        a = Author.objects.filter(name='Two')
+        self.assertEqual(a.count(), 1)
+        resp = self.client.get('/admin/blog/author/%s/edit/' % a[0].pk)
+        self.assertEqual(resp.status_code, 200)
+        resp = self.client.get('/admin/authoronly/author/%s/edit/' % a[0].pk)
+
+        resp = self.client.post('/admin/authoronly/author/add/', data = {'view_tags' : 'authors', 'name' : 'Three', 'bio' : '3'} )
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual((resp['Location'])[resp['Location'].find('/admin/'):], '/admin/authoronly/author/')
+        a = Author.objects.filter(name='Three')
+        self.assertEqual(a.count(), 1)
+        resp = self.client.get('/admin/authoronly/author/%s/edit/' % a[0].pk)
+        self.assertEqual(resp.status_code, 200)
+        resp = self.client.get('/admin/blog/author/%s/edit/' % a[0].pk)
+        self.assertEqual(resp.status_code, 200)
+
+
+class FilterTestCase(TestCaseDeactivate):
+    def setup_test_user(self):
+        user = User.objects.create_user('tester', 'tester@example.com', '1234')
+        user.is_staff = True
+        user.save()
+        self.client.login(username='tester', password='1234')
+        self.user = user
+
+    def setUp(self):
+        self.client = Client()
+        self.setup_test_user()
+
+        self.author1 = Author.objects.create(
+                    name='authornumberone',
+                    bio='ab'
+                )
+        self.author2 = Author.objects.create(
+                    name='authornumbertwo',
+                    bio='bb')
+        self.author3 = Author.objects.create(
+                    name='authornumberthree',
+                    bio='ca')
+
+    def test_filter(self):
+        resp = self.client.get('/admin/blog/author/?name=&bio=a&search=')
+        self.assertContains(resp, 'authornumberone')
+        self.assertContains(resp, 'authornumberthree')
+        self.assertNotContains(resp, 'authornumbertwo')
+
+        resp = self.client.get('/admin/blog/author/?name=number&bio=&search=')
+        self.assertContains(resp, 'authornumberone')
+        self.assertContains(resp, 'authornumbertwo')
+        self.assertContains(resp, 'authornumberthree')
+
+        resp = self.client.get('/admin/blog/author/?name=&bio=&search=')
+        self.assertContains(resp, 'authornumberone')
+        self.assertContains(resp, 'authornumbertwo')
+        self.assertContains(resp, 'authornumberthree')
+
+        resp = self.client.get('/admin/blog/author/?name=number&bio=ab&search=')
+        self.assertContains(resp, 'authornumberone')
+        self.assertNotContains(resp, 'authornumbertwo')
+        self.assertNotContains(resp, 'authornumberthree')
+
+        resp = self.client.get('/admin/blog/author/?name=a&bio=&search=')
+        self.assertContains(resp, 'authornumberone')
+        self.assertContains(resp, 'authornumbertwo')
+        self.assertContains(resp, 'authornumberthree')
+

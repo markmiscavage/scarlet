@@ -896,7 +896,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         """
 
         if self.fieldsets:
-            fields = flatten_fieldsets(self.fieldsets)
+            fields = flatten_fieldsets(self.get_fieldsets())
         else:
             fields = None
 

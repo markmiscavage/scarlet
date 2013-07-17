@@ -8,11 +8,11 @@ Basic Implementation
 ====================
 
 
-This versioning module provides versioning control capability to of Django models.
+This versioning module provides versioning control capability to Django models.
 
 Each model must be separated into two database tables, the base table that contains the data that does not change from version to version, and the version table that contains the data that can change and is versioned. For example, a book object would require two tables; book_base and book_version.
 
-Behind each row of the "book_base" table, there is the "book_version" table which contains each version of the book. Each row in the "version" table represents a specific version of a book, and it has a foreign key pointing to a book item in the "base" table. "version" table use "vid" as its primary key.
+Behind each row of the "book_base" table, there is the "book_version" table which contains each version of the book. Each row in the "version" table represents a specific version of a book, and it has a foreign key pointing to a book item in the "base" table. "version" table uses "vid" as its primary key.
 
 Each version can have a different STATE such as:
  * **published:** viewable to public audience.
@@ -30,7 +30,7 @@ The version models provide the following methods for dealing with different vers
 
 With the exception of :py:meth:`make_draft <versioning.models.BaseVersionedModel.make_draft>` all actions should happen on the draft version. For example, if you want to make an archived version published, you should first run make_draft on it. Then you can publish it, which will make the old published instance the archive.
 
-Other method to know are:
+Other methods to know are:
 
  * :py:meth:`purge_archives <versioning.models.BaseVersionedModel.purge_archives>`: Purge older archived items.
  * :py:meth:`status_line <versioning.models.BaseVersionedModel.status_line>`: Returns a status line for an item.
@@ -44,7 +44,7 @@ RDBMs/Django's uniqueness checks do not work for versions since you want multipl
 Transactions
 ------------
 
-Many of the methods referenced above run within a transaction. All the changes will be rolled back if there is an error. In order to be sure that those methods run in a transaction regardless of where there are called from we use the chainable context manager provided in versioning.transactions.xact in place of django's default transaction management. That will start it's own transaction if called directly but use the existing transaction if called by a different piece of code that already has an open transaction. For this reason if you are opening transactions in your own code use the versioning.transactions.xact the context manager.
+Many of the methods referenced above run within a transaction. All the changes will be rolled back if there is an error. In order to be sure that those methods run in a transaction regardless of where there are called from we use the chainable context manager provided in versioning.transactions.xact in place of django's default transaction management. That will start its own transaction if called directly but use the existing transaction if called by a different piece of code that already has an open transaction. For this reason if you are opening transactions in your own code use versioning.transactions.xact as the context manager.
 
 Cloning
 =======
@@ -56,11 +56,11 @@ When an item's status is being changed we:
 
 In order to keep versions of related objects separate we can also make a copy of related objects when we make a clone of a versioned item and create a relationship with the new version of our parent item.
 
-This functionality is provided by the :py:class:`Cloneable <versioning.models.Cloneable>` model: any models that are not version by themselves but should be attached to a version of on item should inherit from :py:class:`Cloneable <versioning.models.Cloneable>`.
+This functionality is provided by the :py:class:`Cloneable <versioning.models.Cloneable>` model: any models that are not versioned by themselves but should be attached to a version of on item should inherit from :py:class:`Cloneable <versioning.models.Cloneable>`.
 
 To specify which models should be cloned you add the attribute names of the reverse relations to the **_clone_related** class attribute. Any reverse relations must also implement Cloneable. To register models that may not be known or importable when declaring the parent model, you can also use the :py:meth:`register_related <versioning.models.Cloneable.register_related>` class method to register additional values.
 
-Since there will be mulitple copies of the cloned objects this is not appropriate to use for models that are meant to be queried directly without a parent instance or used as part of a generic relationship. If that functionality is needed these objects should be versioned and published seperately and not cloned using this method.
+Since there will be mulitple copies of the cloned objects, this is not appropriate to use for models that are meant to be queried directly without a parent instance or used as part of a generic relationship. If that functionality is needed these objects should be versioned and published seperately and not cloned using this method.
 
 When a cloneable instance is cloned the :py:meth:`prep_for_clone <versioning.models.Cloneable.prep_for_clone>` can be used as a hook to customize what gets cleared before a clone. The default behavior is to clear the pk value, so django and the database will see the clone as a new row and set a new one. But if you have any other changes that should be made or auto generated fields that need clearing this would be the appropriate place to make those changes.
 
@@ -87,7 +87,7 @@ You cannot use multi-table inheritence with VersionView models. Generic relation
 Example
 -----------
 
-Assume that we want to build a Book model which has chapters, and each book can have multiple authors associate with it.  We should define it like
+Assume that we want to build a Book model which has chapters, and each book can have multiple authors associated with it.  We should define it like
 
 ::
 
@@ -129,7 +129,7 @@ Let's add some data:
     cp.save()
 
 
-So far everything is pretty clear we have a book 'old man' that has a M2M relation to the author Hemingway and a Chapter that is related to our book.
+So far everything is pretty clear: we have a book 'old man' that has a M2M relation to the author Hemingway and a Chapter that is related to our book.
 
 book_version_author (the m2m table) looks like this
 
@@ -191,7 +191,7 @@ Implementations that use this model will need to take care to specify the correc
 Managing State
 ================
 
-Generally you will want all your queries to run in the same state, ei: draft or published.
+Generally you will want all your queries to run in the same state, ie: draft or published.
 
 The global state is managed by the :py:func:`versioning.manager.activate` and :py:func:`versioning.manager.deactivate` functions.
 

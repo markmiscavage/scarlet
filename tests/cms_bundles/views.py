@@ -15,3 +15,4 @@ class PostsListView(views.ListView):
     def __init__(self, *args, **kwargs):
         super(PostsListView, self).__init__(*args, **kwargs)
         #self.renders['choices'] = AssetRenderer()
+

@@ -7,19 +7,12 @@ import sys
 
 from distutils.core import setup
 from distutils.command.build_py import build_py
-from distutils.command.sdist import sdist
 
 packages = []
 base_path = os.path.abspath(os.path.dirname(__file__))
 
-def build_static_files():
-    result = subprocess.call(['sh', os.path.join(base_path, 'robyn', 'build-static.sh')])
-    if result:
-        print "Warning couldn't build static files"
-
 class my_build_py(build_py):
     def get_data_files(self):
-        build_static_files()
         return build_py.get_data_files(self)
 
     def find_data_files(self, package, src_dir):
@@ -32,11 +25,6 @@ class my_build_py(build_py):
             if not '__init__.py' in filenames:
                 files.extend([os.path.join(dirpath, x) for x in filenames if not x.startswith('.')])
         return files
-
-class my_sdist(sdist):
-    def run(self):
-        build_static_files()
-        return sdist.run(self)
 
 def fullsplit(path, result=None, base_path=None):
     """

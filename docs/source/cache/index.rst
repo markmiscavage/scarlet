@@ -24,9 +24,9 @@ Let's say you are building a website for a company. There are people in your com
 
 The problem we face here is that if we are using Django's cache system we are caching entirely at the view level, so if we update a model the views don't update until they are set to expire. This stops us from being able to set long cache times on object and forces us, if we plan to invalidate, to invalidate the entire cache. As you may have experienced, invalidating the entire cache on a complex high traffic site does not have positive results.
 
-People have tried to solve this problem in a number of ways: the most common involve emulating Java's Data persistence model; keep a copy of database query results or a complete copy of every data object in a persistence layer. Lets face it, this only yields performance improvement if you've done a really bad job of modeling your data and indexing tables. Java uses a lot of really complex processes to manage updates in the persistence layer, processes that work well for a threaded high memory distributed architecture.
+People have tried to solve this problem in a number of ways: the most common involve emulating Java's Data persistence model; keep a copy of database query results or a complete copy of every data object in a persistence layer. Let's face it, this only yields performance improvement if you've done a really bad job of modeling your data and indexing tables. Java uses a lot of really complex processes to manage updates in the persistence layer, processes that work well for a threaded high memory distributed architecture.
 
-Django is not a that type of architecture. The class of problems we are trying to solve require lighter weight, cheaper, and simpler solutions than those are afforded by EJB's and the JPA. The database is good enough as a persistence layer. What we really want is to serve pages fast, specifically we want to serve views fast, and we want to cache those view for the maximum possible time. Django handles view caching really well but it approaches cache invalidation from the wrong angle. Instead of invalidating a particular cached object when the data changes we wont only invalidate cached data on some time interval. I as a developer want the interval to be once a year, but the person managing the content wants it to be every second. Cache invalidation needs to happen at the model level.
+Django is not that type of architecture. The class of problems we are trying to solve require lighter weight, cheaper, and simpler solutions than those are afforded by EJB's and the JPA. The database is good enough as a persistence layer. What we really want is to serve pages fast, specifically we want to serve views fast, and we want to cache those views for the maximum possible time. Django handles view caching really well but it approaches cache invalidation from the wrong angle. Instead of invalidating a particular cached object when the data changes we want to only invalidate cached data on some time interval. I as a developer want the interval to be once a year, but the person managing the content wants it to be every second. Cache invalidation needs to happen at the model level.
 
 
 The Solution
@@ -41,9 +41,9 @@ Here's simple example:
     from scarlet.cache import cache_manager
     cache_manager.register('company_list', Person, values=['employees'], instance_values=['pk'])
 
-This creates a :py:class:`CacheGroup <scarlet.cache.groups.CacheGroup>` named 'company_list' and registers the Person model with it, and tells the group to track the model based upon it's primary key and to also track a value 'employees' that will be incremented any time a Person model is saved.
+This creates a :py:class:`CacheGroup <scarlet.cache.groups.CacheGroup>` named 'company_list' and registers the Person model with it, and tells the group to track the model based upon its primary key and to also track a value 'employees' that will be incremented any time a Person model is saved.
 
-Lets say you have a list page at '/person/' you can do
+Let's say you have a list page at '/person/' you can do
 
 ::
 
@@ -78,7 +78,7 @@ To get a string that can be used as a prefix for django's cache keys call :py:me
 Example
 ~~~~~~~
 
-Lets make a group for caching Person models
+Let's make a group for caching Person models
 
 ::
 
@@ -123,7 +123,7 @@ Based on the same logic as above, the minor version *employee* was incremented a
  * company_list.0.1 - 0
  * company_list.0.employee - 2
 
-Now lets pass an extra:
+Now let's pass an extra:
 
 ::
 
@@ -159,7 +159,7 @@ The other keys did not change because the major version was incremented; that wi
     >>>c.get_version('2')
     'company_list.1.2.0'
 
-Running invalidate_cache on a model that was registered with now values will also increment the major version:
+Running invalidate_cache on a model that was registered with new values will also increment the major version:
 
 ::
 
@@ -209,12 +209,12 @@ Here is a sample get_cache_version function
         return cache_manager.get_group('key').get_version(slug)
 
 
-As with all class based views decorating individual methods does not work well so you want a certain response or method to not be cached, call :py:meth:`set_do_not_cache <scarlet.cache.views.CacheView.set_do_not_cache>`
+As with all class based views, decorating individual methods does not work well so you want a certain response or method to not be cached, call :py:meth:`set_do_not_cache <scarlet.cache.views.CacheView.set_do_not_cache>`
 
 Admin
 =====
 
-:py:class:`ModelAdmin <scarlet.cache.admin.ModelAdmin>` is an extension of the default django ModelAdmin that will call invalidate_cache after a deleting or saving a model. In order to insure that these do not get called until after all m2m relationships have been updated, the update and add hooks are placed in the response_xxx methods.
+:py:class:`ModelAdmin <scarlet.cache.admin.ModelAdmin>` is an extension of the default django ModelAdmin that will call invalidate_cache after a deleting or saving a model. In order to ensure that these do not get called until after all m2m relationships have been updated, the update and add hooks are placed in the response_xxx methods.
 
 When creating a ModelAdmin you should ensure that the cache_manager attribute is set to the correct manager.
 
@@ -237,7 +237,7 @@ Limitations and Drawbacks
 
  * Each request for a page will make 2 or 3 requests to check for a cache hit.  For very simple pages with few or no database queries and very little template logic this could actually slow performance. Benchmark to be sure that this is really increasing performance before using.
 
- * At this point there are only two types of versions major and minor. There may be situations where you would want a minor version of a minor version. This is not currently supported.
+ * At this point there are only two types of versions: major and minor. There may be situations where you would want a minor version of a minor version. This is not currently supported.
 
  * No effort is made to avoid key collisions. For example if you register two models with the same group on their pk's. Their versions would not be distinct and an invalidation on one would invalidate the other.
 

@@ -2,10 +2,9 @@ from django.forms.models import inlineformset_factory
 
 from scarlet.cms import bundles, site, forms, options, views, renders
 
-from models import Post, PostImage, Comment, Category, Author
+from models import Post, PostImage, Comment, Category, Author, DummyModel
 from views import PostsListView
 from forms import EditAuthorForm
-
 
 postimages_formset = forms.LazyFormSetFactory(
     inlineformset_factory, Post, PostImage, can_order=True)
@@ -20,6 +19,7 @@ class PostImageBundle(bundles.Bundle):
 
 class CategoryBundle(bundles.Bundle):
     navigation = bundles.PARENT
+    main = views.ListView(paginate_by = 1, display_fields=('category',), change_fields=('category',))
 
     class Meta:
         model = Category
@@ -37,7 +37,6 @@ class CommentBundle(bundles.ParentVersionedBundle):
         return super(CommentBundle, self).get_object_header_view(
             *args, **kwargs)
 
-
     class Meta:
         model = Comment
         parent_field = "post"
@@ -46,12 +45,25 @@ class CommentBundle(bundles.ParentVersionedBundle):
 class AuthorBundle(bundles.Bundle):
     navigation = bundles.PARENT
     edit = views.FormView(form_class=EditAuthorForm)
+    main = views.ListView(filter_form = forms.search_form('name', 'bio',))
 
-    main = views.ListView(display_fields=('name',))
+    class Meta:
+        model = Author
+
+class DummyAliasBundle(bundles.Bundle):
+    dummy_edit = views.FormView()
+    edit = bundles.URLAlias(alias_to = "dummy_edit")
 
     class Meta():
-        model = Author
-        primary_model_bundle = True
+        model = DummyModel
+        item_views = ('dummy_edit', 'delete')
+
+class DummyRedirectorBundle(bundles.Bundle):
+    edit = views.FormView(redirect_to_view='edit')
+
+    class Meta():
+        model = DummyModel
+        item_views = ('edit', 'delete')
 
 
 DEFAULT_FIELDS =(
@@ -60,7 +72,6 @@ DEFAULT_FIELDS =(
                    'author','category', ) # add 'tags' when it will work
     }),
     )
-
 
 class PostDeleteView(views.DeleteView):
     def __init__(self, *args, **kwargs):
@@ -108,6 +119,8 @@ class BlogBundle(bundles.DelegatedObjectBundle):
     dashboard = (
         ('main',),
         ('author',),
+        ('dummy_alias',),
+        ('dummy_redirector',),
         ('category',),
     )
 
@@ -115,6 +128,8 @@ class BlogBundle(bundles.DelegatedObjectBundle):
     add = PostAddView(fieldsets=DEFAULT_FIELDS)
     edit = BlogEditBundle.as_subbundle(name='post', title="Post")
     author = AuthorBundle.as_subbundle(name='author', title='Author')
+    dummy_alias = DummyAliasBundle.as_subbundle(name='dummy_alias', title='Dummy Alias')
+    dummy_redirector = DummyRedirectorBundle.as_subbundle(name='dummy_redirector', title='Dummy Redirect')
     category = CategoryBundle.as_subbundle(name='category', title='Category')
     preview = views.PreviewWrapper(preview_view=PostsListView,
         pass_through_kwarg=None)
@@ -124,4 +139,12 @@ class BlogBundle(bundles.DelegatedObjectBundle):
         primary_model_bundle = True
         item_views = list(options.VersionMeta.item_views) + ['preview']
 
+class BigAuthorBundle(bundles.DelegatedObjectBundle):
+    dashboard = (
+        ('author',),
+    )
+
+    author = AuthorBundle.as_subbundle(name='author', title='Author')
+
 site.register("blog", BlogBundle(name='blog'), order=10)
+site.register("authoronly", BigAuthorBundle(name='authoronly'), order=10)
