@@ -20,7 +20,10 @@ ASSET_MODEL = getattr(settings, "ASSET_MODEL", "assets.Asset")
 ASSET_TYPES = getattr(settings, "ASSET_TYPES", None)
 
 DEFAULT_IMAGE_SIZES = {
-    'admin' : { 'width' : 100, 'height' : 100, 'editable': False }
+    'admin' : {
+        'width' : 100, 'height' : 100,
+        'editable': False, 'upscale': True,
+    },
 }
 
 IMAGE_SIZES = getattr(settings, "IMAGE_SIZES", DEFAULT_IMAGE_SIZES)
