@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.template import TemplateDoesNotExist
 
-from scarlet.cms import bundles, views, helpers
+from scarlet.cms import bundles, views
 from scarlet.versioning import manager
 
 from models import *
@@ -641,9 +641,9 @@ class ActionViewTestCase(TestCaseDeactivate):
 
     def check_redirect_and_modify(self, post_to, action, selected):
         redirect_to = post_to + action
-        qs = '?' + urlencode({helpers.CHECKBOX_NAME : ','.join(selected)})
+        qs = '?' + urlencode({views.CHECKBOX_NAME : ','.join(selected)})
         resp = self.client.post(post_to, data = 
-                {helpers.CHECKBOX_NAME : ','.join(selected), 'actions' : redirect_to})
+                {views.CHECKBOX_NAME : ','.join(selected), 'actions' : redirect_to})
         self.assertEqual(resp.status_code, 302)
         #check that we were redirected to the right place
         self.assertEqual((resp['Location'])[resp['Location'].find('/admin/'):], redirect_to + qs)
@@ -701,7 +701,7 @@ class ActionViewTestCase(TestCaseDeactivate):
     def test_bad_mass_delete(self):
         redirect_to = '/admin/blog/delete/'
         sel = [str(self.post1.pk)]
-        qs = '?' + urlencode({helpers.CHECKBOX_NAME : ','.join(sel)})
+        qs = '?' + urlencode({views.CHECKBOX_NAME : ','.join(sel)})
         original_num = Post.objects.all().count()
         resp = self.client.post(redirect_to + qs)
         self.assertEqual(resp.status_code, 200)
@@ -711,7 +711,7 @@ class ActionViewTestCase(TestCaseDeactivate):
         # in subbundle
         redirect_to = '/admin/blog/%s/edit/comments/' % self.post1.pk
         sel = [str(self.comment1.pk), str(self.comment2.pk)]
-        qs = '?' + urlencode({helpers.CHECKBOX_NAME : ','.join(sel)})
+        qs = '?' + urlencode({views.CHECKBOX_NAME : ','.join(sel)})
         original_num = Comment.objects.all().count()
         resp = self.client.post(redirect_to + qs)
         self.assertEqual(resp.status_code, 200)

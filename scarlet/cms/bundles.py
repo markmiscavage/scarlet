@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django import http
 from django.utils.decorators import classonlymethod
+from django.core.exceptions import ImproperlyConfigured
 
 from . import views
 from . import options
@@ -255,11 +256,6 @@ class Bundle(object):
             if site and self._meta.primary_model_bundle:
                 site.register_model(self._meta.model, self)
 
-        # Every action view is also an item view
-        for actv in self._meta.action_views:
-            if actv not in self._meta.item_views:
-                self._meta.item_views.append(actv)
-
         for view in self._views:
             v = getattr(self, view, None)
             if v and isinstance(v, views.CMSView):
@@ -267,6 +263,14 @@ class Bundle(object):
 
                 if self.live_groups and view in self._meta.live_views:
                     view_kwargs['required_groups'] = list(self.live_groups)
+
+                # check to make sure that actions specified in the ListView
+                # are also registered with the bundle
+                if isinstance(v, views.ListView):
+                    if v.action_views:
+                        added = set(v.action_views).difference(set(self._meta.action_views))
+                        if not len(added) == 0:
+                            raise ImproperlyConfigured(u"The following views are not registered with bundle '%s': %s" % (self.name, added))
 
                 setattr(self, view, create_new_viewclass(v,
                                         **view_kwargs))
@@ -423,7 +427,8 @@ class Bundle(object):
     def _view_uses_name_as_url_kwarg(self, view_name):
         #Returns True if the given view_name uses
         #self.name in url kwargs
-        return view_name in self._meta.item_views
+        return (view_name in self._meta.item_views) or \
+                (view_name in self._meta.action_views)
 
     def _get_slug_url_kwarg_for_name(self, view_name):
         arg = None
@@ -547,7 +552,7 @@ class Bundle(object):
                 regex = getattr(self._meta, "%s_regex_base" % attname)
                 regex = regex % {'group_name': self.name,
                                 'attname': attname}
-            elif attname in self._meta.item_views:
+            elif attname in self._meta.item_views or attname in self._meta.action_views:
                 regex = "%s%s" % (self.item_regex, regex)
         return regex
 

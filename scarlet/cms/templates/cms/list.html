@@ -39,7 +39,7 @@
 	<table>
 		<thead>
 		<tr>
-			{% if action_form %}
+			{% if display_actions %}
 			<th></th>
 			{% endif %}
 			<th></th>
@@ -82,7 +82,7 @@
 			{% endif %}
 			{% endwith %}
 			</td>
-			{% if action_form %}
+			{% if display_actions %}
 			<td>
 				<input type="checkbox" name = {{ checkbox_name }} value= {{ row.instance.pk }} />
 			</td>
@@ -115,7 +115,7 @@
 	</table>
 	{% block submit %}
 	{% if show_form and not list.empty %}
-		{% if action_form %}
+		{% if display_actions %}
 			<select name="actions">
 				{% for name, desc in actions %}
 				{% bundle_url bundle name as url %}

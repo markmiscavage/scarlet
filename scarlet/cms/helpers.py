@@ -19,9 +19,6 @@ FORMFIELD_FOR_DBFIELD_DEFAULTS = {
     models.DateField:        {'widget': widgets.DateWidget},
 }
 
-CHECKBOX_NAME = '_selected'
-ACTION_DEFAULT = 'action_default'
-
 class AdminList(object):
     ASC = 'asc'
     DESC = 'desc'
@@ -108,7 +105,6 @@ class AdminListLabel(object):
 
 
 class AdminListRow(object):
-
     def __init__(self, form, instance, visible_fields):
         self.form = form
         self.instance = instance

@@ -1411,6 +1411,8 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
     filter_form = None
 
+    action_views = None
+
     default_template = 'cms/list.html'
 
     # Are we allowed to sort this list?
@@ -1426,6 +1428,11 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     def __init__(self, *args, **kwargs):
         super(ListView, self).__init__(*args, **kwargs)
         self.renders['choices'] = renders.ChoicesRender()
+        #if self.action_views:
+        #    added = set(self.action_views).difference(set(self.bundle._meta.action_views))
+        #    # TODO: Can change to add action to bundle, might be unexpected behavior
+        #    if not len(added) == 0:
+        #        raise ImproperlyConfigured(u"The following views are not registered with the bundle: %s" % added)
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         """
@@ -1502,6 +1509,7 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
                 params['form'] = fc
             if self.change_fields:
                 params['fields'] = self.change_fields
+
             return model_forms.modelform_factory(self.model, **params)
 
     def get_formset_class(self, **kwargs):
@@ -1603,10 +1611,12 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
 
     def get_action_context(self, request):
-        default_choice = (helpers.ACTION_DEFAULT, '----------')
+        default_choice = ('action-default', '----------')
         act_context = [default_choice]
-        if self.bundle._meta.action_views:
-            for actv in self.bundle._meta.action_views:
+        actions = self.action_views or self.bundle._meta.action_views
+
+        if actions:
+            for actv in actions:
                 view, name = self.bundle.get_view_and_name(actv)
                 desc = view.short_description or actv
                 act_context.append((actv, desc))
@@ -1633,7 +1643,6 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
         sort_field = None
         order_type = None
-
         if self.can_sort:
             sort_field = request.GET.get('sf')
             order_type = request.GET.get('ot', helpers.AdminList.ASC)
@@ -1644,27 +1653,26 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         if self.request.method == 'POST' and self.can_submit:
             formset = self.get_formset(data=self.request.POST, queryset=queryset)
             is_paginated, page, paginator, queryset = self._paginate_queryset(queryset)
-
         else:
             is_paginated, page, paginator, queryset = self._paginate_queryset(queryset)
             formset = self.get_formset(queryset=queryset)
-
 
         visible_fields = self.get_visible_fields(formset)
         adm_list = helpers.AdminList(formset, queryset, visible_fields,
                                        sort_field, order_type,
                                        self.model_name)
 
+        display_actions = not len(self.action_views or self.bundle._meta.action_views) == 0
         data = {
             'list': adm_list,
             'filter_form': self.get_filter_form(),
             'page_obj': page,
             'is_paginated': is_paginated,
-            'show_form': self.bundle._meta.action_views or (self.can_submit and formset is not None),
+            'show_form': display_actions or (self.can_submit and formset is not None),
             'paginator': paginator,
-            'checkbox_name' : helpers.CHECKBOX_NAME,
+            'checkbox_name' : CHECKBOX_NAME,
             'actions' : self.get_action_context(request),
-            'action_form' : self.bundle._meta.action_views,
+            'display_actions' : display_actions
         }
 
         return data
@@ -1702,7 +1710,6 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
             self.can_submit = False
 
         data = self.get_list_data(request, **kwargs)
-    
         return self.render(request, **data)
 
     def post(self, request, *args, **kwargs):
@@ -1722,10 +1729,10 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         """
         msg = None
         action = request.POST.get('actions', None)
-        selected = request.POST.getlist(helpers.CHECKBOX_NAME)
+        selected = request.POST.getlist(CHECKBOX_NAME)
         if not action == 'None':
             if len(selected) > 0:
-                sel = {helpers.CHECKBOX_NAME : ','.join(selected)}
+                sel = {CHECKBOX_NAME : ','.join(selected)}
                 qs = '?' + urlencode(sel)
                 return self.render(request, redirect_url = action + qs)
 
@@ -1754,18 +1761,26 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
             return self.render(request, message = msg, **data)
 
 
+CHECKBOX_NAME = '_selected'
+
 class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     """
-    Base class for defining actions that can be executed in a \
-    ListView. An ActionView subclass that will be used as a mass \
-    action should be registered with the Bundle in the Meta class. \
+    Base class for defining actions that can be executed on one \
+    or many objects. An ActionView subclass that will be used as a 'mass \
+    action' should be registered with the Bundle in the Meta class. \
     If it is going to be used as a single-item action, it should be \
-    registered as an item_view in the same way. An ActionView can be \
-    registered as both. 
+    registered as an item_view in the same way. If an ActionView will be \
+    used as both a mass action and a single-item action, it can simply be \
+    registered as an action view.
 
         i.e. (in the Bundle)
             class Meta:
                 action_views = ['action1', 'action2']
+
+    The actions that appear in a specific ListView class can be specified \
+    with the `action_view` kwarg. Any action that appears here should first\
+    be registered with the bundle. Views will, by default, show all actions \
+    that are registered to the bundle.
 
     If ListView formsets are also being used, selecting an action will \
     override any edits for the formset. A formset will still process \
@@ -1785,19 +1800,18 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     default_template = 'cms/action_confirmation.html'
     object = None
 
-    # Can be overriden for simple action implementation. Override post
-    # to further customize.
     def process_action(self, request, queryset):
         """
-        Can be overriden for simple action implementation.
+        Can be overriden to define the actions performed
+        on the given queryset.
         Arguments are original request and queryset of 
-        objects to be modified by the action. Should return
-        a message to display to the user once action is
-        completed. 
-        :param request: Original HTTP request \
+        objects to be modified by the action. 
+        
+        :param request: Original HTTP request 
         :param queryset: Queryset of objects to modify
 
-        Returns render response.
+        Returns render response. By default, a render redirect
+        will be returned to the view specified by `redirect_to_view.`
         """
         pass
 
@@ -1815,8 +1829,7 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     def get_object(self):
         """
         If a single object has been requested, will set
-        `self.object` and return the queryset containing
-        the object.
+        `self.object` and return the object.
         """
         queryset = None
         slug = self.kwargs.get(self.slug_url_kwarg, None)
@@ -1854,14 +1867,18 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         return self.customized_return_url(url)
 
     def get_selected(self, request):
+        """
+        Returns a queryset of the selected objects as specified by \
+        a GET or POST request.
+        """
         obj = self.get_object()
         queryset = None
         # if single-object URL not used, check for selected objects
         if not obj:
-            if request.GET.get(helpers.CHECKBOX_NAME):
-                selected = request.GET.get(helpers.CHECKBOX_NAME).split(',')
+            if request.GET.get(CHECKBOX_NAME):
+                selected = request.GET.get(CHECKBOX_NAME).split(',')
             else: 
-                selected = request.POST.getlist(helpers.CHECKBOX_NAME)
+                selected = request.POST.getlist(CHECKBOX_NAME)
         else:
             selected = [obj.pk]
 
@@ -1881,6 +1898,12 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
 
     def post(self, request, *args, **kwargs):
+        """
+        Method for handling POST requests.
+        Checks for a modify confirmation and performs
+        the action by calling `process_action`. 
+
+        """
         queryset = self.get_selected(request)
 
         if request.POST.get('modify'):
