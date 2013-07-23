@@ -1806,7 +1806,7 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         on the given queryset.
         Arguments are original request and queryset of 
         objects to be modified by the action. 
-        
+
         :param request: Original HTTP request 
         :param queryset: Queryset of objects to modify
 
@@ -1918,7 +1918,14 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
 class DeleteActionView(ActionView):
     """
-    View for deleting one or more objects. 
+    View for deleting one or more objects.
+    Inherits from ActionView.
+    Used through out the CMS as the default object_header view so
+    this view by default adds an `object_header` renderer that
+    uses the `object_header_tmpl` template.
+
+    :param default_template: Defaults to 'cms/delete.html'.
+    :param redirect_to_view: Defaults to 'main_list'.
     """
     short_description = "Delete selected items"
     confirmation_message = "This will delete the following items:"
@@ -1929,6 +1936,15 @@ class DeleteActionView(ActionView):
                                             template=self.object_header_tmpl)
 
     def process_action(self, request, queryset):
+        """
+        Deletes the object(s). Successful deletes are logged.
+        Returns a 'render redirect' to the result of the
+        `get_done_url` method.
+
+        If a ProtectedError is raised, the `render` method
+        is called with message explaining the error added
+        to the context as `protected`.
+        """
         count = 0
         try:
             with transaction.commit_on_success():
