@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.template import TemplateDoesNotExist
 
-from scarlet.cms import bundles, views
+from scarlet.cms import bundles, views, actions
 from scarlet.versioning import manager
 
 from models import *
@@ -641,9 +641,9 @@ class ActionViewTestCase(TestCaseDeactivate):
 
     def check_redirect_and_modify(self, post_to, action, selected):
         redirect_to = post_to + action
-        qs = '?' + urlencode({views.CHECKBOX_NAME : ','.join(selected)})
+        qs = '?' + urlencode({ actions.CHECKBOX_NAME : ','.join(selected)})
         resp = self.client.post(post_to, data = 
-                {views.CHECKBOX_NAME : ','.join(selected), 'actions' : redirect_to})
+                {actions.CHECKBOX_NAME : ','.join(selected), 'actions' : redirect_to})
         self.assertEqual(resp.status_code, 302)
         #check that we were redirected to the right place
         self.assertEqual((resp['Location'])[resp['Location'].find('/admin/'):], redirect_to + qs)
@@ -701,17 +701,16 @@ class ActionViewTestCase(TestCaseDeactivate):
     def test_bad_mass_delete(self):
         redirect_to = '/admin/blog/delete/'
         sel = [str(self.post1.pk)]
-        qs = '?' + urlencode({views.CHECKBOX_NAME : ','.join(sel)})
+        qs = '?' + urlencode({actions.CHECKBOX_NAME : ','.join(sel)})
         original_num = Post.objects.all().count()
         resp = self.client.post(redirect_to + qs)
-        self.assertEqual(resp.status_code, 200)
         self.assertEqual(Post.objects.all().count(), original_num)
         self.assertEqual(Post.objects.filter(title="Title Test").count(), 1)
 
         # in subbundle
         redirect_to = '/admin/blog/%s/edit/comments/' % self.post1.pk
         sel = [str(self.comment1.pk), str(self.comment2.pk)]
-        qs = '?' + urlencode({views.CHECKBOX_NAME : ','.join(sel)})
+        qs = '?' + urlencode({actions.CHECKBOX_NAME : ','.join(sel)})
         original_num = Comment.objects.all().count()
         resp = self.client.post(redirect_to + qs)
         self.assertEqual(resp.status_code, 200)
@@ -730,7 +729,6 @@ class ActionViewTestCase(TestCaseDeactivate):
 
         #test bad delete single action
         resp = self.client.post('/admin/blog/%s/delete/' % self.post2.pk)
-        self.assertEqual(resp.status_code, 200)
         self.assertEqual(Post.objects.all().count(), original_num-1)
 
     def test_sub_delete_single_action(self):
@@ -743,7 +741,6 @@ class ActionViewTestCase(TestCaseDeactivate):
 
         resp = self.client.post('/admin/blog/%s/edit/comments/%s/delete/' 
                 % (self.post1.pk, self.comment2.pk))
-        self.assertEqual(resp.status_code, 200)
         self.assertEqual(Comment.objects.all().count(), original_num-1)
 
     def test_custom_single_action(self):
@@ -753,7 +750,6 @@ class ActionViewTestCase(TestCaseDeactivate):
         self.assertEqual(Post.objects.filter(title="Dummy").count(), 1)
 
         resp = self.client.post('/admin/blog/%s/change/' % self.post2.pk)
-        self.assertEqual(resp.status_code, 200)
         self.assertEqual(Post.objects.filter(title="Title Test 2").count(), 1)
         self.assertEqual(Post.objects.filter(title="Dummy").count(), 1)
 
@@ -765,7 +761,6 @@ class ActionViewTestCase(TestCaseDeactivate):
         self.assertEqual(Comment.objects.filter(name = "Something").count(), 1)
 
         resp = self.client.post('/admin/blog/%s/edit/comments/%s/something/' % (self.post1.pk, self.comment2.pk))
-        self.assertEqual(resp.status_code, 200)
         self.assertEqual(Comment.objects.filter(name = "Commenter2").count(), 1)
         self.assertEqual(Comment.objects.filter(name = "Something").count(), 1)
 
