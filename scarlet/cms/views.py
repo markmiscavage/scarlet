@@ -1914,7 +1914,7 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
             else:
                 return response
         else:
-            return self.render(request, queryset=queryset)
+            return self.render(request, redirect_url=request.get_absolute_uri())
 
 class DeleteActionView(ActionView):
     """
@@ -2065,6 +2065,94 @@ class PublishView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
                            collect_render_data=False)
         return self.render(request, obj=self.object, form=form, done_url=url)
 
+class PublishActionView(ActionView):
+    """
+    View for publishing an object. Inherits from
+    ModelCMSMixin, SingleObjectMixin, ModelCMSView.
+    Assumes the given model is versionable.
+
+    :param default_template: Defaults to 'cms/publish_action.html'.
+    :param confirmation_message: Defaults to 'This will publish the following items'.
+    :param short_description: Defaults to 'Publish selected items'
+    """
+
+    default_template = 'cms/publish_action.html'
+    confirmation_message = 'This will publish the following items:'
+    short_description = 'Publish selected items'
+    form = WhenForm
+
+    def get_object(self):
+        """
+        Get the object for publishing
+        Raises a http404 error if the object is not found.
+        """
+        obj = super(PublishActionView, self).get_object()
+
+        if obj:
+            if not hasattr(obj, 'publish'):
+                raise http.Http404
+
+        return obj
+
+    def get_object_url(self, obj):
+        """
+        Returns the url to link to the object
+        The get_view_url will be called on the current bundle using
+        'edit` as the view name.
+        """
+        attr = getattr(obj, self.slug_url_kwarg, None)
+        url_kwargs = {'object' : obj}
+        return self.bundle.get_view_url('edit',
+                                        self.request.user, url_kwargs=url_kwargs)
+
+    def get(self, request, *args, **kwargs):
+        """
+        Method for handling GET requests. Passes the
+        following arguments to the context:
+
+        * **queryset** - The queryset of objects to publish.
+        * **publish_form** - An instance of WhenForm.
+        """
+
+        queryset = self.get_selected(request)
+        return self.render(request, queryset=queryset, publish_form=self.form(), action="Publish")
+
+
+    def process_action(self, request, queryset):
+        """
+        Publishes the selected objects by passing the value of \
+        'when' to the object's publish method. The object's \
+        `purge_archives` method is also called to limit the number \
+        of old items that we keep around. The action is logged as \
+        either 'published' or 'scheduled' depending on the value of \
+        'when', and the user is notified with a message.
+
+        Returns a 'render redirect' to the result of the \
+        `get_done_url` method.
+        """
+        form = self.form(request.POST)
+        if form.is_valid():
+            when = form.cleaned_data.get('when')
+            count = 0
+            for obj in queryset:
+                count += 1
+                obj.publish(user=request.user, when=when)
+                obj.purge_archives()
+                object_url = self.get_object_url(obj)
+                if obj.state == obj.PUBLISHED:
+                    self.log_action(
+                        obj, CMSLog.PUBLISH, url=object_url)
+                else:
+                    self.log_action(
+                       obj, CMSLog.SCHEDULE, url=object_url)
+            message = "%s objects published." % count
+            self.write_message(message=message)
+
+            return self.render(request, redirect_url= self.get_done_url(),
+                                message=message,
+                                collect_render_data=False)
+        return self.render(request, queryset=queryset, publish_form=form, action='Publish')
+
 
 class UnPublishView(PublishView):
     """
@@ -2112,6 +2200,50 @@ class UnPublishView(PublishView):
                        collect_render_data=False)
 
         return self.render(request, obj=self.object, done_url=url)
+
+class UnPublishActionView(PublishActionView):
+    """
+    View for unpublishing one or more objects. \
+    Inherits from PublishActionView.
+
+    :param confirmation_message: Defaults to 'This will unpublish the following items:'.
+    :param redirect_to_view: Defaults to 'Unpublish selected items'
+    """
+
+    confirmation_message = 'This will unpublish the following items:'
+    short_description = 'Unpublish selected items'
+
+    def get(self, request, *args, **kwargs):
+        """
+        Method for handling GET requests. Passes the
+        following arguments to the context:
+
+        * **queryset** - The queryset of objects to unpublish.
+        """
+
+        queryset = self.get_selected(request)
+        return self.render(request, queryset=queryset, action='Unpublish')
+
+    def process_action(self, request, queryset):
+        """
+        Unpublishes the selected objects by calling the object's \
+        unpublish method. The action is logged and the user is \
+        notified with a message.
+
+        Returns a 'render redirect' to the result of the \
+        `get_done_url` method.
+        """
+        count = 0
+        for obj in queryset:
+            count += 1
+            obj.unpublish()
+            object_url = self.get_object_url(obj)
+            self.log_action(obj, CMSLog.UNPUBLISH, url=object_url)
+        url = self.get_done_url()
+        msg = self.write_message(message="%s objects unpublished." % count)
+        return self.render(request, redirect_url=url, 
+                                message=msg, 
+                                collect_render_data=False)
 
 
 class VersionsList(PublishView):
