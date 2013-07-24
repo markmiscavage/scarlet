@@ -77,15 +77,15 @@ There a few default classes included that extend django's generic views to perfo
 
 * :py:class:`FormView <scarlet.cms.views.FormView>`
 * :py:class:`ListView <scarlet.cms.views.ListView>`
-* :py:class:`DeleteView <scarlet.cms.views.DeleteView>`
-* :py:class:`ActionView <scarlet.cms.views.ActionView>`
+* :py:class:`DeleteView <scarlet.cms.actions.DeleteActionView>`
+* :py:class:`ActionView <scarlet.cms.actions.ActionView>`
 
-:py:class:`ActionView <scarlet.cms.views.ActionView>` is meant as a base class for defining actions that can be taken on one or many objects in a bundle. They must be registered with the bundle, but which actions are shown can be specified within an individual :py:class:`ListView <scarlet.cms.views.ListView>`. If there are any actions registered with the bundle, any :py:class:`ListView <scarlet.cms.views.ListView>` will be rendered with checkboxes and a drop-down of available actions to take. In addition, actions can be executed as an `item_view`. If an action is meant only as a single-item action with extra url keyword argument, it should be added to the `item_view` sequence in the bundle :py:class:`Meta <scarlet.cms.options.Meta>` class instead of `action_view`.
+:py:class:`ActionView <scarlet.cms.actions.ActionView>` is meant as a base class for defining actions that can be taken on one or many objects in a bundle. They must be registered with the bundle, but which actions are shown can be specified within an individual :py:class:`ListView <scarlet.cms.views.ListView>`. If there are any actions registered with the bundle, any :py:class:`ListView <scarlet.cms.views.ListView>` will be rendered with checkboxes and a drop-down of available actions to take. In addition, actions can be executed as an `item_view`. If an action is meant only as a single-item action with extra url keyword argument, it should be added to the `item_view` sequence in the bundle :py:class:`Meta <scarlet.cms.options.Meta>` class instead of `action_view`.
 
 There are also of default views particular to versioned models.
 
-* :py:class:`PublishView <scarlet.cms.views.PublishView>`
-* :py:class:`UnPublishView <scarlet.cms.views.UnPublishView>`
+* :py:class:`PublishView <scarlet.cms.actions.PublishActionView>`
+* :py:class:`UnPublishView <scarlet.cms.actions.UnPublishActionView>`
 * :py:class:`VersionsList <scarlet.cms.views.VersionsList>`
 
 Base Templates

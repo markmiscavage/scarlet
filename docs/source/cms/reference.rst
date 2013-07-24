@@ -67,19 +67,19 @@ Views
 .. autoclass:: scarlet.cms.views.FormView
     :members:
 
-.. autoclass:: scarlet.cms.views.ActionView
+.. autoclass:: scarlet.cms.actions.ActionView
     :members:
 
-.. autoclass:: scarlet.cms.views.DeleteActionView
+.. autoclass:: scarlet.cms.actions.DeleteActionView
+    :members:
+
+.. autoclass:: scarlet.cms.actions.PublishActionView
+    :members:
+
+.. autoclass:: scarlet.cms.actions.UnPublishActionView
     :members:
 
 .. autoclass:: scarlet.cms.views.PreviewWrapper
-    :members:
-
-.. autoclass:: scarlet.cms.views.PublishView
-    :members:
-
-.. autoclass:: scarlet.cms.views.UnPublishView
     :members:
 
 .. autoclass:: scarlet.cms.views.VersionsList
