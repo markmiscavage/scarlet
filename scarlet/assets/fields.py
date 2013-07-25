@@ -109,7 +109,7 @@ class AssetsFileField(TaggedRelationField):
                 self.image_sizes.append(c.name)
 
         return super(AssetsFileField, self).__init__(
-            get_asset_model(), **kwargs)
+            settings.ASSET_MODEL, **kwargs)
 
     def get_formfield_defaults(self):
         # This is a fairly standard way to set up some defaults
