@@ -112,8 +112,8 @@ class Cropper(object):
         assert isinstance(config, CropConfig)
         if config.name in self._registry:
             seen = self._registry[config.name]
-            for attr in ('name', 'width', 'height'
-                 'scale', 'crop', 'editable'):
+            for attr in ('name', 'width', 'height',
+                'upscale', 'quality', 'editable'):
                 if getattr(seen, attr) != getattr(config, attr):
                     raise ValueError("{0} is already registered as a different crop")
         self._registry[config.name] = config
