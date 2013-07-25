@@ -115,7 +115,9 @@ class Cropper(object):
             for attr in ('name', 'width', 'height',
                 'upscale', 'quality', 'editable'):
                 if getattr(seen, attr) != getattr(config, attr):
-                    raise ValueError("{0} is already registered as a different crop")
+                    raise ValueError(
+                        "{0} is already registered as a different crop".format(
+                            config.name))
         self._registry[config.name] = config
 
     def unregister(self, name):
