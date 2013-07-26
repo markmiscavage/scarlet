@@ -53,7 +53,7 @@ class PostImage(Cloneable):
             return unicode(self.image)
 
 
-class Comment(models.Model):
+class Comment(VersionView):
     post = models.ForeignKey(Post)
     name = models.CharField(max_length=100)
     text = models.TextField()

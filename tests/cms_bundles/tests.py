@@ -649,8 +649,6 @@ class ActionViewTestCase(TestCaseDeactivate):
         self.assertEqual((resp['Location'])[resp['Location'].find('/admin/'):], redirect_to + qs)
         resp = self.client.post(redirect_to + qs, data={'modify' : 'Yes'})
         self.assertEqual(resp.status_code, 302)
-        #check we were redirected back to the main list
-        self.assertEqual((resp['Location'])[resp['Location'].find('/admin/'):], post_to)
         return resp
 
 
@@ -768,6 +766,147 @@ class ActionViewTestCase(TestCaseDeactivate):
         resp = self.client.get('/admin/blog/%s/edit/comments/' % self.post1.pk)
         # test that the parent's object header is rendered
         self.assertContains(resp, self.post1.title)
+
+class CustomActionViewsTestCase(TestCaseDeactivate):
+    def setup_test_user(self):
+        user = User.objects.create_user('tester', 'tester@example.com', '1234')
+        user.is_staff = True
+        user.save()
+        self.client.login(username='tester', password='1234')
+        self.user = user
+
+    def setUp(self):
+        self.client = Client()
+        self.setup_test_user()
+
+        author = Author.objects.create(
+                    name='Joe Tester',
+                    bio='I like testing.'
+                )
+
+        category = Category.objects.create(
+                    category='Category Test',
+                    slug='category_test'
+                )
+
+        self.post1 = Post.objects.create(
+                    date=datetime.datetime.now(),
+                    title='Title Test',
+                    slug='Slug Test',
+                    body='This is a test body for the post object.',
+                    author=author,
+                    category=category,
+                    keywords='keywords test',
+                    description='This is a test description for the post object.' )
+
+        self.post2 = Post.objects.create(
+                    date=datetime.datetime.now(),
+                    title='Title Test 2',
+                    slug='Slug Test',
+                    body='This is a test body for the post object.',
+                    author=author,
+                    category=category,
+                    keywords='keywords test',
+                    description='This is a test description for the post object.')
+
+        self.post3 = Post.objects.create(
+                    date=datetime.datetime.now(),
+                    title='Title Test 3',
+                    slug='Slug Test',
+                    body='This is a test body for the post object.',
+                    author=author,
+                    category=category,
+                    keywords='keywords test',
+                    description='This is a test description for the post object.')
+
+        self.comment1 = Comment.objects.create(
+                    post=self.post1,
+                    name='Commenter1',
+                    text='Cool!'
+                )
+        self.comment2 = Comment.objects.create(
+                    post=self.post1,
+                    name='Commenter2',
+                    text='Awesome!'
+                )
+        self.comment3 = Comment.objects.create(
+                    post=self.post1,
+                    name='Commenter3',
+                    text='Rad!'
+                )
+
+        now = datetime.datetime.now()
+        self.today = now.strftime("%Y-%m-%d")
+        self.later = (now + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+
+    def check_redirect_and_modify(self, post_to, action, selected, **kwargs):
+        redirect_to = post_to + action
+        qs = '?' + urlencode({ actions.CHECKBOX_NAME : ','.join(selected)})
+        resp = self.client.post(post_to, data = 
+                {actions.CHECKBOX_NAME : ','.join(selected), 'actions' : redirect_to})
+        self.assertEqual(resp.status_code, 302)
+        #check that we were redirected to the right place
+        self.assertEqual((resp['Location'])[resp['Location'].find('/admin/'):], redirect_to + qs)
+        resp = self.client.post(redirect_to + qs, data=kwargs)
+        self.assertEqual(resp.status_code, 302)
+        return resp
+
+    def test_publish_and_unpublish_actionviews(self):
+        # publish one post - bad
+        post_to = '/admin/blog/%s/edit/publish/?o=/admin/blog/%%3F' % self.post1.pk
+        resp = self.client.post(post_to, data={'when_0' : self.today, 'when_1' : 'now'})
+        qs_post = Post.objects.filter(pk=self.post1.pk)
+        obj = qs_post.get()
+        self.assertFalse(obj.status_line().startswith('Publish Scheduled'))
+        resp = self.client.post(post_to, data={'when_0' : 'dfhv', 'when_1' : 'now', 'modify' : 'Publish'})
+        obj = qs_post.get()
+        self.assertFalse(obj.status_line().startswith('Publish Scheduled'))
+
+        # publish one post - good
+        resp = self.client.post(post_to, data={'when_0' : self.later, 'when_1' : 'now', 'modify' : 'Publish'})
+        self.assertEqual(resp.status_code, 302)
+        obj = qs_post.get()
+        self.assertTrue(obj.status_line().startswith('Publish Scheduled'))
+        resp = self.client.post(post_to, data={'when_0' : self.today, 'when_1' : 'now', 'modify' : 'Publish'})
+        self.assertEqual(resp.status_code, 302)
+        obj = qs_post.get()
+        self.assertTrue(obj.status_line().startswith('Published'))
+
+        # unpublish one post - bad
+        post_to = '/admin/blog/%s/edit/unpublish/' % self.post1.pk
+        resp = self.client.post(post_to)
+        obj = qs_post.get()
+        self.assertTrue(obj.status_line().startswith('Published'))
+        # unpublish one post - good
+        resp = self.client.post(post_to, data={'modify' : 'Unpublish'})
+        obj = qs_post.get()
+        self.assertTrue(obj.status_line().startswith('Draft'))
+
+        # publish two comments
+        post_to = '/admin/blog/%s/edit/comments/' % self.post1.pk
+        action = 'publish/'
+        qs_comment = Comment.objects.all()
+        sel = [str(self.comment1.pk), str(self.comment2.pk)]
+        resp = self.check_redirect_and_modify(post_to, action, sel, when_0=self.later, when_1='now', modify='Publish')
+        obj1 = qs_comment.get(pk=self.comment1.pk)
+        obj2 = qs_comment.get(pk=self.comment2.pk)
+        self.assertTrue(obj1.status_line().startswith('Publish Scheduled'))
+        self.assertTrue(obj2.status_line().startswith('Publish Scheduled'))
+        resp = self.check_redirect_and_modify(post_to, action, sel, when_0=self.today, when_1='now', modify='Publish')
+        obj1 = qs_comment.get(pk=self.comment1.pk)
+        obj2 = qs_comment.get(pk=self.comment2.pk)
+        self.assertTrue(obj1.status_line().startswith('Published'))
+        self.assertTrue(obj2.status_line().startswith('Published'))
+
+        # unpublish two comments
+        post_to = '/admin/blog/%s/edit/comments/' % self.post1.pk
+        action = 'unpublish/'
+        sel = [str(self.comment1.pk), str(self.comment2.pk)]
+        resp = self.check_redirect_and_modify(post_to, action, sel, modify='Unpublish')
+        obj1 = qs_comment.get(pk=self.comment1.pk)
+        obj2 = qs_comment.get(pk=self.comment2.pk)
+        self.assertTrue(obj1.status_line().startswith('Draft'))
+        self.assertTrue(obj2.status_line().startswith('Draft'))
 
 
 

@@ -1,6 +1,6 @@
 from django.forms.models import inlineformset_factory
 
-from scarlet.cms import bundles, site, forms, options, views, renders
+from scarlet.cms import bundles, site, forms, options, views, renders, actions
 
 from models import Post, PostImage, Comment, Category, Author, DummyModel
 from views import PostsListView
@@ -9,7 +9,7 @@ from forms import EditAuthorForm
 postimages_formset = forms.LazyFormSetFactory(
     inlineformset_factory, Post, PostImage, can_order=True)
 
-class CloneAction(views.ActionView):
+class CloneAction(actions.ActionView):
     short_description="Clone selected posts."
 
     def process_action(self, request, queryset):
@@ -30,7 +30,7 @@ class CloneAction(views.ActionView):
         return self.render(request, redirect_url = self.get_done_url(), 
                         message=msg)
 
-class CloneCommentAction(views.ActionView):
+class CloneCommentAction(actions.ActionView):
     short_description="Clone selected comments."
 
     def __init__(self, *args, **kwargs):
@@ -51,7 +51,7 @@ class CloneCommentAction(views.ActionView):
         return self.render(request, redirect_url = self.get_done_url(), 
                         message=msg)
 
-class DummyActionView(views.ActionView):
+class DummyActionView(actions.ActionView):
     def process_action(self, request, queryset):
         queryset.update(title="Dummy")
         msg = ('%s object%s have been changed to "Dummy".' % (queryset.count(), '' if queryset.count() ==1 else 's'))
@@ -59,7 +59,7 @@ class DummyActionView(views.ActionView):
         return self.render(request, redirect_url = self.get_done_url(), 
                         message=msg)
 
-class SomethingAction(views.ActionView):
+class SomethingAction(actions.ActionView):
     short_description = "It does something."
     confirmation_message = "Sure you want to do something to the following objects?"
 
@@ -88,11 +88,13 @@ class CommentBundle(bundles.ParentVersionedBundle):
     clone = CloneCommentAction()
     main = views.ListView(display_fields=('name', 'text'))
     something = SomethingAction()
+    publish = actions.PublishActionView()
+    unpublish = actions.UnPublishActionView()
 
     class Meta:
         model = Comment
         parent_field = "post"
-        action_views = ['delete', 'clone', 'something']
+        action_views = ['delete', 'clone', 'something', 'publish', 'unpublish']
         item_views = ['edit']
 
 
@@ -127,7 +129,7 @@ DEFAULT_FIELDS =(
     }),
     )
 
-class PostDeleteView(views.DeleteActionView):
+class PostDeleteView(actions.DeleteActionView):
     def __init__(self, *args, **kwargs):
         super(PostDeleteView, self).__init__(*args, **kwargs)
         self.renders['object_header_bare'] = renders.RenderString(
@@ -139,7 +141,9 @@ class BlogEditBundle(bundles.VersionedObjectOnlyBundle):
         ('main', 'Post Data'),
         ('comments', 'Comments'),
         ('seo', 'Page SEO'),
-        ('delete', 'Delete')
+        ('delete', 'Delete'),
+        ('publish', 'Publish'),
+        ('unpublish', 'Unpublish')
     )
 
     main = views.FormView(redirect_to_view=None,
@@ -180,7 +184,7 @@ class BlogBundle(bundles.DelegatedObjectBundle):
     )
 
     main = views.ListView(display_fields=('title', 'author'))
-    delete = views.DeleteActionView()
+    delete = actions.DeleteActionView()
     add = PostAddView(fieldsets=DEFAULT_FIELDS)
     edit = BlogEditBundle.as_subbundle(name='post', title="Post")
     author = AuthorBundle.as_subbundle(name='author', title='Author')
