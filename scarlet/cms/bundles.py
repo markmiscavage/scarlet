@@ -648,6 +648,27 @@ class Bundle(object):
             return self._nav_from_tuple(request, self.navigation,
                                 **kwargs)
 
+    def get_real_view(self, actv):
+        view, url_name = self.get_view_and_name(actv)
+        real_view = None
+        if isinstance(view, URLAlias):
+            bundle = view.get_bundle(self, None, None)
+            view_name = view.get_view_name(None)
+            if bundle == self:
+                if view_name:
+                    # current bundle, different view
+                    real_view = self.get_real_view(view_name)
+                else:
+                    raise ImproperlyConfigured(u"URLAlias points to current bundle '%s'." % self.name)
+            else:
+                if view_name:
+                    # look up this view on different bundle
+                    real_view = bundle.get_real_view(view_name)
+                else:
+                    # this is an alias to a different bundle
+                    real_view = bundle.get_real_view(actv)
+        return real_view or view
+
     @classonlymethod
     def as_subbundle(cls, name=None, title=None, title_plural=None):
         """

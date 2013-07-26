@@ -4,12 +4,14 @@ from django import http
 from django.views.generic.list import MultipleObjectMixin
 from django.forms import models as model_forms
 from django.db import models
+from django.core.exceptions import ImproperlyConfigured
 
 from . import fields
 from . import helpers
 from . import renders
 from . import transaction
 from . import widgets
+from .actions import ActionView
 from .forms import VersionFilterForm
 from .models import CMSLog
 from .base_views import ModelCMSMixin, ModelCMSView
@@ -72,11 +74,11 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     def __init__(self, *args, **kwargs):
         super(ListView, self).__init__(*args, **kwargs)
         self.renders['choices'] = renders.ChoicesRender()
-        #if self.action_views:
-        #    added = set(self.action_views).difference(set(self.bundle._meta.action_views))
-        #    # TODO: Can change to add action to bundle, might be unexpected behavior
-        #    if not len(added) == 0:
-        #        raise ImproperlyConfigured(u"The following views are not registered with the bundle: %s" % added)
+        if self.action_views:
+           added = set(self.action_views).difference(set(self.bundle._meta.action_views))
+           # Can change to add action to bundle, might be unexpected behavior
+           if not len(added) == 0:
+               raise ImproperlyConfigured(u"The following views are not registered with the bundle: %s" % added)
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         """
@@ -258,12 +260,17 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         default_choice = ('action-default', '----------')
         act_context = [default_choice]
         actions = self.action_views or self.bundle._meta.action_views
-
+        
         if actions:
             for actv in actions:
-                view, name = self.bundle.get_view_and_name(actv)
-                desc = view.short_description or actv
-                act_context.append((actv, desc))
+                view = self.bundle.get_real_view(actv)
+                (cls,) = view.__bases__
+                if issubclass(cls, ActionView):
+                    desc = view.short_description or actv
+                    act_context.append((actv, desc))
+                else:
+                    raise ImproperlyConfigured(u"View '%s' registered as an action_view in bundle '%s' "\
+                        "must be a subclass of ActionView." % (actv, self.bundle.name))
         return act_context
 
     def get_list_data(self, request, **kwargs):
