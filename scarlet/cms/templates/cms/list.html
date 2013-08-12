@@ -44,7 +44,7 @@
 			    {% for f in list.labels %}
 				    <th>
 				    {% if f.sortable %}
-					    <a href="?sf={{f.attr}}&ot={{f.order_type}}" class="sort {% if f.cur_sorted %}{{f.order_type}}{% endif %}">{{ f.name|capfirst }}</a>
+					    <a href="{{query_string}}sf={{f.attr}}&ot={{f.order_type}}" class="sort {% if f.cur_sorted %}{{f.order_type}}{% endif %}">{{ f.name|capfirst }}</a>
 				    {% else %}
 					    {{ f.name|capfirst }}
 				    {% endif %}
