@@ -1,7 +1,7 @@
 
-define('rosy/utils/Utils',[],
+define(
 
-	function () {
+	'rosy/utils/Utils',[],function () {
 
 		/*jshint eqeqeq:false, noempty:false, eqnull:true */
 
@@ -128,8 +128,8 @@ define('rosy/utils/Utils',[],
 	}
 );
 
-define('rosy/polyfills/function-bind',[],
-	function () {
+define(
+	'rosy/polyfills/function-bind',[],function () {
 
 		
 
@@ -159,9 +159,9 @@ define('rosy/polyfills/function-bind',[],
 	}
 );
 
-define('rosy/base/AbstractClass',
+define(
 
-	[
+	'rosy/base/AbstractClass',[
 		"../utils/Utils",
 		"../polyfills/function-bind"
 	],
@@ -307,8 +307,8 @@ define('rosy/base/AbstractClass',
 	}
 );
 
-define('rosy/polyfills/array-indexof',[],
-	function () {
+define(
+	'rosy/polyfills/array-indexof',[],function () {
 
 		
 
@@ -340,9 +340,9 @@ define('rosy/polyfills/array-indexof',[],
 	}
 );
 
-define('rosy/base/NotificationManager',
+define(
 
-	[
+	'rosy/base/NotificationManager',[
 		"../utils/Utils",
 		"../polyfills/array-indexof"
 	],
@@ -495,9 +495,9 @@ define('rosy/base/NotificationManager',
 	}
 );
 
-define('rosy/base/Class',
+define(
 
-	[
+	'rosy/base/Class',[
 		"./AbstractClass",
 		"./NotificationManager",
 		"../polyfills/function-bind",
@@ -975,9 +975,9 @@ define('text',['module'], function (module) {
     return text;
 });
 
-define('$plugin',
+define(
 
-	[
+	'$plugin',[
 		"module",
 		"text"
 	],
@@ -3145,9 +3145,9 @@ $.widget("ui.sortable", $.ui.mouse, {
 return $;
 });
 
-define('rosy/base/DOMClass',
+define(
 
-	[
+	'rosy/base/DOMClass',[
 		"../base/Class",
 		"$"
 	],
@@ -3247,9 +3247,9 @@ define('rosy/base/DOMClass',
 	}
 );
 
-define('admin/views/Page',
+define(
 
-	[
+	'admin/views/Page',[
 		"rosy/base/DOMClass",
 		"$"
 	],
@@ -5883,8 +5883,8 @@ var jQuery = $;
 return $;
 });
 
-define('admin/modules/WidgetEvents',[],
-	function () {
+define(
+	'admin/modules/WidgetEvents',[],function () {
 
 		
 
@@ -5896,8 +5896,8 @@ define('admin/modules/WidgetEvents',[],
 	}
 );
 
-define('admin/modules/WindowPopup',['require','exports','module','rosy/base/DOMClass','$'],
-	function (require, exports, module) {
+define(
+	'admin/modules/WindowPopup',['require','exports','module','rosy/base/DOMClass','$'],function (require, exports, module) {
 
 		
 
@@ -5939,9 +5939,9 @@ define('admin/modules/WindowPopup',['require','exports','module','rosy/base/DOMC
 	}
 );
 
-define('admin/modules/AssetSelect',
+define(
 
-	[
+	'admin/modules/AssetSelect',[
 		"rosy/base/DOMClass",
 		"$",
 		"$plugin!select2",
@@ -6123,9 +6123,9 @@ define('admin/modules/AssetSelect',
 	}
 );
 
-define('admin/modules/ApiSelect',
+define(
 
-	[
+	'admin/modules/ApiSelect',[
 		"rosy/base/DOMClass",
 		"$",
 		"$plugin!select2",
@@ -6344,9 +6344,9 @@ define('admin/modules/ApiSelect',
 	}
 );
 
-define('admin/modules/Formset',
+define(
 
-	[
+	'admin/modules/Formset',[
 		"rosy/base/DOMClass",
 		"$",
 		"$plugin!select2",
@@ -6469,8 +6469,8 @@ define('admin/modules/Formset',
 	}
 );
 
-define('admin/modules/Tabs',
-	[
+define(
+	'admin/modules/Tabs',[
 		"rosy/base/DOMClass",
 		"$"
 	],
@@ -6554,8 +6554,8 @@ define('admin/modules/Tabs',
 
 	});
 
-define('admin/modules/Insert',
-	[
+define(
+	'admin/modules/Insert',[
 		"rosy/base/DOMClass",
 		"$",
 		"admin/modules/WindowPopup"
@@ -6670,8 +6670,8 @@ define('admin/modules/Insert',
 	}
 );
 
-define('admin/modules/InsertVideo',
-	[
+define(
+	'admin/modules/InsertVideo',[
 		"./Insert",
 		"$",
 	],
@@ -6776,8 +6776,8 @@ define('admin/modules/InsertVideo',
 
 	});
 
-define('admin/modules/InsertImage',
-	[
+define(
+	'admin/modules/InsertImage',[
 		"./Insert",
 		"$"
 	],
@@ -7129,8 +7129,8 @@ define("wysihtml5", (function (global) {
 }(this)));
 
 // Insert Media WYSIHTML5 Command Module
-define('admin/modules/wysiwyg/commands/insertMedia',
-	[
+define(
+	'admin/modules/wysiwyg/commands/insertMedia',[
 		"$",
 		"admin/modules/WindowPopup",
 		"wysihtml5"
@@ -7183,8 +7183,8 @@ define('admin/modules/wysiwyg/commands/insertMedia',
 		};
 	});
 
-define('admin/modules/wysiwyg/commands/commands',
-	[
+define(
+	'admin/modules/wysiwyg/commands/commands',[
 		"wysihtml5",
 		"./insertMedia"
 	],
@@ -7735,9 +7735,9 @@ define('admin/modules/wysiwyg/WysiwygRules',[],function () {
 	};
 });
 
-define('admin/modules/wysiwyg/Wysiwyg',
+define(
 
-	[
+	'admin/modules/wysiwyg/Wysiwyg',[
 		"rosy/base/DOMClass",
 		"$",
 		"wysihtml5",
@@ -7787,8 +7787,8 @@ define('admin/modules/wysiwyg/Wysiwyg',
 	}
 );
 
-define('admin/modules/OnExit',['require','exports','module','rosy/base/DOMClass','$'],
-	function (require, exports, module) {
+define(
+	'admin/modules/OnExit',['require','exports','module','rosy/base/DOMClass','$'],function (require, exports, module) {
 
 		
 
@@ -7887,8 +7887,59 @@ define('admin/modules/OnExit',['require','exports','module','rosy/base/DOMClass'
 	}
 );
 
-define('admin/modules/Widgets',['require','exports','module','rosy/base/DOMClass','$','$plugin!select2','$plugin!pickadate','$plugin!details','./AssetSelect','./ApiSelect','./Formset','./Tabs','./InsertVideo','./InsertImage','./wysiwyg/Wysiwyg','./WidgetEvents','./WindowPopup','./OnExit'],
-	function (require, exports, module) {
+define(
+	'admin/modules/InlineVideo',[
+		"rosy/base/DOMClass",
+		"$"
+	],
+	function (DOMClass, $) {
+
+		
+
+		return DOMClass.extend({
+
+			vars : {
+				$dom : null
+			},
+
+			init : function () {
+				this.sup();
+				this.bindInput();
+			},
+
+			bindInput : function () {
+				this.vars.$dom.on("click", this.onImageClick);
+			},
+
+			onImageClick : function (e) {
+				var $el = $(e.currentTarget),
+					url = $el.data("videoUrl"),
+					width = $el.width(),
+					height = $el.height(),
+					str;
+
+				str = [
+					'<iframe width="' + width + '" height="' + height + '"',
+					'src="' + url + '"',
+					'frameborder="0" allowfullscreen></iframe>'
+				].join("");
+
+
+
+				this.vars.$dom.replaceWith(str);
+			},
+
+			destroy : function () {
+				this.sup();
+			}
+
+		});
+
+	}
+);
+
+define(
+	'admin/modules/Widgets',['require','exports','module','rosy/base/DOMClass','$','$plugin!select2','$plugin!pickadate','$plugin!details','./AssetSelect','./ApiSelect','./Formset','./Tabs','./InsertVideo','./InsertImage','./wysiwyg/Wysiwyg','./WidgetEvents','./WindowPopup','./OnExit','./InlineVideo'],function (require, exports, module) {
 
 		
 
@@ -7906,7 +7957,8 @@ define('admin/modules/Widgets',['require','exports','module','rosy/base/DOMClass
 			Wysiwyg              = require("./wysiwyg/Wysiwyg"),
 			WidgetEvents         = require("./WidgetEvents"),
 			WindowPopup          = require("./WindowPopup"),
-			OnExit               = require("./OnExit");
+			OnExit               = require("./OnExit"),
+			InlineVideo          = require("./InlineVideo");
 
 		return DOMClass.extend({
 
@@ -7926,7 +7978,7 @@ define('admin/modules/Widgets',['require','exports','module','rosy/base/DOMClass
 				this._renderTabs(dom);
 				this._renderInsertVideo(dom);
 				this._renderInsertImage(dom);
-				this._renderDetails(dom);
+				this._renderInlineVideo(dom);
 
 				this._handlePopup(dom);
 			},
@@ -8016,16 +8068,21 @@ define('admin/modules/Widgets',['require','exports','module','rosy/base/DOMClass
 					});
 				});
 			},
-			_renderDetails : function (dom) {
-				dom.find("details").details();
+
+			_renderInlineVideo : function (dom) {
+				dom.find(".widget-inline-video").each(function (i, el) {
+					var vid = new InlineVideo({
+						$dom : $(el)
+					});
+				});
 			}
 		});
 	}
 );
 
-define('admin/views/Admin',
+define(
 
-	[
+	'admin/views/Admin',[
 		"./Page",
 		"$",
 		"$plugin!select2",
@@ -8090,9 +8147,9 @@ define('admin/views/Admin',
 	}
 );
 
-define('admin/Site',
+define(
 
-	[
+	'admin/Site',[
 		"rosy/base/Class",
 		"$plugin!ui",
 		"./views/Admin"

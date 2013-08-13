@@ -1938,36 +1938,41 @@ table tbody tr td {
   font: 16px/1 AvenirRoman;
   padding: 9px 15px;
   position: relative;
+  vertical-align: middle;
 }
-/* line 145, ../compass/scss/admin/modules/_tables.scss */
+/* line 146, ../compass/scss/admin/modules/_tables.scss */
 table tbody tr td strong {
   font: 16px/1 AvenirBlack;
 }
-/* line 149, ../compass/scss/admin/modules/_tables.scss */
+/* line 150, ../compass/scss/admin/modules/_tables.scss */
 table tbody tr td input.orderfield {
   display: none;
 }
-/* line 153, ../compass/scss/admin/modules/_tables.scss */
+/* line 154, ../compass/scss/admin/modules/_tables.scss */
 table tbody tr td.actions {
   text-align: center;
   white-space: nowrap;
   width: 12px;
 }
-/* line 158, ../compass/scss/admin/modules/_tables.scss */
+/* line 159, ../compass/scss/admin/modules/_tables.scss */
 table tbody tr td.actions a {
   color: #314b5d;
   font: 16px/1 AdminActions;
   margin: 0 6px;
 }
-/* line 163, ../compass/scss/admin/modules/_tables.scss */
+/* line 164, ../compass/scss/admin/modules/_tables.scss */
 table tbody tr td.actions a:hover {
   color: #11232e;
 }
-/* line 168, ../compass/scss/admin/modules/_tables.scss */
+/* line 169, ../compass/scss/admin/modules/_tables.scss */
 table tbody tr td.actions div.help {
   font: 11px/1 AvenirLight;
   position: absolute;
   bottom: 0;
+}
+/* line 176, ../compass/scss/admin/modules/_tables.scss */
+table tbody tr td.checkbox {
+  width: 50px;
 }
 
 /* line 1, ../compass/scss/admin/modules/_wysiwyg.scss */
@@ -2161,6 +2166,11 @@ body.insert-media section#main article .preview-container {
 /* line 55, ../compass/scss/admin/modules/_insert-media.scss */
 body.insert-media section#main article .widget-asset {
   overflow: hidden;
+}
+
+/* line 1, ../compass/scss/admin/modules/_inline-video.scss */
+.widget-inline-video {
+  cursor: pointer;
 }
 
 /*

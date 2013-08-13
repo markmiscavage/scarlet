@@ -172,6 +172,15 @@ table {
 						bottom: 0;
 					}
 				}
+
+				&.checkbox {
+					width: 50px;
+
+					input[type='checkbox'] {
+						// width: 20px;
+						// height: 20px;
+					}
+				}
 			}
 		}
 	}
