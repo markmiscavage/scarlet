@@ -17,7 +17,8 @@ define(
 			Wysiwyg              = require("./wysiwyg/Wysiwyg"),
 			WidgetEvents         = require("./WidgetEvents"),
 			WindowPopup          = require("./WindowPopup"),
-			OnExit               = require("./OnExit");
+			OnExit               = require("./OnExit"),
+			InlineVideo          = require("./InlineVideo");
 
 		return DOMClass.extend({
 
@@ -37,7 +38,7 @@ define(
 				this._renderTabs(dom);
 				this._renderInsertVideo(dom);
 				this._renderInsertImage(dom);
-				this._renderDetails(dom);
+				this._renderInlineVideo(dom);
 
 				this._handlePopup(dom);
 			},
@@ -127,8 +128,13 @@ define(
 					});
 				});
 			},
-			_renderDetails : function (dom) {
-				dom.find("details").details();
+
+			_renderInlineVideo : function (dom) {
+				dom.find(".widget-inline-video").each(function (i, el) {
+					var vid = new InlineVideo({
+						$dom : $(el)
+					});
+				});
 			}
 		});
 	}
