@@ -755,6 +755,7 @@ class ObjectOnlyBundle(Bundle):
 
     class Meta:
         item_views = ()
+        action_views = ()
         live_views = ('delete', 'publish', 'unpublish', 'versions')
 
 class VersionedObjectOnlyBundle(ObjectOnlyBundle, VersionMixin):
