@@ -99,10 +99,12 @@ class AssetsFileField(TaggedRelationField):
         cropper = get_image_cropper()
 
         self.image_sizes = []
+        from crops import CropConfig
         if isinstance(image_sizes, dict):
-            if v and isinstance(v, dict):
-                cropper.register(CropConfig(k, **v))
-                self.image_sizes.append(k)
+            for k, v in image_sizes.items():
+                if v and isinstance(v, dict):
+                    cropper.register(CropConfig(k, **v))
+                    self.image_sizes.append(k)
         else:
             for c in image_sizes:
                 cropper.register(c)
@@ -119,7 +121,7 @@ class AssetsFileField(TaggedRelationField):
         return defaults
 
     def contribute_to_class(self, cls, name):
-        if self.denormalize:
+        if self.denormalize and not cls._meta.abstract:
             denormalize_field = self.cache_field_class(max_length=255,
                                                 editable=False,
                                                 blank=self.blank,
