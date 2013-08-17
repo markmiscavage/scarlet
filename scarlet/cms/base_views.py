@@ -160,6 +160,8 @@ class CMSView(BaseView):
 
     ORIGIN_ARGUMENT = 'o'
 
+    name = None
+
     def __init__(self, *args, **kwargs):
         self.extra_render_data = {}
         self.changed_kwargs = kwargs
@@ -180,6 +182,14 @@ class CMSView(BaseView):
                 return redirect_url
 
         return default_url
+
+    def get_navigation(self):
+        """
+        Hook for overiding navigation per view.
+        Defaults to calling get_navigation on the
+        bundle.
+        """
+        return self.bundle.get_navigation(self.request, **self.kwargs)
 
     def add_to_render_data(self, **kwargs):
         """
@@ -222,6 +232,7 @@ class CMSView(BaseView):
         * **user** - The user attached to this request.
         * **base** - Unless base was already specified this gets set to \
         'self.base_template'.
+        * **navigation** - The navigation bar for the page
         * **object_header_tmpl** - The template to use for the \
         object_header. Set to `self.object_header_tmpl`.
         * **back_bundle** - The back_back bundle is bundle that is linked to \
@@ -237,6 +248,7 @@ class CMSView(BaseView):
         data.update(kwargs)
         data.update({
             'bundle': self.bundle,
+            'navigation' : self.get_navigation(),
             'current_app': self.bundle.admin_site.name,
             'url_params': self.kwargs,
             'user': self.request.user,
@@ -342,6 +354,8 @@ class CMSView(BaseView):
 
         return super(CMSView, self).dispatch(request, *args, **kwargs)
 
+    def as_string(self, request, *args, **kwargs):
+        return self.get(request, *args, **kwargs)
 
 class ModelCMSMixin(object):
     """
@@ -718,4 +732,3 @@ class ModelCMSView(CMSView):
         kwargs['model_name'] = self.model_name
         kwargs['model_name_plural'] = self.model_name_plural
         return super(ModelCMSView, self).get_render_data(**kwargs)
-

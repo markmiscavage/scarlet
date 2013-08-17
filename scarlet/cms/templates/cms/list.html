@@ -82,7 +82,7 @@
 			{% endif %}
 			{% endwith %}
 			</td>
-			{% if display_actions %}
+			{% if actions %}
 			<td class="checkbox">
 				<input type="checkbox" name ="{{ checkbox_name }}" value="{{ row.instance.pk }}" />
 			</td>
@@ -115,7 +115,7 @@
 	</table>
 	{% block submit %}
 	{% if show_form and not list.empty %}
-		{% if display_actions %}
+		{% if actions %}
 			<select name="actions">
 				{% for name, desc in actions %}
 				{% bundle_url bundle name as url %}

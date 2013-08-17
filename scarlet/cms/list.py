@@ -258,20 +258,16 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
     def get_action_context(self, request):
         default_choice = ('action-default', '----------')
-        act_context = [default_choice]
-        actions = self.action_views or self.bundle._meta.action_views
-        
+        actions = []
+
+        for action in self.action_views or self.bundle._meta.action_views:
+            option = self.bundle.get_string_from_view(request, action, self.kwargs,
+                                              render_type='option')
+            if option:
+                actions.append((action, option))
         if actions:
-            for actv in actions:
-                view = self.bundle.get_real_view(actv)
-                (cls,) = view.__bases__
-                if issubclass(cls, ActionView):
-                    desc = view.short_description or actv
-                    act_context.append((actv, desc))
-                else:
-                    raise ImproperlyConfigured(u"View '%s' registered as an action_view in bundle '%s' "\
-                        "must be a subclass of ActionView." % (actv, self.bundle.name))
-        return act_context
+            actions.insert(0, default_choice)
+        return actions
 
     def get_list_data(self, request, **kwargs):
         """
@@ -313,17 +309,16 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
                                        sort_field, order_type,
                                        self.model_name)
 
-        display_actions = not len(self.action_views or self.bundle._meta.action_views) == 0
+        actions = self.get_action_context(request)
         data = {
             'list': adm_list,
             'filter_form': self.get_filter_form(),
             'page_obj': page,
             'is_paginated': is_paginated,
-            'show_form': display_actions or (self.can_submit and formset is not None),
+            'show_form': (self.can_submit and (formset is not None or actions)),
             'paginator': paginator,
             'checkbox_name' : CHECKBOX_NAME,
-            'actions' : self.get_action_context(request),
-            'display_actions' : display_actions
+            'actions' : actions,
         }
 
         return data

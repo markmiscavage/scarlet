@@ -359,9 +359,19 @@ class Bundle(object):
                                     can_submit=False,
                                     base_template='cms/partial.html',
                                     request=request, kwargs=url_kwargs)
-            if view and name and view.can_view(request.user):
-                response = self._render_view_as_string(view, name, request,
-                                                       url_kwargs)
+
+            if isinstance(view, URLAlias):
+                view_name = view.get_view_name(view_name)
+                bundle = view.get_bundle(self, url_kwargs, {})
+                if bundle and isinstance(bundle, Bundle):
+                    return bundle.get_string_from_view(request, view_name,
+                                                    url_kwargs,
+                                                    render_type=render_type)
+
+            elif view:
+                if view and name and view.can_view(request.user):
+                    response = self._render_view_as_string(view, name, request,
+                                                           url_kwargs)
         except http.Http404:
             pass
         return response
@@ -371,7 +381,7 @@ class Bundle(object):
         url = reverse("admin:%s" % name, kwargs=url_kwargs,
                         current_app=self.admin_site.name)
         view.add_to_render_data(action_url=url)
-        return mark_safe(view.get(request, **url_kwargs))
+        return mark_safe(view.as_string(request, **url_kwargs))
 
     def get_view_url(self, view_name, user,
                      url_kwargs=None, context_kwargs=None,
@@ -470,8 +480,10 @@ class Bundle(object):
 
         # Initialize the view with the right kwargs
         if hasattr(view, 'as_view'):
-            extra_kwargs.update(**self._get_view_kwargs(view, view_name))
-            view = view(**extra_kwargs)
+            e = dict(extra_kwargs)
+            e.update(**self._get_view_kwargs(view, view_name))
+            e['name'] = view_name
+            view = view(**e)
 
         # It is a Bundle return the main
         elif isinstance(view, Bundle):
@@ -647,27 +659,6 @@ class Bundle(object):
         else:
             return self._nav_from_tuple(request, self.navigation,
                                 **kwargs)
-
-    def get_real_view(self, actv):
-        view, url_name = self.get_view_and_name(actv)
-        real_view = None
-        if isinstance(view, URLAlias):
-            bundle = view.get_bundle(self, None, None)
-            view_name = view.get_view_name(None)
-            if bundle == self:
-                if view_name:
-                    # current bundle, different view
-                    real_view = self.get_real_view(view_name)
-                else:
-                    raise ImproperlyConfigured(u"URLAlias points to current bundle '%s'." % self.name)
-            else:
-                if view_name:
-                    # look up this view on different bundle
-                    real_view = bundle.get_real_view(view_name)
-                else:
-                    # this is an alias to a different bundle
-                    real_view = bundle.get_real_view(actv)
-        return real_view or view
 
     @classonlymethod
     def as_subbundle(cls, name=None, title=None, title_plural=None):

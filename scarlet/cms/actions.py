@@ -4,6 +4,7 @@ from django.views.generic.detail import SingleObjectMixin
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import ProtectedError
+from django.utils.decorators import classonlymethod
 
 from . import renders
 from . import transaction
@@ -35,7 +36,7 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
     If ListView formsets are also being used, selecting an action will \
     override any edits for the formset. A formset will still process \
-    correctly if no action is selected. 
+    correctly if no action is selected.
 
     :param short_description: Description of action to display. \
     Defaults to the name of the view.
@@ -51,14 +52,23 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     default_template = 'cms/action_confirmation.html'
     object = None
 
+
+    def get_navigation(self):
+        if not self.object and not self.name in self.bundle._meta.action_views:
+            if self.bundle.parent:
+                return self.bundle.parent.get_navigation(self.request,
+                                                         **self.kwargs)
+            return None
+        return super(ActionView, self).get_navigation()
+
     def process_action(self, request, queryset):
         """
         Can be overriden to define the actions performed
         on the given queryset.
-        Arguments are original request and queryset of 
-        objects to be modified by the action. 
+        Arguments are original request and queryset of
+        objects to be modified by the action.
 
-        :param request: Original HTTP request 
+        :param request: Original HTTP request
         :param queryset: Queryset of objects to modify
 
         Returns render response. By default, a render redirect
@@ -128,13 +138,13 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         if not obj:
             if request.GET.get(CHECKBOX_NAME):
                 selected = request.GET.get(CHECKBOX_NAME).split(',')
-            else: 
+            else:
                 selected = request.POST.getlist(CHECKBOX_NAME)
         else:
             selected = [obj.pk]
 
         queryset = self.get_queryset().filter(pk__in=selected)
-        return queryset 
+        return queryset
 
     def get(self, request, *args, **kwargs):
         """
@@ -144,6 +154,7 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
         * **queryset** - Objects to perform action on
         """
+
         queryset = self.get_selected(request)
         return self.render(request, queryset = queryset)
 
@@ -152,7 +163,7 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         """
         Method for handling POST requests.
         Checks for a modify confirmation and performs
-        the action by calling `process_action`. 
+        the action by calling `process_action`.
 
         """
         queryset = self.get_selected(request)
@@ -166,6 +177,12 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
                 return response
         else:
             return self.render(request, redirect_url=request.build_absolute_uri())
+
+    def as_string(self, *args, **kwargs):
+        if self.render_type == 'option':
+            return self.short_description
+
+        return super(ActionView, self).as_string(*args, **kwargs)
 
 class DeleteActionView(ActionView):
     """
@@ -343,8 +360,8 @@ class UnPublishActionView(PublishActionView):
             self.log_action(obj, CMSLog.UNPUBLISH, url=object_url)
         url = self.get_done_url()
         msg = self.write_message(message="%s objects unpublished." % count)
-        return self.render(request, redirect_url=url, 
-                                message=msg, 
+        return self.render(request, redirect_url=url,
+                                message=msg,
                                 collect_render_data=False)
 
 # deprecated views
