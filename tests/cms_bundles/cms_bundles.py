@@ -27,7 +27,7 @@ class CloneAction(actions.ActionView):
         num = queryset.count()
         msg = ('%s object%s have been cloned.' % (num, '' if num ==1 else 's'))
         self.write_message(message=msg)
-        return self.render(request, redirect_url = self.get_done_url(), 
+        return self.render(request, redirect_url = self.get_done_url(),
                         message=msg)
 
 class CloneCommentAction(actions.ActionView):
@@ -48,7 +48,7 @@ class CloneCommentAction(actions.ActionView):
         num = queryset.count()
         msg = ('%s object%s have been cloned.' % (num, '' if num ==1 else 's'))
         self.write_message(message=msg)
-        return self.render(request, redirect_url = self.get_done_url(), 
+        return self.render(request, redirect_url = self.get_done_url(),
                         message=msg)
 
 class DummyActionView(actions.ActionView):
@@ -56,7 +56,7 @@ class DummyActionView(actions.ActionView):
         queryset.update(title="Dummy")
         msg = ('%s object%s have been changed to "Dummy".' % (queryset.count(), '' if queryset.count() ==1 else 's'))
         self.write_message(message=msg)
-        return self.render(request, redirect_url = self.get_done_url(), 
+        return self.render(request, redirect_url = self.get_done_url(),
                         message=msg)
 
 class SomethingAction(actions.ActionView):
@@ -82,20 +82,18 @@ class CategoryBundle(bundles.Bundle):
         primary_model_bundle = True
 
 
-class CommentBundle(bundles.ParentVersionedBundle):
+class CommentBundle(bundles.ParentVersionedBundle, bundles.VersionMixin):
     navigation = bundles.PARENT
     object_view = bundles.PARENT
     clone = CloneCommentAction()
     main = views.ListView(display_fields=('name', 'text'))
     something = SomethingAction()
-    publish = actions.PublishActionView()
-    unpublish = actions.UnPublishActionView()
 
     class Meta:
         model = Comment
         parent_field = "post"
-        action_views = ['delete', 'clone', 'something', 'publish', 'unpublish']
-        item_views = ['edit']
+        action_views = ['delete', 'clone', 'something',
+                        'publish', 'unpublish']
 
 
 class AuthorBundle(bundles.Bundle):
@@ -199,7 +197,7 @@ class BlogBundle(bundles.DelegatedObjectBundle):
     class Meta:
         model = Post
         primary_model_bundle = True
-        item_views = list(options.VersionMeta.item_views) + ['preview', 'delete']
+        item_views = list(options.VersionMeta.item_views) + ['preview']
         action_views = ['change', 'delete', 'clone']
 
 class BigAuthorBundle(bundles.DelegatedObjectBundle):

@@ -17,7 +17,7 @@ from .item import VersionsList
 
 # Constant that defines a attribute points to it's parent
 PARENT = 'parent'
-
+ACTION_ALIAS = '_action'
 
 def create_new_viewclass(base, **kwargs):
     #Create a new view class based on a view instance
@@ -113,6 +113,13 @@ class URLAlias(object):
             return 'main'
         return value
 
+class ViewAlias(URLAlias):
+    """
+    Works the same as URLAlias accept it allows
+    you to reuse a view registered somewhere
+    else as at different url on this bundle.
+    """
+    pass
 
 class BundleMeta(type):
     """
@@ -147,6 +154,8 @@ class BundleMeta(type):
                 _views.add(k)
                 attrs[v.hidden_name(k)] = v
             elif isinstance(v, views.CMSView):
+                _views.add(k)
+            elif isinstance(v, ViewAlias):
                 _views.add(k)
 
         for v in _children:
@@ -209,6 +218,7 @@ class Bundle(object):
     __metaclass__ = BundleMeta
 
     parent_attr = PARENT
+    action_alias = ACTION_ALIAS
 
     navigation = ()
     dashboard = ()
@@ -258,24 +268,29 @@ class Bundle(object):
             if site and self._meta.primary_model_bundle:
                 site.register_model(self._meta.model, self)
 
+        added_views = []
+        action_views = set(self._meta.action_views)
         for view in self._views:
             v = getattr(self, view, None)
+
             if v and isinstance(v, views.CMSView):
                 view_kwargs = self._meta.get_kwargs_for_view(view)
 
                 if self.live_groups and view in self._meta.live_views:
                     view_kwargs['required_groups'] = list(self.live_groups)
 
-                # check to make sure that actions specified in the ListView
-                # are also registered with the bundle
-                if isinstance(v, views.ListView):
-                    if v.action_views:
-                        added = set(v.action_views).difference(set(self._meta.action_views))
-                        if not len(added) == 0:
-                            raise ImproperlyConfigured(u"The following views are not registered with bundle '%s': %s" % (self.name, added))
-
                 setattr(self, view, create_new_viewclass(v,
                                         **view_kwargs))
+
+                # Create aliases for action views
+                if view in action_views:
+                    view_name = '{0}{1}'.format(view, ACTION_ALIAS)
+                    if not hasattr(self, view_name):
+                        setattr(self, view_name, ViewAlias(alias_to=view))
+                        added_views.append(view_name)
+
+        if added_views:
+            self._views = tuple(list(self._views)+added_views)
 
     def set_admin_site(self, site):
         self.admin_site = site
@@ -439,6 +454,7 @@ class Bundle(object):
     def _view_uses_name_as_url_kwarg(self, view_name):
         #Returns True if the given view_name uses
         #self.name in url kwargs
+        view_name = view_name.replace(ACTION_ALIAS, '')
         return (view_name in self._meta.item_views) or \
                 (view_name in self._meta.action_views)
 
@@ -544,6 +560,12 @@ class Bundle(object):
         if view:
             if attname in self._children:
                 return view, view.name
+            elif isinstance(view, ViewAlias):
+                view_name = view.get_view_name(attname)
+                bundle = view.get_bundle(self, {}, {})
+                if bundle and isinstance(bundle, Bundle):
+                    view, name = bundle.get_view_and_name(view_name)
+
             if hasattr(view, 'as_view'):
                 if attname != 'main':
                     name = "%s_%s" % (self.name, attname)
@@ -554,6 +576,8 @@ class Bundle(object):
                 return self.parent_attr, None
             elif isinstance(view, URLAlias):
                 return view, None
+
+
         return None, None
 
     def get_regex_for_name(self, name, attname):
@@ -566,7 +590,8 @@ class Bundle(object):
                 regex = getattr(self._meta, "%s_regex_base" % attname)
                 regex = regex % {'group_name': self.name,
                                 'attname': attname}
-            elif attname in self._meta.item_views or attname in self._meta.action_views:
+            elif attname in self._meta.item_views or \
+                    attname in self._meta.action_views:
                 regex = "%s%s" % (self.item_regex, regex)
         return regex
 
@@ -597,11 +622,12 @@ class Bundle(object):
         seen = set()
 
         # Process item views in order
-        for v in self._meta.item_views:
-            view, name = self.get_view_and_name(v)
-            if view and name:
-                parts.append(self.get_url(name, view, v))
-            seen.add(v)
+        for v in list(self._meta.item_views)+list(self._meta.action_views):
+            if not v in seen:
+                view, name = self.get_view_and_name(v)
+                if view and name:
+                    parts.append(self.get_url(name, view, v))
+                seen.add(v)
 
         # Process everything else that we have not seen
         for v in set(self._views).difference(seen):
@@ -725,6 +751,12 @@ class DelegatedObjectBundle(Bundle):
     unpublish = URLAlias(bundle_attr='edit')
     versions = URLAlias(bundle_attr='edit')
 
+    delete_action = ViewAlias(bundle_attr='edit', alias_to='delete')
+    publish_action = ViewAlias(bundle_attr='edit', alias_to='publish')
+    unpublish_action = ViewAlias(bundle_attr='edit', alias_to='unpublish')
+
+    class Meta(options.VersionMeta):
+        pass
 
 class ObjectOnlyBundle(Bundle):
     """

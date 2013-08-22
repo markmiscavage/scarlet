@@ -74,11 +74,6 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     def __init__(self, *args, **kwargs):
         super(ListView, self).__init__(*args, **kwargs)
         self.renders['choices'] = renders.ChoicesRender()
-        if self.action_views:
-           added = set(self.action_views).difference(set(self.bundle._meta.action_views))
-           # Can change to add action to bundle, might be unexpected behavior
-           if not len(added) == 0:
-               raise ImproperlyConfigured(u"The following views are not registered with the bundle: %s" % added)
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         """
@@ -261,10 +256,11 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         actions = []
 
         for action in self.action_views or self.bundle._meta.action_views:
-            option = self.bundle.get_string_from_view(request, action, self.kwargs,
-                                              render_type='option')
+            action_name = '{0}{1}'.format(action, self.bundle.action_alias)
+            option = self.bundle.get_string_from_view(request, action_name,
+                                        self.kwargs, render_type='option')
             if option:
-                actions.append((action, option))
+                actions.append((action_name, option))
         if actions:
             actions.insert(0, default_choice)
         return actions

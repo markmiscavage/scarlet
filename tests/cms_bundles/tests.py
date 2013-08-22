@@ -87,14 +87,14 @@ class BundleViewsTestCase(TestCaseDeactivate):
         self.assertEqual(a.count(), 1)
 
         #edit author - good
-        resp = self.client.post('/admin/blog/author/%s/edit/' % a[0].pk, 
+        resp = self.client.post('/admin/blog/author/%s/edit/' % a[0].pk,
                         data= {'view_tags':'author,john', 'name':'John', 'bio' : 'edit'})
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(Author.objects.filter(name='John', bio='edit').count(), 1)
         self.assertEqual(Author.objects.filter(name='John', bio='boring').count(), 0)
 
         #edit author - bad
-        resp = self.client.post('/admin/blog/author/%s/edit/' % a[0].pk, 
+        resp = self.client.post('/admin/blog/author/%s/edit/' % a[0].pk,
                         data= {'view_tags':'author,john', 'name':'John', 'bio' : ''})
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(Author.objects.filter(name='John', bio='edit').count(), 1)
@@ -106,7 +106,7 @@ class BundleViewsTestCase(TestCaseDeactivate):
         self.assertEqual(Author.objects.filter(name='Jim', bio = '').count(), 0)
 
     def test_deleteauthor(self):
-        resp = self.client.post('/admin/blog/author/add/', 
+        resp = self.client.post('/admin/blog/author/add/',
                             data={'name':'Doomed', 'bio' : 'sorry'})
         self.assertEqual(resp.status_code, 302)
         a = Author.objects.filter(name='Doomed')
@@ -129,7 +129,7 @@ class BundleViewsTestCase(TestCaseDeactivate):
         self.assertEqual(a.count(), 1)
 
         #edit category - good
-        resp = self.client.post('/admin/blog/category/%s/edit/' % a[0].pk, 
+        resp = self.client.post('/admin/blog/category/%s/edit/' % a[0].pk,
                         data= {'view_tags':'categorys,cat', 'category':'Kat'})
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(Category.objects.filter(category='Kat').count(), 1)
@@ -137,7 +137,7 @@ class BundleViewsTestCase(TestCaseDeactivate):
 
         #edit category - bad
         a = Category.objects.filter(category='Kat')
-        resp = self.client.post('/admin/blog/category/%s/edit/' % a[0].pk, 
+        resp = self.client.post('/admin/blog/category/%s/edit/' % a[0].pk,
                         data= {'view_tags':'categorys,kat', 'category' : ''})
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(Category.objects.filter(category='Kat').count(), 1)
@@ -149,7 +149,7 @@ class BundleViewsTestCase(TestCaseDeactivate):
         self.assertEqual(Category.objects.filter(category='').count(), 0)
 
     def test_deletecategory(self):
-        resp = self.client.post('/admin/blog/category/add/', 
+        resp = self.client.post('/admin/blog/category/add/',
                             data={'category' : 'SadCat'})
         self.assertEqual(resp.status_code, 302)
         a = Category.objects.filter(category = 'SadCat')
@@ -175,27 +175,27 @@ class BundleViewsTestCase(TestCaseDeactivate):
                     slug='dumb_category'
                 )
         # add good post
-        resp = self.client.post('/admin/blog/add/', 
-                            data = {'date' : '2013-06-20', 'title' : 'Test', 
+        resp = self.client.post('/admin/blog/add/',
+                            data = {'date' : '2013-06-20', 'title' : 'Test',
                             'body' : 'Test Body', 'author' : author.pk, 'category' : category.pk})
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(Post.objects.filter(title = 'Test').count(), 1)
 
         # add bad posts
-        resp = self.client.post('/admin/blog/add/', 
-                            data = {'date' : '2013-06-21', 'title' : 'Test', 
+        resp = self.client.post('/admin/blog/add/',
+                            data = {'date' : '2013-06-21', 'title' : 'Test',
                             'body' : 'Test Body 2', 'author' : '0', 'category' : category.pk})
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(Post.objects.filter(title = 'Test').count(), 1)
 
-        resp = self.client.post('/admin/blog/add/', 
-                            data = {'date' : '20130621', 'title' : 'Test', 
+        resp = self.client.post('/admin/blog/add/',
+                            data = {'date' : '20130621', 'title' : 'Test',
                             'body' : 'Test Body 2', 'author' : '0', 'category' : category.pk})
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(Post.objects.filter(title = 'Test').count(), 1)
 
-        resp = self.client.post('/admin/blog/add/', 
-                            data = {'date' : '2013-06-21', 'title' : 'Test', 
+        resp = self.client.post('/admin/blog/add/',
+                            data = {'date' : '2013-06-21', 'title' : 'Test',
                             'body' : '', 'author' : '0', 'category' : category.pk})
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(Post.objects.filter(title = 'Test').count(), 1)
@@ -243,8 +243,8 @@ class BundleViewsTestCase(TestCaseDeactivate):
                     category='Posts',
                     slug='dumb_category'
                 )
-        resp = self.client.post('/admin/blog/add/', 
-                            data = {'date' : '2013-06-20', 'title' : 'Apple', 
+        resp = self.client.post('/admin/blog/add/',
+                            data = {'date' : '2013-06-20', 'title' : 'Apple',
                             'body' : 'Test Body', 'author' : author.pk, 'category' : category.pk})
         self.assertEqual(resp.status_code, 302)
         p = Post.objects.filter(title = 'Apple')
@@ -256,15 +256,15 @@ class BundleViewsTestCase(TestCaseDeactivate):
         self.assertEqual(Post.objects.filter(title = 'Apple').count(), 0)
 
         #bad delete
-        resp = self.client.post('/admin/blog/add/', 
-                            data = {'date' : '2013-06-20', 'title' : 'Apple', 
+        resp = self.client.post('/admin/blog/add/',
+                            data = {'date' : '2013-06-20', 'title' : 'Apple',
                             'body' : 'Test Body', 'author' : author.pk, 'category' : category.pk})
         self.assertEqual(resp.status_code, 302)
         self.client.post('/admin/blog/%s/edit/delete/?o=/admin/blog/?' % p[0].pk, data = {})
         self.assertEqual(Post.objects.filter(title='Apple').count(), 1)
 
     def test_seo(self):
-        resp = self.client.post('/admin/blog/%s/edit/seo/' % self.post.pk, data = {'view_tags' : 'posts,posts,test title', 
+        resp = self.client.post('/admin/blog/%s/edit/seo/' % self.post.pk, data = {'view_tags' : 'posts,posts,test title',
             'keywords' : 'i love keywords', 'description' : 'and descriptions' })
         self.assertEqual(resp.status_code, 302)
         #TODO : make sure actually in db
@@ -283,7 +283,7 @@ class BundleViewsTestCase(TestCaseDeactivate):
 
         #edit comment
         c = Comment.objects.filter(name = 'Joe Ego')
-        resp = self.client.post('/admin/blog/%s/edit/comments/%s/edit/' % (self.post.pk, c[0].pk), data = 
+        resp = self.client.post('/admin/blog/%s/edit/comments/%s/edit/' % (self.post.pk, c[0].pk), data =
                     {'view_tags' : 'commentses,man,i have an aweso',
                      'name' : 'Joe Ego', 'text' : 'Man, I have the best blog.'})
         self.assertEqual(resp.status_code, 302)
@@ -292,7 +292,7 @@ class BundleViewsTestCase(TestCaseDeactivate):
 
         #bad edit
         c = Comment.objects.filter(name = 'Joe Ego')
-        resp = self.client.post('/admin/blog/%s/edit/comments/%s/edit/' % (self.post.pk, c[0].pk), data = 
+        resp = self.client.post('/admin/blog/%s/edit/comments/%s/edit/' % (self.post.pk, c[0].pk), data =
                     {'view_tags' : 'commentses,man,i have the best',
                      'name' : 'Joe Ego', 'text' : ''})
         self.assertEqual(resp.status_code, 200)
@@ -477,7 +477,7 @@ class BundleURLTestCase(TestCaseDeactivate):
 
     def test_redirects(self):
         #Dummy_Redirector should redirect from an edit page back to the same edit page upon save.
-        resp = self.client.post('/admin/blog/dummy_redirector/%s/edit/' % self.dummy.pk, data = 
+        resp = self.client.post('/admin/blog/dummy_redirector/%s/edit/' % self.dummy.pk, data =
                     {'view_tags' : 'dummy redirects, a' ,'name' : 'B'})
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(DummyModel.objects.filter(name='B').count(), 1)
@@ -486,7 +486,7 @@ class BundleURLTestCase(TestCaseDeactivate):
 
     def test_URLAlias(self):
         #Dummy_Alias makes 'edit' an alias for 'dummy_edit', and all edits should be made at the latter URL
-        resp = self.client.post('/admin/blog/dummy_alias/%s/dummy_edit/' % self.dummy.pk, data = 
+        resp = self.client.post('/admin/blog/dummy_alias/%s/dummy_edit/' % self.dummy.pk, data =
                     {'view_tags' : 'dummy aliases, b', 'name' : 'C'})
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(DummyModel.objects.filter(name='C').count(), 1)
@@ -642,7 +642,7 @@ class ActionViewTestCase(TestCaseDeactivate):
     def check_redirect_and_modify(self, post_to, action, selected):
         redirect_to = post_to + action
         qs = '?' + urlencode({ actions.CHECKBOX_NAME : ','.join(selected)})
-        resp = self.client.post(post_to, data = 
+        resp = self.client.post(post_to, data =
                 {actions.CHECKBOX_NAME : ','.join(selected), 'actions' : redirect_to})
         self.assertEqual(resp.status_code, 302)
         #check that we were redirected to the right place
@@ -655,7 +655,7 @@ class ActionViewTestCase(TestCaseDeactivate):
     def test_custom_mass_action(self):
         # test on one target
         post_to = '/admin/blog/'
-        action = 'change/'
+        action = 'change_action/'
         sel = [str(self.post1.pk)]
         resp = self.check_redirect_and_modify(post_to, action, sel)
         self.assertEqual(Post.objects.filter(title='Dummy').count(), 1)
@@ -669,7 +669,7 @@ class ActionViewTestCase(TestCaseDeactivate):
 
         # in subbundle
         post_to = '/admin/blog/%s/edit/comments/' % self.post1.pk
-        action = 'something/'
+        action = 'something_action/'
         sel = [str(self.comment1.pk), str(self.comment2.pk)]
         resp = self.check_redirect_and_modify(post_to, action, sel)
         self.assertEqual(Comment.objects.filter(name='Something').count(), 2)
@@ -679,7 +679,7 @@ class ActionViewTestCase(TestCaseDeactivate):
 
     def test_delete_mass_action(self):
         post_to = '/admin/blog/'
-        action = 'delete/'
+        action = 'delete_action/'
         original_num = Post.objects.all().count()
         sel = [str(self.post1.pk), str(self.post2.pk), str(self.post3.pk)]
         resp = self.check_redirect_and_modify(post_to, action, sel)
@@ -687,7 +687,7 @@ class ActionViewTestCase(TestCaseDeactivate):
 
     def test_sub_delete_mass_action(self):
         post_to = '/admin/blog/%s/edit/comments/' % self.post1.pk
-        action = 'delete/'
+        action = 'delete_action/'
         sel = [str(self.comment1.pk), str(self.comment2.pk)]
         original_num = Comment.objects.all().count()
         resp = self.check_redirect_and_modify(post_to, action, sel)
@@ -697,7 +697,7 @@ class ActionViewTestCase(TestCaseDeactivate):
 
 
     def test_bad_mass_delete(self):
-        redirect_to = '/admin/blog/delete/'
+        redirect_to = '/admin/blog/delete_action/'
         sel = [str(self.post1.pk)]
         qs = '?' + urlencode({actions.CHECKBOX_NAME : ','.join(sel)})
         original_num = Post.objects.all().count()
@@ -731,13 +731,13 @@ class ActionViewTestCase(TestCaseDeactivate):
 
     def test_sub_delete_single_action(self):
         original_num = Comment.objects.all().count()
-        resp = self.client.post('/admin/blog/%s/edit/comments/%s/delete/' 
+        resp = self.client.post('/admin/blog/%s/edit/comments/%s/delete/'
                 % (self.post1.pk, self.comment1.pk), data = {'modify' : 'Yes'})
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(Comment.objects.all().count(), original_num -1)
         self.assertEqual(Comment.objects.filter(name="Commenter1").count(), 0)
 
-        resp = self.client.post('/admin/blog/%s/edit/comments/%s/delete/' 
+        resp = self.client.post('/admin/blog/%s/edit/comments/%s/delete/'
                 % (self.post1.pk, self.comment2.pk))
         self.assertEqual(Comment.objects.all().count(), original_num-1)
 
@@ -842,7 +842,7 @@ class CustomActionViewsTestCase(TestCaseDeactivate):
     def check_redirect_and_modify(self, post_to, action, selected, **kwargs):
         redirect_to = post_to + action
         qs = '?' + urlencode({ actions.CHECKBOX_NAME : ','.join(selected)})
-        resp = self.client.post(post_to, data = 
+        resp = self.client.post(post_to, data =
                 {actions.CHECKBOX_NAME : ','.join(selected), 'actions' : redirect_to})
         self.assertEqual(resp.status_code, 302)
         #check that we were redirected to the right place
@@ -853,7 +853,7 @@ class CustomActionViewsTestCase(TestCaseDeactivate):
 
     def test_publish_and_unpublish_actionviews(self):
         # publish one post - bad
-        post_to = '/admin/blog/%s/edit/publish/?o=/admin/blog/%%3F' % self.post1.pk
+        post_to = '/admin/blog/%s/edit/publish/?o=/admin/blog/' % self.post1.pk
         resp = self.client.post(post_to, data={'when_0' : self.today, 'when_1' : 'now'})
         qs_post = Post.objects.filter(pk=self.post1.pk)
         obj = qs_post.get()
@@ -884,7 +884,7 @@ class CustomActionViewsTestCase(TestCaseDeactivate):
 
         # publish two comments
         post_to = '/admin/blog/%s/edit/comments/' % self.post1.pk
-        action = 'publish/'
+        action = 'publish_action/'
         qs_comment = Comment.objects.all()
         sel = [str(self.comment1.pk), str(self.comment2.pk)]
         resp = self.check_redirect_and_modify(post_to, action, sel, when_0=self.later, when_1='now', modify='Publish')
@@ -900,18 +900,10 @@ class CustomActionViewsTestCase(TestCaseDeactivate):
 
         # unpublish two comments
         post_to = '/admin/blog/%s/edit/comments/' % self.post1.pk
-        action = 'unpublish/'
+        action = 'unpublish_action/'
         sel = [str(self.comment1.pk), str(self.comment2.pk)]
         resp = self.check_redirect_and_modify(post_to, action, sel, modify='Unpublish')
         obj1 = qs_comment.get(pk=self.comment1.pk)
         obj2 = qs_comment.get(pk=self.comment2.pk)
         self.assertTrue(obj1.status_line().startswith('Draft'))
         self.assertTrue(obj2.status_line().startswith('Draft'))
-
-
-
-
-
-
-
-

@@ -67,7 +67,7 @@ class Meta(object):
         self.primary_model_bundle = False
 
         # which items should use item_regex_base
-        self.item_views = ('edit', )
+        self.item_views = ('edit',)
 
         # which items are considered live actions
         self.live_views = ('delete',)
@@ -77,7 +77,7 @@ class Meta(object):
 
         # The regex that should be used to match in
         # urls the value for %s is determined by the bundle
-        self.item_regex_base = '(?:(?P<%(name)s_pk>\d+)/)?'
+        self.item_regex_base = '(?P<%(name)s_pk>\d+)/'
 
         # the models that views are based on.
         # If not give all items are ignored.
