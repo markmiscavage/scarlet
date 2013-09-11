@@ -1671,6 +1671,21 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
             formset = l.formset
 
         url = self.request.build_absolute_uri()
+        if formset:
+            # Normally calling validate on a formset.
+            # will result in a db call for each pk in
+            # the formset regardless if the form has
+            # changed or not.
+            # To try to reduce queries only do a full
+            # validate on forms that changed.
+            # TODO: Find a way to not have to do
+            # a pk lookup for any since we already
+            # have the instance we want
+            for form in formset.forms:
+                if not form.has_changed():
+                    form._errors = {}
+
+
         if formset and formset.is_valid():
             changecount = 0
             with transaction.commit_on_success():
