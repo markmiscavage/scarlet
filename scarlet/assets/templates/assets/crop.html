@@ -1,7 +1,74 @@
-{% extends "cms/edit.html" %}
+{% extends "assets/edit.html" %}
 {% load cms %}
 
-{% block form %}
-{% csrf_token %}
-{{ form }}
-{% endblock form %}
+{% block content %}
+
+	{% block object_header %}{% endblock %}
+	{% block form_title %}{% endblock form_title %}
+	<div class="crop-info">
+		<h3>Edit Original</h3>
+		<h2>{{ obj.width }}x{{ obj.height }} (px)</h2>
+
+		<form data-form-id="edit" class="jcrop-container" action="" method="post">
+			{% csrf_token %}
+			<!--//
+			<nav>
+				<ul class="nav nav-pills">
+					<li><a class="button" title="Undo"><i class="icon-step-backward"></i></a></li>
+					<li><a class="button" title="Redo"><i class="icon-step-forward"></i></a></li>
+					<li><a class="button" title="Reset"><i class="icon-repeat"></i></a></li>
+				</ul>
+			</nav>
+			//-->
+
+			<div class="jcrop">
+				<div class="original">
+					<div>
+						<img class="crop" src="{{ obj.image.file.url }}" alt="{{ obj.image.title }}" />
+					</div>
+				</div>
+				<div class="preview hidden" data-scale-w="{{ obj.width }}" data-scale-h="{{ obj.height }}" data-zoom="out" title="Click for actual image size">
+					<div class="thumb"></div>
+					<div class="label">
+						<a class="zoom icon-zoom-out"></a>
+					</div>
+				</div>
+			</div>
+
+			<fieldset>
+				<input type="hidden" name="x" id="id_x" value="{{ obj.x }}" data-property="x" />
+				<input type="hidden" name="y" id="id_y" value="{{ obj.y }}" data-property="y" />
+				<input type="hidden" name="x2" id="id_x2" value="{{ obj.x2 }}" data-property="x2" />
+				<input type="hidden" name="y2" id="id_y2" value="{{ obj.y2 }}" data-property="y2" />
+
+				<ul class="crop-settings">
+					<li>
+						<label class="">Width</label>
+						<div class="field pixels">
+							<input data-property="w" type="text" value="{{ obj.width }}" maxlength="4" />
+						</div>
+					</li>
+					<li>
+						<label class="">Height</label>
+						<div class="field pixels">
+							<input type="text" data-property="h" value="{{ obj.height }}" maxlength="4" />
+						</div>
+					</li>
+					<li>
+						<label class="checkbox" for="constrain">
+							<small>Lock Aspect Ratio</small>
+						</label>
+						<div class="field">
+							<input type="checkbox" id="constrain"/>
+						</div>
+					</li>
+				</ul>
+			</fieldset>
+
+			{% block submit %}
+				<p><a class="button close-popup" href="{{ cancel_url }}">Cancel</a><input class="big" type="submit" value="Save" /></p>
+			{% endblock submit %}
+		</form>
+	</div>
+
+{% endblock content %}
