@@ -26,6 +26,14 @@ class Category(VersionView):
     def __unicode__(self):
         return u"%s" % self.category
 
+
+class Tag(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return self.name
+
+
 class Post(VersionView):
     date = models.DateField()
     title = models.CharField(max_length=255)
@@ -33,6 +41,7 @@ class Post(VersionView):
     body = models.TextField()
     author = models.ForeignKey(Author, on_delete=models.PROTECT)
     category = models.ForeignKey(Category)
+    tags = fields.M2MFromVersion(Tag, blank=True)
     # SEO Section
     keywords = models.TextField(blank=True)
     description = models.TextField(blank=True)

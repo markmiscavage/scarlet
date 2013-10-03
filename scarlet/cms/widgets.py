@@ -2,6 +2,7 @@ import datetime
 import urllib
 
 from django.forms import widgets
+from django.forms.util import flatatt
 from django import forms
 from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
@@ -297,6 +298,8 @@ class APIModelChoiceWidget(APIChoiceWidget):
     if the automatic url discovery fails.
     """
 
+    template = u'<div class="api-select" data-title="%(value)s" data-api="%(link)s" data-add="%(add_link)s">%(input)s</div>'
+
     def __init__(self, model, attrs=None, using=None,
                     limit_choices_to=None,
                     view="main", api_url='',
@@ -319,6 +322,85 @@ class APIModelChoiceWidget(APIChoiceWidget):
     def label_for_value(self, value):
         return super(APIModelChoiceWidget,
                         self).label_for_value(value, key='pk')
+
+
+
+class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
+    """
+    Widget for selecting a many related objects. This is meant to
+    be used in forms that specify their own related fields.
+    Inherits from APIChoiceWidget but is based on a model
+    instead of a foreign key relation.
+
+    :param model: The model that this widget is for.
+    :param attrs: HTML attributes for this field, same as django's.
+    :param using: The database to use. Defaults to None.
+    :param limit_choices_to: Keyword arguments that you would like \
+    passed as part of the query string.
+    :param view: The string name of the view that will be used for \
+    getting the api url. Defaults to 'main'.
+    :param api_url: The api url. This is only used if the automatic url \
+    discovery fails.
+    :param add_view: The string name of the view that will be used for \
+    getting the add url. Defaults to 'add'.
+    :param add_url: The url for adding a new item. This is only used \
+    if the automatic url discovery fails.
+    """
+
+    template = u'<select multiple="multiple" data-api="%(api_link)s" name="tags" data-add="%(add_link)s" id="%(id)s"></select>'
+    allow_multiple_selected = True
+
+    def __init__(self, model, attrs=None, using=None,
+                    limit_choices_to=None,
+                    view="main", api_url='',
+                    add_view="add", add_url=''):
+        super(APIChoiceWidget, self).__init__(attrs=attrs)
+        self.limit_choices_to = limit_choices_to
+        self.model = model
+        self.db = using
+
+        self.view = view
+        self.add_view = add_view
+
+        self._api_link = api_url
+        self._add_link = add_url
+
+    def get_qs(self):
+        return url_params_from_lookup_dict(self.limit_choices_to)
+
+
+    def update_links(self, request, admin_site=None):
+        """
+        Called to update the widget's urls. Tries to find the
+        bundle for the model that this foreign key points to and then
+        asks it for the urls for adding and listing and sets them on
+        this widget instance. The urls are only set if request.user
+        has permissions on that url.
+
+        :param request: The request for which this widget is being rendered.
+        :param admin_site: If provided, the `admin_site` is used to lookup \
+        the bundle that is registered as the primary url for the model \
+        that this foreign key points to.
+        """
+
+        if admin_site:
+            bundle = admin_site.get_bundle_for_model(self.model.to)
+
+            if bundle:
+                self._api_link = self._get_bundle_link(bundle, self.view,
+                                                       request.user)
+                self._add_link = self._get_bundle_link(bundle, self.add_view,
+                                                       request.user)
+
+
+    def render(self, name, value, attrs=None, choices=()):
+        final_attrs = self.build_attrs(attrs, name=name)
+        data = {
+            'api_link': self.get_api_link(),
+            'add_link' : self.get_add_link()
+        }
+        data.update(final_attrs)
+        return mark_safe(self.template % data)
 
 
 class HiddenTextInput(widgets.HiddenInput):
