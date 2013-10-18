@@ -372,8 +372,9 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         if not self.object:
             new_object = True
 
+        instance = getattr(form, 'instance', None)
         auto_tags, changed_tags, old_tags = tag_handler.get_tags_from_data(
-            form.data, self.get_tags(form.instance))
+            form.data, self.get_tags(instance))
         tag_handler.set_auto_tags_for_form(form, auto_tags)
 
         with transaction.commit_on_success():
