@@ -87,6 +87,23 @@ class CropConfig(object):
                         width=width,height=height,
                         x=x,x2=x2,y=y,y2=y2)
 
+    def rotate_by_exif(self, im):
+        if 'exif' in im.info:
+            exifinfo = im._getexif()
+            if exifinfo != None:
+                # 274 is exif code for orientation
+                orientation = exifinfo.get(274, None)
+                if orientation == 3:
+                    # flip 180
+                    im = im.rotate(180)
+                elif orientation == 6:
+                    # flip -90
+                    im = im.rotate(-90)
+                elif orientation == 8:
+                    # flip 90
+                    im = im.rotate(90)
+        return im
+
     def process_image(self, im, crop_spec=None):
         if not crop_spec:
             crop_spec = self.get_crop_spec(im)
@@ -145,6 +162,7 @@ class Cropper(object):
             # for non editable images
             return
 
+        im = config.rotate_by_exif(im)
         crop_spec = config.get_crop_spec(im, x=x, x2=x2, y=y, y2=y2 )
         image = config.process_image(im, crop_spec=crop_spec)
         if image:
