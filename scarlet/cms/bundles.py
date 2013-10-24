@@ -671,6 +671,12 @@ class Bundle(object):
         """
         return self._nav_from_tuple(request, self.dashboard)
 
+    def get_dashboard_block(self, request):
+        """
+        Returns a block of html for display on the dashboard.
+        """
+        return None
+
     def get_navigation(self, request, **kwargs):
         """
         Generates a list of tuples based on the values
