@@ -76,13 +76,7 @@ define(
 
 				// this.extra = extra;
 
-
 				this.$img.imagesLoaded(this.onReady);
-				// $("#crop").Jcrop({
-				// 	onChange: this.test,
-				// 	onSelect: this.test,
-				// 	aspectRatio: 1
-				// });
 			},
 
 			onReady : function () {
@@ -98,7 +92,7 @@ define(
 					options = $.extend({}, this.options, {
 						onSelect : $.proxy(this.updatePreview, this),
 						onChange : $.proxy(this.updatePreview, this),
-						aspectRatio : (this._cropScaling.w/this._cropScaling.h)
+						aspectRatio : (this._cropScaling.w / this._cropScaling.h)
 					});
 
 				if (this._jcrop) {
@@ -135,7 +129,7 @@ define(
 			updatePreview : function (coords) {
 				clearTimeout(this.refreshTimeout);
 
-				if (parseInt(coords.w) > 0)
+				if (parseInt(coords.w, 10) > 0)
 				{
 					var scaleX = this._cropScaling.w / coords.w;
 					var scaleY = this._cropScaling.h / coords.h;
@@ -162,9 +156,7 @@ define(
 					if ($coord.length) {
 						$coord.attr("value", this._cropCoords[prop]); // sync field val
 					}
-				})
-
-				console.log("UPDATE Coords", this._cropCoords)
+				});
 			},
 
 			// iterate over coordinate property keys
@@ -190,12 +182,7 @@ define(
 						this._cropCoords[prop] = $coord.val();
 					}
 				});
-
-				console.log("UPDATE updateCroparea", this._cropCoords);
 			},
-
-
-
 
 			// TODO: REMOVE if obsolete
 			// prbly not need methods below //
