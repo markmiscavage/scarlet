@@ -9937,7 +9937,7 @@ var jQuery = $;
 return $;
 });
 
-define('$plugin!imagesLoaded', ['$'], function ($) {
+define('$plugin!imagesloaded', ['$'], function ($) {
 var jQuery = $;
 /*!
  * jQuery imagesLoaded plugin v2.1.0
@@ -10082,7 +10082,7 @@ define(
 		"$plugin!jcrop",
 		"$plugin!naturalWidth",
 		"$plugin!throttle-debounce",
-		"$plugin!imagesLoaded"
+		"$plugin!imagesloaded"
 	],
 	function (DOMClass, $, $jcrop, $naturalWidth, $throttle, $imagesLoaded) {
 

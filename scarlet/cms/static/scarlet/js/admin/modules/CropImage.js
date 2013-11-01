@@ -14,7 +14,7 @@ define(
 		"$plugin!jcrop",
 		"$plugin!naturalWidth",
 		"$plugin!throttle-debounce",
-		"$plugin!imagesLoaded"
+		"$plugin!imagesloaded"
 	],
 	function (DOMClass, $, $jcrop, $naturalWidth, $throttle, $imagesLoaded) {
 
