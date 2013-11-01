@@ -107,6 +107,9 @@ class Cropper(object):
                 self.register(CropConfig(k, **v))
                 self._required_crops.append(k)
 
+    def get_crop_config(self, name):
+        return self._registry.get(name)
+
     def required_crops(self):
         return self._required_crops
 
