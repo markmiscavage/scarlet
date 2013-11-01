@@ -31,15 +31,13 @@ class CropConfig(object):
         self.quality=quality
         self.editable=editable
 
-    def _crop_coordinates(self, ratio, current_size, needed_size):
+    def _adjust_coordinates(self, ratio, current_size, needed_size):
         diff = current_size - (needed_size / ratio)
         if diff:
-            point = int(diff / 2)
-            point2 = (needed_size / ratio) + int(diff / 2)
+            adjust = int(diff / 2)
         else:
-            point = 0
-            point2 = current_size
-        return point, point2
+            adjust = 0
+        return adjust
 
     def get_crop_spec(self, im, x=None, x2=None, y=None, y2=None):
         """
@@ -49,8 +47,8 @@ class CropConfig(object):
         upscale = self.upscale
         if x != None and x2 and y != None and y2:
             upscale = True
-            w = x2-x
-            h = y2-y
+            w = float(x2)-x
+            h = float(y2)-y
         else:
             x = 0
             x2 = w
@@ -62,10 +60,14 @@ class CropConfig(object):
             rx = self.width / w
             if rx < ry:
                 ratio = ry
-                x, x2 = self._crop_coordinates(ratio, w, self.width)
+                adjust = self._adjust_coordinates(ratio, w, self.width)
+                x = x + adjust
+                x2 = x2 - adjust
             else:
                 ratio = rx
-                y, y2 = self._crop_coordinates(ratio, h, self.height)
+                adjust = self._adjust_coordinates(ratio, h, self.height)
+                y = y + adjust
+                y2 = y2 - adjust
 
             width = self.width
             height = self.height
