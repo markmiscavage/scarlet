@@ -7,7 +7,6 @@
 	{% block form_title %}{% endblock form_title %}
 	<div class="crop-info">
 		<h3>Edit Original</h3>
-		<h2>{{ obj.width }}x{{ obj.height }} (px)</h2>
 
 		<form data-form-id="edit" class="jcrop-container" action="" method="post">
 			{% csrf_token %}
@@ -22,15 +21,11 @@
 			//-->
 
 			<div class="jcrop">
-				<div class="original">
-					<div>
-						<img class="crop" src="{{ obj.image.file.url }}" alt="{{ obj.image.title }}" />
-					</div>
-				</div>
-				<div class="preview hidden" data-scale-w="{{ obj.width }}" data-scale-h="{{ obj.height }}" data-zoom="out" title="Click for actual image size">
-					<div class="thumb"></div>
-					<div class="label">
-						<a class="zoom icon-zoom-out"></a>
+				<img class="original" src="{{ obj.image.file.url }}" alt="{{ obj.image.title }}" />
+				<div class="preview" data-scale-w="{{ obj.width }}" data-scale-h="{{ obj.height }}" data-zoom="out">
+					<h4>Preview</h4>
+					<div class="mask">
+						<img class="thumb" src="{{ obj.image.file.url }}" alt="{{ obj.image.title }}" />
 					</div>
 				</div>
 			</div>

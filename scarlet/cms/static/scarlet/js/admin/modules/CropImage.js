@@ -4,7 +4,7 @@
  *		$el // the <.jcrop> container
  *		options // {} to override default jcrop options
  *			aspectRatio : auto  //   automatically sets aspectRatio to default rectangle
- *		coordinates // {} to override default first time coordinates // note that <inputs> for coords override all else
+ *		coordinates // {} to override default first time coordinates // note self <inputs> for coords override all else
  */
 
 define(
@@ -64,43 +64,143 @@ define(
 				this.sup();
 
 				this.$ = $el;
-				this.$img = this.$.find("img.crop");
-				this.$constrain = this.$.find("#constrain");
+				this.$img = this.$.find(".original");
 				this.$preview = this.$.find(".preview");
-				this.$confirm = this.$.find(".confirm");
+				this.$thumb = this.$preview.find(".thumb");
+				this.options = options;
 
-				this.options = $.extend({}, this.options, options);
-				this.extra = extra;
+				//this.extraSetup();
 
-				this.extraSetup();
+				// this.$constrain = this.$.find("#constrain");
+				// this.$confirm = this.$.find(".confirm");
+
+				// this.extra = extra;
+
 
 				this.$img.imagesLoaded(this.onReady);
-			},
-
-			extraSetup : function () {
-				// automatically set the aspect ratio to the incoming coordinates
-				// force preview to zoom in/out to a specified width height (generally assumes you're also locking aspectRatio to that w/h)
-				if (this.$preview.length) {
-					var data = this.$preview.data();
-
-					if (data.scaleW && data.scaleH) {
-						this._cropScaling = { // means the target crop size will stay the same
-							w : data.scaleW,
-							h : data.scaleH
-						};
-					}
-
-					this._isPreviewOriginal = (data.zoom === "out") ? false : true;
-				}
+				// $("#crop").Jcrop({
+				// 	onChange: this.test,
+				// 	onSelect: this.test,
+				// 	aspectRatio: 1
+				// });
 			},
 
 			onReady : function () {
-				this.$.addClass("ready");
-				this.setupPreview();
-				this.addListeners();
+				// this.$.addClass("ready");
+				// this.addListeners();
 
-				this.resetJcrop();
+				this.setupPreview();
+				this.setupJcrop();
 			},
+
+			setupJcrop : function () {
+				var self = this,
+					options = $.extend({}, this.options, {
+						onSelect : $.proxy(this.updatePreview, this),
+						onChange : $.proxy(this.updatePreview, this),
+						aspectRatio : (this._cropScaling.w/this._cropScaling.h)
+					});
+
+				if (this._jcrop) {
+					this._jcrop.destroy();
+				}
+
+				this.$img.Jcrop(options, function () {
+					self._jcrop = this;
+					self.onJCropReady();
+				});
+			},
+
+			onJCropReady : function () {
+				this.setInitialCroparea();
+				this._jcrop.setSelect([this._cropCoords.x, this._cropCoords.y, this._cropCoords.x2, this._cropCoords.y2]);
+			},
+
+			setupPreview : function () {
+				var data = this.$preview.data();
+
+				// set aspect ratio for crop;
+				// also defines .mask box size
+				this._cropScaling = {
+					w : data.scaleW,
+					h : data.scaleH
+				};
+
+				this.$preview.find(".mask").css({
+					width: this._cropScaling.w,
+					height: this._cropScaling.h
+				});
+			},
+
+			updatePreview : function (coords) {
+				clearTimeout(this.refreshTimeout);
+
+				if (parseInt(coords.w) > 0)
+				{
+					var scaleX = this._cropScaling.w / coords.w;
+					var scaleY = this._cropScaling.h / coords.h;
+
+					this.$thumb.css({
+						width: Math.round(scaleX * this.$img.naturalWidth()) + "px",
+						height: Math.round(scaleY * this.$img.naturalHeight()) + "px",
+						marginLeft: "-" + Math.round(scaleX * coords.x) + "px",
+						marginTop: "-" + Math.round(scaleY * coords.y) + "px",
+					});
+
+					this._cropCoords = coords;
+
+					this.refreshTimeout = setTimeout(this.updateCoords, 250);
+				}
+			},
+
+			// store current crop coordinates as field values
+			updateCoords : function () {
+
+				this.loopCoordProps(function (prop) {
+					var $coord = $("input[data-property='" + prop + "']");
+
+					if ($coord.length) {
+						$coord.attr("value", this._cropCoords[prop]); // sync field val
+					}
+				})
+
+				console.log("UPDATE Coords", this._cropCoords)
+			},
+
+			// iterate over coordinate property keys
+			loopCoordProps : function (cb) {
+				var props = ["x", "y", "x2", "y2", "w", "h"],
+					i = props.length - 1,
+					prop;
+
+				for (i; i >= 0; i--) {
+					prop = props[i];
+					cb.call(this, prop);
+				}
+			},
+
+			// set initial croparea from ss field values
+			setInitialCroparea : function () {
+				this._cropCoords = this._cropCoords || {};
+
+				this.loopCoordProps(function (prop) {
+					var $coord = $("input[data-property='" + prop + "']");
+
+					if ($coord.length) {
+						this._cropCoords[prop] = $coord.val();
+					}
+				});
+
+				console.log("UPDATE updateCroparea", this._cropCoords);
+			},
+
+
+
+
+			// TODO: REMOVE if obsolete
+			// prbly not need methods below //
+			//////////////////////////////////
+			/*
 
 			addListeners : function	() {
 				if (this.$constrain.length) {
@@ -117,25 +217,6 @@ define(
 				$(window).on("resize", this._onResize);
 			},
 
-			resetJcrop : function () {
-				var that = this,
-					options = $.extend({}, this.options, {
-						onSelect : $.proxy(this.onSelect, this),
-						onChange : $.proxy(this.onChange, this),
-						boxWidth : this.getMaxWidth(),
-						boxHeight : this.getMaxHeight()
-					});
-
-				if (this._jcrop) {
-					this._jcrop.destroy();
-				}
-
-				this.$img.Jcrop(options, function () {
-					that._jcrop = this;
-					that.onJCropReady();
-				});
-			},
-
 			removeListeners : function () {
 				if (this._jcrop) {
 					this._jcrop.destroy();
@@ -145,6 +226,33 @@ define(
 
 				this.$constrain.off("change", this.onChangeConstrain);
 				this.$preview.off("click", this.onClickPreview);
+			},
+
+			setupPreviewX : function () {
+				if (this.$preview.length) {
+
+					this.$previewThumb = this.$preview.find(".thumb");
+					this.$previewThumbImg = this.$img.clone();
+
+					this.$previewZoom = this.$preview.find(".zoom");
+
+					this.$previewThumb.append(this.$previewThumbImg);
+				}
+			},
+
+			extraSetup : function () {
+				// automatically set the aspect ratio to the incoming coordinates
+				// force preview to zoom in/out to a specified width height (generally assumes you're also locking aspectRatio to self w/h)
+				var data = this.$.data();
+
+				if (data.scaleW && data.scaleH) {
+					this._cropScaling = { // means the target crop size will stay the same
+						w : data.scaleW,
+						h : data.scaleH
+					};
+				}
+
+				this._isPreviewOriginal = (data.zoom === "out") ? false : true;
 			},
 
 			// determines max available width for jcrop - this could probably be done better
@@ -159,54 +267,6 @@ define(
 			onResize : function (e) {
 				if (this._jcrop) {
 					this.resetJcrop();
-				}
-			},
-
-			onJCropReady : function () {
-				this.setupCoords();
-			},
-
-			setupCoords : function () {
-				var props = ["x", "y", "x2", "y2", "w", "h"],
-					i = props.length - 1,
-					prop,
-					$coord;
-
-				this._properties = {};
-
-				if (!this._curProps) {
-					this._curProps = $.extend({
-						/*x : 0,
-						y : 0,
-						x1 : ,
-						y1 :*/
-					}, this.coordinates);
-				}
-
-				for (i; i >= 0; i--) {
-					prop = props[i];
-					$coord = this.$.find('input[data-property="' + prop + '"]');
-
-					if ($coord.length) {
-						this._properties[prop] = $coord;
-						this._curProps[prop] = $coord.val();
-					}
-				}
-
-				console.log("CUR PROPERTIES", this._curProps);
-
-				this._jcrop.setSelect([this._curProps.x, this._curProps.y, this._curProps.x2, this._curProps.y2]);
-			},
-
-			setupPreview : function () {
-				if (this.$preview.length) {
-
-					this.$previewThumb = this.$preview.find(".thumb");
-					this.$previewThumbImg = this.$img.clone();
-
-					this.$previewZoom = this.$preview.find(".zoom");
-
-					this.$previewThumb.append(this.$previewThumbImg);
 				}
 			},
 
@@ -244,8 +304,9 @@ define(
 				});
 			},
 
-			updatePreview : function (c) {
-				console.log("update", this._cropScaling);
+
+			updatePreviewX : function (c) {
+				//console.log("update", this._cropScaling);
 				// 1. preview updates to match selected size with ability to zoom to actual pixels
 				var scaleFactor = this._jcrop.getScaleFactor(),
 					maxW = Math.min(this.getMaxWidth(), this._cropScaling.w),
@@ -309,6 +370,7 @@ define(
 			destroy : function () {
 
 			}
+			*/
 
 		});
 	}
