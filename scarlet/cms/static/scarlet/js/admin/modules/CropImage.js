@@ -57,7 +57,7 @@ define(
 			_isPreviewOriginal : false,
 			_isShowingPreview : false,
 
-			_cropScaling : null, // { w : 100, h: 100} // special case for scaling the resulting crop to a specified size in the preview
+			cropScale : null, // { w : 100, h: 100} // special case for scaling the resulting crop to a specified size in the preview
 			_onResize : null,
 
 			init : function ($el, options, extra) {
@@ -82,7 +82,7 @@ define(
 			onReady : function () {
 				// this.$.addClass("ready");
 				// this.addListeners();
-
+				this.setConstraints();
 				this.setupPreview();
 				this.setupJcrop();
 			},
@@ -92,7 +92,7 @@ define(
 					options = $.extend({}, this.options, {
 						onSelect : $.proxy(this.updatePreview, this),
 						onChange : $.proxy(this.updatePreview, this),
-						aspectRatio : (this._cropScaling.w / this._cropScaling.h)
+						aspectRatio : (this.constrainRatio ? (this.cropScale.w / this.cropScale.h) : 0)
 					});
 
 				if (this._jcrop) {
@@ -107,44 +107,119 @@ define(
 
 			onJCropReady : function () {
 				this.setInitialCroparea();
-				this._jcrop.setSelect([this._cropCoords.x, this._cropCoords.y, this._cropCoords.x2, this._cropCoords.y2]);
 			},
 
-			setupPreview : function () {
+			setConstraints : function () {
 				var data = this.$preview.data();
+
+				this.constrainHeight = data.scaleH === "None" ? false : true;
+				this.constrainWidth = data.scaleW === "None" ? false : true;
+				this.constrainRatio = (this.constrainHeight && this.constrainWidth);
 
 				// set aspect ratio for crop;
 				// also defines .mask box size
-				this._cropScaling = {
-					w : data.scaleW,
-					h : data.scaleH
+				this.cropScale = {
+					w : (this.constrainWidth ? data.scaleW : this.$img.naturalWidth()),
+					h : (this.constrainHeight ? data.scaleH : this.$img.naturalHeight())
 				};
+			},
 
+			setupPreview : function () {
 				this.$preview.find(".mask").css({
-					width: this._cropScaling.w,
-					height: this._cropScaling.h
-				});
+					width: this.cropScale.w,
+					height: this.cropScale.h
+				}).addClass("active");
+
+				if (this.constrainRatio) {
+					this.$preview.find("strong").text(this.cropScale.w + " x " + this.cropScale.h);
+				}
 			},
 
 			updatePreview : function (coords) {
 				clearTimeout(this.refreshTimeout);
 
-				if (parseInt(coords.w, 10) > 0)
-				{
-					var scaleX = this._cropScaling.w / coords.w;
-					var scaleY = this._cropScaling.h / coords.h;
-
-					this.$thumb.css({
-						width: Math.round(scaleX * this.$img.naturalWidth()) + "px",
-						height: Math.round(scaleY * this.$img.naturalHeight()) + "px",
-						marginLeft: "-" + Math.round(scaleX * coords.x) + "px",
-						marginTop: "-" + Math.round(scaleY * coords.y) + "px",
-					});
-
-					this._cropCoords = coords;
-
-					this.refreshTimeout = setTimeout(this.updateCoords, 250);
+				if (parseInt(coords.w, 10) < 0) {
+					return;
 				}
+
+				this.cropCoords = coords;
+
+				var scale = this.getScale(),
+					width,
+					height;
+
+				//console.log(this.cropScale.h, scaleX, scaleY, this._jcrop.tellSelect())
+
+				if (!this.constrainRatio) {
+
+					if (this.constrainHeight) {
+
+						// update preview width
+						width = Math.round(scale.scaleY * coords.w);
+
+						this.$preview.find(".mask").css({
+							width: width + "px"
+						}).end().find("strong").text(width + " x " + this.cropScale.h);
+
+					} else if (this.constrainWidth) {
+
+						// update preview height
+						height = Math.round(scale.scaleX * coords.h);
+
+						this.$preview.find(".mask").css({
+							height: height + "px"
+						}).end().find("strong").text(this.cropScale.w + " x " + height);
+
+					} else {
+
+						// update preview height and width
+						height = Math.round(scale.scaleY * coords.h);
+						width = Math.round(scale.scaleX * coords.w);
+
+						this.$preview.find(".mask").css({
+							width: width + "px",
+							height: height + "px"
+						}).end().find("strong").text(width + " x " + height);
+					}
+				}
+
+				// update preview img
+				this.$thumb.css({
+					width: Math.round(scale.scaleX * this.$img.naturalWidth()) + "px",
+					height: Math.round(scale.scaleY * this.$img.naturalHeight()) + "px",
+					marginLeft: "-" + Math.round(scale.scaleX * coords.x) + "px",
+					marginTop: "-" + Math.round(scale.scaleY * coords.y) + "px"
+				});
+
+				// debounce update of coord values (form fields) after interaction
+				this.refreshTimeout = setTimeout(this.updateCoords, 250);
+			},
+
+			getScale : function () {
+				var scaleX,
+					scaleY;
+
+				if (this.constrainRatio) {
+
+					scaleX = this.cropScale.w / this.cropCoords.w;
+					scaleY = this.cropScale.h / this.cropCoords.h;
+
+				} else {
+
+					if (this.constrainHeight) {
+						// set equal scaling ratio (to prevent distortion)
+						scaleX = scaleY = this.cropScale.h / this.cropCoords.h;
+					} else if (this.constrainWidth) {
+						scaleX = scaleY = this.cropScale.w / this.cropCoords.w;
+					} else {
+						scaleX = scaleY = (this.$img.naturalWidth() / this.cropCoords.w) / (this.$img.naturalHeight() / this.cropCoords.h);
+					}
+				}
+
+				return {
+					scaleX: scaleX,
+					scaleY: scaleY
+				};
 			},
 
 			// store current crop coordinates as field values
@@ -154,7 +229,7 @@ define(
 					var $coord = $("input[data-property='" + prop + "']");
 
 					if ($coord.length) {
-						$coord.attr("value", this._cropCoords[prop]); // sync field val
+						$coord.attr("value", this.cropCoords[prop]); // sync field val
 					}
 				});
 			},
@@ -173,15 +248,18 @@ define(
 
 			// set initial croparea from ss field values
 			setInitialCroparea : function () {
-				this._cropCoords = this._cropCoords || {};
+				this.cropCoords = this.cropCoords || {};
 
 				this.loopCoordProps(function (prop) {
 					var $coord = $("input[data-property='" + prop + "']");
 
 					if ($coord.length) {
-						this._cropCoords[prop] = $coord.val();
+						this.cropCoords[prop] = $coord.val();
 					}
 				});
+
+				// set jcrop selection
+				this._jcrop.setSelect([this.cropCoords.x, this.cropCoords.y, this.cropCoords.x2, this.cropCoords.y2]);
 			},
 
 			// TODO: REMOVE if obsolete
@@ -215,7 +293,7 @@ define(
 				this.$preview.off("click", this.onClickPreview);
 			},
 
-			setupPreviewX : function () {
+			setupPreview : function () {
 				if (this.$preview.length) {
 
 					this.$previewThumb = this.$preview.find(".thumb");
@@ -233,7 +311,7 @@ define(
 				var data = this.$.data();
 
 				if (data.scaleW && data.scaleH) {
-					this._cropScaling = { // means the target crop size will stay the same
+					this.cropScale = { // means the target crop size will stay the same
 						w : data.scaleW,
 						h : data.scaleH
 					};
@@ -292,12 +370,12 @@ define(
 			},
 
 
-			updatePreviewX : function (c) {
-				//console.log("update", this._cropScaling);
+			updatePreview : function (c) {
+				//console.log("update", this.cropScale);
 				// 1. preview updates to match selected size with ability to zoom to actual pixels
 				var scaleFactor = this._jcrop.getScaleFactor(),
-					maxW = Math.min(this.getMaxWidth(), this._cropScaling.w),
-					maxH = Math.min(this.getMaxHeight(), this._cropScaling.h),
+					maxW = Math.min(this.getMaxWidth(), this.cropScale.w),
+					maxH = Math.min(this.getMaxHeight(), this.cropScale.h),
 					r = c.h / c.w,
 					sfX = (1 / scaleFactor[0]),
 					sfY = (1 / scaleFactor[1]),
@@ -306,15 +384,15 @@ define(
 					scaleY;
 
 				if (!zoom) {
-					zoom = (maxW > maxH * r) ? (maxW / this._cropScaling.w) : (maxH / this._cropScaling.h);
+					zoom = (maxW > maxH * r) ? (maxW / this.cropScale.w) : (maxH / this.cropScale.h);
 				}
 
-				scaleX = (this._cropScaling.w / c.w) * zoom;
-				scaleY = (this._cropScaling.h / c.h) * zoom;
+				scaleX = (this.cropScale.w / c.w) * zoom;
+				scaleY = (this.cropScale.h / c.h) * zoom;
 
 
-				this.$previewThumb.width(this._cropScaling.w * zoom);
-				this.$previewThumb.height(this._cropScaling.h * zoom);
+				this.$previewThumb.width(this.cropScale.w * zoom);
+				this.$previewThumb.height(this.cropScale.h * zoom);
 
 				if (c.w && c.h) {
 					if (!this._isShowingPreview) {
@@ -343,7 +421,7 @@ define(
 			},
 
 			onFinish : function (e) {
-				var o = this._cropScaling || {},
+				var o = this.cropScale || {},
 					c = $.extend({}, this._curProps, {
 						targetWidth : (o.w || 0),
 						targetHeight : (o.h || 0),

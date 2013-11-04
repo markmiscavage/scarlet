@@ -22,8 +22,8 @@
 
 			<div class="jcrop">
 				<img class="original" src="{{ obj.image.file.url }}" alt="{{ obj.image.title }}" />
-				<div class="preview" data-scale-w="{{ obj.width }}" data-scale-h="{{ obj.height }}" data-zoom="out">
-					<h4>Preview</h4>
+				<div class="preview" data-scale-w="{{ obj.get_crop_config.width }}" data-scale-h="{{ obj.get_crop_config.height }}" data-zoom="out">
+					<h4>Preview <strong></strong></h4>
 					<div class="mask">
 						<img class="thumb" src="{{ obj.image.file.url }}" alt="{{ obj.image.title }}" />
 					</div>
@@ -35,6 +35,7 @@
 				<input type="hidden" name="y" id="id_y" value="{{ obj.y }}" data-property="y" />
 				<input type="hidden" name="x2" id="id_x2" value="{{ obj.x2 }}" data-property="x2" />
 				<input type="hidden" name="y2" id="id_y2" value="{{ obj.y2 }}" data-property="y2" />
+				<input type="hidden" name="crop_config" id="id_crop_config" value="{{ obj.get_crop_config }}" />
 
 				<ul class="crop-settings">
 					<li>
