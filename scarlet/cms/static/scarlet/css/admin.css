@@ -2246,99 +2246,39 @@ section#main .field input {
 }
 /* line 91, ../compass/scss/admin/modules/_crops.scss */
 .jcrop .preview {
+  margin: 1em 0;
+  padding: 0;
+}
+/* line 96, ../compass/scss/admin/modules/_crops.scss */
+.jcrop .mask {
   -webkit-transition: opacity 200ms;
   -moz-transition: opacity 200ms;
   transition: opacity 200ms;
-  margin: 1em 0;
-  padding: 0;
-  opacity: 1;
-}
-/* line 97, ../compass/scss/admin/modules/_crops.scss */
-.jcrop .preview.active {
-  opacity: 1;
-}
-/* line 102, ../compass/scss/admin/modules/_crops.scss */
-.jcrop .mask {
   -webkit-box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.4);
   box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.4);
   width: 400px;
   height: 250px;
   overflow: hidden;
+  opacity: 0;
 }
-/* line 109, ../compass/scss/admin/modules/_crops.scss */
-.jcrop .previewX {
-  background: #fff;
-  -webkit-box-shadow: 0 10px 20px 0 black;
-  -moz-box-shadow: 0 10px 20px 0 black;
-  box-shadow: 0 10px 20px 0 black;
-  padding: .5em;
-  margin: 1em auto;
-  border-radius: .3em 0em .3em .3em;
-  position: relative;
-  cursor: pointer;
+/* line 104, ../compass/scss/admin/modules/_crops.scss */
+.jcrop .mask.active {
+  opacity: 1;
 }
-/* line 119, ../compass/scss/admin/modules/_crops.scss */
-.jcrop .previewX #preview {
-  width: 30%;
-  position: absolute;
-}
-/* line 124, ../compass/scss/admin/modules/_crops.scss */
-.jcrop .previewX .thumb {
-  overflow: hidden;
-  position: relative;
-}
-/* line 128, ../compass/scss/admin/modules/_crops.scss */
-.jcrop .previewX .thumb img {
-  width: 30%;
-  position: absolute;
-}
-/* line 134, ../compass/scss/admin/modules/_crops.scss */
-.jcrop .previewX .label {
-  background: #fff;
-  position: absolute;
-  padding: .5em 1em;
-  right: 0;
-  top: 0;
-  border-radius: 0;
-  opacity: .8;
-}
-/* line 143, ../compass/scss/admin/modules/_crops.scss */
-.jcrop .previewX .label:after {
-  color: #000;
-  font-size: .8em;
-  line-height: .8em;
-}
-/* line 152, ../compass/scss/admin/modules/_crops.scss */
-.jcrop .previewX[data-zoom="out"] .label:after {
-  content: "Preview";
-}
-/* line 156, ../compass/scss/admin/modules/_crops.scss */
-.jcrop .previewX[data-zoom="out"] .zoom {
-  content: "-";
-}
-/* line 162, ../compass/scss/admin/modules/_crops.scss */
-.jcrop .previewX[data-zoom="in"] .label:after {
-  content: "Actual";
-}
-/* line 166, ../compass/scss/admin/modules/_crops.scss */
-.jcrop .previewX[data-zoom="in"] .zoom {
-  content: "+";
-}
-/* line 171, ../compass/scss/admin/modules/_crops.scss */
-.jcrop .previewX .zoom {
-  content: "-";
-  margin-right: 3px;
+/* line 111, ../compass/scss/admin/modules/_crops.scss */
+.jcrop h4 strong {
+  text-transform: none;
 }
 
-/* line 179, ../compass/scss/admin/modules/_crops.scss */
+/* line 118, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-holder {
   direction: ltr;
   text-align: left;
 }
 
 /* Selection Border */
-/* line 185, ../compass/scss/admin/modules/_crops.scss */
+/* line 124, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-vline,
 .jcrop-hline {
   background: #ffffff;
@@ -2346,30 +2286,30 @@ section#main .field input {
   position: absolute;
 }
 
-/* line 190, ../compass/scss/admin/modules/_crops.scss */
+/* line 129, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-vline {
   height: 100%;
   width: 1px !important;
 }
 
-/* line 194, ../compass/scss/admin/modules/_crops.scss */
+/* line 133, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-vline.right {
   right: 0;
 }
 
-/* line 197, ../compass/scss/admin/modules/_crops.scss */
+/* line 136, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-hline {
   height: 1px !important;
   width: 100%;
 }
 
-/* line 201, ../compass/scss/admin/modules/_crops.scss */
+/* line 140, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-hline.bottom {
   bottom: 0;
 }
 
 /* Invisible click targets */
-/* line 205, ../compass/scss/admin/modules/_crops.scss */
+/* line 144, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-tracker {
   height: 100%;
   width: 100%;
@@ -2382,7 +2322,7 @@ section#main .field input {
 }
 
 /* Selection Handles */
-/* line 216, ../compass/scss/admin/modules/_crops.scss */
+/* line 155, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-handle {
   background-color: #333333;
   border: 1px #eeeeee solid;
@@ -2391,7 +2331,7 @@ section#main .field input {
   font-size: 1px;
 }
 
-/* line 223, ../compass/scss/admin/modules/_crops.scss */
+/* line 162, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-handle.ord-n {
   left: 50%;
   margin-left: -4px;
@@ -2399,7 +2339,7 @@ section#main .field input {
   top: 0;
 }
 
-/* line 229, ../compass/scss/admin/modules/_crops.scss */
+/* line 168, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-handle.ord-s {
   bottom: 0;
   left: 50%;
@@ -2407,7 +2347,7 @@ section#main .field input {
   margin-left: -4px;
 }
 
-/* line 235, ../compass/scss/admin/modules/_crops.scss */
+/* line 174, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-handle.ord-e {
   margin-right: -4px;
   margin-top: -4px;
@@ -2415,7 +2355,7 @@ section#main .field input {
   top: 50%;
 }
 
-/* line 241, ../compass/scss/admin/modules/_crops.scss */
+/* line 180, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-handle.ord-w {
   left: 0;
   margin-left: -4px;
@@ -2423,7 +2363,7 @@ section#main .field input {
   top: 50%;
 }
 
-/* line 247, ../compass/scss/admin/modules/_crops.scss */
+/* line 186, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-handle.ord-nw {
   left: 0;
   margin-left: -4px;
@@ -2431,7 +2371,7 @@ section#main .field input {
   top: 0;
 }
 
-/* line 253, ../compass/scss/admin/modules/_crops.scss */
+/* line 192, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-handle.ord-ne {
   margin-right: -4px;
   margin-top: -4px;
@@ -2439,7 +2379,7 @@ section#main .field input {
   top: 0;
 }
 
-/* line 259, ../compass/scss/admin/modules/_crops.scss */
+/* line 198, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-handle.ord-se {
   bottom: 0;
   margin-bottom: -4px;
@@ -2447,7 +2387,7 @@ section#main .field input {
   right: 0;
 }
 
-/* line 265, ../compass/scss/admin/modules/_crops.scss */
+/* line 204, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-handle.ord-sw {
   bottom: 0;
   left: 0;
@@ -2456,44 +2396,44 @@ section#main .field input {
 }
 
 /* Dragbars */
-/* line 273, ../compass/scss/admin/modules/_crops.scss */
+/* line 212, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-dragbar.ord-n,
 .jcrop-dragbar.ord-s {
   height: 7px;
   width: 100%;
 }
 
-/* line 278, ../compass/scss/admin/modules/_crops.scss */
+/* line 217, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-dragbar.ord-e,
 .jcrop-dragbar.ord-w {
   height: 100%;
   width: 7px;
 }
 
-/* line 282, ../compass/scss/admin/modules/_crops.scss */
+/* line 221, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-dragbar.ord-n {
   margin-top: -4px;
 }
 
-/* line 285, ../compass/scss/admin/modules/_crops.scss */
+/* line 224, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-dragbar.ord-s {
   bottom: 0;
   margin-bottom: -4px;
 }
 
-/* line 289, ../compass/scss/admin/modules/_crops.scss */
+/* line 228, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-dragbar.ord-e {
   margin-right: -4px;
   right: 0;
 }
 
-/* line 293, ../compass/scss/admin/modules/_crops.scss */
+/* line 232, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-dragbar.ord-w {
   margin-left: -4px;
 }
 
 /* The "jcrop-light" class/extension */
-/* line 298, ../compass/scss/admin/modules/_crops.scss */
+/* line 237, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-light .jcrop-vline,
 .jcrop-light .jcrop-hline {
   background: #ffffff;
@@ -2501,7 +2441,7 @@ section#main .field input {
   opacity: 0.7 !important;
 }
 
-/* line 303, ../compass/scss/admin/modules/_crops.scss */
+/* line 242, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-light .jcrop-handle {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
@@ -2511,7 +2451,7 @@ section#main .field input {
 }
 
 /* The "jcrop-dark" class/extension */
-/* line 312, ../compass/scss/admin/modules/_crops.scss */
+/* line 251, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-dark .jcrop-vline,
 .jcrop-dark .jcrop-hline {
   background: #000000;
@@ -2519,7 +2459,7 @@ section#main .field input {
   opacity: 0.7 !important;
 }
 
-/* line 317, ../compass/scss/admin/modules/_crops.scss */
+/* line 256, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-dark .jcrop-handle {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
@@ -2529,14 +2469,14 @@ section#main .field input {
 }
 
 /* Simple macro to turn off the antlines */
-/* line 326, ../compass/scss/admin/modules/_crops.scss */
+/* line 265, ../compass/scss/admin/modules/_crops.scss */
 .solid-line .jcrop-vline,
 .solid-line .jcrop-hline {
   background: #ffffff;
 }
 
 /* Fix for twitter bootstrap et al. */
-/* line 331, ../compass/scss/admin/modules/_crops.scss */
+/* line 270, ../compass/scss/admin/modules/_crops.scss */
 .jcrop-holder img,
 img.jcrop-preview {
   max-width: none;
