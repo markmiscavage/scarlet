@@ -354,6 +354,23 @@ section#main {
 					@include big-button;
 				}
 			}
+
+			input[type='date'] {
+				&:after {
+					// add calendar icon...
+					@extend [class*="icon-"];
+					@extend .icon-calendar:before;
+
+					position: absolute;
+					right: 10px;
+					width: 22px;
+					padding-top: 2px;
+					font-size: 18px;
+					background: #FFF;
+					pointer-events: none;
+
+				}
+			}
 		}
 
 		details#filter {
@@ -421,7 +438,7 @@ section#main {
 					right: 0;
 					text-align: left;
 
-					input[type='submit'] {
+					[type='submiinputt'] {
 						margin-bottom: 0;
 					}
 				}

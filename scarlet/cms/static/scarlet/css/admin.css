@@ -786,6 +786,33 @@ Password				"k"
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'icomoon';
+  src: url("../fonts/icomoon.eot");
+  src: url("../fonts/icomoon.eot?#iefix") format("embedded-opentype"), url("../fonts/icomoon.ttf") format("truetype"), url("../fonts/icomoon.woff") format("woff"), url("../fonts/icomoon.svg#icomoon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* line 24, ../compass/scss/admin/modules/_compass-arrows.scss */
+[class*="icon-"], section#main article form input[type='date']:after {
+  font-family: 'icomoon';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* line 38, ../compass/scss/admin/modules/_compass-arrows.scss */
+.icon-calendar:before, section#main article form input[type='date']:after {
+  content: "\e600";
+}
+
 /* line 1, ../compass/scss/admin/modules/_navigation.scss */
 nav[role='dashboard'] {
   overflow: hidden;
@@ -1938,32 +1965,33 @@ table tbody tr td {
   font: 16px/1 AvenirRoman;
   padding: 9px 15px;
   position: relative;
+  vertical-align: middle;
 }
-/* line 145, ../compass/scss/admin/modules/_tables.scss */
+/* line 146, ../compass/scss/admin/modules/_tables.scss */
 table tbody tr td strong {
   font: 16px/1 AvenirBlack;
 }
-/* line 149, ../compass/scss/admin/modules/_tables.scss */
+/* line 150, ../compass/scss/admin/modules/_tables.scss */
 table tbody tr td input.orderfield {
   display: none;
 }
-/* line 153, ../compass/scss/admin/modules/_tables.scss */
+/* line 154, ../compass/scss/admin/modules/_tables.scss */
 table tbody tr td.actions {
   text-align: center;
   white-space: nowrap;
   width: 12px;
 }
-/* line 158, ../compass/scss/admin/modules/_tables.scss */
+/* line 159, ../compass/scss/admin/modules/_tables.scss */
 table tbody tr td.actions a {
   color: #314b5d;
   font: 16px/1 AdminActions;
   margin: 0 6px;
 }
-/* line 163, ../compass/scss/admin/modules/_tables.scss */
+/* line 164, ../compass/scss/admin/modules/_tables.scss */
 table tbody tr td.actions a:hover {
   color: #11232e;
 }
-/* line 168, ../compass/scss/admin/modules/_tables.scss */
+/* line 169, ../compass/scss/admin/modules/_tables.scss */
 table tbody tr td.actions div.help {
   font: 11px/1 AvenirLight;
   position: absolute;
@@ -2161,6 +2189,11 @@ body.insert-media section#main article .preview-container {
 /* line 55, ../compass/scss/admin/modules/_insert-media.scss */
 body.insert-media section#main article .widget-asset {
   overflow: hidden;
+}
+
+/* line 1, ../compass/scss/admin/modules/_inline-video.scss */
+.widget-inline-video {
+  cursor: pointer;
 }
 
 /*
@@ -2668,6 +2701,15 @@ section#main article form input[type='submit'].big:hover {
   background: #314b5d;
 }
 /* line 359, ../compass/scss/admin/views/_admin.scss */
+section#main article form input[type='date']:after {
+  position: absolute;
+  right: 10px;
+  width: 22px;
+  padding-top: 2px;
+  font-size: 18px;
+  background: #FFF;
+}
+/* line 375, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2682,12 +2724,12 @@ section#main article details#filter {
   position: relative;
   z-index: 2;
 }
-/* line 369, ../compass/scss/admin/views/_admin.scss */
+/* line 385, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter .filter-clear {
   margin-right: 20px;
   color: red;
 }
-/* line 374, ../compass/scss/admin/views/_admin.scss */
+/* line 390, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary {
   color: #314b5d;
   cursor: pointer;
@@ -2696,36 +2738,36 @@ section#main article details#filter summary {
   outline: none;
   padding: 12px;
 }
-/* line 382, ../compass/scss/admin/views/_admin.scss */
+/* line 398, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary:hover {
   background-color: #11232e;
   color: #fff;
 }
-/* line 389, ../compass/scss/admin/views/_admin.scss */
+/* line 405, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary:after, section#main article details#filter summary::-webkit-details-marker {
   display: none;
 }
-/* line 393, ../compass/scss/admin/views/_admin.scss */
+/* line 409, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary i:after {
   color: #314b5d;
   content: "s";
   font: 12px/1 CompassArrows;
   padding-left: 6px;
 }
-/* line 401, ../compass/scss/admin/views/_admin.scss */
+/* line 417, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter form {
   display: none;
 }
-/* line 406, ../compass/scss/admin/views/_admin.scss */
+/* line 422, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] .filter-clear, section#main article details#filter.open .filter-clear {
   display: none;
 }
-/* line 410, ../compass/scss/admin/views/_admin.scss */
+/* line 426, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] summary, section#main article details#filter.open summary {
   background-color: #11232e;
   color: #fff;
 }
-/* line 415, ../compass/scss/admin/views/_admin.scss */
+/* line 431, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] form, section#main article details#filter.open form {
   border: 1px solid #b6cad1;
   background-color: #fff;
@@ -2735,16 +2777,16 @@ section#main article details#filter[open] form, section#main article details#fil
   right: 0;
   text-align: left;
 }
-/* line 424, ../compass/scss/admin/views/_admin.scss */
-section#main article details#filter[open] form input[type='submit'], section#main article details#filter.open form input[type='submit'] {
+/* line 440, ../compass/scss/admin/views/_admin.scss */
+section#main article details#filter[open] form [type='submiinputt'], section#main article details#filter.open form [type='submiinputt'] {
   margin-bottom: 0;
 }
-/* line 431, ../compass/scss/admin/views/_admin.scss */
+/* line 447, ../compass/scss/admin/views/_admin.scss */
 section#main article div.pagination {
   font: 14px/1 AvenirMedium;
   text-align: right;
 }
-/* line 435, ../compass/scss/admin/views/_admin.scss */
+/* line 451, ../compass/scss/admin/views/_admin.scss */
 section#main article div.pagination a {
   font: 14px/1 CompassArrows;
 }
