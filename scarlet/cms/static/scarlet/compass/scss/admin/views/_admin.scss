@@ -350,6 +350,8 @@ section#main {
 			input[type='submit'] {
 				@include button;
 
+				vertical-align: top;
+
 				&.big {
 					@include big-button;
 				}
