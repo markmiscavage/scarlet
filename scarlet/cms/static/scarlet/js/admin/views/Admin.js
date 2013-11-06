@@ -5,10 +5,11 @@ define(
 		"$",
 		"$plugin!select2",
 		"../modules/Widgets",
-		"../modules/WidgetEvents"
+		"../modules/WidgetEvents",
+		"detailsShim"
 	],
 
-	function (Page, $, jQuerySelect2, Widgets, WidgetEvents) {
+	function (Page, $, jQuerySelect2, Widgets, WidgetEvents, detailsShim) {
 
 		"use strict";
 

@@ -5,7 +5,8 @@ require.config({
 		"$plugin" : "libs/plugins/amd/jquery-plugin",
 		"wysihtml5" : "libs/wysihtml5",
 		"text" : "libs/plugins/amd/text",
-		"rosy" : "libs/rosy/src"
+		"rosy" : "libs/rosy/src",
+		"detailsShim" : "libs/details-shim"
 	},
 
 	waitSeconds : 15,
