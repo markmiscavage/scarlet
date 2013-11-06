@@ -375,12 +375,20 @@ section#main {
 			}
 		}
 
+		section.filters {
+			summary {
+				&[open], &.open {
+					z-index: 1;
+				}
+			}
+		}
+
 		details#filter {
 			@include user-select(none);
-			width: $width/4;
+			//width: $width/4;
 			text-align: right;
 			float: right;
-			clear: both;
+			//clear: both;
 			display: block;
 			position: relative;
 			z-index: 2;

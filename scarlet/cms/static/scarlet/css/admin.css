@@ -2711,27 +2711,29 @@ section#main article form input[type='date']:after {
   background: #FFF;
   pointer-events: none;
 }
-/* line 378, ../compass/scss/admin/views/_admin.scss */
+/* line 380, ../compass/scss/admin/views/_admin.scss */
+section#main article section.filters summary[open], section#main article section.filters summary.open {
+  z-index: 1;
+}
+/* line 386, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   -o-user-select: none;
   user-select: none;
-  width: 320px;
   text-align: right;
   float: right;
-  clear: both;
   display: block;
   position: relative;
   z-index: 2;
 }
-/* line 388, ../compass/scss/admin/views/_admin.scss */
+/* line 396, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter .filter-clear {
   margin-right: 20px;
   color: red;
 }
-/* line 393, ../compass/scss/admin/views/_admin.scss */
+/* line 401, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary {
   color: #314b5d;
   cursor: pointer;
@@ -2740,36 +2742,36 @@ section#main article details#filter summary {
   outline: none;
   padding: 12px;
 }
-/* line 401, ../compass/scss/admin/views/_admin.scss */
+/* line 409, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary:hover {
   background-color: #11232e;
   color: #fff;
 }
-/* line 408, ../compass/scss/admin/views/_admin.scss */
+/* line 416, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary:after, section#main article details#filter summary::-webkit-details-marker {
   display: none;
 }
-/* line 412, ../compass/scss/admin/views/_admin.scss */
+/* line 420, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary i:after {
   color: #314b5d;
   content: "s";
   font: 12px/1 CompassArrows;
   padding-left: 6px;
 }
-/* line 420, ../compass/scss/admin/views/_admin.scss */
+/* line 428, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter form {
   display: none;
 }
-/* line 425, ../compass/scss/admin/views/_admin.scss */
+/* line 433, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] .filter-clear, section#main article details#filter.open .filter-clear {
   display: none;
 }
-/* line 429, ../compass/scss/admin/views/_admin.scss */
+/* line 437, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] summary, section#main article details#filter.open summary {
   background-color: #11232e;
   color: #fff;
 }
-/* line 434, ../compass/scss/admin/views/_admin.scss */
+/* line 442, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] form, section#main article details#filter.open form {
   border: 1px solid #b6cad1;
   background-color: #fff;
@@ -2779,36 +2781,36 @@ section#main article details#filter[open] form, section#main article details#fil
   right: 0;
   text-align: left;
 }
-/* line 443, ../compass/scss/admin/views/_admin.scss */
+/* line 451, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] form [type='submiinputt'], section#main article details#filter.open form [type='submiinputt'] {
   margin-bottom: 0;
 }
-/* line 450, ../compass/scss/admin/views/_admin.scss */
+/* line 458, ../compass/scss/admin/views/_admin.scss */
 section#main article div.pagination {
   font: 14px/1 AvenirMedium;
   text-align: right;
 }
-/* line 454, ../compass/scss/admin/views/_admin.scss */
+/* line 462, ../compass/scss/admin/views/_admin.scss */
 section#main article div.pagination a {
   font: 14px/1 CompassArrows;
 }
 
-/* line 463, ../compass/scss/admin/views/_admin.scss */
+/* line 471, ../compass/scss/admin/views/_admin.scss */
 details, summary {
   display: block;
 }
 
-/* line 464, ../compass/scss/admin/views/_admin.scss */
+/* line 472, ../compass/scss/admin/views/_admin.scss */
 details.closed > * {
   display: none;
 }
 
-/* line 465, ../compass/scss/admin/views/_admin.scss */
+/* line 473, ../compass/scss/admin/views/_admin.scss */
 details.closed > summary {
   display: block;
 }
 
-/* line 466, ../compass/scss/admin/views/_admin.scss */
+/* line 474, ../compass/scss/admin/views/_admin.scss */
 details.open > summary {
   display: block;
 }

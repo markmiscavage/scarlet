@@ -18,7 +18,8 @@ define(
 			WidgetEvents         = require("./WidgetEvents"),
 			WindowPopup          = require("./WindowPopup"),
 			OnExit               = require("./OnExit"),
-			InlineVideo          = require("./InlineVideo");
+			InlineVideo          = require("./InlineVideo"),
+			FilterBar            = require("./FilterBar");
 
 		return DOMClass.extend({
 
@@ -39,6 +40,7 @@ define(
 				this._renderInsertVideo(dom);
 				this._renderInsertImage(dom);
 				this._renderInlineVideo(dom);
+				this._renderFilterBar(dom);
 
 				this._handlePopup(dom);
 			},
@@ -73,6 +75,11 @@ define(
 					tags: [],
 					tokenSeparators : [',']
 				});
+			},
+
+			_renderFilterBar : function (dom) {
+				var filterBarDom = dom.find(".filters");
+				var filterBar = new FilterBar(filterBarDom);
 			},
 
 			_renderAssetSelect : function (dom) {

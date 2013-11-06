@@ -7939,7 +7939,76 @@ define(
 );
 
 define(
-	'admin/modules/Widgets',['require','exports','module','rosy/base/DOMClass','$','$plugin!select2','$plugin!pickadate','$plugin!details','./AssetSelect','./ApiSelect','./Formset','./Tabs','./InsertVideo','./InsertImage','./wysiwyg/Wysiwyg','./WidgetEvents','./WindowPopup','./OnExit','./InlineVideo'],function (require, exports, module) {
+	'admin/modules/FilterBar',[
+		"rosy/base/DOMClass",
+		"$"
+	],
+	function (DOMClass, $) {
+
+		
+
+		/* mark up sample ----------
+			<section class="filters">
+				<details id="filter" {% if filter_form.has_changed %}class="filtered"{% endif %}>
+					<summary>
+						{% if filter_form.has_changed %}
+							<a class="filter-clear" href="{{ request.path }}">Clear</a>
+						{% endif %}
+						Filter
+						<i></i>
+					</summary>
+					<form action="" method="get">
+						{{ filter_form }}
+						<p><input type="submit" value="Filter" /></p>
+					</form>
+				</details>
+				<details id="filter" {% if filter_form.has_changed %}class="filtered"{% endif %}>
+					<summary>
+						{% if filter_form.has_changed %}
+							<a class="filter-clear" href="{{ request.path }}">Clear</a>
+						{% endif %}
+						Filter
+						<i></i>
+					</summary>
+					<form action="" method="get">
+						{{ filter_form }}
+						<p><input type="submit" value="Filter" /></p>
+					</form>
+				</details>
+			</section>
+		*/
+
+		return DOMClass.extend({
+
+			init : function (dom) {
+				this.dom = dom;
+				this.data = this.dom.data();
+				this.bindDropDownEvents();
+			},
+
+			bindDropDownEvents : function () {
+				var dropDowns = this.dom.find("summary");
+
+				dropDowns.on("click", function () {
+					var dropdown = this;
+					dropDowns.each(function (i) {
+						if (dropdown !== this) {
+							var details = $(this).parent();
+							if (details.attr("open") !== undefined) {
+								details.removeAttr("open");
+							} else if (details.hasClass("open")) {
+								details.removeClass("open").addClass("closed");
+								details.attr("data-open", "closed");
+							}
+						}
+					});
+				});
+			}
+
+		});
+	});
+define(
+	'admin/modules/Widgets',['require','exports','module','rosy/base/DOMClass','$','$plugin!select2','$plugin!pickadate','$plugin!details','./AssetSelect','./ApiSelect','./Formset','./Tabs','./InsertVideo','./InsertImage','./wysiwyg/Wysiwyg','./WidgetEvents','./WindowPopup','./OnExit','./InlineVideo','./FilterBar'],function (require, exports, module) {
 
 		
 
@@ -7958,7 +8027,8 @@ define(
 			WidgetEvents         = require("./WidgetEvents"),
 			WindowPopup          = require("./WindowPopup"),
 			OnExit               = require("./OnExit"),
-			InlineVideo          = require("./InlineVideo");
+			InlineVideo          = require("./InlineVideo"),
+			FilterBar            = require("./FilterBar");
 
 		return DOMClass.extend({
 
@@ -7979,6 +8049,7 @@ define(
 				this._renderInsertVideo(dom);
 				this._renderInsertImage(dom);
 				this._renderInlineVideo(dom);
+				this._renderFilterBar(dom);
 
 				this._handlePopup(dom);
 			},
@@ -8013,6 +8084,11 @@ define(
 					tags: [],
 					tokenSeparators : [',']
 				});
+			},
+
+			_renderFilterBar : function (dom) {
+				var filterBarDom = dom.find(".filters");
+				var filterBar = new FilterBar(filterBarDom);
 			},
 
 			_renderAssetSelect : function (dom) {
@@ -8080,6 +8156,96 @@ define(
 	}
 );
 
+/**
+ * details-shim.js
+ * A pure JavaScript (no dependencies) solution to make HTML5
+ *  Details/Summary tags work in unsupportive browsers
+ *
+ * Copyright (c) 2013 Tyler Uebele
+ * Released under the MIT license.  See included LICENSE.txt
+ *  or http://opensource.org/licenses/MIT
+ *
+ * latest version available at https://github.com/tyleruebele/details-shim
+ */
+
+/**
+ * Enable proper operation of <details> tags in unsupportive browsers
+ */
+
+
+ /**
+ * Modified for require js
+ **/
+ define ('detailsShim',[], function () {
+
+ 		window.console.log("shim!!!!");
+		function details_shim() {
+			window.console.log("shimming!!!");
+		    //Because <details> must include a <summary>,
+		    // collecting <summary> tags collects *valid* <details> tags
+		    var Summaries = document.getElementsByTagName('summary');
+		    for (var i = 0; i < Summaries.length; i++) {
+		        if (!Summaries[i].parentNode
+		            //sanity check, parent node should be a <details> tag
+		            || 'details' != Summaries[i].parentNode.tagName.toLowerCase()
+		            //only run in browsers that don't support <details> natively
+		            || 'boolean' == typeof Summaries[i].parentNode.open
+		        ) {
+		            continue;
+		        }
+
+		        var Details = Summaries[i].parentNode;
+
+		        // Prevent repeat processing
+		        if (Details.hasAttribute('data-open')) {
+		            continue;
+		        }
+
+		        //Set initial class according to `open` attribute
+		        var state = Details.outerHTML
+		            // OR older firefox doesn't have .outerHTML
+		            || new XMLSerializer().serializeToString(Details);
+		        state = state.substring(0, state.indexOf('>'));
+		        //Read: There is an open attribute, and it's not explicitly empty
+		        state = (-1 != state.indexOf('open') && -1 == state.indexOf('open=""'))
+		            ? 'open'
+		            : 'closed'
+		            ;
+		        Details.setAttribute('data-open', state);
+		        Details.className += ' ' + state;
+
+		        //Add onclick handler to toggle visibility class
+		        Summaries[i].addEventListener('click', function () {
+		            //current state
+		            var state = this.parentNode.getAttribute('data-open');
+		            //new state
+		            state = state == 'open' ? 'closed' : 'open';
+		            this.parentNode.setAttribute('data-open', state);
+		            //replace previous open/close class
+		            this.parentNode.className = this.parentNode.className
+		                .replace(/\bopen\b|\bclosed\b/g, ' ') + ' ' + state;
+		        });
+
+		        //wrap text nodes in span to expose them to css
+		        for (var j = 0; j < Details.childNodes.length; j++) {
+		            if (Details.childNodes[j].nodeType == 3
+		                && /[^\s]/.test(Details.childNodes[j].data)
+		            ) {
+		                var span = document.createElement('span');
+		                var text = Details.childNodes[j];
+		                Details.insertBefore(span, text);
+		                Details.removeChild(text);
+		                span.appendChild(text);
+		            }
+		        }
+		    } // for(Summaries)
+		} // details_shim()
+
+		//Run details_shim() when the page loads
+		window.addEventListener
+		    ? window.addEventListener('load', details_shim, false)
+		    : window.attachEvent && window.attachEvent('onload', details_shim);
+	});
 define(
 
 	'admin/views/Admin',[
@@ -8087,10 +8253,11 @@ define(
 		"$",
 		"$plugin!select2",
 		"../modules/Widgets",
-		"../modules/WidgetEvents"
+		"../modules/WidgetEvents",
+		"detailsShim"
 	],
 
-	function (Page, $, jQuerySelect2, Widgets, WidgetEvents) {
+	function (Page, $, jQuerySelect2, Widgets, WidgetEvents, detailsShim) {
 
 		
 
@@ -8187,7 +8354,8 @@ require.config({
 		"$plugin" : "libs/plugins/amd/jquery-plugin",
 		"wysihtml5" : "libs/wysihtml5",
 		"text" : "libs/plugins/amd/text",
-		"rosy" : "libs/rosy/src"
+		"rosy" : "libs/rosy/src",
+		"detailsShim" : "libs/details-shim"
 	},
 
 	waitSeconds : 15,
