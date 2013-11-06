@@ -59,13 +59,8 @@
 
 			{% bundle_url bundle "publish" object=obj follow_parent=False as publish_url %}
 			{% if publish_url %}
-				<form action="{{ publish_url }}" method="post">
+				<form action="{{ publish_url }}" method="get">
 					{% csrf_token %}
-
-					{% if not obj.is_published %}
-					{{ form }}
-					{% endif %}
-
 					<input type="submit" name="publish" value="Publish" />
 				</form>
 			{% endif %}
