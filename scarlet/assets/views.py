@@ -36,10 +36,9 @@ class AssetListView(views.ListView):
         return qs.distinct()
 
 class CropVersionView(views.FormView):
-    base_template = "cms/partial.html"
+    default_template = "assets/crop.html"
     slug_field = 'pk'
     base_filter_kwargs = {'editable': True}
-    base_template = "cms/partial.html"
     readonly_fields = ('width', 'height', 'name')
     cancel_view = "edit_asset"
 

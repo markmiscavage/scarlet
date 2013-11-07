@@ -7,14 +7,17 @@ from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django import http
 from django.utils.decorators import classonlymethod
+from django.core.exceptions import ImproperlyConfigured
 
 from . import views
 from . import options
 from . import helpers
+from . import actions
+from .item import VersionsList
 
 # Constant that defines a attribute points to it's parent
 PARENT = 'parent'
-
+ACTION_ALIAS = '_action'
 
 def create_new_viewclass(base, **kwargs):
     #Create a new view class based on a view instance
@@ -110,6 +113,13 @@ class URLAlias(object):
             return 'main'
         return value
 
+class ViewAlias(URLAlias):
+    """
+    Works the same as URLAlias accept it allows
+    you to reuse a view registered somewhere
+    else as at different url on this bundle.
+    """
+    pass
 
 class BundleMeta(type):
     """
@@ -144,6 +154,8 @@ class BundleMeta(type):
                 _views.add(k)
                 attrs[v.hidden_name(k)] = v
             elif isinstance(v, views.CMSView):
+                _views.add(k)
+            elif isinstance(v, ViewAlias):
                 _views.add(k)
 
         for v in _children:
@@ -206,6 +218,7 @@ class Bundle(object):
     __metaclass__ = BundleMeta
 
     parent_attr = PARENT
+    action_alias = ACTION_ALIAS
 
     navigation = ()
     dashboard = ()
@@ -219,7 +232,7 @@ class Bundle(object):
     main = views.ListView()
     add = views.FormView(force_add=True)
     edit = views.FormView()
-    delete = views.DeleteView()
+    delete = actions.DeleteActionView()
 
     main_list = URLAlias(alias_to="main")
 
@@ -255,8 +268,11 @@ class Bundle(object):
             if site and self._meta.primary_model_bundle:
                 site.register_model(self._meta.model, self)
 
+        added_views = []
+        action_views = set(self._meta.action_views)
         for view in self._views:
             v = getattr(self, view, None)
+
             if v and isinstance(v, views.CMSView):
                 view_kwargs = self._meta.get_kwargs_for_view(view)
 
@@ -265,6 +281,16 @@ class Bundle(object):
 
                 setattr(self, view, create_new_viewclass(v,
                                         **view_kwargs))
+
+                # Create aliases for action views
+                if view in action_views:
+                    view_name = '{0}{1}'.format(view, ACTION_ALIAS)
+                    if not hasattr(self, view_name):
+                        setattr(self, view_name, ViewAlias(alias_to=view))
+                        added_views.append(view_name)
+
+        if added_views:
+            self._views = tuple(list(self._views)+added_views)
 
     def set_admin_site(self, site):
         self.admin_site = site
@@ -348,9 +374,19 @@ class Bundle(object):
                                     can_submit=False,
                                     base_template='cms/partial.html',
                                     request=request, kwargs=url_kwargs)
-            if view and name and view.can_view(request.user):
-                response = self._render_view_as_string(view, name, request,
-                                                       url_kwargs)
+
+            if isinstance(view, URLAlias):
+                view_name = view.get_view_name(view_name)
+                bundle = view.get_bundle(self, url_kwargs, {})
+                if bundle and isinstance(bundle, Bundle):
+                    return bundle.get_string_from_view(request, view_name,
+                                                    url_kwargs,
+                                                    render_type=render_type)
+
+            elif view:
+                if view and name and view.can_view(request.user):
+                    response = self._render_view_as_string(view, name, request,
+                                                           url_kwargs)
         except http.Http404:
             pass
         return response
@@ -360,7 +396,7 @@ class Bundle(object):
         url = reverse("admin:%s" % name, kwargs=url_kwargs,
                         current_app=self.admin_site.name)
         view.add_to_render_data(action_url=url)
-        return mark_safe(view.get(request, **url_kwargs))
+        return mark_safe(view.as_string(request, **url_kwargs))
 
     def get_view_url(self, view_name, user,
                      url_kwargs=None, context_kwargs=None,
@@ -418,7 +454,9 @@ class Bundle(object):
     def _view_uses_name_as_url_kwarg(self, view_name):
         #Returns True if the given view_name uses
         #self.name in url kwargs
-        return view_name in self._meta.item_views
+        view_name = view_name.replace(ACTION_ALIAS, '')
+        return (view_name in self._meta.item_views) or \
+                (view_name in self._meta.action_views)
 
     def _get_slug_url_kwarg_for_name(self, view_name):
         arg = None
@@ -458,8 +496,10 @@ class Bundle(object):
 
         # Initialize the view with the right kwargs
         if hasattr(view, 'as_view'):
-            extra_kwargs.update(**self._get_view_kwargs(view, view_name))
-            view = view(**extra_kwargs)
+            e = dict(extra_kwargs)
+            e.update(**self._get_view_kwargs(view, view_name))
+            e['name'] = view_name
+            view = view(**e)
 
         # It is a Bundle return the main
         elif isinstance(view, Bundle):
@@ -520,6 +560,12 @@ class Bundle(object):
         if view:
             if attname in self._children:
                 return view, view.name
+            elif isinstance(view, ViewAlias):
+                view_name = view.get_view_name(attname)
+                bundle = view.get_bundle(self, {}, {})
+                if bundle and isinstance(bundle, Bundle):
+                    view, name = bundle.get_view_and_name(view_name)
+
             if hasattr(view, 'as_view'):
                 if attname != 'main':
                     name = "%s_%s" % (self.name, attname)
@@ -530,6 +576,8 @@ class Bundle(object):
                 return self.parent_attr, None
             elif isinstance(view, URLAlias):
                 return view, None
+
+
         return None, None
 
     def get_regex_for_name(self, name, attname):
@@ -542,7 +590,8 @@ class Bundle(object):
                 regex = getattr(self._meta, "%s_regex_base" % attname)
                 regex = regex % {'group_name': self.name,
                                 'attname': attname}
-            elif attname in self._meta.item_views:
+            elif attname in self._meta.item_views or \
+                    attname in self._meta.action_views:
                 regex = "%s%s" % (self.item_regex, regex)
         return regex
 
@@ -573,11 +622,12 @@ class Bundle(object):
         seen = set()
 
         # Process item views in order
-        for v in self._meta.item_views:
-            view, name = self.get_view_and_name(v)
-            if view and name:
-                parts.append(self.get_url(name, view, v))
-            seen.add(v)
+        for v in list(self._meta.item_views)+list(self._meta.action_views):
+            if not v in seen:
+                view, name = self.get_view_and_name(v)
+                if view and name:
+                    parts.append(self.get_url(name, view, v))
+                seen.add(v)
 
         # Process everything else that we have not seen
         for v in set(self._views).difference(seen):
@@ -620,6 +670,12 @@ class Bundle(object):
         for this bundle. The tuple format is (url, title).
         """
         return self._nav_from_tuple(request, self.dashboard)
+
+    def get_dashboard_block(self, request):
+        """
+        Returns a block of html for display on the dashboard.
+        """
+        return None
 
     def get_navigation(self, request, **kwargs):
         """
@@ -667,9 +723,9 @@ class BlankBundle(Bundle):
 class VersionMixin(object):
     _views = ('publish', 'unpublish', 'versions')
 
-    publish = views.PublishView()
-    unpublish = views.UnPublishView()
-    versions = views.VersionsList()
+    publish = actions.PublishActionView()
+    unpublish = actions.UnPublishActionView()
+    versions = VersionsList()
 
 
 class VersionedBundle(Bundle, VersionMixin):
@@ -701,6 +757,12 @@ class DelegatedObjectBundle(Bundle):
     unpublish = URLAlias(bundle_attr='edit')
     versions = URLAlias(bundle_attr='edit')
 
+    delete_action = ViewAlias(bundle_attr='edit', alias_to='delete')
+    publish_action = ViewAlias(bundle_attr='edit', alias_to='publish')
+    unpublish_action = ViewAlias(bundle_attr='edit', alias_to='unpublish')
+
+    class Meta(options.VersionMeta):
+        pass
 
 class ObjectOnlyBundle(Bundle):
     """
@@ -722,6 +784,7 @@ class ObjectOnlyBundle(Bundle):
 
     class Meta:
         item_views = ()
+        action_views = ()
         live_views = ('delete', 'publish', 'unpublish', 'versions')
 
 class VersionedObjectOnlyBundle(ObjectOnlyBundle, VersionMixin):

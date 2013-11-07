@@ -31,7 +31,7 @@ class Post(VersionView):
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, editable=False)
     body = models.TextField()
-    author = models.ForeignKey(Author)
+    author = models.ForeignKey(Author, on_delete=models.PROTECT)
     category = models.ForeignKey(Category)
     # SEO Section
     keywords = models.TextField(blank=True)
@@ -53,7 +53,7 @@ class PostImage(Cloneable):
             return unicode(self.image)
 
 
-class Comment(models.Model):
+class Comment(VersionView):
     post = models.ForeignKey(Post)
     name = models.CharField(max_length=100)
     text = models.TextField()

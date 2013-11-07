@@ -11,7 +11,6 @@ from django.utils.translation import ugettext as _
 from django import forms
 from django.views.generic import TemplateView
 
-
 from . import models
 from . forms import BaseFilterForm
 
@@ -281,6 +280,16 @@ class AdminSite(object):
                 nav.append((title, urls, v.name))
         return nav
 
+    def get_dashboard_blocks(self, request):
+        blocks = []
+        for k in sorted(self._order, key=self._order.get):
+            v = self._registry[k]
+            block = v.get_dashboard_block(request)
+            if block:
+                title = self._titles.get(k, v.get_title())
+                blocks.append((title, block))
+        return blocks
+
     def _get_allowed_sections(self, dashboard):
         """
         Get the sections to display based on dashboard
@@ -301,6 +310,7 @@ class AdminSite(object):
         """
 
         dashboard = self.get_dashboard_urls(request)
+        dash_blocks = self.get_dashboard_blocks(request)
 
         sections, titles = self._get_allowed_sections(dashboard)
         choices = zip(sections, titles)
@@ -331,7 +341,7 @@ class AdminSite(object):
         page = paginator.page(page_number)
 
         return TemplateResponse(request, [template], {
-                            'dashboard': dashboard,
+                            'dashboard': dashboard, 'blocks': dash_blocks,
                             'page': page, 'bundle' : self._registry.values()[0],
                             'form': form}, current_app = self.name)
 

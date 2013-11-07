@@ -3,10 +3,19 @@
 
 {% block formsets %}
 {% if crops %}
-<ul>
-{% for crop in crops %}
-    <li><a href="../crops/{{ crop.pk }}/edit/">{{ crop.name }}</a></li>
-{% endfor %}
-</ul>
+	<div class="crop-info">
+		<h2>Crops</h2>
+		<ul class="crop-nav">
+			{% for crop in crops %}
+				<li class="row">
+					<div class="col">{{ crop.name }}</div>
+					<div class="col">{{ crop.width }}x{{ crop.height }} (px)</div>
+					<div class="col">
+						<a class="button open-popup" href="../crops/{{ crop.pk }}/edit/"><i>Edit</i></a>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
 {% endif %}
 {% endblock formsets %}

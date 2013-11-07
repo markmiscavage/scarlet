@@ -60,16 +60,20 @@ class Meta(object):
         'defaults',
         'default_kwargs',
         'primary_model_bundle',
+        'action_views'
     )
 
     def __init__(self):
         self.primary_model_bundle = False
 
         # which items should use item_regex_base
-        self.item_views = ('edit', 'delete')
+        self.item_views = ('edit',)
 
         # which items are considered live actions
         self.live_views = ('delete',)
+
+        # which items should be displayed as mass actions
+        self.action_views = ('delete',)
 
         # The regex that should be used to match in
         # urls the value for %s is determined by the bundle
@@ -134,9 +138,9 @@ class Meta(object):
 
 
 class VersionMeta(object):
-    item_views = ('edit', 'delete', 'publish', 'unpublish', 'versions')
+    item_views = ('edit', 'versions')
     live_views = ('delete', 'publish', 'unpublish', 'versions')
-
+    action_views = ('delete', 'publish', 'unpublish')
 
 class Orderable(object):
     """

@@ -205,6 +205,9 @@ class ImageDetailBase(models.Model):
     def __unicode__(self):
         return pretty_name(self.name)
 
+    def get_crop_config(self):
+        return get_image_cropper().get_crop_config(self.name)
+
     @classmethod
     def save_crop_spec(cls, asset, spec, update_version=True):
         if spec:

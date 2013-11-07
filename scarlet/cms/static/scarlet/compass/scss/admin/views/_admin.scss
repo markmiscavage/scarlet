@@ -141,6 +141,19 @@ section#main {
 				display: inline-block;
 				font: 18px/1 AvenirRoman;
 				margin-right: $gridlet*2;
+
+				&.required {
+					padding-left: 15px;
+					position: relative;
+
+					&:before {
+						content: "*";
+						position: absolute;
+						left: 0;
+						top: 2px;
+						font-weight: bold;
+					}
+				}
 			}
 
 			em {
@@ -332,6 +345,17 @@ section#main {
 						}
 					}
 				}
+			}
+
+			.widget-wysiwyg {
+				margin-left: 24px;
+			}
+
+			.errorlist {
+				color: #ff0000;
+				margin: 0 0 1em 24px;
+				padding: 0;
+				position: relative;
 			}
 
 			label,

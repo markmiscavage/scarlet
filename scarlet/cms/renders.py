@@ -115,8 +115,6 @@ class CMSRender(RenderResponse):
                                                  url_kwargs,
                                                  parent_only=True)
 
-        kwargs['navigation'] = bundle.get_navigation(request,
-                                                     **url_kwargs)
         kwargs['dashboard'] = bundle.admin_site.get_dashboard_urls(request)
 
         if view:

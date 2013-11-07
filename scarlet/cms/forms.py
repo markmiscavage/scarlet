@@ -177,6 +177,13 @@ class WhenForm(forms.Form):
 
     when = forms.DateTimeField(required=False, widget=widgets.SplitDateTime)
 
+class MassActionForm(forms.ModelForm):
+    selected = forms.BooleanField(required = False)
+
+class ActionForm(forms.Form):
+    action = forms.ChoiceField(label=('Action:'))
+
+
 class LazyFormSetFactory(object):
     """
     Wrapper class for formset factories, for use with FormView.

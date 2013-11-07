@@ -20,6 +20,7 @@ define(
 			OnExit               = require("./OnExit"),
 			InlineVideo          = require("./InlineVideo"),
 			FilterBar            = require("./FilterBar");
+			CropImage            = require("./CropImage");
 
 		return DOMClass.extend({
 
@@ -41,6 +42,7 @@ define(
 				this._renderInsertImage(dom);
 				this._renderInlineVideo(dom);
 				this._renderFilterBar(dom);
+				this._renderjQueryCrop(dom);
 
 				this._handlePopup(dom);
 			},
@@ -141,6 +143,18 @@ define(
 					var vid = new InlineVideo({
 						$dom : $(el)
 					});
+				});
+			},
+
+			_renderjQueryCrop : function (dom) {
+
+				dom.find(".jcrop").each(function (i, el) {
+					var cropImage = new CropImage($(el), {
+						aspectRatio : 'auto'
+					}, {
+
+					}); // options, coordinates, extra
+					// this.content = new ContentClass(this.$content, options, this.$content.data(), extra);
 				});
 			}
 		});
