@@ -19,7 +19,7 @@ define(
 			WindowPopup          = require("./WindowPopup"),
 			OnExit               = require("./OnExit"),
 			InlineVideo          = require("./InlineVideo"),
-			FilterBar            = require("./FilterBar");
+			FilterBar            = require("./FilterBar"),
 			CropImage            = require("./CropImage");
 
 		return DOMClass.extend({
