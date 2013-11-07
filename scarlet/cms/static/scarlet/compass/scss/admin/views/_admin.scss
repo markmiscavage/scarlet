@@ -334,6 +334,20 @@ section#main {
 				}
 			}
 
+			.errorlist {
+				color: #ff0000;
+				margin: 0 0 1em;
+				position: relative;
+
+				&:before {
+					@include triangle($direction: up, $color: #ff0000, $size: 4px);
+					content: "";
+					position: absolute;
+					left: 24px;
+					top: 2px;
+				}
+			}
+
 			label,
 			input,
 			textarea,
