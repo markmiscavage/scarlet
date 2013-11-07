@@ -141,6 +141,19 @@ section#main {
 				display: inline-block;
 				font: 18px/1 AvenirRoman;
 				margin-right: $gridlet*2;
+
+				&.required {
+					padding-left: 15px;
+					position: relative;
+
+					&:before {
+						content: "*";
+						position: absolute;
+						left: 0;
+						top: 2px;
+						font-weight: bold;
+					}
+				}
 			}
 
 			em {
