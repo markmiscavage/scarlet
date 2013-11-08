@@ -53,7 +53,6 @@ class TimeChoiceWidget(widgets.Select):
         self.choices = [(self.NOW, 'Now')]
         self.choice_values = set()
 
-        
         self.repr_format = "%I:%M:%S %p"
         if twenty_four_hour:
             self.repr_format = "%H:%M:%S"
@@ -347,7 +346,7 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
     if the automatic url discovery fails.
     """
 
-    template = u'<select multiple="multiple" data-api="%(api_link)s" name="tags" data-add="%(add_link)s" id="%(id)s"></select>'
+    template = u'<div class="api-select" data-api="%(api_link)s" data-add="%(add_link)s"><select multiple="multiple" name="%(name)s" id="%(id)s">%(options)s</select></div>'
     allow_multiple_selected = True
 
     def __init__(self, model, attrs=None, using=None,
@@ -397,10 +396,33 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
         final_attrs = self.build_attrs(attrs, name=name)
         data = {
             'api_link': self.get_api_link(),
-            'add_link' : self.get_add_link()
+            'add_link' : self.get_add_link(),
+            'options' : self.get_options(value)
         }
         data.update(final_attrs)
         return mark_safe(self.template % data)
+
+    def get_options(self, value, key=None):
+        if not key:
+            key = self.model.get_related_field().name
+
+        values = []
+        if value is not None:
+            try:
+                kwargs = {'{0}__in'.format(key): value}
+                if self.limit_choices_to:
+                    kwargs.update(self.limit_choices_to)
+                objs = self.model.to._default_manager.using(self.db
+                                 ).filter(**kwargs)
+                for obj in objs:
+                    d = { 'text' : force_unicode(obj),
+                          'value' : getattr(obj, key) }
+                    line = '<option value="%(value)s">%(text)s</option>' % d
+                    values.append(line)
+            except ValueError:
+                pass
+
+        return ''.join(values)
 
 
 class HiddenTextInput(widgets.HiddenInput):
@@ -416,6 +438,7 @@ class HiddenTextInput(widgets.HiddenInput):
     def __init__(self, *args, **kwargs):
         super(HiddenTextInput, self).__init__(*args, **kwargs)
         self.attrs['class'] = 'orderfield'
+
 
 class HTMLWidget(widgets.Textarea):
     """
