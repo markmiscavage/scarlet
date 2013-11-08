@@ -346,7 +346,7 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
     if the automatic url discovery fails.
     """
 
-    template = u'<div class="api-select" data-api="%(api_link)s" data-add="%(add_link)s"><select multiple="multiple" name="%(name)s" id="%(id)s">%(options)s</select></div>'
+    template = u'<div class="api-select" data-api="%(api_link)s" data-add="%(add_link)s">%(options)s</div>'
     allow_multiple_selected = True
 
     def __init__(self, model, attrs=None, using=None,
@@ -397,12 +397,12 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
         data = {
             'api_link': self.get_api_link(),
             'add_link' : self.get_add_link(),
-            'options' : self.get_options(value)
+            'options' : self.get_options(value, name)
         }
         data.update(final_attrs)
         return mark_safe(self.template % data)
 
-    def get_options(self, value, key=None):
+    def get_options(self, value, name, key=None):
         if not key:
             key = self.model.get_related_field().name
 
@@ -416,8 +416,9 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
                                  ).filter(**kwargs)
                 for obj in objs:
                     d = { 'text' : force_unicode(obj),
-                          'value' : getattr(obj, key) }
-                    line = '<option value="%(value)s">%(text)s</option>' % d
+                          'value' : getattr(obj, key),
+                          'name' : name }
+                    line = '<input type="hidden" data-title=%(text)s name=%(name)s value="%(value)s" />' % d
                     values.append(line)
             except ValueError:
                 pass
