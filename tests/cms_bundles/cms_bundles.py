@@ -2,7 +2,7 @@ from django.forms.models import inlineformset_factory
 
 from scarlet.cms import bundles, site, forms, options, views, renders, actions
 
-from models import Post, PostImage, Comment, Category, Author, DummyModel
+from models import Post, PostImage, Comment, Category, Tag, Author, DummyModel
 from views import PostsListView
 from forms import EditAuthorForm
 
@@ -21,6 +21,7 @@ class CloneAction(actions.ActionView):
                         body=obj.body,
                         author=obj.author,
                         category=obj.category,
+                        tag=obj.tags,
                         keywords=obj.keywords,
                         description=obj.description
                     )
@@ -82,6 +83,15 @@ class CategoryBundle(bundles.Bundle):
         primary_model_bundle = True
 
 
+class TagBundle(bundles.Bundle):
+    navigation = bundles.PARENT
+    main = views.ListView(paginate_by = 1, display_fields=('tag',), change_fields=('tag',))
+
+    class Meta:
+        model = Tag
+        primary_model_bundle = True
+
+
 class CommentBundle(bundles.ParentVersionedBundle, bundles.VersionMixin):
     navigation = bundles.PARENT
     object_view = bundles.PARENT
@@ -123,7 +133,7 @@ class DummyRedirectorBundle(bundles.Bundle):
 DEFAULT_FIELDS =(
     ("Post", {
         'fields': ('date','title', 'body',
-                   'author','category', ) # add 'tags' when it will work
+                   'author','category', 'tags' ) 
     }),
     )
 
@@ -179,6 +189,7 @@ class BlogBundle(bundles.DelegatedObjectBundle):
         ('dummy_alias',),
         ('dummy_redirector',),
         ('category',),
+       ('tag',),
     )
 
     main = views.ListView(display_fields=('title', 'author'))
@@ -189,6 +200,7 @@ class BlogBundle(bundles.DelegatedObjectBundle):
     dummy_alias = DummyAliasBundle.as_subbundle(name='dummy_alias', title='Dummy Alias')
     dummy_redirector = DummyRedirectorBundle.as_subbundle(name='dummy_redirector', title='Dummy Redirect')
     category = CategoryBundle.as_subbundle(name='category', title='Category')
+    tag = TagBundle.as_subbundle(name='tag', title='Tag')
     preview = views.PreviewWrapper(preview_view=PostsListView,
         pass_through_kwarg=None)
     change = DummyActionView(short_description="Change names to 'Dummy'")

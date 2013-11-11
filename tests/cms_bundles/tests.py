@@ -233,6 +233,13 @@ class BundleViewsTestCase(TestCaseDeactivate):
         p = PostImage.objects.filter(caption = 'Captions are cool.')
         self.assertEqual(p.count(), 1)
 
+        # Test multiselect widget creatition
+        resp = self.client.get('/admin/blog/add/')
+        self.assertTrue('<select multiple="multiple" data-api="/admin/blog/tag/?type=choices" name="tags" data-add="/admin/blog/tag/add/?popup=1" id="id_tags">' in resp.content)
+
+        resp = self.client.get('/admin/blog/%s/edit/' % a[0].pk)
+        self.assertTrue('<select multiple="multiple" data-api="/admin/blog/tag/?type=choices" name="tags" data-add="/admin/blog/tag/add/?popup=1" id="id_tags">' in resp.content)
+
     def test_delete_post(self):
         author = Author.objects.create(
                     name='Joe Poster',

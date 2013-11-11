@@ -322,9 +322,9 @@ class CMSView(BaseView):
         for forms that specify their own fields causing the
         default db_field callback to not be run for that field.
 
-        Default implementation checks for APIModelChoiceWidgets and
-        runs the update_links method on them. Passing the admin_site
-        and request being used.
+        Default implementation checks for APIModelChoiceWidgets 
+        or APIManyChoiceWidgets and runs the update_links method 
+        on them. Passing the admin_site and request being used.
 
         Returns a new class that contains the field with the initialized
         custom widget.
@@ -332,7 +332,8 @@ class CMSView(BaseView):
         attrs = {}
 
         for k, f in form_class.base_fields.items():
-            if isinstance(f.widget, widgets.APIModelChoiceWidget):
+            if isinstance(f.widget, widgets.APIModelChoiceWidget) \
+                    or isinstance(f.widget, widgets.APIManyChoiceWidget):
                 field = copy.deepcopy(f)
                 field.widget.update_links(self.request, self.bundle.admin_site)
                 attrs[k] = field
