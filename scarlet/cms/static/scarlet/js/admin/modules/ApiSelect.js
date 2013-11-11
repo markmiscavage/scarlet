@@ -91,7 +91,7 @@ define(
 			**********************/
 
 			_initSelect2 : function () {
-				var placeholder = this.label.text() || "one";
+				var placeholder = this.label.text() || 'one';
 				placeholder = placeholder.replace(/[^a-z0-9]/i, '').toLowerCase();
 
 				var opts = {
@@ -108,17 +108,17 @@ define(
 						data : this._ajaxData,
 						results : this._ajaxResults
 					}
-				}
+				};
 
 				if (this.isMultiple) {
 					opts.tags = this.initSelection;
 
 					// clone this.input to preserve its value before manipulation
 					if (this.input.val()) {
-		  				this.input.after(this.input.clone());
+						this.input.after(this.input.clone());
 					}
 
-		  			// suffix this.input name so its comma-delimitted tags won't be submitted
+					// suffix this.input name so its comma-delimitted tags won't be submitted
 					this.input.attr('name', this.input.attr('name') + '_');
 				}
 
@@ -131,10 +131,10 @@ define(
 			},
 
 			initSelection : function (element, callback) {
-		  		var data;
+				var data;
 
-		  		if (this.isMultiple) {
-		  			data = [];
+				if (this.isMultiple) {
+					data = [];
 
 					// add sibling hidden values as initial value
 					this.dom.find('input[name=' + this.name + ']').each(function () {
@@ -144,14 +144,14 @@ define(
 						});
 					});
 
-		  		} else {
-		  			data = {
-		  				id: element.val(),
+				} else {
+					data = {
+						id: element.val(),
 						text: this.dom.data('title')
-		  			}
-		  		}
+					};
+				}
 
-		  		callback(data);
+				callback(data);
 			},
 
 			updateHiddenValues : function (e) {
