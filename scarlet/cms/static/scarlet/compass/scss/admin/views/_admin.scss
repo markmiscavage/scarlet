@@ -358,6 +358,24 @@ section#main {
 				position: relative;
 			}
 
+			.messagelist {
+				padding: 0;
+				font-weight: bold;
+
+				.info,
+				.success {
+					color: #008000;
+				}
+
+				.warning {
+					color: #BD8F00;
+				}
+
+				.error {
+					color: #ff0000;
+				}
+			}
+
 			label,
 			input,
 			textarea,
