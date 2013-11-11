@@ -101,7 +101,6 @@ define(
 					initSelection : this.initSelection,
 					formatResult : this.formatResult,
 					minimumResultsForSearch : 5,
-					//multiple : true,
 					ajax : {
 						url : this.dom.data('api'),
 						quietMillis : 400,
@@ -124,10 +123,7 @@ define(
 				}
 
 				this.input.select2(opts);
-
 				this.select2 = this.input.data().select2;
-
-				//this._toggleSearch();
 			},
 
 			formatResult : function (object, container, query) {
@@ -200,8 +196,8 @@ define(
 					this.names.push(field);
 				}
 
-				this._initParams();
-				this._toggleSearch();
+				// this._initParams();
+				// this._toggleSearch();
 
 				// sanitize data
 				$.each(data.results, this.proxy(function (index, result) {
@@ -224,6 +220,8 @@ define(
 			/**********************
 				Params
 			**********************/
+
+			// TODO: evaluate need (ux) for sort functionality
 
 			_initParams : function () {
 				// dont init search option twice
