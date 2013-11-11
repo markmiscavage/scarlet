@@ -400,13 +400,15 @@ section#main {
 			}
 
 			input[type='date'] {
+				position: relative;
+
 				&:after {
 					// add calendar icon...
 					@extend [class*="icon-"];
 					@extend .icon-calendar:before;
 
 					position: absolute;
-					right: 10px;
+					right: 5px;
 					width: 22px;
 					padding-top: 2px;
 					font-size: 18px;
