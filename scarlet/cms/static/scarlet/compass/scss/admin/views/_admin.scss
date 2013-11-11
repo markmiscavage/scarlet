@@ -24,6 +24,24 @@ section#main {
 		padding: $spacer $spacer*2;
 	}
 
+	.messagelist {
+		padding: 0 0 0 5px;
+		font-weight: bold;
+
+		.info,
+		.success {
+			color: #008000;
+		}
+
+		.warning {
+			color: #BD8F00;
+		}
+
+		.error {
+			color: #ff0000;
+		}
+	}
+
 	article {
 		position: relative;
 
@@ -356,24 +374,6 @@ section#main {
 				margin: 0 0 1em 24px;
 				padding: 0;
 				position: relative;
-			}
-
-			.messagelist {
-				padding: 0;
-				font-weight: bold;
-
-				.info,
-				.success {
-					color: #008000;
-				}
-
-				.warning {
-					color: #BD8F00;
-				}
-
-				.error {
-					color: #ff0000;
-				}
 			}
 
 			label,
