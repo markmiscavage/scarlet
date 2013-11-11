@@ -418,13 +418,13 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
                     d = { 'text' : force_unicode(obj),
                           'value' : getattr(obj, key),
                           'name' : name }
-                    line = '<input type="hidden" data-title="%(text)s" name="%(name)s" value="%(value)s" />' % d
+                    line = '<input type="hidden" data-multiple data-title="%(text)s" name="%(name)s" value="%(value)s" />' % d
                     values.append(line)
             except ValueError:
                 pass
 
         if not values:
-            values = ['<input type="hidden" data-title="" name="{0}" value="" />'.format(name)]
+            values = ['<input type="hidden" data-multiple data-title="" name="{0}" value="" />'.format(name)]
         return ''.join(values)
 
 
