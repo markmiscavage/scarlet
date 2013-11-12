@@ -6038,7 +6038,7 @@ define(
 					params = this._unparam(dom[0].search),
 					tags = ($(this.dom).data('tags') || '').toLowerCase().split(',');
 
-				tags = tags.concat(this._all_tags);
+				tags = tags.concat(this._auto_tags);
 				params.tags = encodeURIComponent(tags.join(','));
 				dom[0].search = this._param(params);
 			},
