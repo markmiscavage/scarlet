@@ -6,7 +6,10 @@
 
         {% if versions %}
             {% for v in versions %}
-                <input type="radio" name="version" id="version_{{ v.vid }}" value="{{ v.vid }}" /><label for="version_{{ v.vid }}">{{ v.status_line }}</label>
+            <p>
+                <label for="version_{{ v.vid }}">{{ v.status_line }}</label>
+                <input type="radio" name="version" id="version_{{ v.vid }}" value="{{ v.vid }}" />
+            </p>
             {% endfor %}
 
             <p><a class="button" href="{{ done_url }} ">Cancel</a>

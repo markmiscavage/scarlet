@@ -5,7 +5,9 @@
     <form action="{{ action_url }}" method="post">
         {% csrf_token %}
         {% bundle_url bundle "edit" object=obj follow_parent=False as edit_url %}
-        <p><a href="{{ done_url }} " class="button">Cancel</a>
-        <input type="submit" name="unpublish" value="unpublish" /></p>
+        <p class="submit-row">
+        	<a href="{{ done_url }} " class="button">Cancel</a>
+       		<input class="big" type="submit" name="unpublish" value="unpublish" />
+       	</p>
     </form>
 {% endblock %}

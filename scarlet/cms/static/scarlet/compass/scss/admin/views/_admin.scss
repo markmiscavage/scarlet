@@ -101,6 +101,14 @@ section#main {
 			}
 		}
 
+		dl {
+			margin: 8px 0;
+
+			dd {
+				margin-top: 8px;
+			}
+		}
+
 		form {
 			color: $blue;
 			font: 18px/1 AvenirRoman;
@@ -134,9 +142,15 @@ section#main {
 
 			p {
 				display: block;
-				margin: 0;
 				position: relative;
-				text-align: right;
+
+				&.submit-row {
+					text-align: right;
+
+					.button {
+						margin-top: 8px;
+					}
+				}
 
 				&.checkbox {
 					margin-bottom: $spacer * 3;

@@ -124,7 +124,10 @@
 				{% endfor %}
 			</select>
 		{% endif %}
-		<p><a class="button" href="{{ cancel_url }}">Cancel</a><input class="big" type="submit" value="Save" /></p>
+		<p class="submit-row">
+			<a class="button" href="{{ cancel_url }}">Cancel</a>
+			<input class="big" type="submit" value="Save" />
+		</p>
 	</form>
 	{% endif %}
 	{% endblock %}

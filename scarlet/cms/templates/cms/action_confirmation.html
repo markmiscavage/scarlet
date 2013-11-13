@@ -6,13 +6,15 @@
 
     {% bundle_url bundle "main_list" as cancel_url %}
     {% if not errors %}
-    <p>{{ conf_msg }} <br>
+    <p>{{ conf_msg }}</p>
         {% for obj in queryset %}
-            {{ obj }}<br>
-            {% endfor %}
-        Are you sure?</p>
-    <p><a class="button" href="{{ cancel_url }} ">Cancel</a>
-    <input type="submit" name='modify' value="Yes" /></p>
+            <p>{{ obj }}</p>
+        {% endfor %}
+    <p>Are you sure?</p>
+    <p class="submit-row confirm">
+        <a class="button" href="{{ cancel_url }} ">Cancel</a>
+        <input class="big" type="submit" name='modify' value="Yes" />
+    </p>
     {% else %}
 
     <p>{{ error_msg }}</p>
