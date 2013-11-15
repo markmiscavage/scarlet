@@ -322,8 +322,8 @@ class CMSView(BaseView):
         for forms that specify their own fields causing the
         default db_field callback to not be run for that field.
 
-        Default implementation checks for APIModelChoiceWidgets 
-        or APIManyChoiceWidgets and runs the update_links method 
+        Default implementation checks for APIModelChoiceWidgets
+        or APIManyChoiceWidgets and runs the update_links method
         on them. Passing the admin_site and request being used.
 
         Returns a new class that contains the field with the initialized
@@ -426,9 +426,9 @@ class ModelCMSMixin(object):
 
         # Our custom widgets need special init
         mbundle = None
+        extra = kwargs.pop('widget_kwargs', {})
+        widget = kwargs.get('widget')
         if kwargs.get('widget'):
-            widget = kwargs.get('widget')
-            extra = kwargs.pop('widget_kwargs', {})
             if widget and isinstance(widget, type) and \
                             issubclass(widget, widgets.APIChoiceWidget):
                 mbundle = self.bundle.admin_site.get_bundle_for_model(
@@ -437,7 +437,21 @@ class ModelCMSMixin(object):
                     widget = widget(db_field.rel, **extra)
                 else:
                     widget = None
-            kwargs['widget'] = widget
+
+        if getattr(self, 'prepopulated_fields', None) and \
+                        not getattr(self, 'object', None) and \
+                        db_field.name in self.prepopulated_fields:
+            extra = kwargs.pop('widget_kwargs', {})
+            attr = extra.pop('attrs', {})
+            attr['source-fields'] = self.prepopulated_fields[db_field.name]
+            extra['attrs'] = attr
+            if not widget:
+                from django.forms.widgets import TextInput
+                widget = TextInput(**extra)
+            elif widget and isinstance(widget, type):
+                widget = widget(**extra)
+
+        kwargs['widget'] = widget
 
         field = db_field.formfield(**kwargs)
         if mbundle:

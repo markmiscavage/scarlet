@@ -50,7 +50,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
     redirect_to_view = "main"
     cancel_view = "main"
     readonly_fields = None
-
+    prepopulated_fields = None
     force_instance_values = {}
 
     def __init__(self, *args, **kwargs):
