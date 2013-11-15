@@ -20,7 +20,8 @@ define(
 			OnExit               = require("./OnExit"),
 			InlineVideo          = require("./InlineVideo"),
 			FilterBar            = require("./FilterBar"),
-			CropImage            = require("./CropImage");
+			CropImage            = require("./CropImage"),
+			AutoSlug             = require("./AutoSlug");
 
 		return DOMClass.extend({
 
@@ -43,6 +44,8 @@ define(
 				this._renderInlineVideo(dom);
 				this._renderFilterBar(dom);
 				this._renderjQueryCrop(dom);
+
+				this._autoSlug(dom);
 
 				this._handlePopup(dom);
 			},
@@ -99,6 +102,12 @@ define(
 			_renderApiSelect : function (dom) {
 				dom.find(".api-select").each(function (i, dom) {
 					var select = new ApiSelect($(dom));
+				});
+			},
+
+			_autoSlug : function () {
+				$("[data-auto-slug]").each(function (i, dom) {
+					var autoSlug = new AutoSlug($(dom));
 				});
 			},
 
