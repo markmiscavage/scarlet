@@ -443,7 +443,7 @@ class ModelCMSMixin(object):
                         db_field.name in self.prepopulated_fields:
             extra = kwargs.pop('widget_kwargs', {})
             attr = extra.pop('attrs', {})
-            attr['source-fields'] = self.prepopulated_fields[db_field.name]
+            attr['data-source-fields'] = self.prepopulated_fields[db_field.name]
             extra['attrs'] = attr
             if not widget:
                 from django.forms.widgets import TextInput
