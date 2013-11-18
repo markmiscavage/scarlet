@@ -12,23 +12,27 @@ define(
 		return DOMClass.extend({
 
 			dom : null,
-			slug : null,
+			origin : null,
 
 			init : function (dom) {
 				this.dom = dom;
-				this.slug = dom.parent('fieldset').find('[name=' + dom.data('auto-slug') + ']');
+				this.origin = dom.parents('fieldset').find('[name=' + dom.data('source-fields') + ']');
 
 				if (this.isValueMatch()) {
 					this.addListeners();
 				}
 			},
 
+			getOriginValue : function () {
+				return this.origin.val().replace(/\s+/g, '-').toLowerCase();
+			},
+
 			isValueMatch : function () {
-				var currVal = this.dom.val().replace(/\s+/g, '-').toLowerCase();
+				var currVal = this.getOriginValue();
 
 				// if values are different, disable matching
-				if (currVal !== this.slug.val()) {
-					this.dom.addClass("disable-match");
+				if (currVal !== this.dom.val()) {
+					this.origin.addClass("disable-match");
 
 					return false;
 				}
@@ -37,19 +41,17 @@ define(
 			},
 
 			addListeners : function () {
-				this.slug.on("keyup", this.disableSync);
-				this.dom.not(".disable-match").on("keyup", this.syncSlug);
+				this.dom.on("keyup", this.disableSync);
+				this.origin.not(".disable-match").on("keyup", this.syncValue);
 			},
 
-			syncSlug : function () {
-				var currVal = this.dom.val().replace(/\s+/g, '-').toLowerCase();
-				this.slug.val(currVal);
+			syncValue : function () {
+				var currVal = this.getOriginValue();
+				this.dom.val(currVal);
 			},
 
-			// if slug is modified, disable matching
 			disableSync : function () {
-				//this.slug.val(this.slug.val().replace(/\s+/g, '-').toLowerCase());
-				this.dom.addClass("disable-match").add(this.slug).off("keyup");
+				this.origin.addClass("disable-match").add(this.dom).off("keyup");
 			}
 		});
 	}

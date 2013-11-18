@@ -106,7 +106,7 @@ define(
 			},
 
 			_autoSlug : function () {
-				$("[data-auto-slug]").each(function (i, dom) {
+				$("[data-source-fields]").each(function (i, dom) {
 					var autoSlug = new AutoSlug($(dom));
 				});
 			},
