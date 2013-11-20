@@ -51,7 +51,9 @@ define(
 			},
 
 			disableSync : function () {
-				this.origin.addClass("disable-match").add(this.dom).off("keyup");
+				if (!this.isValueMatch()) {
+					this.origin.addClass("disable-match").add(this.dom).off("keyup");
+				}
 			}
 		});
 	}
