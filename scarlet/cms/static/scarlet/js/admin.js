@@ -10422,7 +10422,68 @@ define(
 );
 
 define(
-	'admin/modules/Widgets',['require','exports','module','rosy/base/DOMClass','$','$plugin!select2','$plugin!pickadate','$plugin!details','./AssetSelect','./ApiSelect','./Formset','./Tabs','./InsertVideo','./InsertImage','./wysiwyg/Wysiwyg','./WidgetEvents','./WindowPopup','./OnExit','./InlineVideo','./FilterBar','./CropImage'],function (require, exports, module) {
+
+	'admin/modules/AutoSlug',[
+		"rosy/base/DOMClass",
+		"$"
+	],
+
+	function (DOMClass, $) {
+
+		
+
+		return DOMClass.extend({
+
+			dom : null,
+			origin : null,
+
+			init : function (dom) {
+				this.dom = dom;
+				this.origin = dom.parents('fieldset').find('[name=' + dom.data('source-fields') + ']');
+
+				if (this.isValueMatch()) {
+					this.addListeners();
+				}
+			},
+
+			getOriginValue : function () {
+				return this.origin.val().replace(/\s+/g, '-').toLowerCase();
+			},
+
+			isValueMatch : function () {
+				var currVal = this.getOriginValue();
+
+				// if values are different, disable matching
+				if (currVal !== this.dom.val()) {
+					this.origin.addClass("disable-match");
+
+					return false;
+				}
+
+				return true;
+			},
+
+			addListeners : function () {
+				this.dom.on("keyup", this.disableSync);
+				this.origin.not(".disable-match").on("keyup", this.syncValue);
+			},
+
+			syncValue : function () {
+				var currVal = this.getOriginValue();
+				this.dom.val(currVal);
+			},
+
+			disableSync : function () {
+				if (!this.isValueMatch()) {
+					this.origin.addClass("disable-match").add(this.dom).off("keyup");
+				}
+			}
+		});
+	}
+);
+
+define(
+	'admin/modules/Widgets',['require','exports','module','rosy/base/DOMClass','$','$plugin!select2','$plugin!pickadate','$plugin!details','./AssetSelect','./ApiSelect','./Formset','./Tabs','./InsertVideo','./InsertImage','./wysiwyg/Wysiwyg','./WidgetEvents','./WindowPopup','./OnExit','./InlineVideo','./FilterBar','./CropImage','./AutoSlug'],function (require, exports, module) {
 
 		
 
@@ -10443,7 +10504,8 @@ define(
 			OnExit               = require("./OnExit"),
 			InlineVideo          = require("./InlineVideo"),
 			FilterBar            = require("./FilterBar"),
-			CropImage            = require("./CropImage");
+			CropImage            = require("./CropImage"),
+			AutoSlug             = require("./AutoSlug");
 
 		return DOMClass.extend({
 
@@ -10466,6 +10528,8 @@ define(
 				this._renderInlineVideo(dom);
 				this._renderFilterBar(dom);
 				this._renderjQueryCrop(dom);
+
+				this._autoSlug(dom);
 
 				this._handlePopup(dom);
 			},
@@ -10522,6 +10586,12 @@ define(
 			_renderApiSelect : function (dom) {
 				dom.find(".api-select").each(function (i, dom) {
 					var select = new ApiSelect($(dom));
+				});
+			},
+
+			_autoSlug : function () {
+				$("[data-source-fields]").each(function (i, dom) {
+					var autoSlug = new AutoSlug($(dom));
 				});
 			},
 
