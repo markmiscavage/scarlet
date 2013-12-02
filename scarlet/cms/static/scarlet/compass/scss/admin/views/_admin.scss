@@ -168,6 +168,31 @@ section#main {
 				}
 			}
 
+			em {
+				font: 14px/1 AvenirLight;
+			}
+
+			label,
+			input,
+			textarea,
+			.widget-asset,
+			.select2-container,
+			.select2-container-multi {
+				margin-bottom: $spacer;
+			}
+
+			input,
+			textarea {
+				@include border-radius($gridlet);
+				border: 1px solid rgba($blue, 0.5);
+				color: $blue;
+				font: 16px/1 AvenirRoman;
+				padding: $gridlet*2 $gridlet*3;
+				outline: 0;
+				width: 100%;
+				background: #fff;
+			}
+
 			label {
 				color: $dark-blue;
 				display: inline-block;
@@ -188,20 +213,37 @@ section#main {
 				}
 			}
 
-			em {
-				font: 14px/1 AvenirLight;
+			input[type='checkbox'] {
+				margin-bottom: 0;
 			}
 
-			input,
-			textarea {
-				@include border-radius($gridlet);
-				border: 1px solid rgba($blue, 0.5);
-				color: $blue;
-				font: 16px/1 AvenirRoman;
-				padding: $gridlet*2 $gridlet*3;
-				outline: 0;
-				width: 100%;
-				background: #fff;
+			input[type='submit'] {
+				@include button;
+
+				vertical-align: top;
+
+				&.big {
+					@include big-button;
+				}
+			}
+
+			input[type='date'] {
+				position: relative;
+
+				&:after {
+					// add calendar icon...
+					@extend [class*="icon-"];
+					@extend .icon-calendar:before;
+
+					position: absolute;
+					right: 5px;
+					width: 22px;
+					padding-top: 2px;
+					font-size: 18px;
+					background: #FFF;
+					pointer-events: none;
+
+				}
 			}
 
 			.widget-asset {
@@ -388,48 +430,6 @@ section#main {
 				margin: 0 0 1em 24px;
 				padding: 0;
 				position: relative;
-			}
-
-			label,
-			input,
-			textarea,
-			.widget-asset,
-			.select2-container,
-			.select2-container-multi {
-				margin-bottom: $spacer;
-			}
-
-			input[type='checkbox'] {
-				margin-bottom: 0;
-			}
-
-			input[type='submit'] {
-				@include button;
-
-				vertical-align: top;
-
-				&.big {
-					@include big-button;
-				}
-			}
-
-			input[type='date'] {
-				position: relative;
-
-				&:after {
-					// add calendar icon...
-					@extend [class*="icon-"];
-					@extend .icon-calendar:before;
-
-					position: absolute;
-					right: 5px;
-					width: 22px;
-					padding-top: 2px;
-					font-size: 18px;
-					background: #FFF;
-					pointer-events: none;
-
-				}
 			}
 		}
 
