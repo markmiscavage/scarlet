@@ -213,8 +213,10 @@ section#main {
 				}
 			}
 
-			input[type='checkbox'] {
+			input[type='checkbox'],
+			input[type='radio'] {
 				margin-bottom: 0;
+				width: auto;
 			}
 
 			input[type='submit'] {
