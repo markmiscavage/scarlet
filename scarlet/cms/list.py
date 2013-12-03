@@ -287,8 +287,16 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         sort_field = None
         order_type = None
         if self.can_sort:
-            sort_field = request.GET.get('sf')
-            order_type = request.GET.get('ot', helpers.AdminList.ASC)
+            default = None
+            default_order = helpers.AdminList.ASC
+            if self.object_list.ordered:
+                if self.object_list.query.order_by:
+                    default = self.query.order_by[0]
+                else:
+                    default = self.object_list.model._meta.ordering[0]
+                if default.startswith('-'):
+                    default = default[1:]
+                    default_order = helpers.AdminList.DESC
 
         queryset = self._sort_queryset(self.object_list, sort_field,
                                        order_type)
