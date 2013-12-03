@@ -235,10 +235,10 @@ class BundleViewsTestCase(TestCaseDeactivate):
 
         # Test multiselect widget creatition
         resp = self.client.get('/admin/blog/add/')
-        self.assertTrue('<select multiple="multiple" data-api="/admin/blog/tag/?type=choices" name="tags" data-add="/admin/blog/tag/add/?popup=1" id="id_tags">' in resp.content)
+        self.assertTrue('<div class="api-select" data-api="/admin/blog/tag/?type=choices" data-add="/admin/blog/tag/add/?popup=1"><input type="hidden" data-multiple data-title="" name="tags" value="" /></div>' in resp.content)
 
         resp = self.client.get('/admin/blog/%s/edit/' % a[0].pk)
-        self.assertTrue('<select multiple="multiple" data-api="/admin/blog/tag/?type=choices" name="tags" data-add="/admin/blog/tag/add/?popup=1" id="id_tags">' in resp.content)
+        self.assertTrue('<div class="api-select" data-api="/admin/blog/tag/?type=choices" data-add="/admin/blog/tag/add/?popup=1"><input type="hidden" data-multiple data-title="" name="tags" value="" /></div>' in resp.content)
 
     def test_delete_post(self):
         author = Author.objects.create(
