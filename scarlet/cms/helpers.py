@@ -186,6 +186,11 @@ class AdminField(object):
         self.is_first = is_first  # Whether this field is first on the line
         self.is_checkbox = isinstance(self.field.field.widget,
                                       forms.CheckboxInput)
+        self.is_date = isinstance(self.field.field,
+                                      forms.DateField) or \
+                       isinstance(self.field.field,
+                                      forms.SplitDateTimeField)
+
         self.is_order_field = isinstance(self.field.field,
                                         fields.OrderFormField)
 

@@ -6,9 +6,9 @@
 
         {% if versions %}
             {% for v in versions %}
-            <p>
-                <label for="version_{{ v.vid }}">{{ v.status_line }}</label>
+            <p class="checkbox">
                 <input type="radio" name="version" id="version_{{ v.vid }}" value="{{ v.vid }}" />
+                <label for="version_{{ v.vid }}">{{ v.status_line }}</label>
             </p>
             {% endfor %}
 

@@ -7,20 +7,22 @@
 	</div>
 {% endif %}
 {% for field in form %}
-	{{ field.errors }}
 	{% if field.name != 'DELETE' %}
 		{% if field.field.is_order_field %}
 			<div class="widget-formset-order">
 				{{ field }}
 			</div>
+        	{{ field.errors }}
 		{% else %}
 			{% if not field.is_hidden %}
+                <p {% if field.is_date %}class="date"{% endif %}{% if field.is_checkbox %}class="checkbox"{% endif %}>
 				{{ field.label_tag }}
 				{% if field.field.help_text %}
 					<em class="help">{{ field.field.help_text|safe }}</em>
 				{% endif %}
 			{% endif %}
-			{{ field }}
+			{{ field }}</p>
+        	{{ field.errors }}
 		{% endif %}
 	{% endif %}
 {% endfor %}
