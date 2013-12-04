@@ -166,6 +166,17 @@ section#main {
 						left: 21px;
 					}
 				}
+
+				&.date {
+
+					label {
+						display: block;
+					}
+
+					input {
+						width: auto;
+					}
+				}
 			}
 
 			em {

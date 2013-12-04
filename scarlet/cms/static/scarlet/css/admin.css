@@ -2705,11 +2705,19 @@ section#main article form p.checkbox .help {
   top: 25px;
   left: 21px;
 }
-/* line 171, ../compass/scss/admin/views/_admin.scss */
+/* line 172, ../compass/scss/admin/views/_admin.scss */
+section#main article form p.date label {
+  display: block;
+}
+/* line 176, ../compass/scss/admin/views/_admin.scss */
+section#main article form p.date input {
+  width: auto;
+}
+/* line 182, ../compass/scss/admin/views/_admin.scss */
 section#main article form em {
   font: 14px/1 AvenirLight;
 }
-/* line 180, ../compass/scss/admin/views/_admin.scss */
+/* line 191, ../compass/scss/admin/views/_admin.scss */
 section#main article form label,
 section#main article form input,
 section#main article form textarea,
@@ -2718,7 +2726,7 @@ section#main article form .select2-container,
 section#main article form .select2-container-multi {
   margin-bottom: 12px;
 }
-/* line 185, ../compass/scss/admin/views/_admin.scss */
+/* line 196, ../compass/scss/admin/views/_admin.scss */
 section#main article form input,
 section#main article form textarea {
   -webkit-border-radius: 3px;
@@ -2733,19 +2741,19 @@ section#main article form textarea {
   width: 100%;
   background: #fff;
 }
-/* line 196, ../compass/scss/admin/views/_admin.scss */
+/* line 207, ../compass/scss/admin/views/_admin.scss */
 section#main article form label {
   color: #11232e;
   display: inline-block;
   font: 18px/1 AvenirRoman;
   margin-right: 6px;
 }
-/* line 202, ../compass/scss/admin/views/_admin.scss */
+/* line 213, ../compass/scss/admin/views/_admin.scss */
 section#main article form label.required {
   padding-left: 15px;
   position: relative;
 }
-/* line 206, ../compass/scss/admin/views/_admin.scss */
+/* line 217, ../compass/scss/admin/views/_admin.scss */
 section#main article form label.required:before {
   content: "*";
   position: absolute;
@@ -2753,13 +2761,13 @@ section#main article form label.required:before {
   top: 2px;
   font-weight: bold;
 }
-/* line 217, ../compass/scss/admin/views/_admin.scss */
+/* line 228, ../compass/scss/admin/views/_admin.scss */
 section#main article form input[type='checkbox'],
 section#main article form input[type='radio'] {
   margin-bottom: 0;
   width: auto;
 }
-/* line 222, ../compass/scss/admin/views/_admin.scss */
+/* line 233, ../compass/scss/admin/views/_admin.scss */
 section#main article form input[type='submit'] {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2790,7 +2798,7 @@ section#main article form input[type='submit']:hover, section#main article form 
   background-color: #314b5d;
   color: #b6cad1;
 }
-/* line 227, ../compass/scss/admin/views/_admin.scss */
+/* line 238, ../compass/scss/admin/views/_admin.scss */
 section#main article form input[type='submit'].big {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2821,11 +2829,11 @@ section#main article form input[type='submit'].big {
 section#main article form input[type='submit'].big:hover {
   background: #314b5d;
 }
-/* line 232, ../compass/scss/admin/views/_admin.scss */
+/* line 243, ../compass/scss/admin/views/_admin.scss */
 section#main article form input[type='date'] {
   position: relative;
 }
-/* line 235, ../compass/scss/admin/views/_admin.scss */
+/* line 246, ../compass/scss/admin/views/_admin.scss */
 section#main article form input[type='date']:after {
   position: absolute;
   right: 5px;
@@ -2835,11 +2843,11 @@ section#main article form input[type='date']:after {
   background: #FFF;
   pointer-events: none;
 }
-/* line 251, ../compass/scss/admin/views/_admin.scss */
+/* line 262, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset {
   margin-left: 24px;
 }
-/* line 256, ../compass/scss/admin/views/_admin.scss */
+/* line 267, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset .widget-asset-preview {
   width: 60px;
   height: 60px;
@@ -2852,16 +2860,16 @@ section#main article form .widget-asset .widget-asset-preview {
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
   float: left;
 }
-/* line 269, ../compass/scss/admin/views/_admin.scss */
+/* line 280, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset .widget-asset-actions {
   margin-left: 66px;
   max-width: 300px;
 }
-/* line 274, ../compass/scss/admin/views/_admin.scss */
+/* line 285, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset .select2-container {
   margin-bottom: 6px;
 }
-/* line 278, ../compass/scss/admin/views/_admin.scss */
+/* line 289, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset .button {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2891,20 +2899,20 @@ section#main article form .widget-asset .button:hover, section#main article form
   background-color: #314b5d;
   color: #b6cad1;
 }
-/* line 282, ../compass/scss/admin/views/_admin.scss */
+/* line 293, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset input {
   display: none;
 }
-/* line 287, ../compass/scss/admin/views/_admin.scss */
+/* line 298, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset-simple {
   overflow: hidden;
 }
-/* line 290, ../compass/scss/admin/views/_admin.scss */
+/* line 301, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset-simple input {
   margin-top: 5px;
   width: auto;
 }
-/* line 296, ../compass/scss/admin/views/_admin.scss */
+/* line 307, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset-simple-preview {
   width: 66px;
   height: 66px;
@@ -2918,7 +2926,7 @@ section#main article form .widget-asset-simple-preview {
   float: left;
   margin-right: 10px;
 }
-/* line 310, ../compass/scss/admin/views/_admin.scss */
+/* line 321, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form {
   padding: 12px 96px 12px 24px;
   margin: 0;
@@ -2926,23 +2934,23 @@ section#main article form .widget-formset-form {
   background: rgba(255, 255, 255, 0.5);
   border: 1px solid #b8b8b8;
 }
-/* line 317, ../compass/scss/admin/views/_admin.scss */
+/* line 328, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form + .widget-formset-form {
   margin-top: -1px;
 }
-/* line 321, ../compass/scss/admin/views/_admin.scss */
+/* line 332, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form.odd {
   background-color: rgba(184, 184, 184, 0.5);
 }
-/* line 325, ../compass/scss/admin/views/_admin.scss */
+/* line 336, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form.was-deleted {
   display: none;
 }
-/* line 329, ../compass/scss/admin/views/_admin.scss */
+/* line 340, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form .api-select {
   margin-left: 0;
 }
-/* line 333, ../compass/scss/admin/views/_admin.scss */
+/* line 344, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form .widget-formset-delete {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2976,23 +2984,23 @@ section#main article form .widget-formset-form .widget-formset-delete:hover, sec
   background-color: #314b5d;
   color: #b6cad1;
 }
-/* line 340, ../compass/scss/admin/views/_admin.scss */
+/* line 351, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form .widget-formset-delete b {
   font-weight: normal;
 }
-/* line 344, ../compass/scss/admin/views/_admin.scss */
+/* line 355, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form .widget-formset-delete input {
   display: none;
 }
-/* line 349, ../compass/scss/admin/views/_admin.scss */
+/* line 360, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form .widget-formset-order {
   display: none;
 }
-/* line 355, ../compass/scss/admin/views/_admin.scss */
+/* line 366, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset .widget-formset-forms {
   margin-bottom: 12px;
 }
-/* line 363, ../compass/scss/admin/views/_admin.scss */
+/* line 374, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset .button {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -3022,36 +3030,36 @@ section#main article form .widget-formset .button:hover, section#main article fo
   background-color: #314b5d;
   color: #b6cad1;
 }
-/* line 366, ../compass/scss/admin/views/_admin.scss */
+/* line 377, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset .button.add-button {
   font: 18px/1 AvenirBlack;
 }
-/* line 371, ../compass/scss/admin/views/_admin.scss */
+/* line 382, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset .draggable {
   cursor: move;
 }
-/* line 376, ../compass/scss/admin/views/_admin.scss */
+/* line 387, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select {
   position: relative;
 }
-/* line 380, ../compass/scss/admin/views/_admin.scss */
+/* line 391, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select.has-add-button {
   padding-right: 40px;
 }
-/* line 384, ../compass/scss/admin/views/_admin.scss */
+/* line 395, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .add-button {
   position: absolute;
   top: 0;
   right: 0;
 }
-/* line 390, ../compass/scss/admin/views/_admin.scss */
+/* line 401, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .toggle {
   position: absolute;
   top: -35px;
   height: 30px;
   right: 0;
 }
-/* line 396, ../compass/scss/admin/views/_admin.scss */
+/* line 407, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .toggle .toggle-button {
   float: right;
   line-height: 28px;
@@ -3061,40 +3069,40 @@ section#main article form .api-select .toggle .toggle-button {
   color: #b8b8b8;
   cursor: pointer;
 }
-/* line 405, ../compass/scss/admin/views/_admin.scss */
+/* line 416, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .toggle .toggle-button + .toggle-button {
   border-right: 0;
 }
-/* line 409, ../compass/scss/admin/views/_admin.scss */
+/* line 420, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .toggle .toggle-button.active {
   border-color: rgba(49, 75, 93, 0.5);
   background: #b6cad1;
   color: #314b5d;
 }
-/* line 415, ../compass/scss/admin/views/_admin.scss */
+/* line 426, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .toggle .toggle-button.last {
   border-radius: 3px 0 0 3px;
 }
-/* line 419, ../compass/scss/admin/views/_admin.scss */
+/* line 430, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .toggle .toggle-button.first {
   border-radius: 0 3px 3px 0;
 }
-/* line 426, ../compass/scss/admin/views/_admin.scss */
+/* line 437, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-wysiwyg {
   margin-left: 24px;
 }
-/* line 430, ../compass/scss/admin/views/_admin.scss */
+/* line 441, ../compass/scss/admin/views/_admin.scss */
 section#main article form .errorlist {
   color: #ff0000;
   margin: 0 0 1em 24px;
   padding: 0;
   position: relative;
 }
-/* line 440, ../compass/scss/admin/views/_admin.scss */
+/* line 451, ../compass/scss/admin/views/_admin.scss */
 section#main article section.filters summary[open], section#main article section.filters summary.open {
   z-index: 1;
 }
-/* line 446, ../compass/scss/admin/views/_admin.scss */
+/* line 457, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -3107,12 +3115,12 @@ section#main article details#filter {
   position: relative;
   z-index: 2;
 }
-/* line 456, ../compass/scss/admin/views/_admin.scss */
+/* line 467, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter .filter-clear {
   margin-right: 20px;
   color: red;
 }
-/* line 461, ../compass/scss/admin/views/_admin.scss */
+/* line 472, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary {
   color: #314b5d;
   cursor: pointer;
@@ -3121,36 +3129,36 @@ section#main article details#filter summary {
   outline: none;
   padding: 12px;
 }
-/* line 469, ../compass/scss/admin/views/_admin.scss */
+/* line 480, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary:hover {
   background-color: #11232e;
   color: #fff;
 }
-/* line 476, ../compass/scss/admin/views/_admin.scss */
+/* line 487, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary:after, section#main article details#filter summary::-webkit-details-marker {
   display: none;
 }
-/* line 480, ../compass/scss/admin/views/_admin.scss */
+/* line 491, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary i:after {
   color: #314b5d;
   content: "s";
   font: 12px/1 CompassArrows;
   padding-left: 6px;
 }
-/* line 488, ../compass/scss/admin/views/_admin.scss */
+/* line 499, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter form {
   display: none;
 }
-/* line 493, ../compass/scss/admin/views/_admin.scss */
+/* line 504, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] .filter-clear, section#main article details#filter.open .filter-clear {
   display: none;
 }
-/* line 497, ../compass/scss/admin/views/_admin.scss */
+/* line 508, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] summary, section#main article details#filter.open summary {
   background-color: #11232e;
   color: #fff;
 }
-/* line 502, ../compass/scss/admin/views/_admin.scss */
+/* line 513, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] form, section#main article details#filter.open form {
   border: 1px solid #b6cad1;
   background-color: #fff;
@@ -3160,36 +3168,36 @@ section#main article details#filter[open] form, section#main article details#fil
   right: 0;
   text-align: left;
 }
-/* line 511, ../compass/scss/admin/views/_admin.scss */
+/* line 522, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] form [type='submiinputt'], section#main article details#filter.open form [type='submiinputt'] {
   margin-bottom: 0;
 }
-/* line 518, ../compass/scss/admin/views/_admin.scss */
+/* line 529, ../compass/scss/admin/views/_admin.scss */
 section#main article div.pagination {
   font: 14px/1 AvenirMedium;
   text-align: right;
 }
-/* line 522, ../compass/scss/admin/views/_admin.scss */
+/* line 533, ../compass/scss/admin/views/_admin.scss */
 section#main article div.pagination a {
   font: 14px/1 CompassArrows;
 }
 
-/* line 531, ../compass/scss/admin/views/_admin.scss */
+/* line 542, ../compass/scss/admin/views/_admin.scss */
 details, summary {
   display: block;
 }
 
-/* line 532, ../compass/scss/admin/views/_admin.scss */
+/* line 543, ../compass/scss/admin/views/_admin.scss */
 details.closed > * {
   display: none;
 }
 
-/* line 533, ../compass/scss/admin/views/_admin.scss */
+/* line 544, ../compass/scss/admin/views/_admin.scss */
 details.closed > summary {
   display: block;
 }
 
-/* line 534, ../compass/scss/admin/views/_admin.scss */
+/* line 545, ../compass/scss/admin/views/_admin.scss */
 details.open > summary {
   display: block;
 }
