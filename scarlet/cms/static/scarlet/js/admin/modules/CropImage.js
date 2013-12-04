@@ -34,6 +34,7 @@ define(
 			},
 
 			$ : null,
+			$win : $(window),
 			$img : null,
 			$preview : null,
 			_jcrop : null,
@@ -62,7 +63,10 @@ define(
 					options = $.extend({}, this.options, {
 						onSelect : $.proxy(this.updatePreview, this),
 						onChange : $.proxy(this.updatePreview, this),
-						aspectRatio : (this.constrainRatio ? (this.cropScale.w / this.cropScale.h) : 0)
+						aspectRatio : (this.constrainRatio ? (this.cropScale.w / this.cropScale.h) : 0),
+						allowSelect : (this.constrainRatio ? true : false),
+						boxWidth : (this.$.width() * 0.75),
+						minSize : [20, 20]
 					});
 
 				if (this._jcrop) {
