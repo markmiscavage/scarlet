@@ -44,6 +44,7 @@ define(
 				this._renderInlineVideo(dom);
 				this._renderFilterBar(dom);
 				this._renderjQueryCrop(dom);
+				this._renderDragWidth(dom);
 
 				this._autoSlug(dom);
 
@@ -156,7 +157,6 @@ define(
 			},
 
 			_renderjQueryCrop : function (dom) {
-
 				dom.find(".jcrop").each(function (i, el) {
 					var cropImage = new CropImage($(el), {
 						aspectRatio : 'auto'
@@ -164,6 +164,18 @@ define(
 
 					}); // options, coordinates, extra
 					// this.content = new ContentClass(this.$content, options, this.$content.data(), extra);
+				});
+			},
+
+			_renderDragWidth : function (dom) {
+				// maintain draggable td:last-child width on drag
+				dom.find("[draggable]")
+				.on("mousedown", function (i, el) {
+					var $el = $(this).find("td:last-child");
+					$el.css('width', $el.outerWidth());
+				})
+				.on("mouseup", function (i, el) {
+					$(this).find("td:last-child").css('width', 'auto');
 				});
 			}
 		});
