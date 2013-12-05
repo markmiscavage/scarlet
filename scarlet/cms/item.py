@@ -386,7 +386,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
             msg = self.write_message()
 
         # get old and new tags
-        if not new_object and changed_tags:
+        if not new_object and changed_tags and old_tags:
             tag_handler.update_changed_tags(changed_tags, old_tags)
 
         return self.success_response(msg)
