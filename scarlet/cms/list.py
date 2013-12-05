@@ -75,6 +75,9 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         super(ListView, self).__init__(*args, **kwargs)
         self.renders['choices'] = renders.ChoicesRender()
 
+    def get_back_bundle(self, start_bundle=None):
+        return None
+
     def formfield_for_dbfield(self, db_field, **kwargs):
         """
         Same as parent but sets the widget for any OrderFields to

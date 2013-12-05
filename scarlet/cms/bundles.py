@@ -718,6 +718,7 @@ class BlankBundle(Bundle):
     publish = None
     versions = None
     unpublish = None
+    main_list = None
 
 
 class VersionMixin(object):

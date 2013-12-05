@@ -212,15 +212,15 @@ class CMSView(BaseView):
 
         return tags
 
-    def get_back_bundle(self):
-        try:
-            obj = self.object
-        except:
-            obj = False
-        if obj and getattr(self.bundle, 'main_list', None):
-            main_list = self.bundle.main_list
-            return main_list.get_bundle(self.bundle, {}, self.kwargs)
-        return u""
+    def get_back_bundle(self, start_bundle=None):
+        if not start_bundle:
+            start_bundle = self.bundle
+
+        if getattr(start_bundle, 'main_list', None):
+            main_list = start_bundle.main_list
+            bundle = main_list.get_bundle(start_bundle, {}, self.kwargs)
+            return bundle
+        return None
 
     def get_render_data(self, **kwargs):
         """
