@@ -212,7 +212,7 @@ class Bundle(object):
     * **main** - ListView
     * **add*** - FormView
     * **edit** - FormView
-    * **delete** - DeleteView
+    * **delete** - DeleteActionView
     """
 
     __metaclass__ = BundleMeta
