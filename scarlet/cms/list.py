@@ -298,6 +298,9 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
                     default = default[1:]
                     default_order = helpers.AdminList.DESC
 
+            sort_field = request.GET.get('sf', default)
+            order_type = request.GET.get('ot', default_order)
+
         queryset = self._sort_queryset(self.object_list, sort_field,
                                        order_type)
 
