@@ -291,7 +291,7 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
             default_order = helpers.AdminList.ASC
             if self.object_list.ordered:
                 if self.object_list.query.order_by:
-                    default = self.query.order_by[0]
+                    default = self.object_list.query.order_by[0]
                 else:
                     default = self.object_list.model._meta.ordering[0]
                 if default.startswith('-'):
