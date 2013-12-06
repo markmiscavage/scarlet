@@ -10,6 +10,7 @@ from django.utils.html import conditional_escape
 from django.core.urlresolvers import reverse
 from django.utils.dateparse import parse_time
 from django.template.loader import render_to_string
+from django.utils import timezone
 
 from django.contrib.admin.widgets import url_params_from_lookup_dict
 
@@ -107,6 +108,76 @@ class SplitDateTime(widgets.SplitDateTimeWidget):
         if not self.is_required and len(d) and not d[0]:
             return ['', '']
         return d
+
+class DateRadioInput(widgets.RadioInput):
+
+    def render(self, name=None, value=None, attrs=None, choices=()):
+        attrs = attrs or self.attrs
+        if 'id' in self.attrs:
+            label_for = ' for="%s_%s"' % (self.attrs['id'], self.index)
+        else:
+            label_for = ''
+        date_widget = attrs['date_widget']
+        return mark_safe(u'<label%s>%s %s</label>' % (label_for, self.tag(), date_widget))
+
+    def tag(self):
+        final_attrs = dict(type='radio', name=self.name, value=self.choice_value)
+        if self.is_checked():
+            final_attrs['checked'] = 'checked'
+        return mark_safe(u'<input%s />' % flatatt(final_attrs))
+
+class DateRenderer(widgets.RadioFieldRenderer):
+    def __init__(self, *args, **kwargs):
+        self.date_widget = kwargs.pop('date_widget')
+        super(DateRenderer, self).__init__(*args, **kwargs)
+
+    def return_choice(self, choice, idx):
+        cls = widgets.RadioInput
+        attrs = self.attrs.copy()
+        if choice[0] == RadioDateTimeWidget.DATE:
+            cls = DateRadioInput
+            attrs['date_widget'] = self.date_widget
+
+        return cls(self.name, self.value, attrs, choice, idx)
+
+    def __iter__(self):
+        for i, choice in enumerate(self.choices):
+            yield self.return_choice(choice, i)
+
+    def __getitem__(self, idx):
+        choice = self.choices[idx]
+        return self.return_choice(choice, idx)
+
+
+class RadioDateTimeWidget(widgets.RadioSelect):
+    NOW = 'now'
+    DATE = 'date'
+
+    def __init__(self, *args, **kwargs):
+        self.date_class = kwargs.pop('date_class', widgets.DateTimeInput)
+        self.choices = [(self.NOW, 'Now'), (self.DATE, 'Date',)]
+        kwargs['choices'] = self.choices
+        super(RadioDateTimeWidget, self).__init__(*args, **kwargs)
+
+    def get_radio_key(self, name):
+        return "{0}_rdi".format(name)
+
+    def get_renderer(self, date_widget, name, value, attrs=None):
+        return DateRenderer(name, value, attrs, self.choices,
+                            date_widget=date_widget)
+
+    def render(self, name, value, attrs=None):
+        widget = self.date_class()
+        date_widget = widget.render(name, value, attrs=attrs)
+        return self.get_renderer(date_widget, self.get_radio_key(name),
+                                 self.DATE, {}).render()
+
+    def value_from_datadict(self, data, files, name):
+        radio_value = data.get(self.get_radio_key(name))
+        if radio_value == self.NOW:
+            return timezone.now()
+        else:
+            return super(RadioDateTimeWidget, self).value_from_datadict(data, files, name)
 
 class APIChoiceWidget(widgets.Input):
     """
