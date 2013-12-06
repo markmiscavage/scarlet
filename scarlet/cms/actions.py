@@ -38,6 +38,7 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     override any edits for the formset. A formset will still process \
     correctly if no action is selected.
 
+    :param default_template: defaults to cms/action_confirmation.html.
     :param short_description: Description of action to display. \
     Defaults to the name of the view.
     :param redirect_to_view: Defaults to 'main'
@@ -192,7 +193,6 @@ class DeleteActionView(ActionView):
     this view by default adds an `object_header` renderer that
     uses the `object_header_tmpl` template.
 
-    :param default_template: Defaults to 'cms/delete.html'.
     :param redirect_to_view: Defaults to 'main_list'.
     """
     short_description = "Delete selected items"
@@ -239,7 +239,7 @@ class PublishActionView(ActionView):
     ModelCMSMixin, SingleObjectMixin, ModelCMSView.
     Assumes the given model is versionable.
 
-    :param default_template: Defaults to 'cms/publish_action.html'.
+    :param default_template: Defaults to cms/publish_action.html.
     :param confirmation_message: Defaults to 'This will publish the following items'.
     :param short_description: Defaults to 'Publish selected items'
     """
@@ -326,6 +326,7 @@ class UnPublishActionView(PublishActionView):
     View for unpublishing one or more objects. \
     Inherits from PublishActionView.
 
+    :param default_template: Defaults to cms/publish_action.html.
     :param confirmation_message: Defaults to 'This will unpublish the following items:'.
     :param redirect_to_view: Defaults to 'Unpublish selected items'
     """
