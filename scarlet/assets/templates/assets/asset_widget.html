@@ -7,5 +7,11 @@
 		{% if add_link %}
 		<a class="button" target="_blank" href="{{ add_link }}">Upload</a>
 		{% endif %}
+
+        {% if sizes %}
+            {% for each in sizes %}
+            <div date-base-link="{{ base_api_link }}" data-crop-link="{{ each.post_link }}">{{ each.name }} ({{ each.width }}x{{ each.height }})</div><br/>
+            {% endfor %}
+        {% endif %}
 	</div>
 </div>
