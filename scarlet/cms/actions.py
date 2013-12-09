@@ -52,7 +52,15 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     confirmation_message = 'This will modify the following items:'
     default_template = 'cms/action_confirmation.html'
     object = None
+    action_name = None
 
+    def render(self, *args, **kwargs):
+        if not 'action' in kwargs:
+            if not self.action_name:
+                kwargs['action'] = 'Yes'
+            else:
+                kwargs['action'] = self.action_name
+        return super(ActionView, self).render(*args, **kwargs)
 
     def get_navigation(self):
         if not self.object and not self.name in self.bundle._meta.action_views:
@@ -197,6 +205,7 @@ class DeleteActionView(ActionView):
     """
     short_description = "Delete selected items"
     confirmation_message = "This will delete the following items:"
+    action_name = "Delete"
 
     def __init__(self, *args, **kwargs):
         super(DeleteActionView, self).__init__(*args, **kwargs)
@@ -248,6 +257,7 @@ class PublishActionView(ActionView):
     confirmation_message = 'This will publish the following items:'
     short_description = 'Publish selected items'
     form = WhenForm
+    action_name = "Publish"
 
     def get_object(self):
         """
@@ -283,7 +293,7 @@ class PublishActionView(ActionView):
         """
 
         queryset = self.get_selected(request)
-        return self.render(request, queryset=queryset, publish_form=self.form(), action="Publish")
+        return self.render(request, queryset=queryset, publish_form=self.form())
 
 
     def process_action(self, request, queryset):
@@ -333,6 +343,7 @@ class UnPublishActionView(PublishActionView):
 
     confirmation_message = 'This will unpublish the following items:'
     short_description = 'Unpublish selected items'
+    action_name = "Unpublish"
 
     def get(self, request, *args, **kwargs):
         """
