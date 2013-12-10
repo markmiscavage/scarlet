@@ -2,7 +2,7 @@ import re
 from functools import update_wrapper
 import random
 
-from django.conf.urls.defaults import include, patterns, url
+from django.conf.urls import include, patterns, url
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django import http

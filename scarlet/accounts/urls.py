@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import url, patterns
+from django.conf.urls import url, patterns
 from django.contrib.auth import views as auth_views
 
 from . import views as accounts_views
