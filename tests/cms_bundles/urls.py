@@ -1,4 +1,8 @@
-from django.conf.urls import include, patterns, url
+try:
+    from django.conf.urls import include, patterns, url
+except ImportError:
+    # Django 1.4
+    from django.conf.urls.defaults import include, patterns, url
 
 from scarlet import cms
 
