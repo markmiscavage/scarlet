@@ -73,7 +73,7 @@ class ModelAdmin(OrgModelAdmin):
         self.invalidate_cache(obj=new_object)
         return result
 
-    def response_add(self, request, obj, post_url_continue='../%s/'):
+    def response_add(self, request, obj, post_url_continue=None):
         result = super(ModelAdmin, self).response_add(request, obj,
                                                       post_url_continue)
         self.invalidate_cache(obj=obj)
