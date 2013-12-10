@@ -1,8 +1,9 @@
+import hashlib
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User, Group
-from django.utils.hashcompat import sha_constructor
 from django.utils.safestring import mark_safe
 
 from . import settings as accounts_settings
@@ -159,7 +160,7 @@ class SignupFormOnlyEmail(SignupForm):
         Generate a random username before falling back to parent signup form
         """
         while True:
-            username = sha_constructor(str(random.random())).hexdigest()[:5]
+            username = hashlib.sha1(str(random.random())).hexdigest()[:5]
             try:
                 User.objects.get(username__iexact=username)
             except User.DoesNotExist:

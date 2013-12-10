@@ -1,7 +1,7 @@
 import random
+import hashlib
 
 from django.conf import settings
-from django.utils.hashcompat import sha_constructor
 from django.contrib.auth.models import SiteProfileNotAvailable
 from django.db.models import get_model
 
@@ -51,8 +51,8 @@ def generate_sha1(string, salt=None):
 
     """
     if not salt:
-        salt = sha_constructor(str(random.random())).hexdigest()[:5]
-    hashval = sha_constructor(salt + str(string)).hexdigest()
+        salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
+    hashval = hashlib.sha1(salt + str(string)).hexdigest()
 
     return (salt, hashval)
 
