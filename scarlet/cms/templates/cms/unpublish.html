@@ -1,13 +1,13 @@
 {% extends base %}
 {% load cms %}
 {% block main_content %}
-    <p>This will remove this item from the site.</p>
+    <p>Please confirm that you want to remove this item from the site</p>
     <form action="{{ action_url }}" method="post">
         {% csrf_token %}
         {% bundle_url bundle "edit" object=obj follow_parent=False as edit_url %}
         <p class="submit-row">
         	<a href="{{ done_url }} " class="button">Cancel</a>
-       		<input class="big" type="submit" name="unpublish" value="unpublish" />
+       		<input class="big" type="submit" name="unpublish" value="Unpublish" />
        	</p>
     </form>
 {% endblock %}

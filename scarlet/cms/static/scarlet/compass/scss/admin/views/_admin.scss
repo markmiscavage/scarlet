@@ -42,6 +42,15 @@ section#main {
 		}
 	}
 
+	.object-name {
+		font-weight: bold;
+		margin-bottom: 5px;
+
+		em {
+			font-style: italic;
+		}
+	}
+
 	article {
 		position: relative;
 
