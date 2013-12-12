@@ -161,7 +161,7 @@ class DateRenderer(widgets.RadioFieldRenderer):
 
 
     def render(self):
-        return mark_safe(u'<fieldset>\n%s\n</fieldset>' % u'\n'.join([u'%s'
+        return mark_safe(u'<fieldset class="datetime">\n%s\n</fieldset>' % u'\n'.join([u'%s'
                 % force_unicode(w) for w in self]))
 
 class RadioDateTimeWidget(widgets.RadioSelect):
