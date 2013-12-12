@@ -172,10 +172,6 @@ section#main {
 					label {
 						display: block;
 					}
-
-					input {
-						width: auto;
-					}
 				}
 			}
 
@@ -257,6 +253,12 @@ section#main {
 					pointer-events: none;
 
 				}
+			}
+
+			input.date,
+			.datetime,
+			input[type='date'] {
+				width: auto;
 			}
 
 			.widget-asset {
