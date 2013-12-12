@@ -14,17 +14,27 @@ from django.utils import timezone
 
 from django.contrib.admin.widgets import url_params_from_lookup_dict
 
-class DateWidget(widgets.TextInput):
+class DateWidget(widgets.DateInput):
     """
     Widget for date fields. Sets a **data-date-format**
     attribute to "yyyy-mm-dd"
     """
 
-    input_type = 'date'
-
     def __init__(self, *args, **kwargs):
         super(DateWidget, self).__init__(*args, **kwargs)
         self.attrs['data-date-format'] = "yyyy-mm-dd"
+        self.attrs['class'] = "date"
+
+class DateTimeWidget(widgets.DateTimeInput):
+    """
+    Widget for date fields. Sets a **data-date-format**
+    attribute to "yyyy-mm-dd"
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(DateTimeWidget, self).__init__(*args, **kwargs)
+        self.attrs['data-date-format'] = "yyyy-mm-dd"
+        self.attrs['class'] = "datetime"
 
 class TimeChoiceWidget(widgets.Select):
     """
@@ -110,6 +120,7 @@ class SplitDateTime(widgets.SplitDateTimeWidget):
         return d
 
 class DateRadioInput(widgets.RadioInput):
+    label_text = "At a specific date and time"
 
     def render(self, name=None, value=None, attrs=None, choices=()):
         attrs = attrs or self.attrs
@@ -118,7 +129,7 @@ class DateRadioInput(widgets.RadioInput):
         else:
             label_for = ''
         date_widget = attrs['date_widget']
-        return mark_safe(u'<label%s>%s %s</label>' % (label_for, self.tag(), date_widget))
+        return mark_safe(u'<label%s>%s %s: %s</label>' % (label_for, self.tag(), self.label_text, date_widget))
 
     def tag(self):
         final_attrs = dict(type='radio', name=self.name, value=self.choice_value)
@@ -149,12 +160,16 @@ class DateRenderer(widgets.RadioFieldRenderer):
         return self.return_choice(choice, idx)
 
 
+    def render(self):
+        return mark_safe(u'<fieldset>\n%s\n</fieldset>' % u'\n'.join([u'%s'
+                % force_unicode(w) for w in self]))
+
 class RadioDateTimeWidget(widgets.RadioSelect):
     NOW = 'now'
     DATE = 'date'
 
     def __init__(self, *args, **kwargs):
-        self.date_class = kwargs.pop('date_class', widgets.DateTimeInput)
+        self.date_class = kwargs.pop('date_class', DateTimeWidget)
         self.choices = [(self.NOW, 'Now'), (self.DATE, 'Date',)]
         kwargs['choices'] = self.choices
         super(RadioDateTimeWidget, self).__init__(*args, **kwargs)

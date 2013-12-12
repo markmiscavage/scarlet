@@ -15,7 +15,7 @@ from . import fields
 FORMFIELD_FOR_DBFIELD_DEFAULTS = {
     models.ForeignKey:       {'widget': widgets.APIChoiceWidget},
     models.ManyToManyField:  {'widget': widgets.APIManyChoiceWidget},
-    models.DateTimeField:    {'widget': forms.DateTimeInput},
+    models.DateTimeField:    {'widget': widgets.DateTimeWidget},
     models.DateField:        {'widget': widgets.DateWidget},
 }
 
