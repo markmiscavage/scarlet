@@ -5913,7 +5913,7 @@ define(
 			},
 
 			request : function (url, options, cb) {
-				var name = 'windowpopupguid' + (++guid),
+				var name = 'windowpopupguid',// + (++guid),
 					newWin;
 
 				window[name] = function (data) {
@@ -6017,8 +6017,17 @@ define(
 						var allTags = data_auto_tag.toLowerCase().split(',');
 						while (allTags.length) {
 							var tag = allTags.shift();
-							if (tag.match(/[a-z0-9]/i) && tag.length > 3) {
-								tags.push(tag);
+							var splitTag = tag.split(" ");
+							tags.push(tag);
+
+							// if splitTag length > 3, push individual values
+							if (tag.match(/[a-z0-9]/i) && splitTag.length > 3) {
+								while (splitTag.length) {
+									var newTag = splitTag.shift();
+									if (tags.indexOf(newTag) === -1) {
+										tags.push(newTag);
+									}
+								}
 							}
 						}
 						tags = tags.concat(allTags);
@@ -10656,7 +10665,6 @@ define(
 			},
 
 			_renderDragWidth : function (dom) {
-
 				// maintain draggable td:last-child width on drag
 				dom.find("[draggable]")
 				.on("mousedown", function (i, el) {
