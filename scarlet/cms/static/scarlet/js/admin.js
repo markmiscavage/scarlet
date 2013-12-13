@@ -5913,7 +5913,7 @@ define(
 			},
 
 			request : function (url, options, cb) {
-				var name = 'windowpopupguid',// + (++guid),
+				var name = 'windowpopupguid' + (++guid),
 					newWin;
 
 				window[name] = function (data) {
