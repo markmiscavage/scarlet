@@ -1,7 +1,7 @@
 from django.core.validators import email_re
 from django.contrib.auth.backends import ModelBackend
 
-from django.contrib.auth.models import User
+from .utils import get_user_model
 
 
 class AccountsAuthenticationBackend(ModelBackend):
@@ -29,6 +29,7 @@ class AccountsAuthenticationBackend(ModelBackend):
         :return: The signed in :class:`User`.
 
         """
+        User = get_user_model()
         if email_re.search(identification):
             try:
                 user = User.objects.get(email__iexact=identification)
@@ -47,6 +48,7 @@ class AccountsAuthenticationBackend(ModelBackend):
             return user
 
     def get_user(self, user_id):
+        User = get_user_model()
         try:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:

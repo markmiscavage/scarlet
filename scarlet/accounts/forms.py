@@ -3,12 +3,12 @@ import hashlib
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from django.utils.safestring import mark_safe
 
 from . import settings as accounts_settings
 from .models import AccountsSignup
-from .utils import get_profile_model
+from .utils import get_profile_model, get_user_model
 
 import random
 
@@ -38,7 +38,7 @@ class UserForm(forms.ModelForm):
             return {}
 
     class Meta:
-        model = User
+        model = get_user_model()
 
 
 class SignupFormMixin(object):
@@ -71,8 +71,9 @@ class SignupFormMixin(object):
         ACCOUNTS_FORBIDDEN_USERNAMES list.
         """
         try:
-            User.objects.get(username__iexact=self.cleaned_data['username'])
-        except User.DoesNotExist:
+            get_user_model().objects.get(
+                username__iexact=self.cleaned_data['username'])
+        except get_user_model().DoesNotExist:
             pass
         else:
             raise forms.ValidationError(_('This username is already taken.'))
@@ -84,7 +85,8 @@ class SignupFormMixin(object):
         """
         Validate that the e-mail address is unique.
         """
-        if User.objects.filter(email__iexact=self.cleaned_data['email']):
+        if get_user_model().objects.filter(
+            email__iexact=self.cleaned_data['email']):
             raise forms.ValidationError(_('This email is already in use. Please supply a different email.'))
         return self.cleaned_data['email']
 
@@ -162,8 +164,8 @@ class SignupFormOnlyEmail(SignupForm):
         while True:
             username = hashlib.sha1(str(random.random())).hexdigest()[:5]
             try:
-                User.objects.get(username__iexact=username)
-            except User.DoesNotExist:
+                get_user_model().objects.get(username__iexact=username)
+            except get_user_model().DoesNotExist:
                 break
 
         self.cleaned_data['username'] = username
@@ -248,8 +250,8 @@ class ChangeEmailForm(forms.Form):
         address.
         """
         super(ChangeEmailForm, self).__init__(*args, **kwargs)
-        if not isinstance(user, User):
-            raise TypeError("user must be an instance of User")
+        if not isinstance(user, get_user_model()):
+            raise TypeError, "user must be an instance of %s" % get_user_model().__name__
         else:
             self.user = user
 
@@ -259,7 +261,7 @@ class ChangeEmailForm(forms.Form):
         """
         if self.cleaned_data['email'].lower() == self.user.email:
             raise forms.ValidationError(_(u'You\'re already known under this email.'))
-        if User.objects.filter(email__iexact=self.cleaned_data['email']).exclude(email__iexact=self.user.email):
+        if get_user_model().objects.filter(email__iexact=self.cleaned_data['email']).exclude(email__iexact=self.user.email):
             raise forms.ValidationError(_(u'This email is already in use. Please supply a different email.'))
         return self.cleaned_data['email']
 

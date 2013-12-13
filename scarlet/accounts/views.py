@@ -2,7 +2,6 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, REDIRECT_FIELD_NAME
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.models import User
 from django.contrib.auth.views import logout as Signout
 from django.views.generic import TemplateView
 from django.views.generic.list import ListView
@@ -16,7 +15,7 @@ from .forms import (SignupForm, AuthenticationForm,
                            ChangeEmailForm, EditProfileForm)
 from .models import AccountsSignup
 from .decorators import secure_required
-from .utils import signin_redirect, get_profile_model
+from .utils import signin_redirect, get_profile_model, get_user_model
 from .import signals as accounts_signals
 from .import settings as accounts_settings
 
@@ -178,7 +177,7 @@ def direct_to_user_template(request, username, template_name,
         The currently :class:`User` that is viewed.
 
     """
-    user = get_object_or_404(User, username__iexact=username)
+    user = get_object_or_404(get_user_model(), username__iexact=username)
 
     if not extra_context:
         extra_context = dict()
@@ -339,7 +338,7 @@ def email_change(request, username, email_form=ChangeEmailForm,
     permissions to alter the email address of others.
 
     """
-    user = get_object_or_404(User, username__iexact=username)
+    user = get_object_or_404(get_user_model(), username__iexact=username)
 
     form = email_form(user)
 
@@ -407,7 +406,7 @@ def password_change(request, username,
         Form used to change the password.
 
     """
-    user = get_object_or_404(User,
+    user = get_object_or_404(get_user_model(),
                              username__iexact=username)
 
     form = pass_form(user=user)
@@ -482,7 +481,7 @@ def profile_edit(request, username, edit_profile_form=EditProfileForm,
         Instance of the ``Profile`` that is edited.
 
     """
-    user = get_object_or_404(User,
+    user = get_object_or_404(get_user_model(),
                              username__iexact=username)
 
     profile = user.get_profile()
@@ -542,7 +541,7 @@ def profile_detail(
         Instance of the currently viewed ``Profile``.
 
     """
-    user = get_object_or_404(User,
+    user = get_object_or_404(get_user_model(),
                              username__iexact=username)
     profile_model = get_profile_model()
     try:
@@ -565,7 +564,7 @@ def account_delete(request, username,
     """
     Delete an account.
     """
-    user = get_object_or_404(User,
+    user = get_object_or_404(get_user_model(),
                              username__iexact=username)
     user.is_active = False
     user.save()
