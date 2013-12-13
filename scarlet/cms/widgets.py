@@ -13,6 +13,8 @@ from django.template.loader import render_to_string
 from django.utils import timezone, formats, translation
 from django.contrib.admin.widgets import url_params_from_lookup_dict
 
+from . import settings
+
 # NOT EVERYTHING IS SUPPORTED, I DON'T CARE.
 TRANSLATION_DICT = {
     # Day
@@ -50,15 +52,13 @@ class DateWidget(widgets.DateInput):
             self.format = None
 
     def get_format(self):
-        # XXX: HACK
         if self.format:
             return self.format
 
-        for f in formats.get_format(self.format_key):
-            if f.startswith('%d') or f.startswith('%m'):
-                return f
+        if settings.USE_SCARLET_DATE_FORMATS and hasattr(settings, self.format_key):
+            return getattr(settings, self.format_key)
 
-        return formats.get_format(self.format_key)
+        return formats.get_format(self.format_key)[0]
 
     def _format_value(self, value):
         return formats.localize_input(value, self.get_format())
@@ -66,7 +66,7 @@ class DateWidget(widgets.DateInput):
     def build_attrs(self, *args, **kwargs):
         args = super(DateWidget, self).build_attrs(*args, **kwargs)
         args['data-date-format'] = translate_format(self.get_format())
-        args['data-timezone'] = timezone.get_current_timezone()
+        args['data-timezone'] = timezone.get_current_timezone_name()
         args['data-locale'] = translation.get_language()
         return args
 
