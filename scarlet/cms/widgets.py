@@ -10,31 +10,70 @@ from django.utils.html import conditional_escape
 from django.core.urlresolvers import reverse
 from django.utils.dateparse import parse_time
 from django.template.loader import render_to_string
-from django.utils import timezone
-
+from django.utils import timezone, formats, translation
 from django.contrib.admin.widgets import url_params_from_lookup_dict
 
+# NOT EVERYTHING IS SUPPORTED, I DON'T CARE.
+TRANSLATION_DICT = {
+    # Day
+    'd' : 'dd',
+    'l' : 'DD',
+    'j' : 'oo',
+    # Month
+    'B' : 'MM',
+    'm' : 'mm',
+    'b' : 'M',
+    # Year
+    'Y' : 'yy',
+    'y' : 'y',
+    # Time
+    'p' : 'TT',
+    'i' : 'hh',
+    'H' : 'HH',
+    'M' : 'mm',
+    'S' : 'ss',
+}
+
+def translate_format(format_string):
+    for k, v in TRANSLATION_DICT.items():
+        format_string = format_string.replace('%{0}'.format(k), v)
+    return format_string
+
 class DateWidget(widgets.DateInput):
-    """
-    Widget for date fields. Sets a **data-date-format**
-    attribute to "yyyy-mm-dd"
-    """
+    bc = 'date'
+    format_key = 'DATE_INPUT_FORMATS'
 
     def __init__(self, *args, **kwargs):
         super(DateWidget, self).__init__(*args, **kwargs)
-        self.attrs['data-date-format'] = "yyyy-mm-dd"
-        self.attrs['class'] = "date"
+        self.attrs['class'] = self.bc
+        if not 'format' in kwargs:
+            self.format = None
 
-class DateTimeWidget(widgets.DateTimeInput):
-    """
-    Widget for date fields. Sets a **data-date-format**
-    attribute to "yyyy-mm-dd"
-    """
+    def get_format(self):
+        # XXX: HACK
+        if self.format:
+            return self.format
 
-    def __init__(self, *args, **kwargs):
-        super(DateTimeWidget, self).__init__(*args, **kwargs)
-        self.attrs['data-date-format'] = "yyyy-mm-dd"
-        self.attrs['class'] = "datetime"
+        for f in formats.get_format(self.format_key):
+            if f.startswith('%d') or f.startswith('%m'):
+                return f
+
+        return formats.get_format(self.format_key)
+
+    def _format_value(self, value):
+        return formats.localize_input(value, self.get_format())
+
+    def build_attrs(self, *args, **kwargs):
+        args = super(DateWidget, self).build_attrs(*args, **kwargs)
+        args['data-date-format'] = translate_format(self.get_format())
+        args['data-timezone'] = timezone.get_current_timezone()
+        args['data-locale'] = translation.get_language()
+        return args
+
+class DateTimeWidget(DateWidget):
+    bc = 'datetime'
+    format_key = 'DATETIME_INPUT_FORMATS'
+
 
 class TimeChoiceWidget(widgets.Select):
     """
@@ -161,7 +200,7 @@ class DateRenderer(widgets.RadioFieldRenderer):
 
 
     def render(self):
-        return mark_safe(u'<fieldset>\n%s\n</fieldset>' % u'\n'.join([u'%s'
+        return mark_safe(u'<fieldset class="datetime">\n%s\n</fieldset>' % u'\n'.join([u'%s'
                 % force_unicode(w) for w in self]))
 
 class RadioDateTimeWidget(widgets.RadioSelect):
