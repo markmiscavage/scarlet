@@ -30,7 +30,7 @@ TRANSLATION_DICT = {
     'y' : 'y',
     # Time
     'p' : 'TT',
-    'i' : 'hh',
+    'I' : 'hh',
     'H' : 'HH',
     'M' : 'mm',
     'S' : 'ss',
