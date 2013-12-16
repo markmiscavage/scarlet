@@ -37,7 +37,7 @@ define(
 				this._renderAssetSelect(dom);
 				this._renderFormset(dom);
 				this._renderApiSelect(dom);
-				//this._renderDatePicker(dom);
+				this._renderDatePicker(dom);
 				this._renderDateTimePicker(dom);
 				this._renderWysiwig(dom);
 				this._renderTabs(dom);
@@ -53,13 +53,21 @@ define(
 			},
 
 			_renderDateTimePicker : function (dom) {
-				var opts = {
-					showButtonPanel : false,
-					dateFormat : 'yy/mm/dd'
-				}
+				dom.find("input.datetime").each(function (i, el) {
+					el = $(el);
 
-				$(".datetime").datetimepicker(opts);
-				$(".date").datepicker(opts);
+					// parse date and time from django format
+					var dateTimeFormat = el.data("date-format"),
+						sliceAt = dateTimeFormat.toLowerCase().indexOf(' h'),
+						dateFormat = dateTimeFormat.slice(0, sliceAt),
+						timeFormat = dateTimeFormat.slice(sliceAt);
+
+					el.datetimepicker({
+						dateFormat: dateFormat,
+						timeFormat : timeFormat,
+						showButtonPanel : false
+					});
+				});
 			},
 
 			_renderWysiwig : function (dom) {
@@ -71,15 +79,11 @@ define(
 			_renderDatePicker : function (dom) {
 				dom.find(".date").each(function (i, el) {
 					el = $(el);
-					el.attr('placeholder', el.data('date-format').toUpperCase());
-					if (Modernizr.inputtypes.date) { // Use plugin if browser lacks native support for input type="date"
-						el.pickadate({
-							format: 'yyyy-mm-dd',
-							format_submit: false,
-							month_prev: 'w',
-							month_next: 'e',
-						});
-					}
+
+					el.datepicker({
+						dateFormat: el.data("date-format"),
+						showButtonPanel : false
+					});
 				});
 			},
 
