@@ -256,9 +256,16 @@ section#main {
 			}
 
 			input.date,
-			.datetime,
+			input.datetime,
 			input[type='date'] {
 				width: auto;
+			}
+
+			fieldset.datetime {
+
+				label:last-of-type {
+					margin-left: 20px;
+				}
 			}
 
 			.widget-asset {
