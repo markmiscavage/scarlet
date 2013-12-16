@@ -70,6 +70,17 @@ class DateWidget(widgets.DateInput):
         args['data-locale'] = translation.get_language()
         return args
 
+    def value_from_datadict(self, data, files, name):
+        value = super(DateWidget, self).value_from_datadict(data, files, name)
+        df = self.get_format()
+        if isinstance(value, basestring):
+            try:
+                return datetime.datetime.strptime(value, df)
+            except ValueError:
+                pass
+        return value
+
+
 class DateTimeWidget(DateWidget):
     bc = 'datetime'
     format_key = 'DATETIME_INPUT_FORMATS'
@@ -231,7 +242,8 @@ class RadioDateTimeWidget(widgets.RadioSelect):
         if radio_value == self.NOW:
             return timezone.now()
         else:
-            return super(RadioDateTimeWidget, self).value_from_datadict(data, files, name)
+            widget = self.date_class()
+            return widget.value_from_datadict(data, files, name)
 
 class APIChoiceWidget(widgets.Input):
     """
