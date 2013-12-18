@@ -263,6 +263,7 @@ section#main {
 				// @include clearfix;
 				// height: $gridlet*20;
 				margin-left: $spacer*2;
+				position: relative;
 
 				.widget-asset-preview {
 					width: $gridlet*20;
@@ -288,6 +289,18 @@ section#main {
 
 				.button {
 					@include button;
+					position: absolute;
+					left: 430px;
+					top: 2px;
+
+					&:before {
+						content: "";
+						border-left: 2px solid #747474;
+						position: absolute;
+						height: 100%;
+						left: -35px;
+						top: 0;
+					}
 				}
 
 				input {
