@@ -13,7 +13,7 @@ except ValueError:
 from . import settings
 
 class AssetsFileWidget(TaggedRelationWidget):
-    crop_link = "edit/crops/{0}/edit/"
+    crop_link = "crops/{0}/edit/"
 
     def get_qs(self):
         qs = super(AssetsFileWidget, self).get_qs()

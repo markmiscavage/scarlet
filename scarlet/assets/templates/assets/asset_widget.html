@@ -9,9 +9,11 @@
 		{% endif %}
 
         {% if sizes %}
+            <ul class="crops-list" data-base-link="{{ base_api_link }}" >
             {% for each in sizes %}
-            <div date-base-link="{{ base_api_link }}" data-crop-link="{{ each.post_link }}">{{ each.name }} ({{ each.width }}x{{ each.height }})</div><br/>
+                <li data-crop-link="{{ each.post_link }}"><a>{{ each.name }}</a> ({{ each.width }}x{{ each.height }})</li>
             {% endfor %}
+            </ul>
         {% endif %}
 	</div>
 </div>
