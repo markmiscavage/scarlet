@@ -11,7 +11,11 @@
         {% if sizes %}
             <ul class="crops-list" data-base-link="{{ base_api_link }}" >
             {% for each in sizes %}
-                <li data-crop-link="{{ each.post_link }}"><a href="#" class="crop-link">{{ each.name }} ({{ each.width }}x{{ each.height }})</a></li>
+                <li data-crop-link="{{ each.post_link }}">
+                	<span class="name">{{ each.name }}</span>
+                	<span class="size">{{ each.width }}x{{ each.height }}px</span>
+                	<a href="#" class="button crop-link">Edit Crop</a>
+                </li>
             {% endfor %}
             </ul>
         {% endif %}

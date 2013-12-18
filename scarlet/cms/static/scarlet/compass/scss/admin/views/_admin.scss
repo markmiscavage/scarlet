@@ -287,6 +287,34 @@ section#main {
 					margin-bottom: $gridlet*2;
 				}
 
+				.crops-list {
+					padding-left: 0;
+
+					li {
+						margin-bottom: 10px;
+					}
+
+					.name,
+					.size {
+						display: inline-block;
+						width: 105px;
+					}
+
+					.size {
+						width: 115px;
+					}
+
+					.crop-link {
+						position: static;
+						font-size: 12px;
+						margin-left: 6px;
+
+						&:before {
+							display: none;
+						}
+					}
+				}
+
 				.button {
 					@include button;
 					position: absolute;
