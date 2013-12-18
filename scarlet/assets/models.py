@@ -192,7 +192,7 @@ class ImageDetailBase(models.Model):
     height = models.PositiveIntegerField()
 
     name = models.CharField(max_length=255)
-    editable = models.BooleanField(editable=False)
+    editable = models.BooleanField(editable=False, default=False)
 
     x = models.PositiveIntegerField(null=True)
     x2 = models.PositiveIntegerField(null=True)

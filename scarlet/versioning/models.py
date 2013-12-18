@@ -490,7 +490,7 @@ class BaseModel(models.Model):
     may be null.
     """
 
-    is_published = models.BooleanField(editable=False)
+    is_published = models.BooleanField(editable=False, default=False)
 
     created_date = models.DateTimeField(default=timezone.now,
                                         editable=False)
