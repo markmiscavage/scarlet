@@ -1,7 +1,7 @@
 import re
 
 from django.db import models
-from django.contrib.auth.models UserManager, Permission
+from django.contrib.auth.models import UserManager, Permission
 from django.contrib.contenttypes.models import ContentType
 
 from .import settings as accounts_settings

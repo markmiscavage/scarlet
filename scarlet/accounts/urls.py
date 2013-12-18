@@ -1,7 +1,6 @@
 try:
     from django.conf.urls import url, patterns
 except ImportError:
-    # Django 1.4
     from django.conf.urls.defaults import url, patterns
 from django.contrib.auth import views as auth_views
 

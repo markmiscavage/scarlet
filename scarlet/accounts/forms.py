@@ -139,7 +139,7 @@ class SignupModelForm(forms.ModelForm, SignupFormMixin):
         return SignupFormMixin.save(self)
 
     class Meta:
-        model = User
+        model = get_user_model()
         fields = ('first_name', 'last_name', 'username',
                   'email', 'password1', 'password2')
 
