@@ -1,12 +1,24 @@
 
 /* timepicker add-on
 ----------------------------------*/
-.ui-timepicker-div .ui_tpicker_time,
-.ui-timepicker-div .ui_tpicker_time_label { display: none; }
+
+.ui-timepicker-div .ui_tpicker_time { display: none; }
+.ui-timepicker-div .ui_tpicker_time_label {
+	@include border-top-left-radius(2px);
+	@include border-top-right-radius(2px);
+	display: block;
+	float: none;
+	background: #DDD;
+	border: 1px solid #DDD;
+	margin-bottom: 10px;
+	padding: 5px;
+	text-align: center;
+	font-weight: bold;
+}
 
 .ui-timepicker-div { background: #fff; }
 .ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
-.ui-timepicker-div dl { text-align: left; margin-top: 10px; }
+.ui-timepicker-div dl { background: #F6F6F6; text-align: left; padding-bottom: 5px; margin: 5px 0; }
 .ui-timepicker-div dl dt { float: left; clear:left; padding: 0 0 0 5px; }
 .ui-timepicker-div dl dd { margin: 0 10px 10px 25%; }
 .ui-timepicker-div td { font-size: 90%; }

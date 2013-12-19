@@ -53,11 +53,11 @@ define(
 			},
 
 			_renderDateTimePicker : function (dom) {
-				dom.find("input.datetime").each(function (i, el) {
+				dom.find('input.datetime').each(function (i, el) {
 					el = $(el);
 
 					// parse date and time from django format
-					var dateTimeFormat = el.data("date-format"),
+					var dateTimeFormat = el.data('date-format'),
 						sliceAt = dateTimeFormat.toLowerCase().indexOf(' h'),
 						dateFormat = dateTimeFormat.slice(0, sliceAt),
 						timeFormat = dateTimeFormat.slice(sliceAt);
@@ -65,7 +65,9 @@ define(
 					el.datetimepicker({
 						dateFormat: dateFormat,
 						timeFormat : timeFormat,
-						showButtonPanel : false
+						showButtonPanel : false,
+						showSecond : false,
+						timeText : 'Time (' + el.data('timezone') + ')'
 					});
 				});
 			},
