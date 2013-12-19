@@ -10,20 +10,81 @@ from django.utils.html import conditional_escape
 from django.core.urlresolvers import reverse
 from django.utils.dateparse import parse_time
 from django.template.loader import render_to_string
-
+from django.utils import timezone, formats, translation
 from django.contrib.admin.widgets import url_params_from_lookup_dict
 
-class DateWidget(widgets.TextInput):
-    """
-    Widget for date fields. Sets a **data-date-format**
-    attribute to "yyyy-mm-dd"
-    """
+from . import settings
 
-    input_type = 'date'
+# NOT EVERYTHING IS SUPPORTED, I DON'T CARE.
+TRANSLATION_DICT = {
+    # Day
+    'd' : 'dd',
+    'l' : 'DD',
+    'j' : 'oo',
+    # Month
+    'B' : 'MM',
+    'm' : 'mm',
+    'b' : 'M',
+    # Year
+    'Y' : 'yy',
+    'y' : 'y',
+    # Time
+    'p' : 'TT',
+    'I' : 'hh',
+    'H' : 'HH',
+    'M' : 'mm',
+    'S' : 'ss',
+}
+
+def translate_format(format_string):
+    for k, v in TRANSLATION_DICT.items():
+        format_string = format_string.replace('%{0}'.format(k), v)
+    return format_string
+
+class DateWidget(widgets.DateInput):
+    bc = 'date'
+    format_key = 'DATE_INPUT_FORMATS'
 
     def __init__(self, *args, **kwargs):
         super(DateWidget, self).__init__(*args, **kwargs)
-        self.attrs['data-date-format'] = "yyyy-mm-dd"
+        self.attrs['class'] = self.bc
+        if not 'format' in kwargs:
+            self.format = None
+
+    def get_format(self):
+        if self.format:
+            return self.format
+
+        if settings.USE_SCARLET_DATE_FORMATS and hasattr(settings, self.format_key):
+            return getattr(settings, self.format_key)
+
+        return formats.get_format(self.format_key)[0]
+
+    def _format_value(self, value):
+        return formats.localize_input(value, self.get_format())
+
+    def build_attrs(self, *args, **kwargs):
+        args = super(DateWidget, self).build_attrs(*args, **kwargs)
+        args['data-date-format'] = translate_format(self.get_format())
+        args['data-timezone'] = timezone.get_current_timezone_name()
+        args['data-locale'] = translation.get_language()
+        return args
+
+    def value_from_datadict(self, data, files, name):
+        value = super(DateWidget, self).value_from_datadict(data, files, name)
+        df = self.get_format()
+        if isinstance(value, basestring):
+            try:
+                return datetime.datetime.strptime(value, df)
+            except ValueError:
+                pass
+        return value
+
+
+class DateTimeWidget(DateWidget):
+    bc = 'datetime'
+    format_key = 'DATETIME_INPUT_FORMATS'
+
 
 class TimeChoiceWidget(widgets.Select):
     """
@@ -107,6 +168,82 @@ class SplitDateTime(widgets.SplitDateTimeWidget):
         if not self.is_required and len(d) and not d[0]:
             return ['', '']
         return d
+
+class DateRadioInput(widgets.RadioInput):
+    label_text = "At a specific date and time"
+
+    def render(self, name=None, value=None, attrs=None, choices=()):
+        attrs = attrs or self.attrs
+        if 'id' in self.attrs:
+            label_for = ' for="%s_%s"' % (self.attrs['id'], self.index)
+        else:
+            label_for = ''
+        date_widget = attrs['date_widget']
+        return mark_safe(u'<label%s>%s %s: %s</label>' % (label_for, self.tag(), self.label_text, date_widget))
+
+    def tag(self):
+        final_attrs = dict(type='radio', name=self.name, value=self.choice_value)
+        if self.is_checked():
+            final_attrs['checked'] = 'checked'
+        return mark_safe(u'<input%s />' % flatatt(final_attrs))
+
+class DateRenderer(widgets.RadioFieldRenderer):
+    def __init__(self, *args, **kwargs):
+        self.date_widget = kwargs.pop('date_widget')
+        super(DateRenderer, self).__init__(*args, **kwargs)
+
+    def return_choice(self, choice, idx):
+        cls = widgets.RadioInput
+        attrs = self.attrs.copy()
+        if choice[0] == RadioDateTimeWidget.DATE:
+            cls = DateRadioInput
+            attrs['date_widget'] = self.date_widget
+
+        return cls(self.name, self.value, attrs, choice, idx)
+
+    def __iter__(self):
+        for i, choice in enumerate(self.choices):
+            yield self.return_choice(choice, i)
+
+    def __getitem__(self, idx):
+        choice = self.choices[idx]
+        return self.return_choice(choice, idx)
+
+
+    def render(self):
+        return mark_safe(u'<fieldset class="datetime">\n%s\n</fieldset>' % u'\n'.join([u'%s'
+                % force_unicode(w) for w in self]))
+
+class RadioDateTimeWidget(widgets.RadioSelect):
+    NOW = 'now'
+    DATE = 'date'
+
+    def __init__(self, *args, **kwargs):
+        self.date_class = kwargs.pop('date_class', DateTimeWidget)
+        self.choices = [(self.NOW, 'Now'), (self.DATE, 'Date',)]
+        kwargs['choices'] = self.choices
+        super(RadioDateTimeWidget, self).__init__(*args, **kwargs)
+
+    def get_radio_key(self, name):
+        return "{0}_rdi".format(name)
+
+    def get_renderer(self, date_widget, name, value, attrs=None):
+        return DateRenderer(name, value, attrs, self.choices,
+                            date_widget=date_widget)
+
+    def render(self, name, value, attrs=None):
+        widget = self.date_class()
+        date_widget = widget.render(name, value, attrs=attrs)
+        return self.get_renderer(date_widget, self.get_radio_key(name),
+                                 self.DATE, {}).render()
+
+    def value_from_datadict(self, data, files, name):
+        radio_value = data.get(self.get_radio_key(name))
+        if radio_value == self.NOW:
+            return timezone.now()
+        else:
+            widget = self.date_class()
+            return widget.value_from_datadict(data, files, name)
 
 class APIChoiceWidget(widgets.Input):
     """

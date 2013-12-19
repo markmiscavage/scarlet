@@ -192,10 +192,6 @@ section#main {
 					label {
 						display: block;
 					}
-
-					input {
-						width: auto;
-					}
 				}
 			}
 
@@ -260,22 +256,26 @@ section#main {
 				}
 			}
 
-			input[type='date'] {
-				position: relative;
+			input.date,
+			input.datetime {
+				background-repeat: no-repeat;
+				background-position: 95% 6px;
+				width: auto;
 
-				&:after {
-					// add calendar icon...
-					@extend [class*="icon-"];
-					@extend .icon-calendar:before;
+				&.date {
+					background-image: url('../img/icon-date.png');
+				}
 
-					position: absolute;
-					right: 5px;
-					width: 22px;
-					padding-top: 2px;
-					font-size: 18px;
-					background: #FFF;
-					pointer-events: none;
+				&.datetime {
+					background-image: url('../img/icon-datetime.png');
+					padding-right: 40px;
+				}
+			}
 
+			fieldset.datetime {
+
+				label:last-of-type {
+					margin-left: 20px;
 				}
 			}
 
