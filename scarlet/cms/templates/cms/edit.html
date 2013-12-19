@@ -32,7 +32,7 @@
 
 			{% for line in fieldset %}
 				{% for field in line %}
-					<p class="{% if field.is_date %}date{% endif %} {% if field.is_checkbox %}checkbox{% endif %} {% if field.errors %}error-field{% endif %}">
+					<p {% if field.is_date %}class="date"{% endif %}{% if field.is_checkbox %}class="checkbox"{% endif %}>
 						{{ field.label_tag }}
 						{% if field.field.help_text %}<em class="help">{{ field.field.help_text|safe }}</em>{% endif %}
 						{{ field.field }}
