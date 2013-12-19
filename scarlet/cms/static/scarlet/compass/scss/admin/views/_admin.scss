@@ -318,7 +318,7 @@ section#main {
 				.button {
 					@include button;
 					position: absolute;
-					left: 430px;
+					left: 410px;
 					top: 2px;
 
 					&:before {
@@ -326,7 +326,7 @@ section#main {
 						border-left: 2px solid #747474;
 						position: absolute;
 						height: 100%;
-						left: -35px;
+						left: -25px;
 						top: 0;
 					}
 				}
