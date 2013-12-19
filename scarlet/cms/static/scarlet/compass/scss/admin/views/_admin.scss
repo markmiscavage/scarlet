@@ -16,12 +16,23 @@ Requires:
 section#main {
 	clear: both;
 
-	nav[role='sidebar'] + article {
+	article {
 		@include border-radius($gridlet*2);
 		border: 1px solid $light-blue;
 		background-color: #fff;
-		margin-left: 340px;
 		padding: $spacer $spacer*2;
+
+		&#modal,
+		&.list {
+			border: none;
+			background: transparent;
+			margin-left: 0;
+			padding: 0;
+		}
+	}
+
+	nav[role='sidebar'] + article {
+		margin-left: 340px;
 	}
 
 	.messagelist {
@@ -39,6 +50,15 @@ section#main {
 
 		.error {
 			color: #ff0000;
+		}
+	}
+
+	.object-name {
+		font-weight: bold;
+		margin-bottom: 5px;
+
+		em {
+			font-style: italic;
 		}
 	}
 

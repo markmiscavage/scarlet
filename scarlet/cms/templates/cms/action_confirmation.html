@@ -6,23 +6,28 @@
 
     {% bundle_url bundle "main_list" as cancel_url %}
     {% if not errors %}
-    <p>{{ conf_msg }}</p>
-        {% for obj in queryset %}
-            <p>{{ obj }}</p>
-        {% endfor %}
-    <p>Are you sure?</p>
-    <p class="submit-row confirm">
-        <a class="button" href="{{ cancel_url }} ">Cancel</a>
-        <input class="big" type="submit" name='modify' value="Yes" />
-    </p>
+
+        {% ifequal queryset|length 1 %}
+            <p>{{ conf_msg }} <strong class="object-name">{{ queryset.0 }}</strong></p>
+        {% else %}
+            <p>{{ conf_msg }}</p>
+            <ul>
+            {% for obj in queryset %}
+                <li class="object-name">{{ obj }} <em>{{ obj.status_line }}</em></li>
+            {% endfor %}
+            </ul>
+        {% endifequal %}
+        <p class="submit-row confirm">
+            <a class="button" href="{{ cancel_url }} ">Cancel</a>
+            <input class="big" type="submit" name='modify' value="{{ action }}" />
+        </p>
     {% else %}
+        <p>{{ error_msg }}</p>
 
-    <p>{{ error_msg }}</p>
-
-    {% for e in errors %}
-    <p>{{ e }}</p>
-    {% endfor %}
-    <p><a class="button" href="{{ cancel_url }} ">OK</a></p>
+        {% for e in errors %}
+        <p>{{ e }}</p>
+        {% endfor %}
+        <p><a class="button" href="{{ cancel_url }} ">OK</a></p>
     {% endif %}
     </form>
 {% endblock %}
