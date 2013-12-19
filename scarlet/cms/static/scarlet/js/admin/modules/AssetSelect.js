@@ -79,7 +79,7 @@ define(
 				this.cropsList.find('li').each(function (i, el) {
 					el = $(el);
 
-					var editLink = guidLink + "/" + el.data("crop-link");
+					var editLink = guidLink + "/" + el.data("crop-link") + '?popup=1';
 
 					el.find('a').attr('href', editLink);
 				});
