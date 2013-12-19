@@ -2532,39 +2532,58 @@ section#main {
   clear: both;
 }
 /* line 19, ../compass/scss/admin/views/_admin.scss */
-section#main nav[role='sidebar'] + article {
+section#main article {
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
   -ms-border-radius: 6px;
   border-radius: 6px;
   border: 1px solid #b6cad1;
   background-color: #fff;
-  margin-left: 340px;
   padding: 12px 24px;
 }
-/* line 27, ../compass/scss/admin/views/_admin.scss */
+/* line 26, ../compass/scss/admin/views/_admin.scss */
+section#main article#modal, section#main article.list {
+  border: none;
+  background: transparent;
+  margin-left: 0;
+  padding: 0;
+}
+/* line 34, ../compass/scss/admin/views/_admin.scss */
+section#main nav[role='sidebar'] + article {
+  margin-left: 340px;
+}
+/* line 38, ../compass/scss/admin/views/_admin.scss */
 section#main .messagelist {
   padding: 0 0 0 5px;
   font-weight: bold;
 }
-/* line 32, ../compass/scss/admin/views/_admin.scss */
+/* line 43, ../compass/scss/admin/views/_admin.scss */
 section#main .messagelist .info,
 section#main .messagelist .success {
   color: #008000;
 }
-/* line 36, ../compass/scss/admin/views/_admin.scss */
+/* line 47, ../compass/scss/admin/views/_admin.scss */
 section#main .messagelist .warning {
   color: #BD8F00;
 }
-/* line 40, ../compass/scss/admin/views/_admin.scss */
+/* line 51, ../compass/scss/admin/views/_admin.scss */
 section#main .messagelist .error {
   color: #ff0000;
 }
-/* line 45, ../compass/scss/admin/views/_admin.scss */
+/* line 56, ../compass/scss/admin/views/_admin.scss */
+section#main .object-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+/* line 60, ../compass/scss/admin/views/_admin.scss */
+section#main .object-name em {
+  font-style: italic;
+}
+/* line 65, ../compass/scss/admin/views/_admin.scss */
 section#main article {
   position: relative;
 }
-/* line 48, ../compass/scss/admin/views/_admin.scss */
+/* line 68, ../compass/scss/admin/views/_admin.scss */
 section#main article h3 {
   border-bottom: 1px dotted #11232e;
   color: #11232e;
@@ -2573,7 +2592,7 @@ section#main article h3 {
   text-transform: uppercase;
   margin-bottom: 12px;
 }
-/* line 58, ../compass/scss/admin/views/_admin.scss */
+/* line 78, ../compass/scss/admin/views/_admin.scss */
 section#main article h3 + h3,
 section#main article h4 {
   border-bottom: 1px dotted #11232e;
@@ -2583,7 +2602,7 @@ section#main article h4 {
   text-transform: uppercase;
   margin-bottom: 12px;
 }
-/* line 68, ../compass/scss/admin/views/_admin.scss */
+/* line 88, ../compass/scss/admin/views/_admin.scss */
 section#main article a.button {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2613,56 +2632,56 @@ section#main article a.button:hover, section#main article a.button.active {
   background-color: #314b5d;
   color: #b6cad1;
 }
-/* line 72, ../compass/scss/admin/views/_admin.scss */
+/* line 92, ../compass/scss/admin/views/_admin.scss */
 section#main article a.button + section#main article a.button, section#main article a.button + input[type='submit'] {
   margin-left: 12px;
 }
-/* line 77, ../compass/scss/admin/views/_admin.scss */
+/* line 97, ../compass/scss/admin/views/_admin.scss */
 section#main article hr {
   border-bottom: 1px solid red;
 }
-/* line 81, ../compass/scss/admin/views/_admin.scss */
+/* line 101, ../compass/scss/admin/views/_admin.scss */
 section#main article p {
   display: inline-block;
   margin: 0 12px 12px 0;
 }
-/* line 86, ../compass/scss/admin/views/_admin.scss */
+/* line 106, ../compass/scss/admin/views/_admin.scss */
 section#main article p a.button {
   margin-left: 10px;
 }
-/* line 92, ../compass/scss/admin/views/_admin.scss */
+/* line 112, ../compass/scss/admin/views/_admin.scss */
 section#main article p a:first-child.button {
   margin-left: 0;
 }
-/* line 99, ../compass/scss/admin/views/_admin.scss */
+/* line 119, ../compass/scss/admin/views/_admin.scss */
 section#main article ol li {
   list-style: decimal;
 }
-/* line 104, ../compass/scss/admin/views/_admin.scss */
+/* line 124, ../compass/scss/admin/views/_admin.scss */
 section#main article dl {
   margin: 8px 0;
 }
-/* line 107, ../compass/scss/admin/views/_admin.scss */
+/* line 127, ../compass/scss/admin/views/_admin.scss */
 section#main article dl dd {
   margin-top: 8px;
 }
-/* line 112, ../compass/scss/admin/views/_admin.scss */
+/* line 132, ../compass/scss/admin/views/_admin.scss */
 section#main article form {
   color: #314b5d;
   font: 18px/1 AvenirRoman;
 }
-/* line 116, ../compass/scss/admin/views/_admin.scss */
+/* line 136, ../compass/scss/admin/views/_admin.scss */
 section#main article form fieldset {
   border: 0;
   margin: 0;
   padding: 0;
   margin-bottom: 12px;
 }
-/* line 123, ../compass/scss/admin/views/_admin.scss */
+/* line 143, ../compass/scss/admin/views/_admin.scss */
 section#main article form fieldset + fieldset {
   margin-top: -12px;
 }
-/* line 127, ../compass/scss/admin/views/_admin.scss */
+/* line 147, ../compass/scss/admin/views/_admin.scss */
 section#main article form fieldset legend {
   margin-bottom: 15px;
   border-bottom: 1px dotted #11232e;
@@ -2672,52 +2691,52 @@ section#main article form fieldset legend {
   text-transform: uppercase;
   width: 100%;
 }
-/* line 137, ../compass/scss/admin/views/_admin.scss */
+/* line 157, ../compass/scss/admin/views/_admin.scss */
 section#main article form fieldset p {
   text-align: left;
   margin-left: 24px;
 }
-/* line 143, ../compass/scss/admin/views/_admin.scss */
+/* line 163, ../compass/scss/admin/views/_admin.scss */
 section#main article form p {
   display: block;
   position: relative;
 }
-/* line 147, ../compass/scss/admin/views/_admin.scss */
+/* line 167, ../compass/scss/admin/views/_admin.scss */
 section#main article form p.submit-row {
   text-align: right;
 }
-/* line 150, ../compass/scss/admin/views/_admin.scss */
+/* line 170, ../compass/scss/admin/views/_admin.scss */
 section#main article form p.submit-row .button {
   margin-top: 8px;
 }
-/* line 155, ../compass/scss/admin/views/_admin.scss */
+/* line 175, ../compass/scss/admin/views/_admin.scss */
 section#main article form p.checkbox {
   margin-bottom: 36px;
 }
-/* line 158, ../compass/scss/admin/views/_admin.scss */
+/* line 178, ../compass/scss/admin/views/_admin.scss */
 section#main article form p.checkbox label {
   position: absolute;
   left: 21px;
 }
-/* line 163, ../compass/scss/admin/views/_admin.scss */
+/* line 183, ../compass/scss/admin/views/_admin.scss */
 section#main article form p.checkbox .help {
   position: absolute;
   top: 25px;
   left: 21px;
 }
-/* line 172, ../compass/scss/admin/views/_admin.scss */
+/* line 192, ../compass/scss/admin/views/_admin.scss */
 section#main article form p.date label {
   display: block;
 }
-/* line 176, ../compass/scss/admin/views/_admin.scss */
+/* line 196, ../compass/scss/admin/views/_admin.scss */
 section#main article form p.date input {
   width: auto;
 }
-/* line 182, ../compass/scss/admin/views/_admin.scss */
+/* line 202, ../compass/scss/admin/views/_admin.scss */
 section#main article form em {
   font: 14px/1 AvenirLight;
 }
-/* line 191, ../compass/scss/admin/views/_admin.scss */
+/* line 211, ../compass/scss/admin/views/_admin.scss */
 section#main article form label,
 section#main article form input,
 section#main article form textarea,
@@ -2726,7 +2745,7 @@ section#main article form .select2-container,
 section#main article form .select2-container-multi {
   margin-bottom: 12px;
 }
-/* line 196, ../compass/scss/admin/views/_admin.scss */
+/* line 216, ../compass/scss/admin/views/_admin.scss */
 section#main article form input,
 section#main article form textarea {
   -webkit-border-radius: 3px;
@@ -2741,19 +2760,19 @@ section#main article form textarea {
   width: 100%;
   background: #fff;
 }
-/* line 207, ../compass/scss/admin/views/_admin.scss */
+/* line 227, ../compass/scss/admin/views/_admin.scss */
 section#main article form label {
   color: #11232e;
   display: inline-block;
   font: 18px/1 AvenirRoman;
   margin-right: 6px;
 }
-/* line 213, ../compass/scss/admin/views/_admin.scss */
+/* line 233, ../compass/scss/admin/views/_admin.scss */
 section#main article form label.required {
   padding-left: 15px;
   position: relative;
 }
-/* line 217, ../compass/scss/admin/views/_admin.scss */
+/* line 237, ../compass/scss/admin/views/_admin.scss */
 section#main article form label.required:before {
   content: "*";
   position: absolute;
@@ -2761,13 +2780,13 @@ section#main article form label.required:before {
   top: 2px;
   font-weight: bold;
 }
-/* line 228, ../compass/scss/admin/views/_admin.scss */
+/* line 248, ../compass/scss/admin/views/_admin.scss */
 section#main article form input[type='checkbox'],
 section#main article form input[type='radio'] {
   margin-bottom: 0;
   width: auto;
 }
-/* line 233, ../compass/scss/admin/views/_admin.scss */
+/* line 253, ../compass/scss/admin/views/_admin.scss */
 section#main article form input[type='submit'] {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2798,7 +2817,7 @@ section#main article form input[type='submit']:hover, section#main article form 
   background-color: #314b5d;
   color: #b6cad1;
 }
-/* line 238, ../compass/scss/admin/views/_admin.scss */
+/* line 258, ../compass/scss/admin/views/_admin.scss */
 section#main article form input[type='submit'].big {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2829,11 +2848,11 @@ section#main article form input[type='submit'].big {
 section#main article form input[type='submit'].big:hover {
   background: #314b5d;
 }
-/* line 243, ../compass/scss/admin/views/_admin.scss */
+/* line 263, ../compass/scss/admin/views/_admin.scss */
 section#main article form input[type='date'] {
   position: relative;
 }
-/* line 246, ../compass/scss/admin/views/_admin.scss */
+/* line 266, ../compass/scss/admin/views/_admin.scss */
 section#main article form input[type='date']:after {
   position: absolute;
   right: 5px;
@@ -2843,11 +2862,11 @@ section#main article form input[type='date']:after {
   background: #FFF;
   pointer-events: none;
 }
-/* line 262, ../compass/scss/admin/views/_admin.scss */
+/* line 282, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset {
   margin-left: 24px;
 }
-/* line 267, ../compass/scss/admin/views/_admin.scss */
+/* line 287, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset .widget-asset-preview {
   width: 60px;
   height: 60px;
@@ -2860,16 +2879,16 @@ section#main article form .widget-asset .widget-asset-preview {
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
   float: left;
 }
-/* line 280, ../compass/scss/admin/views/_admin.scss */
+/* line 300, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset .widget-asset-actions {
   margin-left: 66px;
   max-width: 300px;
 }
-/* line 285, ../compass/scss/admin/views/_admin.scss */
+/* line 305, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset .select2-container {
   margin-bottom: 6px;
 }
-/* line 289, ../compass/scss/admin/views/_admin.scss */
+/* line 309, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset .button {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2899,20 +2918,20 @@ section#main article form .widget-asset .button:hover, section#main article form
   background-color: #314b5d;
   color: #b6cad1;
 }
-/* line 293, ../compass/scss/admin/views/_admin.scss */
+/* line 313, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset input {
   display: none;
 }
-/* line 298, ../compass/scss/admin/views/_admin.scss */
+/* line 318, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset-simple {
   overflow: hidden;
 }
-/* line 301, ../compass/scss/admin/views/_admin.scss */
+/* line 321, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset-simple input {
   margin-top: 5px;
   width: auto;
 }
-/* line 307, ../compass/scss/admin/views/_admin.scss */
+/* line 327, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset-simple-preview {
   width: 66px;
   height: 66px;
@@ -2926,7 +2945,7 @@ section#main article form .widget-asset-simple-preview {
   float: left;
   margin-right: 10px;
 }
-/* line 321, ../compass/scss/admin/views/_admin.scss */
+/* line 341, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form {
   padding: 12px 96px 12px 24px;
   margin: 0;
@@ -2934,23 +2953,23 @@ section#main article form .widget-formset-form {
   background: rgba(255, 255, 255, 0.5);
   border: 1px solid #b8b8b8;
 }
-/* line 328, ../compass/scss/admin/views/_admin.scss */
+/* line 348, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form + .widget-formset-form {
   margin-top: -1px;
 }
-/* line 332, ../compass/scss/admin/views/_admin.scss */
+/* line 352, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form.odd {
   background-color: rgba(184, 184, 184, 0.5);
 }
-/* line 336, ../compass/scss/admin/views/_admin.scss */
+/* line 356, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form.was-deleted {
   display: none;
 }
-/* line 340, ../compass/scss/admin/views/_admin.scss */
+/* line 360, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form .api-select {
   margin-left: 0;
 }
-/* line 344, ../compass/scss/admin/views/_admin.scss */
+/* line 364, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form .widget-formset-delete {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2984,23 +3003,23 @@ section#main article form .widget-formset-form .widget-formset-delete:hover, sec
   background-color: #314b5d;
   color: #b6cad1;
 }
-/* line 351, ../compass/scss/admin/views/_admin.scss */
+/* line 371, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form .widget-formset-delete b {
   font-weight: normal;
 }
-/* line 355, ../compass/scss/admin/views/_admin.scss */
+/* line 375, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form .widget-formset-delete input {
   display: none;
 }
-/* line 360, ../compass/scss/admin/views/_admin.scss */
+/* line 380, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form .widget-formset-order {
   display: none;
 }
-/* line 366, ../compass/scss/admin/views/_admin.scss */
+/* line 386, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset .widget-formset-forms {
   margin-bottom: 12px;
 }
-/* line 374, ../compass/scss/admin/views/_admin.scss */
+/* line 394, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset .button {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -3030,36 +3049,36 @@ section#main article form .widget-formset .button:hover, section#main article fo
   background-color: #314b5d;
   color: #b6cad1;
 }
-/* line 377, ../compass/scss/admin/views/_admin.scss */
+/* line 397, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset .button.add-button {
   font: 18px/1 AvenirBlack;
 }
-/* line 382, ../compass/scss/admin/views/_admin.scss */
+/* line 402, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset .draggable {
   cursor: move;
 }
-/* line 387, ../compass/scss/admin/views/_admin.scss */
+/* line 407, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select {
   position: relative;
 }
-/* line 391, ../compass/scss/admin/views/_admin.scss */
+/* line 411, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select.has-add-button {
   padding-right: 40px;
 }
-/* line 395, ../compass/scss/admin/views/_admin.scss */
+/* line 415, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .add-button {
   position: absolute;
   top: 0;
   right: 0;
 }
-/* line 401, ../compass/scss/admin/views/_admin.scss */
+/* line 421, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .toggle {
   position: absolute;
   top: -35px;
   height: 30px;
   right: 0;
 }
-/* line 407, ../compass/scss/admin/views/_admin.scss */
+/* line 427, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .toggle .toggle-button {
   float: right;
   line-height: 28px;
@@ -3069,44 +3088,44 @@ section#main article form .api-select .toggle .toggle-button {
   color: #b8b8b8;
   cursor: pointer;
 }
-/* line 416, ../compass/scss/admin/views/_admin.scss */
+/* line 436, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .toggle .toggle-button + .toggle-button {
   border-right: 0;
 }
-/* line 420, ../compass/scss/admin/views/_admin.scss */
+/* line 440, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .toggle .toggle-button.active {
   border-color: rgba(49, 75, 93, 0.5);
   background: #b6cad1;
   color: #314b5d;
 }
-/* line 426, ../compass/scss/admin/views/_admin.scss */
+/* line 446, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .toggle .toggle-button.last {
   border-radius: 3px 0 0 3px;
 }
-/* line 430, ../compass/scss/admin/views/_admin.scss */
+/* line 450, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .toggle .toggle-button.first {
   border-radius: 0 3px 3px 0;
 }
-/* line 437, ../compass/scss/admin/views/_admin.scss */
+/* line 457, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-wysiwyg {
   margin-left: 24px;
 }
-/* line 441, ../compass/scss/admin/views/_admin.scss */
+/* line 461, ../compass/scss/admin/views/_admin.scss */
 section#main article form .error-field {
   margin: 0 0 0 24px;
 }
-/* line 445, ../compass/scss/admin/views/_admin.scss */
+/* line 465, ../compass/scss/admin/views/_admin.scss */
 section#main article form .errorlist {
   color: #ff0000;
   margin: -7px 0 1em 24px;
   padding: 0;
   position: relative;
 }
-/* line 455, ../compass/scss/admin/views/_admin.scss */
+/* line 475, ../compass/scss/admin/views/_admin.scss */
 section#main article section.filters summary[open], section#main article section.filters summary.open {
   z-index: 1;
 }
-/* line 461, ../compass/scss/admin/views/_admin.scss */
+/* line 481, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -3119,12 +3138,12 @@ section#main article details#filter {
   position: relative;
   z-index: 2;
 }
-/* line 471, ../compass/scss/admin/views/_admin.scss */
+/* line 491, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter .filter-clear {
   margin-right: 20px;
   color: red;
 }
-/* line 476, ../compass/scss/admin/views/_admin.scss */
+/* line 496, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary {
   color: #314b5d;
   cursor: pointer;
@@ -3133,36 +3152,36 @@ section#main article details#filter summary {
   outline: none;
   padding: 12px;
 }
-/* line 484, ../compass/scss/admin/views/_admin.scss */
+/* line 504, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary:hover {
   background-color: #11232e;
   color: #fff;
 }
-/* line 491, ../compass/scss/admin/views/_admin.scss */
+/* line 511, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary:after, section#main article details#filter summary::-webkit-details-marker {
   display: none;
 }
-/* line 495, ../compass/scss/admin/views/_admin.scss */
+/* line 515, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary i:after {
   color: #314b5d;
   content: "s";
   font: 12px/1 CompassArrows;
   padding-left: 6px;
 }
-/* line 503, ../compass/scss/admin/views/_admin.scss */
+/* line 523, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter form {
   display: none;
 }
-/* line 508, ../compass/scss/admin/views/_admin.scss */
+/* line 528, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] .filter-clear, section#main article details#filter.open .filter-clear {
   display: none;
 }
-/* line 512, ../compass/scss/admin/views/_admin.scss */
+/* line 532, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] summary, section#main article details#filter.open summary {
   background-color: #11232e;
   color: #fff;
 }
-/* line 517, ../compass/scss/admin/views/_admin.scss */
+/* line 537, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] form, section#main article details#filter.open form {
   border: 1px solid #b6cad1;
   background-color: #fff;
@@ -3172,36 +3191,36 @@ section#main article details#filter[open] form, section#main article details#fil
   right: 0;
   text-align: left;
 }
-/* line 526, ../compass/scss/admin/views/_admin.scss */
+/* line 546, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] form [type='submiinputt'], section#main article details#filter.open form [type='submiinputt'] {
   margin-bottom: 0;
 }
-/* line 533, ../compass/scss/admin/views/_admin.scss */
+/* line 553, ../compass/scss/admin/views/_admin.scss */
 section#main article div.pagination {
   font: 14px/1 AvenirMedium;
   text-align: right;
 }
-/* line 537, ../compass/scss/admin/views/_admin.scss */
+/* line 557, ../compass/scss/admin/views/_admin.scss */
 section#main article div.pagination a {
   font: 14px/1 CompassArrows;
 }
 
-/* line 546, ../compass/scss/admin/views/_admin.scss */
+/* line 566, ../compass/scss/admin/views/_admin.scss */
 details, summary {
   display: block;
 }
 
-/* line 547, ../compass/scss/admin/views/_admin.scss */
+/* line 567, ../compass/scss/admin/views/_admin.scss */
 details.closed > * {
   display: none;
 }
 
-/* line 548, ../compass/scss/admin/views/_admin.scss */
+/* line 568, ../compass/scss/admin/views/_admin.scss */
 details.closed > summary {
   display: block;
 }
 
-/* line 549, ../compass/scss/admin/views/_admin.scss */
+/* line 569, ../compass/scss/admin/views/_admin.scss */
 details.open > summary {
   display: block;
 }
