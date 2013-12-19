@@ -5,7 +5,19 @@
 	<div class="widget-asset-actions">
 		{{ hidden_input }}
 		{% if add_link %}
-		<a class="button" target="_blank" href="{{ add_link }}">Upload</a>
+		<a class="button" target="_blank" href="{{ add_link }}">Upload New</a>
 		{% endif %}
+
+        {% if sizes %}
+            <ul class="crops-list" data-base-link="{{ base_api_link }}" >
+            {% for each in sizes %}
+                <li data-crop-link="{{ each.post_link }}">
+                	<span class="name">{{ each.name }}</span>
+                	<span class="size">{{ each.width }}x{{ each.height }}px</span>
+                	<a href="#" class="button crop-link">Edit Crop</a>
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
 	</div>
 </div>
