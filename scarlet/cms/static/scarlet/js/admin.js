@@ -10579,8 +10579,13 @@ define(
 				this.dom = dom;
 				this.input = dom.find('input');
 				this.preview = dom.find('.widget-asset-preview');
+
+				this.cropsList = dom.find('.crops-list');
+				this.baseLink = this.cropsList.data('base-link');
+
 				this._autoTag();
 				this._initSelect2();
+				this._linkifyCrops();
 			},
 
 			_initSelect2 : function () {
@@ -10604,7 +10609,7 @@ define(
 
 				this._tag();
 
-				this.dom.on('click', '.button', this._openPopup);
+				this.dom.on('click', '.button, .crop-link', this._openPopup);
 			},
 
 			_openPopup : function (e) {
@@ -10619,6 +10624,18 @@ define(
 
 			_gotDataFromPopup : function (data) {
 				this.input.select2('data', data);
+			},
+
+			_linkifyCrops : function (dom) {
+				var guidLink = this.baseLink + this.cropsList.parent().find('[type=hidden]').val();
+
+				this.cropsList.find('li').each(function (i, el) {
+					el = $(el);
+
+					var editLink = guidLink + "/" + el.data("crop-link") + '?popup=1';
+
+					el.find('a').attr('href', editLink);
+				});
 			},
 
 			_autoTag : function () {
@@ -10709,6 +10726,8 @@ define(
 			},
 
 			onChange : function () {
+				this._linkifyCrops();
+
 				if (!this.input.val()) {
 					this.preview.css('background-image', "none");
 				}
