@@ -1213,12 +1213,16 @@ section#object-info nav[role='object-tools'] a {
 section#object-info nav[role='object-tools'] a:hover {
   color: #fff;
 }
-/* line 101, ../compass/scss/admin/modules/_object-info.scss */
+/* line 100, ../compass/scss/admin/modules/_object-info.scss */
+section#object-info nav[role='object-tools'] a:last-child {
+  border-right: none;
+}
+/* line 105, ../compass/scss/admin/modules/_object-info.scss */
 section#object-info nav[role='object-tools'] form {
   display: inline-block;
   padding-left: 12px;
 }
-/* line 105, ../compass/scss/admin/modules/_object-info.scss */
+/* line 109, ../compass/scss/admin/modules/_object-info.scss */
 section#object-info nav[role='object-tools'] form input[type='submit'] {
   -webkit-user-select: none;
   -moz-user-select: none;
