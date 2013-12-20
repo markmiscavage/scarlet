@@ -57,14 +57,6 @@
 			{% if unpublish_url %}<a href="{{ unpublish_url }}">Unpublish</a>{% endif %}
 			{% endif %}
 
-			{% bundle_url bundle "publish" object=obj follow_parent=False as publish_url %}
-			{% if publish_url %}
-				<form action="{{ publish_url }}" method="get">
-					{% csrf_token %}
-					<input type="submit" name="publish" value="Publish" />
-				</form>
-			{% endif %}
-
 		</nav>
 		{% endif %}
 	{% endblock %}
