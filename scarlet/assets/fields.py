@@ -27,11 +27,13 @@ class AssetsFileFormField(TaggedRelationFormField):
     def __init__(self, **kwargs):
         # Type/Tags
         self.asset_type = kwargs.pop('asset_type', None)
+        self.sizes = kwargs.pop('sizes', None)
         super(AssetsFileFormField, self).__init__(**kwargs)
 
     def widget_attrs(self, widget):
         widget.required = self.required
         widget.asset_type = self.asset_type
+        widget.sizes = self.sizes
         return {}
 
 
@@ -118,6 +120,7 @@ class AssetsFileField(TaggedRelationField):
         # while letting the caller override them.
         defaults = super(AssetsFileField, self).get_formfield_defaults()
         defaults['asset_type'] = self.asset_type
+        defaults['sizes'] = self.image_sizes
         return defaults
 
     def contribute_to_class(self, cls, name):

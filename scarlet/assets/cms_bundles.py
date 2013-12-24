@@ -35,6 +35,7 @@ class CropBundle(bundles.BlankBundle):
     class Meta:
         parent_field = 'image'
         model = models.ImageDetail
+        edit_regex_base = '(?P<%(group_name)s_pk>[a-zA-z0-9_.-]+)/%(attname)s/'
 
 class AssetBundle(bundles.Bundle):
 

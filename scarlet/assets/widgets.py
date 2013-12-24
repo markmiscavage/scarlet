@@ -13,6 +13,7 @@ except ValueError:
 from . import settings
 
 class AssetsFileWidget(TaggedRelationWidget):
+    crop_link = "crops/{0}/edit/"
 
     def get_qs(self):
         qs = super(AssetsFileWidget, self).get_qs()
@@ -25,6 +26,21 @@ class AssetsFileWidget(TaggedRelationWidget):
         if 'ftype' in qs:
             qs['type'] = qs.pop('ftype')
         return qs
+
+    def get_crop_sizes(self):
+        from . import get_image_cropper
+        sizes = []
+        if self.sizes:
+            for x in self.sizes:
+                crop = get_image_cropper().get_crop_config(x)
+                if crop and crop.editable:
+                    sizes.append({
+                        'name' : crop.name,
+                        'width' : crop.width,
+                        'height' : crop.height,
+                        'post_link' : self.crop_link.format(x)
+                    })
+        return sizes
 
     def render(self, name, value, attrs=None):
         obj = self.obj_for_value(value)
@@ -39,7 +55,9 @@ class AssetsFileWidget(TaggedRelationWidget):
             'asset_type': self.asset_type,
             'asset_tags': self.tags,
             'link': self.get_api_link(),
-            'add_link': self.get_add_link()
+            'add_link': self.get_add_link(),
+            'base_api_link' : self._api_link,
+            'sizes' : self.get_crop_sizes(),
         }
         html = render_to_string('assets/asset_widget.html', context)
         return mark_safe(html)

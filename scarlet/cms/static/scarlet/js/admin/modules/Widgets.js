@@ -8,6 +8,7 @@ define(
 			jQuerySelect2        = require("$plugin!select2"),
 			jQueryPickadate      = require("$plugin!pickadate"),
 			jQueryDetails        = require("$plugin!details"),
+			jQueryTimePicker     = require("$plugin!ui-timepicker"),
 			AssetSelect          = require("./AssetSelect"),
 			ApiSelect            = require("./ApiSelect"),
 			Formset              = require("./Formset"),
@@ -37,6 +38,7 @@ define(
 				this._renderFormset(dom);
 				this._renderApiSelect(dom);
 				this._renderDatePicker(dom);
+				this._renderDateTimePicker(dom);
 				this._renderWysiwig(dom);
 				this._renderTabs(dom);
 				this._renderInsertVideo(dom);
@@ -47,8 +49,27 @@ define(
 				this._renderDragWidth(dom);
 
 				this._autoSlug(dom);
-
 				this._handlePopup(dom);
+			},
+
+			_renderDateTimePicker : function (dom) {
+				dom.find('input.datetime').each(function (i, el) {
+					el = $(el);
+
+					// parse date and time from django format
+					var dateTimeFormat = el.data('date-format'),
+						sliceAt = dateTimeFormat.toLowerCase().indexOf(' h'),
+						dateFormat = dateTimeFormat.slice(0, sliceAt),
+						timeFormat = dateTimeFormat.slice(sliceAt);
+
+					el.datetimepicker({
+						dateFormat: dateFormat,
+						timeFormat : timeFormat,
+						showButtonPanel : false,
+						showSecond : false,
+						timeText : 'Time (' + el.data('timezone') + ')'
+					});
+				});
 			},
 
 			_renderWysiwig : function (dom) {
@@ -58,17 +79,13 @@ define(
 			},
 
 			_renderDatePicker : function (dom) {
-				dom.find("[data-date-format]").each(function (i, el) {
+				dom.find(".date").each(function (i, el) {
 					el = $(el);
-					el.attr('placeholder', el.data('date-format').toUpperCase());
-					if (!Modernizr.inputtypes.date) { // Use plugin if browser lacks native support for input type="date"
-						el.pickadate({
-							format: 'yyyy-mm-dd',
-							format_submit: false,
-							month_prev: 'w',
-							month_next: 'e',
-						});
-					}
+
+					el.datepicker({
+						dateFormat: el.data("date-format"),
+						showButtonPanel : false
+					});
 				});
 			},
 

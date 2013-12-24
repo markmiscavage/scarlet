@@ -16,12 +16,23 @@ Requires:
 section#main {
 	clear: both;
 
-	nav[role='sidebar'] + article {
+	article {
 		@include border-radius($gridlet*2);
 		border: 1px solid $light-blue;
 		background-color: #fff;
-		margin-left: 340px;
 		padding: $spacer $spacer*2;
+
+		&#modal,
+		&.list {
+			border: none;
+			background: transparent;
+			margin-left: 0;
+			padding: 0;
+		}
+	}
+
+	nav[role='sidebar'] + article {
+		margin-left: 340px;
 	}
 
 	.messagelist {
@@ -39,6 +50,15 @@ section#main {
 
 		.error {
 			color: #ff0000;
+		}
+	}
+
+	.object-name {
+		font-weight: bold;
+		margin-bottom: 5px;
+
+		em {
+			font-style: italic;
 		}
 	}
 
@@ -172,10 +192,6 @@ section#main {
 					label {
 						display: block;
 					}
-
-					input {
-						width: auto;
-					}
 				}
 			}
 
@@ -240,22 +256,26 @@ section#main {
 				}
 			}
 
-			input[type='date'] {
-				position: relative;
+			input.date,
+			input.datetime {
+				background-repeat: no-repeat;
+				background-position: 95% 6px;
+				width: auto;
 
-				&:after {
-					// add calendar icon...
-					@extend [class*="icon-"];
-					@extend .icon-calendar:before;
+				&.date {
+					background-image: url('../img/icon-date.png');
+				}
 
-					position: absolute;
-					right: 5px;
-					width: 22px;
-					padding-top: 2px;
-					font-size: 18px;
-					background: #FFF;
-					pointer-events: none;
+				&.datetime {
+					background-image: url('../img/icon-datetime.png');
+					padding-right: 40px;
+				}
+			}
 
+			fieldset.datetime {
+
+				label:last-of-type {
+					margin-left: 20px;
 				}
 			}
 
@@ -263,6 +283,7 @@ section#main {
 				// @include clearfix;
 				// height: $gridlet*20;
 				margin-left: $spacer*2;
+				position: relative;
 
 				.widget-asset-preview {
 					width: $gridlet*20;
@@ -286,8 +307,48 @@ section#main {
 					margin-bottom: $gridlet*2;
 				}
 
+				.crops-list {
+					padding-left: 0;
+
+					li {
+						margin-bottom: 10px;
+					}
+
+					.name,
+					.size {
+						display: inline-block;
+						width: 105px;
+					}
+
+					.size {
+						width: 115px;
+					}
+
+					.crop-link {
+						position: static;
+						font-size: 12px;
+						margin-left: 6px;
+
+						&:before {
+							display: none;
+						}
+					}
+				}
+
 				.button {
 					@include button;
+					position: absolute;
+					left: 410px;
+					top: 2px;
+
+					&:before {
+						content: "";
+						border-left: 2px solid #747474;
+						position: absolute;
+						height: 100%;
+						left: -25px;
+						top: 0;
+					}
 				}
 
 				input {
@@ -438,9 +499,13 @@ section#main {
 				margin-left: 24px;
 			}
 
+			.error-field {
+				margin: 0 0 0 24px;
+			}
+
 			.errorlist {
 				color: #ff0000;
-				margin: 0 0 1em 24px;
+				margin: -7px 0 1em 24px;
 				padding: 0;
 				position: relative;
 			}

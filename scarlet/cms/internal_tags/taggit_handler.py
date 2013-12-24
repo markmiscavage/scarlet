@@ -63,7 +63,7 @@ def update_changed_tags(new_tags, old_tags):
             args = q | args
 
     types = TaggedItem.objects.filter(args).values('content_type',
-                            'object_id').annotate(models.Count('content_type'))
+                            'object_id').annotate(cs=models.Count('content_type')).filter(cs=len(old_tags))
     add_tags = [Tag.objects.get_or_create(name=tag) \
                                 for tag in new_tags]
 

@@ -795,7 +795,7 @@ Password				"k"
 }
 
 /* line 28, ../compass/scss/admin/modules/_compass-arrows.scss */
-[class*="icon-"], section#main article form input[type='date']:after {
+[class*="icon-"] {
   font-family: 'icomoon';
   speak: none;
   font-style: normal;
@@ -809,7 +809,7 @@ Password				"k"
 }
 
 /* line 42, ../compass/scss/admin/modules/_compass-arrows.scss */
-.icon-calendar:before, section#main article form input[type='date']:after {
+.icon-calendar:before {
   content: "\e600";
 }
 
@@ -1213,12 +1213,16 @@ section#object-info nav[role='object-tools'] a {
 section#object-info nav[role='object-tools'] a:hover {
   color: #fff;
 }
-/* line 101, ../compass/scss/admin/modules/_object-info.scss */
+/* line 100, ../compass/scss/admin/modules/_object-info.scss */
+section#object-info nav[role='object-tools'] a:last-child {
+  border-right: none;
+}
+/* line 105, ../compass/scss/admin/modules/_object-info.scss */
 section#object-info nav[role='object-tools'] form {
   display: inline-block;
   padding-left: 12px;
 }
-/* line 105, ../compass/scss/admin/modules/_object-info.scss */
+/* line 109, ../compass/scss/admin/modules/_object-info.scss */
 section#object-info nav[role='object-tools'] form input[type='submit'] {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2513,6 +2517,587 @@ img.jcrop-preview {
   max-width: none;
 }
 
+/* timepicker add-on
+----------------------------------*/
+/* line 5, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-timepicker-div .ui_tpicker_time {
+  display: none;
+}
+
+/* line 6, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-timepicker-div .ui_tpicker_time_label {
+  -moz-border-radius-topleft: 2px;
+  -webkit-border-top-left-radius: 2px;
+  border-top-left-radius: 2px;
+  -moz-border-radius-topright: 2px;
+  -webkit-border-top-right-radius: 2px;
+  border-top-right-radius: 2px;
+  display: block;
+  float: none;
+  background: #DDD;
+  border: 1px solid #DDD;
+  margin-bottom: 10px;
+  padding: 5px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* line 19, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-timepicker-div {
+  background: #fff;
+}
+
+/* line 20, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-timepicker-div .ui-widget-header {
+  margin-bottom: 8px;
+}
+
+/* line 21, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-timepicker-div dl {
+  background: #F6F6F6;
+  text-align: left;
+  padding-bottom: 5px;
+  margin: 5px 0;
+}
+
+/* line 22, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-timepicker-div dl dt {
+  float: left;
+  clear: left;
+  padding: 0 0 0 5px;
+}
+
+/* line 23, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-timepicker-div dl dd {
+  margin: 0 10px 10px 25%;
+}
+
+/* line 24, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-timepicker-div td {
+  font-size: 90%;
+}
+
+/* line 25, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-tpicker-grid-label {
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* line 27, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-timepicker-rtl {
+  direction: rtl;
+}
+
+/* line 28, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-timepicker-rtl dl {
+  text-align: right;
+  padding: 10px 5px 0 0;
+}
+
+/* line 29, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-timepicker-rtl dl dt {
+  float: right;
+  clear: right;
+}
+
+/* line 30, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-timepicker-rtl dl dd {
+  margin: 0 25% 10px 10px;
+}
+
+/* line 32, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker-calendar thead tr th {
+  font-size: 14px;
+}
+
+/* line 35, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker-calendar tbody tr td,
+.ui-datepicker-calendar tbody tr:nth-child(odd) td,
+.ui-datepicker-calendar tbody tr:hover td {
+  background: #fff;
+}
+
+/* line 39, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui_tpicker_hour_label,
+.ui_tpicker_minute_label,
+.ui_tpicker_second_label {
+  font-size: 12px;
+}
+
+/* line 40, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker-today {
+  text-decoration: underline;
+}
+
+/* jQuery UI - v1.9.2 - 2013-12-11
+* http://jqueryui.com
+* Includes: jquery.ui.core.css, jquery.ui.datepicker.css, jquery.ui.slider.css, jquery.ui.theme.css
+* To view and modify this theme, visit http://jqueryui.com/themeroller/?ffDefault=Helvetica%2CArial%2Csans-serif&fwDefault=bold&fsDefault=1.1em&cornerRadius=2px&bgColorHeader=dddddd&bgTextureHeader=highlight_soft&bgImgOpacityHeader=50&borderColorHeader=dddddd&fcHeader=444444&iconColorHeader=0073ea&bgColorContent=ffffff&bgTextureContent=flat&bgImgOpacityContent=75&borderColorContent=dddddd&fcContent=444444&iconColorContent=ff0000&bgColorDefault=f6f6f6&bgTextureDefault=highlight_soft&bgImgOpacityDefault=100&borderColorDefault=dddddd&fcDefault=0073ea&iconColorDefault=666666&bgColorHover=0073ea&bgTextureHover=highlight_soft&bgImgOpacityHover=25&borderColorHover=0073ea&fcHover=ffffff&iconColorHover=ffffff&bgColorActive=ffffff&bgTextureActive=glass&bgImgOpacityActive=65&borderColorActive=dddddd&fcActive=ff0000&iconColorActive=454545&bgColorHighlight=ffffff&bgTextureHighlight=flat&bgImgOpacityHighlight=55&borderColorHighlight=cccccc&fcHighlight=444444&iconColorHighlight=0073ea&bgColorError=ffffff&bgTextureError=flat&bgImgOpacityError=55&borderColorError=ff0000&fcError=222222&iconColorError=ff0000&bgColorOverlay=eeeeee&bgTextureOverlay=flat&bgImgOpacityOverlay=0&opacityOverlay=80&bgColorShadow=aaaaaa&bgTextureShadow=flat&bgImgOpacityShadow=0&opacityShadow=60&thicknessShadow=4px&offsetTopShadow=-4px&offsetLeftShadow=-4px&cornerRadiusShadow=0px
+* Copyright 2013 jQuery Foundation and other contributors; Licensed MIT */
+/* Layout helpers
+----------------------------------*/
+/* line 51, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-helper-hidden {
+  display: none;
+}
+
+/* line 52, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-helper-hidden-accessible {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+/* line 53, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-helper-reset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  line-height: 1.3;
+  text-decoration: none;
+  font-size: 100%;
+  list-style: none;
+}
+
+/* line 54, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-helper-clearfix:before, .ui-helper-clearfix:after {
+  content: "";
+  display: table;
+}
+
+/* line 55, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-helper-clearfix:after {
+  clear: both;
+}
+
+/* line 56, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-helper-clearfix {
+  zoom: 1;
+}
+
+/* line 57, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-helper-zfix {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+  opacity: 0;
+  filter: Alpha(Opacity=0);
+}
+
+/* Interaction Cues
+----------------------------------*/
+/* line 62, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-state-disabled {
+  cursor: default !important;
+}
+
+/* Icons
+----------------------------------*/
+/* states and images */
+/* line 68, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-icon {
+  display: block;
+  text-indent: -99999px;
+  overflow: hidden;
+  background-repeat: no-repeat;
+}
+
+/* Overlays */
+/* line 71, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-widget-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* line 72, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker {
+  width: 17em;
+  padding: .2em .2em 0;
+  display: none;
+}
+
+/* line 73, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker .ui-datepicker-header {
+  position: relative;
+}
+
+/* line 75, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker .ui-datepicker-prev,
+.ui-datepicker .ui-datepicker-next {
+  cursor: pointer;
+  position: absolute;
+  top: 6px;
+  width: 1.8em;
+  height: 1.8em;
+}
+/* line 82, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker .ui-datepicker-prev.ui-state-hover,
+.ui-datepicker .ui-datepicker-next.ui-state-hover {
+  border: none;
+  background: transparent;
+}
+
+/* line 87, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker .ui-datepicker-prev {
+  left: 2px;
+}
+/* line 90, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker .ui-datepicker-prev:after {
+  content: "w";
+  font: 13px/1 CompassArrows;
+}
+
+/* line 95, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker .ui-datepicker-next {
+  right: 2px;
+  text-align: right;
+}
+/* line 99, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker .ui-datepicker-next:after {
+  content: "e";
+  font: 13px/1 CompassArrows;
+}
+
+/* line 105, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker .ui-datepicker-prev span,
+.ui-datepicker .ui-datepicker-next span {
+  display: none;
+}
+
+/* line 106, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker .ui-datepicker-title {
+  margin: 0 2.3em;
+  line-height: 1.8em;
+  text-align: center;
+}
+
+/* line 107, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker .ui-datepicker-title select {
+  font-size: 1em;
+  margin: 1px 0;
+}
+
+/* line 108, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker select.ui-datepicker-month-year {
+  width: 100%;
+}
+
+/* line 110, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker select.ui-datepicker-month,
+.ui-datepicker select.ui-datepicker-year {
+  width: 49%;
+}
+
+/* line 111, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker table {
+  width: 100%;
+  font-size: .9em;
+  border-collapse: collapse;
+  margin: 0 0 .4em;
+}
+
+/* line 112, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker th {
+  padding: .7em .3em;
+  text-align: center;
+  font-weight: bold;
+  border: 0;
+}
+
+/* line 113, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker td {
+  border: 0;
+  padding: 1px;
+}
+
+/* line 114, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker td span, .ui-datepicker td a {
+  display: block;
+  padding: .2em;
+  text-align: right;
+  text-decoration: none;
+}
+
+/* line 115, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker .ui-datepicker-buttonpane {
+  background-image: none;
+  margin: .7em 0 0 0;
+  padding: 0 .2em;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+/* line 116, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker .ui-datepicker-buttonpane button {
+  float: right;
+  margin: .5em .2em .4em;
+  cursor: pointer;
+  padding: .2em .6em .3em .6em;
+  width: auto;
+  overflow: visible;
+}
+
+/* line 117, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker .ui-datepicker-buttonpane button.ui-datepicker-current {
+  float: left;
+}
+
+/* IE6 IFRAME FIX (taken from datepicker 1.5.3 */
+/* line 120, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-datepicker-cover {
+  position: absolute;
+  /*must have*/
+  z-index: -1;
+  /*must have*/
+  filter: mask();
+  /*must have*/
+  top: -4px;
+  /*must have*/
+  left: -4px;
+  /*must have*/
+  width: 200px;
+  /*must have*/
+  height: 200px;
+  /*must have*/
+}
+
+/* line 128, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-slider {
+  position: relative;
+  text-align: left;
+}
+
+/* line 129, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-slider .ui-slider-handle {
+  position: absolute;
+  z-index: 2;
+  width: 1.2em;
+  height: 1.2em;
+  cursor: default;
+}
+
+/* line 130, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-slider .ui-slider-range {
+  position: absolute;
+  z-index: 1;
+  font-size: .7em;
+  display: block;
+  border: 0;
+  background-position: 0 0;
+}
+
+/* line 132, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-slider-horizontal {
+  height: .8em;
+}
+
+/* line 133, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-slider-horizontal .ui-slider-handle {
+  top: -.3em;
+  margin-left: -.6em;
+}
+
+/* line 134, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-slider-horizontal .ui-slider-range {
+  top: 0;
+  height: 100%;
+}
+
+/* line 135, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-slider-horizontal .ui-slider-range-min {
+  left: 0;
+}
+
+/* line 136, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-slider-horizontal .ui-slider-range-max {
+  right: 0;
+}
+
+/* line 138, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-slider-vertical {
+  width: .8em;
+  height: 100px;
+}
+
+/* line 139, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-slider-vertical .ui-slider-handle {
+  left: -.3em;
+  margin-left: 0;
+  margin-bottom: -.6em;
+}
+
+/* line 140, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-slider-vertical .ui-slider-range {
+  left: 0;
+  width: 100%;
+}
+
+/* line 141, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-slider-vertical .ui-slider-range-min {
+  bottom: 0;
+}
+
+/* line 142, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-slider-vertical .ui-slider-range-max {
+  top: 0;
+}
+
+/* Component containers
+----------------------------------*/
+/* line 146, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-widget {
+  font-family: Helvetica,Arial,sans-serif;
+  font-size: 1.1em;
+}
+
+/* line 147, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-widget .ui-widget {
+  font-size: 1em;
+}
+
+/* line 148, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+  font-family: Helvetica,Arial,sans-serif;
+  font-size: 1em;
+}
+
+/* line 149, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-widget-content {
+  border: 1px solid #dddddd;
+  background: #ffffff;
+  color: #444444;
+}
+
+/* line 150, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-widget-content a {
+  color: #444444;
+}
+
+/* line 151, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-widget-header {
+  border: 1px solid #dddddd;
+  background: #dddddd;
+  color: #444444;
+  font-weight: bold;
+}
+
+/* line 152, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-widget-header a {
+  color: #444444;
+}
+
+/* Interaction states
+----------------------------------*/
+/* line 156, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+  border: 1px solid #dddddd;
+  background: #f6f6f6;
+  font-weight: bold;
+  color: #314b5d;
+}
+
+/* line 157, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited {
+  color: #314b5d;
+  text-decoration: none;
+}
+
+/* line 158, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+  border: 1px solid #314b5d;
+  background: #314b5d;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+/* line 159, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-state-hover a, .ui-state-hover a:hover, .ui-state-hover a:link, .ui-state-hover a:visited {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* line 160, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+  border: 1px solid #dddddd;
+  background: #ffffff;
+  font-weight: bold;
+  color: #ff0000;
+}
+
+/* line 161, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+  color: #ff0000;
+  text-decoration: none;
+}
+
+/* Corner radius */
+/* line 164, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
+  -moz-border-radius-topleft: 2px;
+  -webkit-border-top-left-radius: 2px;
+  -khtml-border-top-left-radius: 2px;
+  border-top-left-radius: 2px;
+}
+
+/* line 165, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {
+  -moz-border-radius-topright: 2px;
+  -webkit-border-top-right-radius: 2px;
+  -khtml-border-top-right-radius: 2px;
+  border-top-right-radius: 2px;
+}
+
+/* line 166, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {
+  -moz-border-radius-bottomleft: 2px;
+  -webkit-border-bottom-left-radius: 2px;
+  -khtml-border-bottom-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+/* line 167, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
+  -moz-border-radius-bottomright: 2px;
+  -webkit-border-bottom-right-radius: 2px;
+  -khtml-border-bottom-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+
+/* Overlays */
+/* line 170, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-widget-overlay {
+  background: #eeeeee;
+  opacity: .8;
+  filter: Alpha(Opacity=80);
+}
+
+/* line 171, ../compass/scss/admin/modules/_ui-datetime-picker.scss */
+.ui-widget-shadow {
+  margin: -4px 0 0 -4px;
+  padding: 4px;
+  background: #aaaaaa;
+  opacity: .6;
+  filter: Alpha(Opacity=60);
+  -moz-border-radius: 0px;
+  -khtml-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+}
+
 /*
 File: admin.scss
 Outputs: admin.css
@@ -2532,39 +3117,58 @@ section#main {
   clear: both;
 }
 /* line 19, ../compass/scss/admin/views/_admin.scss */
-section#main nav[role='sidebar'] + article {
+section#main article {
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
   -ms-border-radius: 6px;
   border-radius: 6px;
   border: 1px solid #b6cad1;
   background-color: #fff;
-  margin-left: 340px;
   padding: 12px 24px;
 }
-/* line 27, ../compass/scss/admin/views/_admin.scss */
+/* line 26, ../compass/scss/admin/views/_admin.scss */
+section#main article#modal, section#main article.list {
+  border: none;
+  background: transparent;
+  margin-left: 0;
+  padding: 0;
+}
+/* line 34, ../compass/scss/admin/views/_admin.scss */
+section#main nav[role='sidebar'] + article {
+  margin-left: 340px;
+}
+/* line 38, ../compass/scss/admin/views/_admin.scss */
 section#main .messagelist {
   padding: 0 0 0 5px;
   font-weight: bold;
 }
-/* line 32, ../compass/scss/admin/views/_admin.scss */
+/* line 43, ../compass/scss/admin/views/_admin.scss */
 section#main .messagelist .info,
 section#main .messagelist .success {
   color: #008000;
 }
-/* line 36, ../compass/scss/admin/views/_admin.scss */
+/* line 47, ../compass/scss/admin/views/_admin.scss */
 section#main .messagelist .warning {
   color: #BD8F00;
 }
-/* line 40, ../compass/scss/admin/views/_admin.scss */
+/* line 51, ../compass/scss/admin/views/_admin.scss */
 section#main .messagelist .error {
   color: #ff0000;
 }
-/* line 45, ../compass/scss/admin/views/_admin.scss */
+/* line 56, ../compass/scss/admin/views/_admin.scss */
+section#main .object-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+/* line 60, ../compass/scss/admin/views/_admin.scss */
+section#main .object-name em {
+  font-style: italic;
+}
+/* line 65, ../compass/scss/admin/views/_admin.scss */
 section#main article {
   position: relative;
 }
-/* line 48, ../compass/scss/admin/views/_admin.scss */
+/* line 68, ../compass/scss/admin/views/_admin.scss */
 section#main article h3 {
   border-bottom: 1px dotted #11232e;
   color: #11232e;
@@ -2573,7 +3177,7 @@ section#main article h3 {
   text-transform: uppercase;
   margin-bottom: 12px;
 }
-/* line 58, ../compass/scss/admin/views/_admin.scss */
+/* line 78, ../compass/scss/admin/views/_admin.scss */
 section#main article h3 + h3,
 section#main article h4 {
   border-bottom: 1px dotted #11232e;
@@ -2583,7 +3187,7 @@ section#main article h4 {
   text-transform: uppercase;
   margin-bottom: 12px;
 }
-/* line 68, ../compass/scss/admin/views/_admin.scss */
+/* line 88, ../compass/scss/admin/views/_admin.scss */
 section#main article a.button {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2613,56 +3217,56 @@ section#main article a.button:hover, section#main article a.button.active {
   background-color: #314b5d;
   color: #b6cad1;
 }
-/* line 72, ../compass/scss/admin/views/_admin.scss */
+/* line 92, ../compass/scss/admin/views/_admin.scss */
 section#main article a.button + section#main article a.button, section#main article a.button + input[type='submit'] {
   margin-left: 12px;
 }
-/* line 77, ../compass/scss/admin/views/_admin.scss */
+/* line 97, ../compass/scss/admin/views/_admin.scss */
 section#main article hr {
   border-bottom: 1px solid red;
 }
-/* line 81, ../compass/scss/admin/views/_admin.scss */
+/* line 101, ../compass/scss/admin/views/_admin.scss */
 section#main article p {
   display: inline-block;
   margin: 0 12px 12px 0;
 }
-/* line 86, ../compass/scss/admin/views/_admin.scss */
+/* line 106, ../compass/scss/admin/views/_admin.scss */
 section#main article p a.button {
   margin-left: 10px;
 }
-/* line 92, ../compass/scss/admin/views/_admin.scss */
+/* line 112, ../compass/scss/admin/views/_admin.scss */
 section#main article p a:first-child.button {
   margin-left: 0;
 }
-/* line 99, ../compass/scss/admin/views/_admin.scss */
+/* line 119, ../compass/scss/admin/views/_admin.scss */
 section#main article ol li {
   list-style: decimal;
 }
-/* line 104, ../compass/scss/admin/views/_admin.scss */
+/* line 124, ../compass/scss/admin/views/_admin.scss */
 section#main article dl {
   margin: 8px 0;
 }
-/* line 107, ../compass/scss/admin/views/_admin.scss */
+/* line 127, ../compass/scss/admin/views/_admin.scss */
 section#main article dl dd {
   margin-top: 8px;
 }
-/* line 112, ../compass/scss/admin/views/_admin.scss */
+/* line 132, ../compass/scss/admin/views/_admin.scss */
 section#main article form {
   color: #314b5d;
   font: 18px/1 AvenirRoman;
 }
-/* line 116, ../compass/scss/admin/views/_admin.scss */
+/* line 136, ../compass/scss/admin/views/_admin.scss */
 section#main article form fieldset {
   border: 0;
   margin: 0;
   padding: 0;
   margin-bottom: 12px;
 }
-/* line 123, ../compass/scss/admin/views/_admin.scss */
+/* line 143, ../compass/scss/admin/views/_admin.scss */
 section#main article form fieldset + fieldset {
   margin-top: -12px;
 }
-/* line 127, ../compass/scss/admin/views/_admin.scss */
+/* line 147, ../compass/scss/admin/views/_admin.scss */
 section#main article form fieldset legend {
   margin-bottom: 15px;
   border-bottom: 1px dotted #11232e;
@@ -2672,52 +3276,48 @@ section#main article form fieldset legend {
   text-transform: uppercase;
   width: 100%;
 }
-/* line 137, ../compass/scss/admin/views/_admin.scss */
+/* line 157, ../compass/scss/admin/views/_admin.scss */
 section#main article form fieldset p {
   text-align: left;
   margin-left: 24px;
 }
-/* line 143, ../compass/scss/admin/views/_admin.scss */
+/* line 163, ../compass/scss/admin/views/_admin.scss */
 section#main article form p {
   display: block;
   position: relative;
 }
-/* line 147, ../compass/scss/admin/views/_admin.scss */
+/* line 167, ../compass/scss/admin/views/_admin.scss */
 section#main article form p.submit-row {
   text-align: right;
 }
-/* line 150, ../compass/scss/admin/views/_admin.scss */
+/* line 170, ../compass/scss/admin/views/_admin.scss */
 section#main article form p.submit-row .button {
   margin-top: 8px;
 }
-/* line 155, ../compass/scss/admin/views/_admin.scss */
+/* line 175, ../compass/scss/admin/views/_admin.scss */
 section#main article form p.checkbox {
   margin-bottom: 36px;
 }
-/* line 158, ../compass/scss/admin/views/_admin.scss */
+/* line 178, ../compass/scss/admin/views/_admin.scss */
 section#main article form p.checkbox label {
   position: absolute;
   left: 21px;
 }
-/* line 163, ../compass/scss/admin/views/_admin.scss */
+/* line 183, ../compass/scss/admin/views/_admin.scss */
 section#main article form p.checkbox .help {
   position: absolute;
   top: 25px;
   left: 21px;
 }
-/* line 172, ../compass/scss/admin/views/_admin.scss */
+/* line 192, ../compass/scss/admin/views/_admin.scss */
 section#main article form p.date label {
   display: block;
 }
-/* line 176, ../compass/scss/admin/views/_admin.scss */
-section#main article form p.date input {
-  width: auto;
-}
-/* line 182, ../compass/scss/admin/views/_admin.scss */
+/* line 198, ../compass/scss/admin/views/_admin.scss */
 section#main article form em {
   font: 14px/1 AvenirLight;
 }
-/* line 191, ../compass/scss/admin/views/_admin.scss */
+/* line 207, ../compass/scss/admin/views/_admin.scss */
 section#main article form label,
 section#main article form input,
 section#main article form textarea,
@@ -2726,7 +3326,7 @@ section#main article form .select2-container,
 section#main article form .select2-container-multi {
   margin-bottom: 12px;
 }
-/* line 196, ../compass/scss/admin/views/_admin.scss */
+/* line 212, ../compass/scss/admin/views/_admin.scss */
 section#main article form input,
 section#main article form textarea {
   -webkit-border-radius: 3px;
@@ -2741,19 +3341,19 @@ section#main article form textarea {
   width: 100%;
   background: #fff;
 }
-/* line 207, ../compass/scss/admin/views/_admin.scss */
+/* line 223, ../compass/scss/admin/views/_admin.scss */
 section#main article form label {
   color: #11232e;
   display: inline-block;
   font: 18px/1 AvenirRoman;
   margin-right: 6px;
 }
-/* line 213, ../compass/scss/admin/views/_admin.scss */
+/* line 229, ../compass/scss/admin/views/_admin.scss */
 section#main article form label.required {
   padding-left: 15px;
   position: relative;
 }
-/* line 217, ../compass/scss/admin/views/_admin.scss */
+/* line 233, ../compass/scss/admin/views/_admin.scss */
 section#main article form label.required:before {
   content: "*";
   position: absolute;
@@ -2761,13 +3361,13 @@ section#main article form label.required:before {
   top: 2px;
   font-weight: bold;
 }
-/* line 228, ../compass/scss/admin/views/_admin.scss */
+/* line 244, ../compass/scss/admin/views/_admin.scss */
 section#main article form input[type='checkbox'],
 section#main article form input[type='radio'] {
   margin-bottom: 0;
   width: auto;
 }
-/* line 233, ../compass/scss/admin/views/_admin.scss */
+/* line 249, ../compass/scss/admin/views/_admin.scss */
 section#main article form input[type='submit'] {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2798,7 +3398,7 @@ section#main article form input[type='submit']:hover, section#main article form 
   background-color: #314b5d;
   color: #b6cad1;
 }
-/* line 238, ../compass/scss/admin/views/_admin.scss */
+/* line 254, ../compass/scss/admin/views/_admin.scss */
 section#main article form input[type='submit'].big {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2829,25 +3429,34 @@ section#main article form input[type='submit'].big {
 section#main article form input[type='submit'].big:hover {
   background: #314b5d;
 }
-/* line 243, ../compass/scss/admin/views/_admin.scss */
-section#main article form input[type='date'] {
-  position: relative;
+/* line 260, ../compass/scss/admin/views/_admin.scss */
+section#main article form input.date,
+section#main article form input.datetime {
+  background-repeat: no-repeat;
+  background-position: 95% 6px;
+  width: auto;
 }
-/* line 246, ../compass/scss/admin/views/_admin.scss */
-section#main article form input[type='date']:after {
-  position: absolute;
-  right: 5px;
-  width: 22px;
-  padding-top: 2px;
-  font-size: 18px;
-  background: #FFF;
-  pointer-events: none;
+/* line 265, ../compass/scss/admin/views/_admin.scss */
+section#main article form input.date.date,
+section#main article form input.datetime.date {
+  background-image: url("../img/icon-date.png");
 }
-/* line 262, ../compass/scss/admin/views/_admin.scss */
+/* line 269, ../compass/scss/admin/views/_admin.scss */
+section#main article form input.date.datetime,
+section#main article form input.datetime.datetime {
+  background-image: url("../img/icon-datetime.png");
+  padding-right: 40px;
+}
+/* line 277, ../compass/scss/admin/views/_admin.scss */
+section#main article form fieldset.datetime label:last-of-type {
+  margin-left: 20px;
+}
+/* line 282, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset {
   margin-left: 24px;
+  position: relative;
 }
-/* line 267, ../compass/scss/admin/views/_admin.scss */
+/* line 288, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset .widget-asset-preview {
   width: 60px;
   height: 60px;
@@ -2860,16 +3469,44 @@ section#main article form .widget-asset .widget-asset-preview {
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
   float: left;
 }
-/* line 280, ../compass/scss/admin/views/_admin.scss */
+/* line 301, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset .widget-asset-actions {
   margin-left: 66px;
   max-width: 300px;
 }
-/* line 285, ../compass/scss/admin/views/_admin.scss */
+/* line 306, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset .select2-container {
   margin-bottom: 6px;
 }
-/* line 289, ../compass/scss/admin/views/_admin.scss */
+/* line 310, ../compass/scss/admin/views/_admin.scss */
+section#main article form .widget-asset .crops-list {
+  padding-left: 0;
+}
+/* line 313, ../compass/scss/admin/views/_admin.scss */
+section#main article form .widget-asset .crops-list li {
+  margin-bottom: 10px;
+}
+/* line 318, ../compass/scss/admin/views/_admin.scss */
+section#main article form .widget-asset .crops-list .name,
+section#main article form .widget-asset .crops-list .size {
+  display: inline-block;
+  width: 105px;
+}
+/* line 323, ../compass/scss/admin/views/_admin.scss */
+section#main article form .widget-asset .crops-list .size {
+  width: 115px;
+}
+/* line 327, ../compass/scss/admin/views/_admin.scss */
+section#main article form .widget-asset .crops-list .crop-link {
+  position: static;
+  font-size: 12px;
+  margin-left: 6px;
+}
+/* line 332, ../compass/scss/admin/views/_admin.scss */
+section#main article form .widget-asset .crops-list .crop-link:before {
+  display: none;
+}
+/* line 338, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset .button {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2893,26 +3530,38 @@ section#main article form .widget-asset .button {
   outline: 0;
   padding: 6px 9px;
   width: auto;
+  position: absolute;
+  left: 410px;
+  top: 2px;
 }
 /* line 85, ../compass/scss/admin/mixins/_mixins.scss */
 section#main article form .widget-asset .button:hover, section#main article form .widget-asset .button.active {
   background-color: #314b5d;
   color: #b6cad1;
 }
-/* line 293, ../compass/scss/admin/views/_admin.scss */
+/* line 344, ../compass/scss/admin/views/_admin.scss */
+section#main article form .widget-asset .button:before {
+  content: "";
+  border-left: 2px solid #747474;
+  position: absolute;
+  height: 100%;
+  left: -25px;
+  top: 0;
+}
+/* line 354, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset input {
   display: none;
 }
-/* line 298, ../compass/scss/admin/views/_admin.scss */
+/* line 359, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset-simple {
   overflow: hidden;
 }
-/* line 301, ../compass/scss/admin/views/_admin.scss */
+/* line 362, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset-simple input {
   margin-top: 5px;
   width: auto;
 }
-/* line 307, ../compass/scss/admin/views/_admin.scss */
+/* line 368, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-asset-simple-preview {
   width: 66px;
   height: 66px;
@@ -2926,7 +3575,7 @@ section#main article form .widget-asset-simple-preview {
   float: left;
   margin-right: 10px;
 }
-/* line 321, ../compass/scss/admin/views/_admin.scss */
+/* line 382, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form {
   padding: 12px 96px 12px 24px;
   margin: 0;
@@ -2934,23 +3583,23 @@ section#main article form .widget-formset-form {
   background: rgba(255, 255, 255, 0.5);
   border: 1px solid #b8b8b8;
 }
-/* line 328, ../compass/scss/admin/views/_admin.scss */
+/* line 389, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form + .widget-formset-form {
   margin-top: -1px;
 }
-/* line 332, ../compass/scss/admin/views/_admin.scss */
+/* line 393, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form.odd {
   background-color: rgba(184, 184, 184, 0.5);
 }
-/* line 336, ../compass/scss/admin/views/_admin.scss */
+/* line 397, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form.was-deleted {
   display: none;
 }
-/* line 340, ../compass/scss/admin/views/_admin.scss */
+/* line 401, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form .api-select {
   margin-left: 0;
 }
-/* line 344, ../compass/scss/admin/views/_admin.scss */
+/* line 405, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form .widget-formset-delete {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2984,23 +3633,23 @@ section#main article form .widget-formset-form .widget-formset-delete:hover, sec
   background-color: #314b5d;
   color: #b6cad1;
 }
-/* line 351, ../compass/scss/admin/views/_admin.scss */
+/* line 412, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form .widget-formset-delete b {
   font-weight: normal;
 }
-/* line 355, ../compass/scss/admin/views/_admin.scss */
+/* line 416, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form .widget-formset-delete input {
   display: none;
 }
-/* line 360, ../compass/scss/admin/views/_admin.scss */
+/* line 421, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset-form .widget-formset-order {
   display: none;
 }
-/* line 366, ../compass/scss/admin/views/_admin.scss */
+/* line 427, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset .widget-formset-forms {
   margin-bottom: 12px;
 }
-/* line 374, ../compass/scss/admin/views/_admin.scss */
+/* line 435, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset .button {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -3030,36 +3679,36 @@ section#main article form .widget-formset .button:hover, section#main article fo
   background-color: #314b5d;
   color: #b6cad1;
 }
-/* line 377, ../compass/scss/admin/views/_admin.scss */
+/* line 438, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset .button.add-button {
   font: 18px/1 AvenirBlack;
 }
-/* line 382, ../compass/scss/admin/views/_admin.scss */
+/* line 443, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-formset .draggable {
   cursor: move;
 }
-/* line 387, ../compass/scss/admin/views/_admin.scss */
+/* line 448, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select {
   position: relative;
 }
-/* line 391, ../compass/scss/admin/views/_admin.scss */
+/* line 452, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select.has-add-button {
   padding-right: 40px;
 }
-/* line 395, ../compass/scss/admin/views/_admin.scss */
+/* line 456, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .add-button {
   position: absolute;
   top: 0;
   right: 0;
 }
-/* line 401, ../compass/scss/admin/views/_admin.scss */
+/* line 462, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .toggle {
   position: absolute;
   top: -35px;
   height: 30px;
   right: 0;
 }
-/* line 407, ../compass/scss/admin/views/_admin.scss */
+/* line 468, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .toggle .toggle-button {
   float: right;
   line-height: 28px;
@@ -3069,40 +3718,44 @@ section#main article form .api-select .toggle .toggle-button {
   color: #b8b8b8;
   cursor: pointer;
 }
-/* line 416, ../compass/scss/admin/views/_admin.scss */
+/* line 477, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .toggle .toggle-button + .toggle-button {
   border-right: 0;
 }
-/* line 420, ../compass/scss/admin/views/_admin.scss */
+/* line 481, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .toggle .toggle-button.active {
   border-color: rgba(49, 75, 93, 0.5);
   background: #b6cad1;
   color: #314b5d;
 }
-/* line 426, ../compass/scss/admin/views/_admin.scss */
+/* line 487, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .toggle .toggle-button.last {
   border-radius: 3px 0 0 3px;
 }
-/* line 430, ../compass/scss/admin/views/_admin.scss */
+/* line 491, ../compass/scss/admin/views/_admin.scss */
 section#main article form .api-select .toggle .toggle-button.first {
   border-radius: 0 3px 3px 0;
 }
-/* line 437, ../compass/scss/admin/views/_admin.scss */
+/* line 498, ../compass/scss/admin/views/_admin.scss */
 section#main article form .widget-wysiwyg {
   margin-left: 24px;
 }
-/* line 441, ../compass/scss/admin/views/_admin.scss */
+/* line 502, ../compass/scss/admin/views/_admin.scss */
+section#main article form .error-field {
+  margin: 0 0 0 24px;
+}
+/* line 506, ../compass/scss/admin/views/_admin.scss */
 section#main article form .errorlist {
   color: #ff0000;
-  margin: 0 0 1em 24px;
+  margin: -7px 0 1em 24px;
   padding: 0;
   position: relative;
 }
-/* line 451, ../compass/scss/admin/views/_admin.scss */
+/* line 516, ../compass/scss/admin/views/_admin.scss */
 section#main article section.filters summary[open], section#main article section.filters summary.open {
   z-index: 1;
 }
-/* line 457, ../compass/scss/admin/views/_admin.scss */
+/* line 522, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -3115,12 +3768,12 @@ section#main article details#filter {
   position: relative;
   z-index: 2;
 }
-/* line 467, ../compass/scss/admin/views/_admin.scss */
+/* line 532, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter .filter-clear {
   margin-right: 20px;
   color: red;
 }
-/* line 472, ../compass/scss/admin/views/_admin.scss */
+/* line 537, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary {
   color: #314b5d;
   cursor: pointer;
@@ -3129,36 +3782,36 @@ section#main article details#filter summary {
   outline: none;
   padding: 12px;
 }
-/* line 480, ../compass/scss/admin/views/_admin.scss */
+/* line 545, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary:hover {
   background-color: #11232e;
   color: #fff;
 }
-/* line 487, ../compass/scss/admin/views/_admin.scss */
+/* line 552, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary:after, section#main article details#filter summary::-webkit-details-marker {
   display: none;
 }
-/* line 491, ../compass/scss/admin/views/_admin.scss */
+/* line 556, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter summary i:after {
   color: #314b5d;
   content: "s";
   font: 12px/1 CompassArrows;
   padding-left: 6px;
 }
-/* line 499, ../compass/scss/admin/views/_admin.scss */
+/* line 564, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter form {
   display: none;
 }
-/* line 504, ../compass/scss/admin/views/_admin.scss */
+/* line 569, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] .filter-clear, section#main article details#filter.open .filter-clear {
   display: none;
 }
-/* line 508, ../compass/scss/admin/views/_admin.scss */
+/* line 573, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] summary, section#main article details#filter.open summary {
   background-color: #11232e;
   color: #fff;
 }
-/* line 513, ../compass/scss/admin/views/_admin.scss */
+/* line 578, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] form, section#main article details#filter.open form {
   border: 1px solid #b6cad1;
   background-color: #fff;
@@ -3168,36 +3821,36 @@ section#main article details#filter[open] form, section#main article details#fil
   right: 0;
   text-align: left;
 }
-/* line 522, ../compass/scss/admin/views/_admin.scss */
+/* line 587, ../compass/scss/admin/views/_admin.scss */
 section#main article details#filter[open] form [type='submiinputt'], section#main article details#filter.open form [type='submiinputt'] {
   margin-bottom: 0;
 }
-/* line 529, ../compass/scss/admin/views/_admin.scss */
+/* line 594, ../compass/scss/admin/views/_admin.scss */
 section#main article div.pagination {
   font: 14px/1 AvenirMedium;
   text-align: right;
 }
-/* line 533, ../compass/scss/admin/views/_admin.scss */
+/* line 598, ../compass/scss/admin/views/_admin.scss */
 section#main article div.pagination a {
   font: 14px/1 CompassArrows;
 }
 
-/* line 542, ../compass/scss/admin/views/_admin.scss */
+/* line 607, ../compass/scss/admin/views/_admin.scss */
 details, summary {
   display: block;
 }
 
-/* line 543, ../compass/scss/admin/views/_admin.scss */
+/* line 608, ../compass/scss/admin/views/_admin.scss */
 details.closed > * {
   display: none;
 }
 
-/* line 544, ../compass/scss/admin/views/_admin.scss */
+/* line 609, ../compass/scss/admin/views/_admin.scss */
 details.closed > summary {
   display: block;
 }
 
-/* line 545, ../compass/scss/admin/views/_admin.scss */
+/* line 610, ../compass/scss/admin/views/_admin.scss */
 details.open > summary {
   display: block;
 }

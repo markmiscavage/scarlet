@@ -26,8 +26,13 @@ define(
 				this.dom = dom;
 				this.input = dom.find('input');
 				this.preview = dom.find('.widget-asset-preview');
+
+				this.cropsList = dom.find('.crops-list');
+				this.baseLink = this.cropsList.data('base-link');
+
 				this._autoTag();
 				this._initSelect2();
+				this._linkifyCrops();
 			},
 
 			_initSelect2 : function () {
@@ -51,7 +56,7 @@ define(
 
 				this._tag();
 
-				this.dom.on('click', '.button', this._openPopup);
+				this.dom.on('click', '.button, .crop-link', this._openPopup);
 			},
 
 			_openPopup : function (e) {
@@ -68,6 +73,18 @@ define(
 				this.input.select2('data', data);
 			},
 
+			_linkifyCrops : function (dom) {
+				var guidLink = this.baseLink + this.cropsList.parent().find('[type=hidden]').val();
+
+				this.cropsList.find('li').each(function (i, el) {
+					el = $(el);
+
+					var editLink = guidLink + "/" + el.data("crop-link") + '?popup=1';
+
+					el.find('a').attr('href', editLink);
+				});
+			},
+
 			_autoTag : function () {
 				var tags = [];
 				$('[data-auto-tag]').each(function (i, dom) {
@@ -76,8 +93,17 @@ define(
 						var allTags = data_auto_tag.toLowerCase().split(',');
 						while (allTags.length) {
 							var tag = allTags.shift();
-							if (tag.match(/[a-z0-9]/i) && tag.length > 3) {
-								tags.push(tag);
+							var splitTag = tag.split(" ");
+							tags.push(tag);
+
+							// if splitTag length > 3, push individual values
+							if (tag.match(/[a-z0-9]/i) && splitTag.length > 3) {
+								while (splitTag.length) {
+									var newTag = splitTag.shift();
+									if (tags.indexOf(newTag) === -1) {
+										tags.push(newTag);
+									}
+								}
 							}
 						}
 						tags = tags.concat(allTags);
@@ -147,6 +173,8 @@ define(
 			},
 
 			onChange : function () {
+				this._linkifyCrops();
+
 				if (!this.input.val()) {
 					this.preview.css('background-image', "none");
 				}

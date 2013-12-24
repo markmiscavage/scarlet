@@ -96,6 +96,10 @@ section#object-info {
 			&:hover {
 				color: #fff;
 			}
+
+			&:last-child {
+				border-right: none;
+			}
 		}
 
 		form {

@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import ProtectedError
 from django.utils.decorators import classonlymethod
+from django.utils.encoding import force_unicode
 
 from . import renders
 from . import transaction
@@ -38,20 +39,34 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     override any edits for the formset. A formset will still process \
     correctly if no action is selected.
 
+    :param default_template: defaults to cms/action_confirmation.html.
     :param short_description: Description of action to display. \
     Defaults to the name of the view.
     :param redirect_to_view: Defaults to 'main'
     :param confirmation_message: Message that the intermediate \
     confirmation page will display to the user before action \
-    is executed.
+    is executed on multiple items.
+    :param confirmation_message_single: Message that the intermediate \
+    confirmation page will display to the user before action \
+    is executed on a single item.
     """
 
     short_description = None
     redirect_to_view = 'main_list'
-    confirmation_message = 'This will modify the following items:'
+    confirmation_message = 'Please confirm that you want to {action_name} the following {bundle_name}:'
+    confirmation_message_single = 'Please confirm that you want to {action_name} the {bundle_name}'
     default_template = 'cms/action_confirmation.html'
-    object = None
 
+    object = None
+    action_name = None
+
+    def render(self, *args, **kwargs):
+        if not 'action' in kwargs:
+            if not self.action_name:
+                kwargs['action'] = 'Yes'
+            else:
+                kwargs['action'] = self.action_name
+        return super(ActionView, self).render(*args, **kwargs)
 
     def get_navigation(self):
         if not self.object and not self.name in self.bundle._meta.action_views:
@@ -76,12 +91,25 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         """
         pass
 
+    def get_confirmation_message(self, queryset):
+        confirmation_msg = ""
+        if len(queryset) == 1:
+            confirmation_msg = self.confirmation_message_single.format(
+                    action_name=force_unicode(self.action_name).lower(),
+                    bundle_name=force_unicode(self.bundle.get_single_title()).lower())
+        else:
+            confirmation_msg = self.confirmation_message.format(
+                    action_name=force_unicode(self.action_name).lower(),
+                    bundle_name=force_unicode(self.bundle.get_title()).lower())
+        return confirmation_msg
+
     def get_context_data(self, **kwargs):
         """
         Hook for adding arguments to the context.
         """
+
         context = {
-            'conf_msg' : self.confirmation_message,
+            'conf_msg' : self.get_confirmation_message(kwargs['queryset']),
             'obj' : self.object,
         }
         context.update(kwargs)
@@ -192,11 +220,10 @@ class DeleteActionView(ActionView):
     this view by default adds an `object_header` renderer that
     uses the `object_header_tmpl` template.
 
-    :param default_template: Defaults to 'cms/delete.html'.
     :param redirect_to_view: Defaults to 'main_list'.
     """
     short_description = "Delete selected items"
-    confirmation_message = "This will delete the following items:"
+    action_name = "Delete"
 
     def __init__(self, *args, **kwargs):
         super(DeleteActionView, self).__init__(*args, **kwargs)
@@ -239,15 +266,14 @@ class PublishActionView(ActionView):
     ModelCMSMixin, SingleObjectMixin, ModelCMSView.
     Assumes the given model is versionable.
 
-    :param default_template: Defaults to 'cms/publish_action.html'.
-    :param confirmation_message: Defaults to 'This will publish the following items'.
+    :param default_template: Defaults to cms/publish_action.html.
     :param short_description: Defaults to 'Publish selected items'
     """
 
     default_template = 'cms/publish_action.html'
-    confirmation_message = 'This will publish the following items:'
     short_description = 'Publish selected items'
     form = WhenForm
+    action_name = "Publish"
 
     def get_object(self):
         """
@@ -283,7 +309,7 @@ class PublishActionView(ActionView):
         """
 
         queryset = self.get_selected(request)
-        return self.render(request, queryset=queryset, publish_form=self.form(), action="Publish")
+        return self.render(request, queryset=queryset, publish_form=self.form())
 
 
     def process_action(self, request, queryset):
@@ -326,12 +352,12 @@ class UnPublishActionView(PublishActionView):
     View for unpublishing one or more objects. \
     Inherits from PublishActionView.
 
-    :param confirmation_message: Defaults to 'This will unpublish the following items:'.
+    :param default_template: Defaults to cms/publish_action.html.
     :param redirect_to_view: Defaults to 'Unpublish selected items'
     """
 
-    confirmation_message = 'This will unpublish the following items:'
     short_description = 'Unpublish selected items'
+    action_name = "Unpublish"
 
     def get(self, request, *args, **kwargs):
         """

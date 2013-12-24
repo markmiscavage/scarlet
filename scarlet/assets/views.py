@@ -1,6 +1,7 @@
 import logging
 
 from django.db.models import FileField
+from django import http
 
 try:
     from ..cms import views, renders
@@ -37,10 +38,24 @@ class AssetListView(views.ListView):
 
 class CropVersionView(views.FormView):
     default_template = "assets/crop.html"
-    slug_field = 'pk'
+    slug_field = 'name'
     base_filter_kwargs = {'editable': True}
     readonly_fields = ('width', 'height', 'name')
     cancel_view = "edit_asset"
+
+    def get_object(self):
+        try:
+            return super(CropVersionView, self).get_object()
+        except http.Http404, e:
+            if getattr(self, 'parent_object', None):
+                name = self.kwargs[self.slug_url_kwarg]
+                crop = get_image_cropper().get_crop_config(name)
+                if crop and crop.editable:
+                    return self.model(editable=True, name=name,
+                                      x=0, y=0, x2=0, y2=0,
+                                      image=self.parent_object,
+                                      width=crop.width, height=crop.height)
+            raise
 
     def get_success_url(self):
         return self.bundle.get_view_url("edit_asset",
@@ -54,6 +69,7 @@ class CropVersionView(views.FormView):
                                       form.cleaned_data['y'],
                                       form.cleaned_data['y2'])
         return self.success_response()
+
 
 class CropView(views.ModelCMSMixin, views.ModelFormMixin,
                 views.ModelCMSView):

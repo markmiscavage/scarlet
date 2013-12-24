@@ -442,14 +442,16 @@ class Bundle(object):
 
         elif view:
 
-            if check_permissions and not view.can_view(user):
-                return None
-
+            # Get kwargs from view
             if not url_kwargs:
                 url_kwargs = {}
 
-            # Get kwargs from view
             url_kwargs = view.get_url_kwargs(context_kwargs, **url_kwargs)
+            view.kwargs = url_kwargs
+
+            if check_permissions and not view.can_view(user):
+                return None
+
             url = reverse("admin:%s" % url_name, kwargs=url_kwargs,
                           current_app=self.admin_site.name)
             return url
