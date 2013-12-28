@@ -377,7 +377,6 @@ class VersionViewMeta(SharedMeta):
                 raise TypeError("VersionView model %r can't inherit from a BaseModel %r" % (cls, base))
 
             if issubclass(base, BaseVersionedModel):
-                #if not issubclass(base.__metaclass__, VersionViewMeta):
                 if not issubclass(type(base), VersionViewMeta):
                     if custom_version:
                         raise TypeError("Django inheritence will only allow VersionView model %r to inherit from one and only one BaseVersionedModel" % cls)
