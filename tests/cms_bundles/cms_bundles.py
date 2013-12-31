@@ -133,7 +133,7 @@ class DummyRedirectorBundle(bundles.Bundle):
 DEFAULT_FIELDS =(
     ("Post", {
         'fields': ('date','title', 'body',
-                   'author','category', 'tags' ) 
+                   'author','category', 'tags' )
     }),
     )
 
