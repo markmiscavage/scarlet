@@ -17,7 +17,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.contenttypes',
-    'sorl.thumbnail',
     'taggit',
     'scarlet.accounts',
     'scarlet.assets',

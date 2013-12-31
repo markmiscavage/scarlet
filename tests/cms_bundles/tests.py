@@ -861,20 +861,18 @@ class CustomActionViewsTestCase(TestCaseDeactivate):
     def test_publish_and_unpublish_actionviews(self):
         # publish one post - bad
         post_to = '/admin/blog/%s/edit/publish/?o=/admin/blog/' % self.post1.pk
-        resp = self.client.post(post_to, data={'when_0' : self.today, 'when_1' : 'now'})
+        resp = self.client.post(post_to, data={'when_rdi' : 'date', 'when' : 'bad', 'modify' : 'Publish'})
+        self.assertEqual(resp.status_code, 200)
         qs_post = Post.objects.filter(pk=self.post1.pk)
-        obj = qs_post.get()
-        self.assertFalse(obj.status_line().startswith('Publish Scheduled'))
-        resp = self.client.post(post_to, data={'when_0' : 'dfhv', 'when_1' : 'now', 'modify' : 'Publish'})
         obj = qs_post.get()
         self.assertFalse(obj.status_line().startswith('Publish Scheduled'))
 
         # publish one post - good
-        resp = self.client.post(post_to, data={'when_0' : self.later, 'when_1' : 'now', 'modify' : 'Publish'})
+        resp = self.client.post(post_to, data={'when_rdi' : 'date', 'when' : self.later, 'modify' : 'Publish'})
         self.assertEqual(resp.status_code, 302)
         obj = qs_post.get()
         self.assertTrue(obj.status_line().startswith('Publish Scheduled'))
-        resp = self.client.post(post_to, data={'when_0' : self.today, 'when_1' : 'now', 'modify' : 'Publish'})
+        resp = self.client.post(post_to,  data={'when_rdi' : 'now', 'modify' : 'Publish'})
         self.assertEqual(resp.status_code, 302)
         obj = qs_post.get()
         self.assertTrue(obj.status_line().startswith('Published'))
@@ -894,12 +892,12 @@ class CustomActionViewsTestCase(TestCaseDeactivate):
         action = 'publish_action/'
         qs_comment = Comment.objects.all()
         sel = [str(self.comment1.pk), str(self.comment2.pk)]
-        resp = self.check_redirect_and_modify(post_to, action, sel, when_0=self.later, when_1='now', modify='Publish')
+        resp = self.check_redirect_and_modify(post_to, action, sel, when_rdi='date', when=self.later, modify='Publish')
         obj1 = qs_comment.get(pk=self.comment1.pk)
         obj2 = qs_comment.get(pk=self.comment2.pk)
         self.assertTrue(obj1.status_line().startswith('Publish Scheduled'))
         self.assertTrue(obj2.status_line().startswith('Publish Scheduled'))
-        resp = self.check_redirect_and_modify(post_to, action, sel, when_0=self.today, when_1='now', modify='Publish')
+        resp = self.check_redirect_and_modify(post_to, action, sel, when_rdi='now', modify='Publish')
         obj1 = qs_comment.get(pk=self.comment1.pk)
         obj2 = qs_comment.get(pk=self.comment2.pk)
         self.assertTrue(obj1.status_line().startswith('Published'))
