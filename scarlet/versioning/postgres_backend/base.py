@@ -29,8 +29,7 @@ class DatabaseWrapper(DatabaseWrapper):
 
 class ViewDatabaseCreation(DatabaseCreation):
 
-    def _sql_for_inline_foreign_key_references(self, field, known_models,
-                                                  style, model=None):
+    def _sql_for_inline_fk_refs(self, field, known_models, style, model=None):
         # Hack to point references to the correct table.
         view_table = field.rel.to._meta.db_table
         if getattr(field.rel.to._meta, '_is_view', False):
@@ -68,12 +67,12 @@ class ViewDatabaseCreation(DatabaseCreation):
     if DJANGO_VERSION < (1, 6):
         def sql_for_inline_foreign_key_references(self, field, known_models,
                                                   style):
-            return self._sql_for_inline_foreign_key_references(field, known_models,
+            return self._sql_for_inline_fk_refs(field, known_models,
                                                     style)
     else:
         def sql_for_inline_foreign_key_references(self, model, field, known_models,
                                                   style):
-            return self._sql_for_inline_foreign_key_references(field, known_models,
+            return self._sql_for_inline_fk_refs(field, known_models,
                                                     style, model)
 
     def sql_for_pending_references(self, model, style, pending_references):
