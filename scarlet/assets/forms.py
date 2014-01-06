@@ -61,7 +61,7 @@ class CropForm(forms.Form):
 
 
     def check_params(self, v, v2):
-        if v != None and v2 != None and v2 <= v:
+        if v != None and v2 != None and v2 < v:
             raise forms.ValidationError("Invalid parameters")
 
     def clean(self):
