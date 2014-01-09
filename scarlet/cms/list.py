@@ -255,17 +255,12 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
 
     def get_action_context(self, request):
-        default_choice = ('action-default', '----------')
         actions = []
 
         for action in self.action_views or self.bundle._meta.action_views:
             action_name = '{0}{1}'.format(action, self.bundle.action_alias)
-            option = self.bundle.get_string_from_view(request, action_name,
-                                        self.kwargs, render_type='option')
-            if option:
-                actions.append((action_name, option))
-        if actions:
-            actions.insert(0, default_choice)
+            actions.append((action_name, action))
+
         return actions
 
     def get_list_data(self, request, **kwargs):
