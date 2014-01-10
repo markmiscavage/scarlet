@@ -9,13 +9,9 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.template import TemplateDoesNotExist
 
-<<<<<<< HEAD
-from scarlet.cms import bundles, views, actions
-from scarlet.versioning import manager
-=======
+
 from scarlet.cms import bundles, views
 from scarlet.cms.item import FormView
->>>>>>> b4f5ecb... added test for form bug adding widgets that shouldnt be
 
 from .forms import TestPostForm
 from models import *
@@ -25,13 +21,8 @@ class TestCaseDeactivate(TestCase):
         manager.deactivate()
 
 
-<<<<<<< HEAD
-class BundleViewsTestCase(TestCaseDeactivate):
-=======
-
-
 class BundleViewsTestCase(TestCase):
->>>>>>> b4f5ecb... added test for form bug adding widgets that shouldnt be
+
     def setup_test_user(self):
         user = User.objects.create_user('tester', 'tester@example.com', '1234')
         user.is_staff = True
@@ -326,7 +317,7 @@ class BundleViewsTestCase(TestCase):
         resp = self.client.get('/admin/blog/%s/edit/delete/' % self.post.pk)
         self.assertEqual(resp.status_code, 200)
 
-<<<<<<< HEAD
+
 class MiscViewTestCase(TestCaseDeactivate):
 
     def setup_test_user(self):
@@ -378,7 +369,6 @@ class MiscViewTestCase(TestCaseDeactivate):
 
 
 
-=======
     def test_wrong_fields(self):
         f = FormView(model=Post)
         f.form = TestPostForm
@@ -386,7 +376,6 @@ class MiscViewTestCase(TestCaseDeactivate):
         form_class = f.get_form_class()
         form = form_class()
         self.assertEqual(form.fields.keys(), 'title')
->>>>>>> b4f5ecb... added test for form bug adding widgets that shouldnt be
 
 
 class TestMainBundle(bundles.Bundle):
