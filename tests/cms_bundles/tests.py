@@ -9,12 +9,13 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.template import TemplateDoesNotExist
 
-
-from scarlet.cms import bundles, views
+from scarlet.cms import bundles, views, actions
 from scarlet.cms.item import FormView
+from scarlet.versioning import manager
 
 from .forms import TestPostForm
 from models import *
+
 
 class TestCaseDeactivate(TestCase):
     def tearDown(self):
@@ -375,7 +376,7 @@ class MiscViewTestCase(TestCaseDeactivate):
         f.fieldsets = (('Post', {'fields': ('title',)}),)
         form_class = f.get_form_class()
         form = form_class()
-        self.assertEqual(form.fields.keys(), 'title')
+        self.assertEqual(form.fields.keys(), ['title'])
 
 
 class TestMainBundle(bundles.Bundle):
