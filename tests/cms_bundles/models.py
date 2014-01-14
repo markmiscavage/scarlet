@@ -1,8 +1,13 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 from scarlet.versioning import fields
 from scarlet.versioning.models import VersionView, Cloneable
 from scarlet.cms.fields import OrderField
+
+class UserSite(models.Model):
+    user = models.ForeignKey(User, to_field="username")
+    data = models.IntegerField()
 
 
 class Author(models.Model):
