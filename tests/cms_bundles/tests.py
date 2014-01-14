@@ -10,16 +10,20 @@ from django.contrib.sites.models import Site
 from django.template import TemplateDoesNotExist
 
 from scarlet.cms import bundles, views, actions
+from scarlet.cms.item import FormView
 from scarlet.versioning import manager
 
+from .forms import TestPostForm
 from models import *
+
 
 class TestCaseDeactivate(TestCase):
     def tearDown(self):
         manager.deactivate()
 
 
-class BundleViewsTestCase(TestCaseDeactivate):
+class BundleViewsTestCase(TestCase):
+
     def setup_test_user(self):
         user = User.objects.create_user('tester', 'tester@example.com', '1234')
         user.is_staff = True
@@ -314,6 +318,7 @@ class BundleViewsTestCase(TestCaseDeactivate):
         resp = self.client.get('/admin/blog/%s/edit/delete/' % self.post.pk)
         self.assertEqual(resp.status_code, 200)
 
+
 class MiscViewTestCase(TestCaseDeactivate):
 
     def setup_test_user(self):
@@ -365,6 +370,13 @@ class MiscViewTestCase(TestCaseDeactivate):
 
 
 
+    def test_wrong_fields(self):
+        f = FormView(model=Post)
+        f.form = TestPostForm
+        f.fieldsets = (('Post', {'fields': ('title',)}),)
+        form_class = f.get_form_class()
+        form = form_class()
+        self.assertEqual(form.fields.keys(), ['title'])
 
 
 class TestMainBundle(bundles.Bundle):
