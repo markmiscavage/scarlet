@@ -1,3 +1,4 @@
+{% load url from future %}
 <div class="wysiwyg-toolbar">
 	<div class="wysiwyg-buttons">
 		<a data-wysihtml5-command="bold" title="CTRL+B">b</a>
@@ -14,7 +15,7 @@
 		<a data-wysihtml5-command="undo">undo</a>
 		<a class="spacer" data-wysihtml5-command="redo">redo</a>
 		<a class="spacer" data-wysihtml5-action="change_view">view html</a>
-		<a class="spacer" data-wysihtml5-command="insertMedia" data-wysihtml5-command-value='{"mediaUrl":"{% url admin:wysiwyg %}"}'>insert media</a>
+		<a class="spacer" data-wysihtml5-command="insertMedia" data-wysihtml5-command-value='{"mediaUrl":"{% url 'admin:wysiwyg' %}"}'>insert media</a>
 	</div>
 	<div class="wysiwyg-modals">
 		<div class="modal" data-wysihtml5-dialog="createLink" style="display: none;">
