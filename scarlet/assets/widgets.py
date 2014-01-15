@@ -58,6 +58,7 @@ class AssetsFileWidget(TaggedRelationWidget):
             'add_link': self.get_add_link(),
             'base_api_link' : self._api_link,
             'sizes' : self.get_crop_sizes(),
+            'required_tags': self.required_tags
         }
         html = render_to_string('assets/asset_widget.html', context)
         return mark_safe(html)

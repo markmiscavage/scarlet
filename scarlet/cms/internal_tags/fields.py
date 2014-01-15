@@ -59,7 +59,8 @@ class TaggedRelationWidget(APIModelChoiceWidget):
             'value': conditional_escape(self.label_for_value(value)),
             'link': self.get_api_link(),
             'add_link': self.get_add_link(),
-            'tags': self.tags
+            'tags': self.tags,
+            'required_tags': self.required_tags
         }
         return mark_safe(self.template % data)
 
