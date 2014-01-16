@@ -2,11 +2,10 @@ define(
 
 	[
 		"rosy/base/Class",
-		"$plugin!ui",
 		"./views/Admin"
 	],
 
-	function (Class, $ui, Admin) {
+	function (Class, Admin) {
 
 		"use strict";
 
