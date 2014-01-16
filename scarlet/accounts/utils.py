@@ -1,7 +1,7 @@
 import random
+import hashlib
 
 from django.conf import settings
-from django.utils.hashcompat import sha_constructor
 from django.contrib.auth.models import SiteProfileNotAvailable
 from django.db.models import get_model
 
@@ -51,8 +51,8 @@ def generate_sha1(string, salt=None):
 
     """
     if not salt:
-        salt = sha_constructor(str(random.random())).hexdigest()[:5]
-    hashval = sha_constructor(salt + str(string)).hexdigest()
+        salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
+    hashval = hashlib.sha1(salt + str(string)).hexdigest()
 
     return (salt, hashval)
 
@@ -103,3 +103,17 @@ def get_datetime_now():
     except ImportError:  # pragma: no cover
         import datetime
         return datetime.datetime.now()
+
+# Django 1.5 compatibility utilities, providing support for custom User models.
+# Since get_user_model() causes a circular import if called when app models are
+# being loaded, the user_model_label should be used when possible, with calls
+# to get_user_model deferred to execution time
+
+user_model_label = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
+
+try:
+    from django.contrib.auth import get_user_model
+except ImportError:
+    from django.contrib.auth.models import User
+    get_user_model = lambda: User
+

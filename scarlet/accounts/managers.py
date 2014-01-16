@@ -1,11 +1,11 @@
 import re
 
 from django.db import models
-from django.contrib.auth.models import User, UserManager, Permission
+from django.contrib.auth.models import UserManager, Permission
 from django.contrib.contenttypes.models import ContentType
 
 from .import settings as accounts_settings
-from .utils import generate_sha1, get_profile_model
+from .utils import generate_sha1, get_profile_model, get_user_model
 from .import signals as accounts_signals
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
@@ -52,7 +52,8 @@ class AccountsManager(UserManager):
         :return: :class:`User` instance representing the new user.
 
         """
-        new_user = User.objects.create_user(username, email, password)
+        new_user = get_user_model().objects.create_user(
+            username, email, password)
         new_user.first_name = first_name
         new_user.last_name = last_name
         new_user.is_active = active
@@ -186,8 +187,8 @@ class AccountsManager(UserManager):
 
         """
         deleted_users = []
-        for user in User.objects.filter(is_staff=False,
-                                        is_active=False):
+        for user in get_user_model().objects.filter(is_staff=False,
+                                                    is_active=False):
             if user.accounts_signup.activation_key_expired():
                 deleted_users.append(user)
                 user.delete()
@@ -224,7 +225,7 @@ class AccountsManager(UserManager):
             if model == 'profile':
                 model_obj = get_profile_model()
             else:
-                model_obj = User
+                model_obj = get_user_model()
             model_content_type = ContentType.objects.get_for_model(model_obj)
             for perm in perms:
                 try:

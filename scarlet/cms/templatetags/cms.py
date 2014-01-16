@@ -2,7 +2,12 @@ from django.template.defaulttags import kwarg_re
 from django.template import Library, TemplateSyntaxError, Node
 from django.utils.encoding import smart_str
 
-from django.contrib.auth.models import User
+try:
+    from django.contrib.auth import get_user_model
+except ImportError:
+    from django.contrib.auth.models import User
+else:
+    User = get_user_model()
 
 register = Library()
 

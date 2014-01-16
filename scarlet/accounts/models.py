@@ -2,13 +2,13 @@ import datetime
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 
-from .utils import generate_sha1, get_protocol, get_datetime_now
+from .utils import generate_sha1, get_protocol, get_datetime_now, \
+  get_user_model, user_model_label
 from .managers import AccountsManager, AccountsBaseProfileManager
 from .import settings as accounts_settings
 
@@ -23,7 +23,7 @@ class AccountsSignup(models.Model):
     functional user implementation on your Django website.
 
     """
-    user = models.OneToOneField(User,
+    user = models.OneToOneField(user_model_label,
                                 verbose_name=_('user'),
                                 related_name='accounts_signup')
 

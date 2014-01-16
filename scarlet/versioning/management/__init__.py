@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db.models.signals import post_syncdb
 from django.db import connection, transaction, utils
+from django import VERSION as DJANGO_VERSION
 
 
 VIEW_SQL = "CREATE OR REPLACE VIEW %(schema)s.%(model_table)s as select * from %(version_model)s inner join %(base_model)s on %(base_model)s.id = %(version_model)s.object_id"
@@ -81,6 +82,7 @@ def update_schema(app, created_models, verbosity, **kwargs):
                 cursor.execute(sql, (schema,))
                 cursor.execute(TRIGGER % args)
 
-            transaction.commit_unless_managed()
+            if DJANGO_VERSION < (1, 6):
+                transaction.commit_unless_managed()
 
 post_syncdb.connect(update_schema, dispatch_uid='update_schema')

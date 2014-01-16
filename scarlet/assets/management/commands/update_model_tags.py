@@ -1,6 +1,9 @@
 from django.core.management.base import BaseCommand
 from django.db.models.loading import get_models
-from django.db import transaction
+try:
+    from django.db.transaction import atomic
+except ImportError:
+    from django.db.transaction import commit_on_success as atomic
 
 from ...models import Asset
 from ...fields import AssetsFileField
@@ -11,7 +14,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         seen = {}
-        with transaction.commit_on_success():
+        with atomic():
             for m in get_models():
                 if hasattr(m._meta, '_view_model') and not (m._meta, 'is_view', False):
                     continue

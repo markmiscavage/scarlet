@@ -13,7 +13,10 @@ try:
 except ValueError:
     from scheduling.models import Schedulable
 
-from .transactions import xact
+try:
+    from django.db.transaction import atomic as xact
+except ImportError:
+    from .transactions import xact
 from . import manager
 
 
@@ -321,7 +324,7 @@ class VersionViewMeta(SharedMeta):
                                 base_model.__name__)
 
             # Create a new abstract base model we can inherit from
-            ab_base_model = type(base_name + "Abs", (BaseModel,), {
+            ab_base_model = type(str(base_name) + "Abs", (BaseModel,), {
                 '__module__': base_model.__module__,
                 'Meta': get_meta(None, abstract=True)
             })
@@ -374,7 +377,7 @@ class VersionViewMeta(SharedMeta):
                 raise TypeError("VersionView model %r can't inherit from a BaseModel %r" % (cls, base))
 
             if issubclass(base, BaseVersionedModel):
-                if not issubclass(base.__metaclass__, VersionViewMeta):
+                if not issubclass(type(base), VersionViewMeta):
                     if custom_version:
                         raise TypeError("Django inheritence will only allow VersionView model %r to inherit from one and only one BaseVersionedModel" % cls)
                     else:
@@ -490,7 +493,7 @@ class BaseModel(models.Model):
     may be null.
     """
 
-    is_published = models.BooleanField(editable=False)
+    is_published = models.BooleanField(editable=False, default=False)
 
     created_date = models.DateTimeField(default=timezone.now,
                                         editable=False)

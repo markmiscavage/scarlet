@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import AdminPasswordChangeForm
 
 try:
@@ -6,6 +5,7 @@ try:
 except ValueError:
     from cms import site, bundles, views
 
+from .utils import get_user_model
 from . import signals as accounts_signals
 from . import forms
 from . import groups
@@ -88,7 +88,7 @@ class AccountBundle(bundles.Bundle):
     )
 
     class Meta:
-        model = User
+        model = get_user_model()
         primary_model_bundle = True
         item_views = ('password', 'edit', 'delete')
         default_kwargs = {
