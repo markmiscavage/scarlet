@@ -7,8 +7,8 @@
 		{% if add_link %}
 		<a class="button" target="_blank" href="{{ add_link }}">Upload New</a>
 		{% endif %}
-
-        {{ required_tags }}
+       
+        {% if required_tags %}<span class="label">Tagged: {{ required_tags }}</span>{% endif %}
         {% if sizes %}
             <ul class="crops-list" data-base-link="{{ base_api_link }}" >
             {% for each in sizes %}
