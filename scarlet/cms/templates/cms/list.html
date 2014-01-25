@@ -4,12 +4,20 @@
 {% block content_class %}list{% endblock %}
 {% block main_content %}
 
-	{% block add %}
-	{% bundle_url bundle "add" as add_url %}
-	{% if add_url and add_url != request.path_info %}
-		<p><a class="button" href="{{ add_url }}">Add {{ model_name }}</a></p>
-	{% endif %}
-	{% endblock %}
+	<div class="action-toolbar">
+		{% block add %}
+		{% bundle_url bundle "add" as add_url %}
+		{% if add_url and add_url != request.path_info %}
+			<a class="button" href="{{ add_url }}">Add {{ model_name }}</a>
+		{% endif %}
+		{% endblock %}
+		{% if actions %}
+			{% for name, option in actions %}
+				{% bundle_url bundle name as url %}
+				<a class="button secondary" href="{{ url }}?_selected=11%2C10">{{ option }}</a>
+			{% endfor %}
+		{% endif %}
+	</div>
 
 	{% block filter %}
 	{% if filter_form %}
@@ -117,14 +125,6 @@
 	</table>
 	{% block submit %}
 	{% if show_form and not list.empty %}
-		{% if actions %}
-			<select name="actions">
-				{% for name, desc in actions %}
-				{% bundle_url bundle name as url %}
-					<option value="{{ url }}">{{ desc }}</option>
-				{% endfor %}
-			</select>
-		{% endif %}
 		<p class="submit-row">
 			<a class="button" href="{{ cancel_url }}">Cancel</a>
 			<input class="big" type="submit" value="Save" />
