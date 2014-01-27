@@ -320,7 +320,7 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
             'filter_form': self.get_filter_form(),
             'page_obj': page,
             'is_paginated': is_paginated,
-            'show_form': (self.can_submit and (formset is not None or actions)),
+            'show_form': (self.can_submit and formset is not None),
             'paginator': paginator,
             'checkbox_name' : CHECKBOX_NAME,
             'actions' : actions,
