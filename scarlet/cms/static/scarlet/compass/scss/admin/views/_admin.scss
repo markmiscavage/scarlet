@@ -16,21 +16,6 @@ Requires:
 section#main {
 	clear: both;
 
-	article {
-		@include border-radius($gridlet*2);
-		border: 1px solid $light-blue;
-		background-color: #fff;
-		padding: $spacer $spacer*2;
-
-		&#modal,
-		&.list {
-			border: none;
-			background: transparent;
-			margin-left: 0;
-			padding: 0;
-		}
-	}
-
 	nav[role='sidebar'] + article {
 		margin-left: 340px;
 	}
@@ -62,8 +47,91 @@ section#main {
 		}
 	}
 
+	a.button {
+		@include button;
+
+		& + &,
+		& + input[type='submit'] {
+			margin-left: $spacer;
+		}
+	}
+
+	.actions-toolbar {
+		background: #C9C9C9;
+		background: rgba(184, 184, 184, 0.5);
+		padding: 5px;
+		margin-bottom: 10px;
+
+		.button {
+			@include transition(background-color 100ms);
+		}
+
+		.batch-action {
+			background: #d6d6d6;
+			margin-right: 7px;
+
+			&.disabled {
+				cursor: default;
+				color: #b1b1b1;
+				background: #d5d5d5;
+				border-color: #b1b1b1;
+			}
+
+			&:not(.disabled):hover {
+				color: #314B5D;
+				background: #ACACAC;
+			}
+		}
+
+		.add {
+			display: inline-block;
+			margin-right: 30px;
+			padding-right: 5px;
+			position: relative;
+
+			&:after {
+				content: "";
+				right: -17px;
+				width: 1px;
+				height: 29px;
+				position: absolute;
+				top: 0px;
+				background: #333;
+			}
+		}
+
+		.submit-row {
+			display: inline-block;
+			border-left: 1px solid #333;
+			margin: 0 0 0 12px;
+			padding: 0 0 0 12px;
+
+			a,
+			input,
+			.button {
+				margin: 0 10px 0 0
+			}
+
+			input {
+				font-weight: bold;
+			}
+		}
+	}
+
 	article {
+		@include border-radius($gridlet*2);
+		border: 1px solid $light-blue;
+		background-color: #fff;
+		padding: $spacer $spacer*2;
 		position: relative;
+
+		&#modal,
+		&.list {
+			border: none;
+			background: transparent;
+			margin-left: 0;
+			padding: 0;
+		}
 
 		h3 {
 			border-bottom: 1px dotted $dark-blue;
@@ -83,15 +151,6 @@ section#main {
 			text-transform: uppercase;
 			margin-bottom: $spacer;
 			// margin-left: $spacer*2;
-		}
-
-		a.button {
-			@include button;
-
-			& + &,
-			& + input[type='submit'] {
-				margin-left: $spacer;
-			}
 		}
 
 		hr {
@@ -513,6 +572,9 @@ section#main {
 		}
 
 		section.filters {
+			position: absolute;
+			right: 0;
+			top: 0;
 			summary {
 				&[open], &.open {
 					z-index: 1;
@@ -522,10 +584,7 @@ section#main {
 
 		details#filter {
 			@include user-select(none);
-			//width: $width/4;
 			text-align: right;
-			float: right;
-			//clear: both;
 			display: block;
 			position: relative;
 			z-index: 2;

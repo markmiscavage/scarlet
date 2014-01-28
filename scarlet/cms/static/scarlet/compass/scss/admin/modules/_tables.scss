@@ -107,18 +107,18 @@ table {
 			&[draggable] td {
 				cursor: move;
 
-				&:last-of-type {
+				&:first-of-type {
 					&:before {
 						content: "";
 						background-color: $light-blue;
-						@include border-right-radius($gridlet);
+						@include border-left-radius($gridlet);
 						border: 1px solid rgba($blue, 0.5);
 						display: block;
-						width: $gridlet*2;
+						width: 13px; //$gridlet*2;
 						height: 100%;
 						position: absolute;
 						top: -1px;
-						right: -1px - $gridlet*2;
+						left: -15px; //-1px - $gridlet*2;
 					}
 					&:after {
 						@include single-text-shadow(rgba($blue, 0.8), 0px, 1px, 1px);
@@ -127,8 +127,10 @@ table {
 						font-size: 24px;
 						position: absolute;
 						top: -1px + $gridlet*3;
-						right: -$gridlet*5;
+						left: -19px; //-$gridlet*5;
 					}
+
+
 				}
 			}
 
