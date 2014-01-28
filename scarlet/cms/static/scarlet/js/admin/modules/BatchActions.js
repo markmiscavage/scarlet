@@ -11,9 +11,12 @@ define(
 
 			init : function (dom) {
 				this.ids = [],
+				this.dom = dom,
 				this.$actions = $('.actions-toolbar').find('.batch-action');
 
 				var self = this;
+
+				dom.find('.select-all').on('click', this.selectAll);
 
 				dom.find('.batch-check')
 					.on('click', function () {
@@ -29,6 +32,16 @@ define(
 							return false;
 						}
 					});
+			},
+
+			selectAll : function (e) {
+				var self = this;
+
+				this.dom.find('.batch-check').each(function () {
+					var $this = $(this);
+					$this.prop('checked', $(e.currentTarget)[0].checked);
+					self.selectRow($this.val());
+				});
 			},
 
 			selectRow : function (id) {

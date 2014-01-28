@@ -61,7 +61,7 @@
 			{% if actions %}
 			<th></th>
 			{% endif %}
-			<th></th>
+			<th>{% if actions %}<input type="checkbox" class="select-all" />{% endif %}</th>
             {% if not list.empty %}
 			    {% for f in list.labels %}
 				    <th>
