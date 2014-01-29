@@ -22,7 +22,8 @@ define(
 			InlineVideo          = require("./InlineVideo"),
 			FilterBar            = require("./FilterBar"),
 			CropImage            = require("./CropImage"),
-			AutoSlug             = require("./AutoSlug");
+			AutoSlug             = require("./AutoSlug"),
+			BatchActions         = require("./BatchActions");
 
 		return DOMClass.extend({
 
@@ -50,6 +51,13 @@ define(
 
 				this._autoSlug(dom);
 				this._handlePopup(dom);
+				this._handleBatchActions(dom);
+			},
+
+			_handleBatchActions : function (dom) {
+				dom.find('.list').each(function (i, el) {
+					var actions = new BatchActions($(el));
+				});
 			},
 
 			_renderDateTimePicker : function (dom) {
