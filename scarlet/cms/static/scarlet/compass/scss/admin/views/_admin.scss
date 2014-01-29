@@ -64,10 +64,10 @@ section#main {
 
 		.button {
 			@include transition(background-color 100ms);
+			background: #ebebeb;
 		}
 
 		.batch-action {
-			background: #d6d6d6;
 			margin-right: 7px;
 
 			&.disabled {
@@ -75,11 +75,6 @@ section#main {
 				color: #b1b1b1;
 				background: #d5d5d5;
 				border-color: #b1b1b1;
-			}
-
-			&:not(.disabled):hover {
-				color: #314B5D;
-				background: #ACACAC;
 			}
 		}
 
