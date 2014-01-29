@@ -31,7 +31,7 @@
 		{{ list.formset.management_form }}
 	{% endif %}
 
-	<div class="actions-toolbar">
+	<div class="actions-toolbar {% if not actions %}hidden{% endif %}">
 		{% block add %}
 		{% bundle_url bundle "add" as add_url %}
 		{% if add_url and add_url != request.path_info %}
@@ -58,10 +58,10 @@
 	<table>
 		<thead>
 		<tr>
-			{% if actions %}
+			{% if actions and not list.empty%}
 			<th></th>
 			{% endif %}
-			<th>{% if actions %}<input type="checkbox" class="select-all" />{% endif %}</th>
+			<th>{% if actions and not list.empty%}<input type="checkbox" class="select-all" />{% endif %}</th>
             {% if not list.empty %}
 			    {% for f in list.labels %}
 				    <th>
