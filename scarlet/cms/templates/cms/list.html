@@ -39,8 +39,7 @@
 		{% endif %}
 		{% endblock %}
 		{% if actions %}
-			{% for name, option in actions %}
-				{% bundle_url bundle name as url %}
+			{% for url, option in actions %}
 				<a class="button batch-action disabled" href="{{ url }}?_selected=">{{ option }}</a>
 			{% endfor %}
 		{% endif %}

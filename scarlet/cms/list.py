@@ -261,8 +261,10 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
             action_name = '{0}{1}'.format(action, self.bundle.action_alias)
             v, name = self.bundle.get_initialized_view_and_name(action_name,
                                                         **self.kwargs)
-            if v and v.can_view(request.user):
-                actions.append((action_name, v.action_name))
+            url = self.bundle.get_view_url(action_name,
+                                    request.user, url_kwargs=self.kwargs)
+            if v and url:
+                actions.append((url, v.action_name))
 
         return actions
 
@@ -386,10 +388,9 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         selected = request.POST.getlist(CHECKBOX_NAME)
         if not action == 'None':
             if len(selected) > 0:
-                url = self.bundle.get_view_url(action, url_kwargs=self.kwargs)
                 sel = {CHECKBOX_NAME : ','.join(selected)}
                 qs = '?' + urlencode(sel)
-                return self.render(request, redirect_url = url + qs)
+                return self.render(request, redirect_url = action + qs)
 
         data = self.get_list_data(request, **kwargs)
 
