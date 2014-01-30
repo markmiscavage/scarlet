@@ -91,13 +91,13 @@ section#main {
 				height: 29px;
 				position: absolute;
 				top: 0px;
-				background: #333;
+				background: #858585;
 			}
 		}
 
 		.submit-row {
 			display: inline-block;
-			border-left: 1px solid #333;
+			border-left: 1px solid #858585;
 			margin: 0 0 0 12px;
 			padding: 0 0 0 12px;
 
@@ -109,6 +109,13 @@ section#main {
 
 			input {
 				font-weight: bold;
+			}
+		}
+
+		&.hidden {
+
+			.add:after {
+				display: none;
 			}
 		}
 	}
