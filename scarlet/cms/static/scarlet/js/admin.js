@@ -19715,10 +19715,11 @@ define(
 				this.dom = dom;
 				this.$actions = dom.find('.batch-action');
 				this.$batchCheck = dom.find('.batch-check');
+				this.$selectAll = dom.find('.select-all');
 
 				var self = this;
 
-				dom.find('.select-all').on('click', this.selectAll);
+				this.$selectAll.on('click', this.selectAll);
 
 				this.$batchCheck
 					.on('click', function () {
@@ -19780,6 +19781,7 @@ define(
 
 			disableActions : function () {
 				this.$actions.addClass('disabled');
+				this.$selectAll.prop('checked', false);
 			}
 		});
 	});
