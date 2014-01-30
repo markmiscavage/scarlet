@@ -10490,7 +10490,7 @@ define("$ui/jquery.ui", function(){});
 define("$ui/jquery.ui-timepicker", ["$","$ui/jquery.ui"], (function (global) {
     return function () {
         var ret, fn;
-        return ret || global.ui-timepicker;
+        return ret || global.$.ui.timepicker;
     };
 }(this)));
 
@@ -20207,7 +20207,7 @@ require.config({
 		},
 
 		"$ui/jquery.ui-timepicker" : {
-			exports : "ui-timepicker",
+			exports : "$.ui.timepicker",
 			deps : ["$", "$ui/jquery.ui"]
 		},
 
