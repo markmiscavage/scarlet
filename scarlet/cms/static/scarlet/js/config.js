@@ -23,7 +23,7 @@ require.config({
 		},
 
 		"$ui/jquery.ui-timepicker" : {
-			exports : "ui-timepicker",
+			exports : "$.ui.timepicker",
 			deps : ["$", "$ui/jquery.ui"]
 		},
 
