@@ -7,14 +7,14 @@
 		{% if add_link %}
 		<a class="button" target="_blank" href="{{ add_link }}">Upload New</a>
 		{% endif %}
-       
+
         {% if required_tags %}<span class="label">Tagged: {{ required_tags }}</span>{% endif %}
         {% if sizes %}
             <ul class="crops-list" data-base-link="{{ base_api_link }}" >
             {% for each in sizes %}
                 <li data-crop-link="{{ each.post_link }}">
                 	<span class="name">{{ each.name }}</span>
-                	<span class="size">{{ each.width }}x{{ each.height }}px</span>
+                	<span class="size">{% if each.width %}{{ each.width }}{% else %}??{% endif %}x{% if each.height %}{{ each.height }}{% else %}??{% endif %}px</span>
                 	<a href="#" class="button crop-link">Edit Crop</a>
                 </li>
             {% endfor %}
