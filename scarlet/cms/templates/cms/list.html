@@ -107,6 +107,7 @@
 			{% endif %}
 
 			{% for elem in row %}
+                {% bundle_url bundle "edit" object=row.instance follow_parent=False as edit_url %}
 				<td>
 				{% if show_form and forloop.first %}
 					{% for hidden_f in row.form.hidden_fields %}
@@ -117,7 +118,12 @@
 				{% if elem.field %}
 					{{ elem.field }}
 				{% else %}
-					{{ elem }}
+                    {% if edit_url and forloop.counter0 == list.link_num %}
+                        <a href="{{edit_url}}" />{{ elem }}</a>
+                    {% else %}
+    					{{ elem }}
+                    {% endif %}
+
 				{% endif %}
 
 				{% with elem.errors as errors %}
