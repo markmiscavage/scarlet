@@ -108,7 +108,7 @@
 
 			{% for elem in row %}
                 {% bundle_url bundle "edit" object=row.instance follow_parent=False as edit_url %}
-				<td>
+				<td  {% if edit_url and forloop.counter0 == list.link_num %}class="link-cell" data-edit-url="{{edit_url}}"{% endif %}>
 				{% if show_form and forloop.first %}
 					{% for hidden_f in row.form.hidden_fields %}
 						{{ hidden_f }}
@@ -118,12 +118,7 @@
 				{% if elem.field %}
 					{{ elem.field }}
 				{% else %}
-                    {% if edit_url and forloop.counter0 == list.link_num %}
-                        <a href="{{edit_url}}" />{{ elem }}</a>
-                    {% else %}
-    					{{ elem }}
-                    {% endif %}
-
+                    {{ elem }}
 				{% endif %}
 
 				{% with elem.errors as errors %}
