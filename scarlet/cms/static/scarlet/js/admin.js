@@ -19735,6 +19735,14 @@ define(
 							return false;
 						}
 					});
+
+				this.linkCell();
+			},
+
+			linkCell: function () {
+				this.dom.find('.link-cell').on('click', function () {
+					window.location.href = $(this).data('edit-url');
+				});
 			},
 
 			selectAll : function (e) {
