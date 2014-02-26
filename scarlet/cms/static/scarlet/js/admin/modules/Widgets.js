@@ -7,7 +7,6 @@ define(
 			$                    = require("$"),
 			$ui                  = require("$plugin!ui"),
 			jQuerySelect2        = require("$plugin!select2"),
-			jQueryPickadate      = require("$plugin!pickadate"),
 			jQueryDetails        = require("$plugin!details"),
 			jQueryTimePicker     = require("$plugin!ui-timepicker"),
 			AssetSelect          = require("./AssetSelect"),
