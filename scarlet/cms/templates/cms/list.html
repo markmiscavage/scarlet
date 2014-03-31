@@ -50,7 +50,6 @@
 				<a class="button" href="{{ cancel_url }}">Cancel</a>
 				<input class="button" type="submit" value="Save" />
 			</p>
-		</form>
 		{% endif %}
 		{% endblock %}
 	</div>
@@ -132,6 +131,10 @@
 		{% endfor %}
 		</tbody>
 	</table>
+
+	{% if show_form %}
+	</form>
+	{% endif %}
 
 	{% if is_paginated and not list.empty %}
 		<div class="pagination">
