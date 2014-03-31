@@ -3,12 +3,12 @@ define(
 	[
 		"rosy/base/DOMClass",
 		"$",
+		"$ui",
 		"$plugin!select2",
-		"$plugin!ui",
 		"./WidgetEvents"
 	],
 
-	function (DOMClass, $, jQuerySelect2, jQueryUI, WidgetEvents) {
+	function (DOMClass, $, $ui, jQuerySelect2, WidgetEvents) {
 
 		"use strict";
 

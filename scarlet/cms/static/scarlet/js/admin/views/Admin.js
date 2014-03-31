@@ -3,13 +3,14 @@ define(
 	[
 		"./Page",
 		"$",
+		"$ui",
 		"$plugin!select2",
 		"../modules/Widgets",
 		"../modules/WidgetEvents",
 		"detailsShim"
 	],
 
-	function (Page, $, jQuerySelect2, Widgets, WidgetEvents, detailsShim) {
+	function (Page, $, $ui, jQuerySelect2, Widgets, WidgetEvents, detailsShim) {
 
 		"use strict";
 

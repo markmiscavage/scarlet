@@ -2,6 +2,7 @@ require.config({
 
 	paths : {
 		"$" : "//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min",
+		"$ui" : "libs/jquery.ui",
 		"$plugin" : "libs/plugins/amd/jquery-plugin",
 		"wysihtml5" : "libs/wysihtml5",
 		"text" : "libs/plugins/amd/text",
@@ -14,6 +15,11 @@ require.config({
 	shim : {
 		"$" : {
 			exports : "jQuery"
+		},
+
+		"$ui" : {
+			exports: "$.ui",
+			deps : ["$"]
 		},
 
 		"zynga/Scroller" : {
