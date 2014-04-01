@@ -5,10 +5,9 @@ define(
 
 		var DOMClass             = require("rosy/base/DOMClass"),
 			$                    = require("$"), //required in Admin.js
-			$ui                  = require("$ui"), //required in Admin.js
 			jQuerySelect2        = require("$plugin!select2"),
 			jQueryDetails        = require("$plugin!details"),
-			jQueryTimePicker     = require("$plugin!ui-timepicker"),
+			jQueryTimePicker     = require("$plugin-ui!timepicker"),
 			AssetSelect          = require("./AssetSelect"),
 			ApiSelect            = require("./ApiSelect"),
 			Formset              = require("./Formset"),
