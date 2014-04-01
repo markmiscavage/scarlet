@@ -5377,7 +5377,7 @@ $.widget( "ui.slider", $.ui.mouse, {
 define("$ui", ["$"], (function (global) {
     return function () {
         var ret, fn;
-        return ret || global.$.ui;
+        return ret || global.$ui;
     };
 }(this)));
 
@@ -15627,7 +15627,7 @@ require.config({
 		},
 
 		"$ui" : {
-			exports: "$.ui",
+			exports: "$ui",
 			deps : ["$"]
 		},
 

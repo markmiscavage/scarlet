@@ -18,7 +18,7 @@ require.config({
 		},
 
 		"$ui" : {
-			exports: "$.ui",
+			exports: "$ui",
 			deps : ["$"]
 		},
 
