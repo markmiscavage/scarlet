@@ -8334,7 +8334,65 @@ var jQuery = $;
 return $;
 });
 
-define('$plugin!ui-timepicker', ['$'], function ($) {
+define(
+
+	'$plugin-ui',[
+		"module",
+		"text"
+	],
+
+	function (module, text) {
+
+		var prefix = "libs/plugins/jquery-ui/jquery.ui-";
+
+		return {
+
+			load: function (name, req, load, config) {
+
+				req(['$', '$ui'], function ($, $ui) {
+
+					if (!config.isBuild) {
+
+						req(["text!" + prefix + name + ".js"], function (val) {
+
+							var contents = "define('" + module.id + "!" + name  +
+							"', ['$'], function ($) {\nvar jQuery = $;\n" + val + ";\nreturn $;\n});\n";
+
+							eval(contents);
+
+							req([module.id + "!" + name], function (val) {
+								load(val);
+							});
+
+						});
+
+					}
+					else {
+						load("");
+					}
+				});
+			},
+
+			loadFromFileSystem : function (plugin, name) {
+				var fs = nodeRequire('fs');
+				var file = require.toUrl(prefix + name) + ".js";
+				var contents = fs.readFileSync(file).toString();
+
+				contents = "define('" + plugin + "!" + name  +
+				"', ['$, $ui'], function ($, $ui) {\nvar jQuery = $;\n" + contents + ";\nreturn $;\n});\n";
+
+				return contents;
+			},
+
+			write: function (pluginName, moduleName, write, config) {
+				write(this.loadFromFileSystem(pluginName, moduleName));
+			}
+
+		};
+	}
+);
+
+define('$plugin-ui!timepicker', ['$, $ui'], function ($, $ui) {
 var jQuery = $;
 /*! jQuery Timepicker Addon - v1.4.3 - 2013-11-30
 * http://trentrichardson.com/examples/timepicker
@@ -15210,16 +15268,15 @@ define(
 		});
 	});
 define(
-	'admin/modules/Widgets',['require','exports','module','rosy/base/DOMClass','$','$ui','$plugin!select2','$plugin!details','$plugin!ui-timepicker','./AssetSelect','./ApiSelect','./Formset','./Tabs','./InsertVideo','./InsertImage','./wysiwyg/Wysiwyg','./WidgetEvents','./WindowPopup','./OnExit','./InlineVideo','./FilterBar','./CropImage','./AutoSlug','./BatchActions'],function (require, exports, module) {
+	'admin/modules/Widgets',['require','exports','module','rosy/base/DOMClass','$','$plugin!select2','$plugin!details','$plugin-ui!timepicker','./AssetSelect','./ApiSelect','./Formset','./Tabs','./InsertVideo','./InsertImage','./wysiwyg/Wysiwyg','./WidgetEvents','./WindowPopup','./OnExit','./InlineVideo','./FilterBar','./CropImage','./AutoSlug','./BatchActions'],function (require, exports, module) {
 
 		
 
 		var DOMClass             = require("rosy/base/DOMClass"),
 			$                    = require("$"), //required in Admin.js
-			$ui                  = require("$ui"), //required in Admin.js
 			jQuerySelect2        = require("$plugin!select2"),
 			jQueryDetails        = require("$plugin!details"),
-			jQueryTimePicker     = require("$plugin!ui-timepicker"),
+			jQueryTimePicker     = require("$plugin-ui!timepicker"),
 			AssetSelect          = require("./AssetSelect"),
 			ApiSelect            = require("./ApiSelect"),
 			Formset              = require("./Formset"),
@@ -15613,6 +15670,7 @@ require.config({
 		"$" : "//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min",
 		"$ui" : "libs/jquery.ui",
 		"$plugin" : "libs/plugins/amd/jquery-plugin",
+		"$plugin-ui" : "libs/plugins/amd/jquery-ui-plugin",
 		"wysihtml5" : "libs/wysihtml5",
 		"text" : "libs/plugins/amd/text",
 		"rosy" : "libs/rosy/src",
