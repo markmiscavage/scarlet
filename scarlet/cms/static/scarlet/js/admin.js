@@ -5377,7 +5377,7 @@ $.widget( "ui.slider", $.ui.mouse, {
 define("$ui", ["$"], (function (global) {
     return function () {
         var ret, fn;
-        return ret || global.$ui;
+        return ret || global.jQueryUi;
     };
 }(this)));
 
@@ -8349,14 +8349,14 @@ define(
 
 			load: function (name, req, load, config) {
 
-				req(['$', '$ui'], function ($, $ui) {
+				req(['$'], function ($, $ui) {
 
 					if (!config.isBuild) {
 
 						req(["text!" + prefix + name + ".js"], function (val) {
 
 							var contents = "define('" + module.id + "!" + name  +
-							"', ['$'], function ($) {\nvar jQuery = $;\n" + val + ";\nreturn $;\n});\n";
+							"', ['$', '$ui'], function ($, $ui) {\nvar jQuery = $;\n" + val + ";\nreturn $;\n});\n";
 
 							eval(contents);
 
@@ -8379,7 +8379,7 @@ define(
 				var contents = fs.readFileSync(file).toString();
 
 				contents = "define('" + plugin + "!" + name  +
-				"', ['$, $ui'], function ($, $ui) {\nvar jQuery = $;\n" + contents + ";\nreturn $;\n});\n";
+				"', ['$', '$ui'], function ($, $ui) {\nvar jQuery = $;\n" + contents + ";\nreturn $;\n});\n";
 
 				return contents;
 			},
@@ -8392,7 +8392,7 @@ define(
 	}
 );
 
-define('$plugin-ui!timepicker', ['$, $ui'], function ($, $ui) {
+define('$plugin-ui!timepicker', ['$', '$ui'], function ($, $ui) {
 var jQuery = $;
 /*! jQuery Timepicker Addon - v1.4.3 - 2013-11-30
 * http://trentrichardson.com/examples/timepicker
@@ -15273,7 +15273,7 @@ define(
 		
 
 		var DOMClass             = require("rosy/base/DOMClass"),
-			$                    = require("$"), //required in Admin.js
+			$                    = require("$"),
 			jQuerySelect2        = require("$plugin!select2"),
 			jQueryDetails        = require("$plugin!details"),
 			jQueryTimePicker     = require("$plugin-ui!timepicker"),
@@ -15681,11 +15681,11 @@ require.config({
 
 	shim : {
 		"$" : {
-			exports : "$"
+			exports : "jQuery"
 		},
 
 		"$ui" : {
-			exports: "$ui",
+			exports: "jQueryUi",
 			deps : ["$"]
 		},
 
