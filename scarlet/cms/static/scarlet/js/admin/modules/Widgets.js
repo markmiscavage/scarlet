@@ -4,7 +4,7 @@ define(
 		"use strict";
 
 		var DOMClass             = require("rosy/base/DOMClass"),
-			$                    = require("$"), //required in Admin.js
+			$                    = require("$"),
 			jQuerySelect2        = require("$plugin!select2"),
 			jQueryDetails        = require("$plugin!details"),
 			jQueryTimePicker     = require("$plugin-ui!timepicker"),
