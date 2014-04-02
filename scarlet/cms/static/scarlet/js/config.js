@@ -15,11 +15,11 @@ require.config({
 
 	shim : {
 		"$" : {
-			exports : "$"
+			exports : "jQuery"
 		},
 
 		"$ui" : {
-			exports: "$ui",
+			exports: "jQueryUi",
 			deps : ["$"]
 		},
 

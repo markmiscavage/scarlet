@@ -13,14 +13,14 @@ define(
 
 			load: function (name, req, load, config) {
 
-				req(['$', '$ui'], function ($, $ui) {
+				req(['$'], function ($, $ui) {
 
 					if (!config.isBuild) {
 
 						req(["text!" + prefix + name + ".js"], function (val) {
 
 							var contents = "define('" + module.id + "!" + name  +
-							"', ['$'], function ($) {\nvar jQuery = $;\n" + val + ";\nreturn $;\n});\n";
+							"', ['$', '$ui'], function ($, $ui) {\nvar jQuery = $;\n" + val + ";\nreturn $;\n});\n";
 
 							eval(contents);
 
@@ -43,7 +43,7 @@ define(
 				var contents = fs.readFileSync(file).toString();
 
 				contents = "define('" + plugin + "!" + name  +
-				"', ['$, $ui'], function ($, $ui) {\nvar jQuery = $;\n" + contents + ";\nreturn $;\n});\n";
+				"', ['$', '$ui'], function ($, $ui) {\nvar jQuery = $;\n" + contents + ";\nreturn $;\n});\n";
 
 				return contents;
 			},
