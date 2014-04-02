@@ -35,7 +35,7 @@ class AdminList(object):
         self.link_num = 0
         if formset:
             for i, field in enumerate(visible_fields):
-                if not formset[0].fields.get(field):
+                if not formset.empty_form.fields.get(field):
                     self.link_num = i
                     break
 
