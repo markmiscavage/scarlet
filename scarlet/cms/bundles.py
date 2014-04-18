@@ -787,6 +787,7 @@ class ObjectOnlyBundle(Bundle):
     edit = PARENT
 
     main_list = URLAlias(bundle_attr=PARENT)
+    delegated = True
 
     class Meta:
         item_views = ()
