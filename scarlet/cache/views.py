@@ -11,29 +11,7 @@ from django.utils.cache import patch_response_headers, get_max_age, patch_vary_h
 from django.core.cache import cache
 from django.conf import settings
 
-class CacheView(View):
-    """
-    A class based view that overrides the default dispatch
-    method to determine the cache_prefix.
-
-    If the cms view is available this class will inherit from there
-    otherwise it will inherit from django's generic class View.
-
-    :param cache_time: How long should we cache this attribute. \
-    This gets passed to django middleware and determines the \
-    expiry of the actual cache. Defaults to 1 hour.
-
-    :param max_age: Django will set the max_age header to match the \
-    amount of time left before the cache will expire. \
-    When using long caches that can be invalidated this is not ideal. \
-    This will over ride that behavior ensuring that if django \
-    tries to set a max_age header that is greater that whatever \
-    you specify here it will be replaced by this value. Defaults to 0.
-    """
-
-    cache_time = 60 * 60
-    max_age = 0
-    cache_middleware = None
+class CacheMixin(object):
 
     def should_cache(self):
         """
@@ -85,29 +63,6 @@ class CacheView(View):
 
         return prefix
 
-    def get_as_string(self, request, *args, **kwargs):
-        """
-        Should only be used when inheriting from cms View.
-
-        Gets the response as a string and caches it with a
-        separate prefix
-        """
-
-        value = None
-        if self.should_cache():
-            prefix = "%s:%s" % (self.get_cache_version(),
-                                self.get_cache_prefix())
-            value = cache.get(prefix + ":string")
-
-        if not value:
-            value = super(CacheView, self).get_as_string(request, *args,
-                                                         **kwargs)
-            if self.should_cache() and value and \
-                    getattr(self.request, '_cache_update_cache', False):
-                cache.set(prefix + ":string", value, self.cache_time)
-
-        return value
-
     def get_vary_headers(self, request, response):
         """
         Hook for patching the vary header
@@ -139,6 +94,67 @@ class CacheView(View):
             patch_response_headers(response, self.max_age)
         return response
 
+    def set_cache_middleware(self, cache_time, prefix):
+        self.cache_middleware = CacheMiddleware(cache_timeout=cache_time,
+                                                  key_prefix=prefix)
+
+    def _finalize_cached_response(self, request, response):
+        headers = self.get_vary_headers(request, response)
+        if headers:
+            patch_vary_headers(response, headers)
+
+        if hasattr(response, 'render') and callable(response.render):
+            response.add_post_render_callback(self.template_response_callback)
+        else:
+            response = self.template_response_callback(response)
+        return response
+
+
+class CacheView(View, CacheMixin):
+    """
+    A class based view that overrides the default dispatch
+    method to determine the cache_prefix.
+
+    If the cms view is available this class will inherit from there
+    otherwise it will inherit from django's generic class View.
+
+    :param cache_time: How long should we cache this attribute. \
+    This gets passed to django middleware and determines the \
+    expiry of the actual cache. Defaults to 1 hour.
+
+    :param max_age: Django will set the max_age header to match the \
+    amount of time left before the cache will expire. \
+    When using long caches that can be invalidated this is not ideal. \
+    This will over ride that behavior ensuring that if django \
+    tries to set a max_age header that is greater that whatever \
+    you specify here it will be replaced by this value. Defaults to 0.
+    """
+
+    cache_time = 60 * 60
+    max_age = 0
+
+    def get_as_string(self, request, *args, **kwargs):
+        """
+        Should only be used when inheriting from cms View.
+
+        Gets the response as a string and caches it with a
+        separate prefix
+        """
+
+        value = None
+        if self.should_cache():
+            prefix = "%s:%s" % (self.get_cache_version(),
+                                self.get_cache_prefix())
+            value = cache.get(prefix + ":string")
+
+        if not value:
+            value = super(CacheView, self).get_as_string(request, *args,
+                                                         **kwargs)
+            if self.should_cache() and value and \
+                    getattr(self.request, '_cache_update_cache', False):
+                cache.set(prefix + ":string", value, self.cache_time)
+
+        return value
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -153,7 +169,7 @@ class CacheView(View):
         self.request = request
         self.args = args
         self.kwargs = kwargs
-
+        self.cache_middleware = None
         response = None
 
         if self.should_cache():
@@ -163,9 +179,7 @@ class CacheView(View):
             # Using middleware here since that is what the decorator uses
             # internally and it avoids making this code all complicated with
             # all sorts of wrappers.
-            self.cache_middleware = CacheMiddleware(cache_timeout=self.cache_time,
-                                              key_prefix=prefix)
-
+            self.set_cache_middleware(self.cache_time, prefix)
             response = self.cache_middleware.process_request(self.request)
         else:
             self.set_do_not_cache()
@@ -174,13 +188,4 @@ class CacheView(View):
             response = super(CacheView, self).dispatch(self.request, *args,
                                                        **kwargs)
 
-        headers = self.get_vary_headers(request, response)
-        if headers:
-            patch_vary_headers(response, headers)
-
-        if hasattr(response, 'render') and callable(response.render):
-            response.add_post_render_callback(self.template_response_callback)
-        else:
-            response = self.template_response_callback(response)
-
-        return response
+        return self._finalize_cached_response(request, response)

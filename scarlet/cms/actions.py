@@ -53,8 +53,8 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
     short_description = None
     redirect_to_view = 'main_list'
-    confirmation_message = 'Please confirm that you want to {action_name} the following {bundle_name}:'
-    confirmation_message_single = 'Please confirm that you want to {action_name} the {bundle_name}'
+    confirmation_message = u'Please confirm that you want to {action_name} the following {bundle_name}:'
+    confirmation_message_single = u'Please confirm that you want to {action_name} the {bundle_name}'
     default_template = 'cms/action_confirmation.html'
 
     object = None
