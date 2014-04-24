@@ -666,375 +666,145 @@ define(
 	}
 );
 
-/**
- * @license RequireJS text 2.0.3 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
- * Available via the MIT or new BSD license.
- * see: http://github.com/requirejs/text for details
- */
-/*jslint regexp: true */
-/*global require: false, XMLHttpRequest: false, ActiveXObject: false,
-  define: false, window: false, process: false, Packages: false,
-  java: false, location: false */
-
-define('text',['module'], function (module) {
-    
-
-    var text, fs,
-        progIds = ['Msxml2.XMLHTTP', 'Microsoft.XMLHTTP', 'Msxml2.XMLHTTP.4.0'],
-        xmlRegExp = /^\s*<\?xml(\s)+version=[\'\"](\d)*.(\d)*[\'\"](\s)*\?>/im,
-        bodyRegExp = /<body[^>]*>\s*([\s\S]+)\s*<\/body>/im,
-        hasLocation = typeof location !== 'undefined' && location.href,
-        defaultProtocol = hasLocation && location.protocol && location.protocol.replace(/\:/, ''),
-        defaultHostName = hasLocation && location.hostname,
-        defaultPort = hasLocation && (location.port || undefined),
-        buildMap = [],
-        masterConfig = (module.config && module.config()) || {};
-
-    text = {
-        version: '2.0.3',
-
-        strip: function (content) {
-            //Strips <?xml ...?> declarations so that external SVG and XML
-            //documents can be added to a document without worry. Also, if the string
-            //is an HTML document, only the part inside the body tag is returned.
-            if (content) {
-                content = content.replace(xmlRegExp, "");
-                var matches = content.match(bodyRegExp);
-                if (matches) {
-                    content = matches[1];
-                }
-            } else {
-                content = "";
-            }
-            return content;
-        },
-
-        jsEscape: function (content) {
-            return content.replace(/(['\\])/g, '\\$1')
-                .replace(/[\f]/g, "\\f")
-                .replace(/[\b]/g, "\\b")
-                .replace(/[\n]/g, "\\n")
-                .replace(/[\t]/g, "\\t")
-                .replace(/[\r]/g, "\\r")
-                .replace(/[\u2028]/g, "\\u2028")
-                .replace(/[\u2029]/g, "\\u2029");
-        },
-
-        createXhr: masterConfig.createXhr || function () {
-            //Would love to dump the ActiveX crap in here. Need IE 6 to die first.
-            var xhr, i, progId;
-            if (typeof XMLHttpRequest !== "undefined") {
-                return new XMLHttpRequest();
-            } else if (typeof ActiveXObject !== "undefined") {
-                for (i = 0; i < 3; i += 1) {
-                    progId = progIds[i];
-                    try {
-                        xhr = new ActiveXObject(progId);
-                    } catch (e) {}
-
-                    if (xhr) {
-                        progIds = [progId];  // so faster next time
-                        break;
-                    }
-                }
-            }
-
-            return xhr;
-        },
-
-        /**
-         * Parses a resource name into its component parts. Resource names
-         * look like: module/name.ext!strip, where the !strip part is
-         * optional.
-         * @param {String} name the resource name
-         * @returns {Object} with properties "moduleName", "ext" and "strip"
-         * where strip is a boolean.
-         */
-        parseName: function (name) {
-            var strip = false, index = name.indexOf("."),
-                modName = name.substring(0, index),
-                ext = name.substring(index + 1, name.length);
-
-            index = ext.indexOf("!");
-            if (index !== -1) {
-                //Pull off the strip arg.
-                strip = ext.substring(index + 1, ext.length);
-                strip = strip === "strip";
-                ext = ext.substring(0, index);
-            }
-
-            return {
-                moduleName: modName,
-                ext: ext,
-                strip: strip
-            };
-        },
-
-        xdRegExp: /^((\w+)\:)?\/\/([^\/\\]+)/,
-
-        /**
-         * Is an URL on another domain. Only works for browser use, returns
-         * false in non-browser environments. Only used to know if an
-         * optimized .js version of a text resource should be loaded
-         * instead.
-         * @param {String} url
-         * @returns Boolean
-         */
-        useXhr: function (url, protocol, hostname, port) {
-            var uProtocol, uHostName, uPort,
-                match = text.xdRegExp.exec(url);
-            if (!match) {
-                return true;
-            }
-            uProtocol = match[2];
-            uHostName = match[3];
-
-            uHostName = uHostName.split(':');
-            uPort = uHostName[1];
-            uHostName = uHostName[0];
-
-            return (!uProtocol || uProtocol === protocol) &&
-                   (!uHostName || uHostName.toLowerCase() === hostname.toLowerCase()) &&
-                   ((!uPort && !uHostName) || uPort === port);
-        },
-
-        finishLoad: function (name, strip, content, onLoad) {
-            content = strip ? text.strip(content) : content;
-            if (masterConfig.isBuild) {
-                buildMap[name] = content;
-            }
-            onLoad(content);
-        },
-
-        load: function (name, req, onLoad, config) {
-            //Name has format: some.module.filext!strip
-            //The strip part is optional.
-            //if strip is present, then that means only get the string contents
-            //inside a body tag in an HTML string. For XML/SVG content it means
-            //removing the <?xml ...?> declarations so the content can be inserted
-            //into the current doc without problems.
-
-            // Do not bother with the work if a build and text will
-            // not be inlined.
-            if (config.isBuild && !config.inlineText) {
-                onLoad();
-                return;
-            }
-
-            masterConfig.isBuild = config.isBuild;
-
-            var parsed = text.parseName(name),
-                nonStripName = parsed.moduleName + '.' + parsed.ext,
-                url = req.toUrl(nonStripName),
-                useXhr = (masterConfig.useXhr) ||
-                         text.useXhr;
-
-            //Load the text. Use XHR if possible and in a browser.
-            if (!hasLocation || useXhr(url, defaultProtocol, defaultHostName, defaultPort)) {
-                text.get(url, function (content) {
-                    text.finishLoad(name, parsed.strip, content, onLoad);
-                }, function (err) {
-                    if (onLoad.error) {
-                        onLoad.error(err);
-                    }
-                });
-            } else {
-                //Need to fetch the resource across domains. Assume
-                //the resource has been optimized into a JS module. Fetch
-                //by the module name + extension, but do not include the
-                //!strip part to avoid file system issues.
-                req([nonStripName], function (content) {
-                    text.finishLoad(parsed.moduleName + '.' + parsed.ext,
-                                    parsed.strip, content, onLoad);
-                });
-            }
-        },
-
-        write: function (pluginName, moduleName, write, config) {
-            if (buildMap.hasOwnProperty(moduleName)) {
-                var content = text.jsEscape(buildMap[moduleName]);
-                write.asModule(pluginName + "!" + moduleName,
-                               "define(function () { return '" +
-                                   content +
-                               "';});\n");
-            }
-        },
-
-        writeFile: function (pluginName, moduleName, req, write, config) {
-            var parsed = text.parseName(moduleName),
-                nonStripName = parsed.moduleName + '.' + parsed.ext,
-                //Use a '.js' file name so that it indicates it is a
-                //script that can be loaded across domains.
-                fileName = req.toUrl(parsed.moduleName + '.' +
-                                     parsed.ext) + '.js';
-
-            //Leverage own load() method to load plugin value, but only
-            //write out values that do not have the strip argument,
-            //to avoid any potential issues with ! in file names.
-            text.load(nonStripName, req, function (value) {
-                //Use own write() method to construct full module value.
-                //But need to create shell that translates writeFile's
-                //write() to the right interface.
-                var textWrite = function (contents) {
-                    return write(fileName, contents);
-                };
-                textWrite.asModule = function (moduleName, contents) {
-                    return write.asModule(moduleName, fileName, contents);
-                };
-
-                text.write(pluginName, nonStripName, textWrite, config);
-            }, config);
-        }
-    };
-
-    if (masterConfig.env === 'node' || (!masterConfig.env &&
-            typeof process !== "undefined" &&
-            process.versions &&
-            !!process.versions.node)) {
-        //Using special require.nodeRequire, something added by r.js.
-        fs = require.nodeRequire('fs');
-
-        text.get = function (url, callback) {
-            var file = fs.readFileSync(url, 'utf8');
-            //Remove BOM (Byte Mark Order) from utf8 files if it is there.
-            if (file.indexOf('\uFEFF') === 0) {
-                file = file.substring(1);
-            }
-            callback(file);
-        };
-    } else if (masterConfig.env === 'xhr' || (!masterConfig.env &&
-            text.createXhr())) {
-        text.get = function (url, callback, errback) {
-            var xhr = text.createXhr();
-            xhr.open('GET', url, true);
-
-            //Allow overrides specified in config
-            if (masterConfig.onXhr) {
-                masterConfig.onXhr(xhr, url);
-            }
-
-            xhr.onreadystatechange = function (evt) {
-                var status, err;
-                //Do not explicitly handle errors, those should be
-                //visible via console output in the browser.
-                if (xhr.readyState === 4) {
-                    status = xhr.status;
-                    if (status > 399 && status < 600) {
-                        //An http 4xx or 5xx error. Signal an error.
-                        err = new Error(url + ' HTTP status: ' + status);
-                        err.xhr = xhr;
-                        errback(err);
-                    } else {
-                        callback(xhr.responseText);
-                    }
-                }
-            };
-            xhr.send(null);
-        };
-    } else if (masterConfig.env === 'rhino' || (!masterConfig.env &&
-            typeof Packages !== 'undefined' && typeof java !== 'undefined')) {
-        //Why Java, why is this so awkward?
-        text.get = function (url, callback) {
-            var stringBuffer, line,
-                encoding = "utf-8",
-                file = new java.io.File(url),
-                lineSeparator = java.lang.System.getProperty("line.separator"),
-                input = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(file), encoding)),
-                content = '';
-            try {
-                stringBuffer = new java.lang.StringBuffer();
-                line = input.readLine();
-
-                // Byte Order Mark (BOM) - The Unicode Standard, version 3.0, page 324
-                // http://www.unicode.org/faq/utf_bom.html
-
-                // Note that when we use utf-8, the BOM should appear as "EF BB BF", but it doesn't due to this bug in the JDK:
-                // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4508058
-                if (line && line.length() && line.charAt(0) === 0xfeff) {
-                    // Eat the BOM, since we've already found the encoding on this file,
-                    // and we plan to concatenating this buffer with others; the BOM should
-                    // only appear at the top of a file.
-                    line = line.substring(1);
-                }
-
-                stringBuffer.append(line);
-
-                while ((line = input.readLine()) !== null) {
-                    stringBuffer.append(lineSeparator);
-                    stringBuffer.append(line);
-                }
-                //Make sure we return a JavaScript string and not a Java string.
-                content = String(stringBuffer.toString()); //String
-            } finally {
-                input.close();
-            }
-            callback(content);
-        };
-    }
-
-    return text;
-});
-
 define(
 
-	'$plugin',[
-		"module",
-		"text"
+	'rosy/base/DOMClass',[
+		"../base/Class",
+		"$"
 	],
 
-	function (module, text) {
+	function (Class, $) {
 
-		var prefix = "libs/plugins/jquery/jquery.";
+		
 
-		return {
+		function _matchJQueryGUIDs(instance, jqObj, events) {
+			var type, i, j, event;
+			var func;
+			var f;
 
-			load: function (name, req, load, config) {
-
-				req(['$'], function ($) {
-
-					if (!config.isBuild) {
-
-						req(["text!" + prefix + name + ".js"], function (val) {
-
-							var contents = "define('" + module.id + "!" + name  +
-							"', ['$'], function ($) {\nvar jQuery = $;\n" + val + ";\nreturn $;\n});\n";
-
-							eval(contents);
-
-							req([module.id + "!" + name], function (val) {
-								load(val);
-							});
-
-						});
-
+			for (type in events) {
+				for (i = 0, j = events[type].length; i < j; i++) {
+					if (!events[type]) {
+						break;
 					}
-					else {
-						load("");
+
+					event = events[type][i];
+
+					if (!event) {
+						break;
 					}
-				});
-			},
 
-			loadFromFileSystem : function (plugin, name) {
-				var fs = nodeRequire('fs');
-				var file = require.toUrl(prefix + name) + ".js";
-				var contents = fs.readFileSync(file).toString();
+					for (func in instance) {
+						f = instance[func];
 
-				contents = "define('" + plugin + "!" + name  +
-				"', ['$'], function ($) {\nvar jQuery = $;\n" + contents + ";\nreturn $;\n});\n";
+						if (f && f.guid && typeof f === "function") {
+							if (f.guid === event.handler.guid) {
+								jqObj.off(type, f);
+							}
+						}
+					}
+				}
+			}
+		}
 
-				return contents;
-			},
-
-			write: function (pluginName, moduleName, write, config) {
-				write(this.loadFromFileSystem(pluginName, moduleName));
+		function _unbindFromObject(instance, obj) {
+			if (!obj) {
+				return;
 			}
 
-		};
+			var key, jqObj, events;
+
+			for (key in obj) {
+				jqObj = obj[key];
+
+				if (jqObj instanceof $) {
+
+					var i, j, el;
+
+					for (i = 0, j = jqObj.length; i < j; i++) {
+						el = jqObj[i];
+						events = $._data(el, "events");
+
+						if (events) {
+							_matchJQueryGUIDs(instance, jqObj.eq(i), events);
+						}
+					}
+				} else if ($.isPlainObject(jqObj)) {
+					_unbindFromObject(instance, jqObj);
+				}
+			}
+		}
+
+		return Class.extend({
+
+			/**
+			* Middleware preventDefault method. A shortcut to avoid delegation for a simple task.
+			*/
+			preventDefault : function (e) {
+				e.preventDefault();
+			},
+
+			/**
+			* Shorthand for $.proxy(func, this)
+			*/
+			proxy : function (fn) {
+				return $.proxy(fn, this);
+			},
+
+			destroy : function () {
+				this.unbindEvents();
+				this.sup();
+			},
+
+			unbindEvents : function () {
+				for (var key in this) {
+					if ($.isPlainObject(this[key])) {
+						_unbindFromObject(this, this[key]);
+					}
+				}
+			}
+
+		});
 	}
 );
 
-define('$plugin!ui', ['$'], function ($) {
-var jQuery = $;
+define(
+
+	'admin/views/Page',[
+		"rosy/base/DOMClass",
+		"$"
+	],
+
+	function (DOMClass, $) {
+
+		
+
+		var $body = $("body");
+
+		return DOMClass.extend({
+
+			$content : "",
+
+			init : function () {
+				this.sup();
+				this.$content = $("#main");
+			},
+
+			transitionIn : function () {
+				this.$content.animate({opacity : 1}, 500, this.transitionInComplete);
+			},
+
+			transitionOut : function () {
+				this.$content.animate({opacity : 0}, 500, this.transitionOutComplete);
+			},
+
+			destroy : function () {
+				this.$content = null;
+			}
+		});
+	}
+);
+
 /*! jQuery UI - v1.9.2 - 2013-12-11
 * http://jqueryui.com
 * Includes: jquery.ui.core.js, jquery.ui.widget.js, jquery.ui.mouse.js, jquery.ui.sortable.js, jquery.ui.datepicker.js, jquery.ui.slider.js
@@ -5603,146 +5373,378 @@ $.widget( "ui.slider", $.ui.mouse, {
 });
 
 }(jQuery));
-;
-return $;
+
+define("$ui", ["$"], (function (global) {
+    return function () {
+        var ret, fn;
+        return ret || global.jQueryUi;
+    };
+}(this)));
+
+/**
+ * @license RequireJS text 2.0.3 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
+ * Available via the MIT or new BSD license.
+ * see: http://github.com/requirejs/text for details
+ */
+/*jslint regexp: true */
+/*global require: false, XMLHttpRequest: false, ActiveXObject: false,
+  define: false, window: false, process: false, Packages: false,
+  java: false, location: false */
+
+define('text',['module'], function (module) {
+    
+
+    var text, fs,
+        progIds = ['Msxml2.XMLHTTP', 'Microsoft.XMLHTTP', 'Msxml2.XMLHTTP.4.0'],
+        xmlRegExp = /^\s*<\?xml(\s)+version=[\'\"](\d)*.(\d)*[\'\"](\s)*\?>/im,
+        bodyRegExp = /<body[^>]*>\s*([\s\S]+)\s*<\/body>/im,
+        hasLocation = typeof location !== 'undefined' && location.href,
+        defaultProtocol = hasLocation && location.protocol && location.protocol.replace(/\:/, ''),
+        defaultHostName = hasLocation && location.hostname,
+        defaultPort = hasLocation && (location.port || undefined),
+        buildMap = [],
+        masterConfig = (module.config && module.config()) || {};
+
+    text = {
+        version: '2.0.3',
+
+        strip: function (content) {
+            //Strips <?xml ...?> declarations so that external SVG and XML
+            //documents can be added to a document without worry. Also, if the string
+            //is an HTML document, only the part inside the body tag is returned.
+            if (content) {
+                content = content.replace(xmlRegExp, "");
+                var matches = content.match(bodyRegExp);
+                if (matches) {
+                    content = matches[1];
+                }
+            } else {
+                content = "";
+            }
+            return content;
+        },
+
+        jsEscape: function (content) {
+            return content.replace(/(['\\])/g, '\\$1')
+                .replace(/[\f]/g, "\\f")
+                .replace(/[\b]/g, "\\b")
+                .replace(/[\n]/g, "\\n")
+                .replace(/[\t]/g, "\\t")
+                .replace(/[\r]/g, "\\r")
+                .replace(/[\u2028]/g, "\\u2028")
+                .replace(/[\u2029]/g, "\\u2029");
+        },
+
+        createXhr: masterConfig.createXhr || function () {
+            //Would love to dump the ActiveX crap in here. Need IE 6 to die first.
+            var xhr, i, progId;
+            if (typeof XMLHttpRequest !== "undefined") {
+                return new XMLHttpRequest();
+            } else if (typeof ActiveXObject !== "undefined") {
+                for (i = 0; i < 3; i += 1) {
+                    progId = progIds[i];
+                    try {
+                        xhr = new ActiveXObject(progId);
+                    } catch (e) {}
+
+                    if (xhr) {
+                        progIds = [progId];  // so faster next time
+                        break;
+                    }
+                }
+            }
+
+            return xhr;
+        },
+
+        /**
+         * Parses a resource name into its component parts. Resource names
+         * look like: module/name.ext!strip, where the !strip part is
+         * optional.
+         * @param {String} name the resource name
+         * @returns {Object} with properties "moduleName", "ext" and "strip"
+         * where strip is a boolean.
+         */
+        parseName: function (name) {
+            var strip = false, index = name.indexOf("."),
+                modName = name.substring(0, index),
+                ext = name.substring(index + 1, name.length);
+
+            index = ext.indexOf("!");
+            if (index !== -1) {
+                //Pull off the strip arg.
+                strip = ext.substring(index + 1, ext.length);
+                strip = strip === "strip";
+                ext = ext.substring(0, index);
+            }
+
+            return {
+                moduleName: modName,
+                ext: ext,
+                strip: strip
+            };
+        },
+
+        xdRegExp: /^((\w+)\:)?\/\/([^\/\\]+)/,
+
+        /**
+         * Is an URL on another domain. Only works for browser use, returns
+         * false in non-browser environments. Only used to know if an
+         * optimized .js version of a text resource should be loaded
+         * instead.
+         * @param {String} url
+         * @returns Boolean
+         */
+        useXhr: function (url, protocol, hostname, port) {
+            var uProtocol, uHostName, uPort,
+                match = text.xdRegExp.exec(url);
+            if (!match) {
+                return true;
+            }
+            uProtocol = match[2];
+            uHostName = match[3];
+
+            uHostName = uHostName.split(':');
+            uPort = uHostName[1];
+            uHostName = uHostName[0];
+
+            return (!uProtocol || uProtocol === protocol) &&
+                   (!uHostName || uHostName.toLowerCase() === hostname.toLowerCase()) &&
+                   ((!uPort && !uHostName) || uPort === port);
+        },
+
+        finishLoad: function (name, strip, content, onLoad) {
+            content = strip ? text.strip(content) : content;
+            if (masterConfig.isBuild) {
+                buildMap[name] = content;
+            }
+            onLoad(content);
+        },
+
+        load: function (name, req, onLoad, config) {
+            //Name has format: some.module.filext!strip
+            //The strip part is optional.
+            //if strip is present, then that means only get the string contents
+            //inside a body tag in an HTML string. For XML/SVG content it means
+            //removing the <?xml ...?> declarations so the content can be inserted
+            //into the current doc without problems.
+
+            // Do not bother with the work if a build and text will
+            // not be inlined.
+            if (config.isBuild && !config.inlineText) {
+                onLoad();
+                return;
+            }
+
+            masterConfig.isBuild = config.isBuild;
+
+            var parsed = text.parseName(name),
+                nonStripName = parsed.moduleName + '.' + parsed.ext,
+                url = req.toUrl(nonStripName),
+                useXhr = (masterConfig.useXhr) ||
+                         text.useXhr;
+
+            //Load the text. Use XHR if possible and in a browser.
+            if (!hasLocation || useXhr(url, defaultProtocol, defaultHostName, defaultPort)) {
+                text.get(url, function (content) {
+                    text.finishLoad(name, parsed.strip, content, onLoad);
+                }, function (err) {
+                    if (onLoad.error) {
+                        onLoad.error(err);
+                    }
+                });
+            } else {
+                //Need to fetch the resource across domains. Assume
+                //the resource has been optimized into a JS module. Fetch
+                //by the module name + extension, but do not include the
+                //!strip part to avoid file system issues.
+                req([nonStripName], function (content) {
+                    text.finishLoad(parsed.moduleName + '.' + parsed.ext,
+                                    parsed.strip, content, onLoad);
+                });
+            }
+        },
+
+        write: function (pluginName, moduleName, write, config) {
+            if (buildMap.hasOwnProperty(moduleName)) {
+                var content = text.jsEscape(buildMap[moduleName]);
+                write.asModule(pluginName + "!" + moduleName,
+                               "define(function () { return '" +
+                                   content +
+                               "';});\n");
+            }
+        },
+
+        writeFile: function (pluginName, moduleName, req, write, config) {
+            var parsed = text.parseName(moduleName),
+                nonStripName = parsed.moduleName + '.' + parsed.ext,
+                //Use a '.js' file name so that it indicates it is a
+                //script that can be loaded across domains.
+                fileName = req.toUrl(parsed.moduleName + '.' +
+                                     parsed.ext) + '.js';
+
+            //Leverage own load() method to load plugin value, but only
+            //write out values that do not have the strip argument,
+            //to avoid any potential issues with ! in file names.
+            text.load(nonStripName, req, function (value) {
+                //Use own write() method to construct full module value.
+                //But need to create shell that translates writeFile's
+                //write() to the right interface.
+                var textWrite = function (contents) {
+                    return write(fileName, contents);
+                };
+                textWrite.asModule = function (moduleName, contents) {
+                    return write.asModule(moduleName, fileName, contents);
+                };
+
+                text.write(pluginName, nonStripName, textWrite, config);
+            }, config);
+        }
+    };
+
+    if (masterConfig.env === 'node' || (!masterConfig.env &&
+            typeof process !== "undefined" &&
+            process.versions &&
+            !!process.versions.node)) {
+        //Using special require.nodeRequire, something added by r.js.
+        fs = require.nodeRequire('fs');
+
+        text.get = function (url, callback) {
+            var file = fs.readFileSync(url, 'utf8');
+            //Remove BOM (Byte Mark Order) from utf8 files if it is there.
+            if (file.indexOf('\uFEFF') === 0) {
+                file = file.substring(1);
+            }
+            callback(file);
+        };
+    } else if (masterConfig.env === 'xhr' || (!masterConfig.env &&
+            text.createXhr())) {
+        text.get = function (url, callback, errback) {
+            var xhr = text.createXhr();
+            xhr.open('GET', url, true);
+
+            //Allow overrides specified in config
+            if (masterConfig.onXhr) {
+                masterConfig.onXhr(xhr, url);
+            }
+
+            xhr.onreadystatechange = function (evt) {
+                var status, err;
+                //Do not explicitly handle errors, those should be
+                //visible via console output in the browser.
+                if (xhr.readyState === 4) {
+                    status = xhr.status;
+                    if (status > 399 && status < 600) {
+                        //An http 4xx or 5xx error. Signal an error.
+                        err = new Error(url + ' HTTP status: ' + status);
+                        err.xhr = xhr;
+                        errback(err);
+                    } else {
+                        callback(xhr.responseText);
+                    }
+                }
+            };
+            xhr.send(null);
+        };
+    } else if (masterConfig.env === 'rhino' || (!masterConfig.env &&
+            typeof Packages !== 'undefined' && typeof java !== 'undefined')) {
+        //Why Java, why is this so awkward?
+        text.get = function (url, callback) {
+            var stringBuffer, line,
+                encoding = "utf-8",
+                file = new java.io.File(url),
+                lineSeparator = java.lang.System.getProperty("line.separator"),
+                input = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(file), encoding)),
+                content = '';
+            try {
+                stringBuffer = new java.lang.StringBuffer();
+                line = input.readLine();
+
+                // Byte Order Mark (BOM) - The Unicode Standard, version 3.0, page 324
+                // http://www.unicode.org/faq/utf_bom.html
+
+                // Note that when we use utf-8, the BOM should appear as "EF BB BF", but it doesn't due to this bug in the JDK:
+                // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4508058
+                if (line && line.length() && line.charAt(0) === 0xfeff) {
+                    // Eat the BOM, since we've already found the encoding on this file,
+                    // and we plan to concatenating this buffer with others; the BOM should
+                    // only appear at the top of a file.
+                    line = line.substring(1);
+                }
+
+                stringBuffer.append(line);
+
+                while ((line = input.readLine()) !== null) {
+                    stringBuffer.append(lineSeparator);
+                    stringBuffer.append(line);
+                }
+                //Make sure we return a JavaScript string and not a Java string.
+                content = String(stringBuffer.toString()); //String
+            } finally {
+                input.close();
+            }
+            callback(content);
+        };
+    }
+
+    return text;
 });
 
 define(
 
-	'rosy/base/DOMClass',[
-		"../base/Class",
-		"$"
+	'$plugin',[
+		"module",
+		"text"
 	],
 
-	function (Class, $) {
+	function (module, text) {
 
-		
+		var prefix = "libs/plugins/jquery/jquery.";
 
-		function _matchJQueryGUIDs(instance, jqObj, events) {
-			var type, i, j, event;
-			var func;
-			var f;
+		return {
 
-			for (type in events) {
-				for (i = 0, j = events[type].length; i < j; i++) {
-					if (!events[type]) {
-						break;
+			load: function (name, req, load, config) {
+
+				req(['$'], function ($) {
+
+					if (!config.isBuild) {
+
+						req(["text!" + prefix + name + ".js"], function (val) {
+
+							var contents = "define('" + module.id + "!" + name  +
+							"', ['$'], function ($) {\nvar jQuery = $;\n" + val + ";\nreturn $;\n});\n";
+
+							eval(contents);
+
+							req([module.id + "!" + name], function (val) {
+								load(val);
+							});
+
+						});
+
 					}
-
-					event = events[type][i];
-
-					if (!event) {
-						break;
+					else {
+						load("");
 					}
-
-					for (func in instance) {
-						f = instance[func];
-
-						if (f && f.guid && typeof f === "function") {
-							if (f.guid === event.handler.guid) {
-								jqObj.off(type, f);
-							}
-						}
-					}
-				}
-			}
-		}
-
-		function _unbindFromObject(instance, obj) {
-			if (!obj) {
-				return;
-			}
-
-			var key, jqObj, events;
-
-			for (key in obj) {
-				jqObj = obj[key];
-
-				if (jqObj instanceof $) {
-
-					var i, j, el;
-
-					for (i = 0, j = jqObj.length; i < j; i++) {
-						el = jqObj[i];
-						events = $._data(el, "events");
-
-						if (events) {
-							_matchJQueryGUIDs(instance, jqObj.eq(i), events);
-						}
-					}
-				} else if ($.isPlainObject(jqObj)) {
-					_unbindFromObject(instance, jqObj);
-				}
-			}
-		}
-
-		return Class.extend({
-
-			/**
-			* Middleware preventDefault method. A shortcut to avoid delegation for a simple task.
-			*/
-			preventDefault : function (e) {
-				e.preventDefault();
+				});
 			},
 
-			/**
-			* Shorthand for $.proxy(func, this)
-			*/
-			proxy : function (fn) {
-				return $.proxy(fn, this);
+			loadFromFileSystem : function (plugin, name) {
+				var fs = nodeRequire('fs');
+				var file = require.toUrl(prefix + name) + ".js";
+				var contents = fs.readFileSync(file).toString();
+
+				contents = "define('" + plugin + "!" + name  +
+				"', ['$'], function ($) {\nvar jQuery = $;\n" + contents + ";\nreturn $;\n});\n";
+
+				return contents;
 			},
 
-			destroy : function () {
-				this.unbindEvents();
-				this.sup();
-			},
-
-			unbindEvents : function () {
-				for (var key in this) {
-					if ($.isPlainObject(this[key])) {
-						_unbindFromObject(this, this[key]);
-					}
-				}
+			write: function (pluginName, moduleName, write, config) {
+				write(this.loadFromFileSystem(pluginName, moduleName));
 			}
 
-		});
-	}
-);
-
-define(
-
-	'admin/views/Page',[
-		"rosy/base/DOMClass",
-		"$"
-	],
-
-	function (DOMClass, $) {
-
-		
-
-		var $body = $("body");
-
-		return DOMClass.extend({
-
-			$content : "",
-
-			init : function () {
-				this.sup();
-				this.$content = $("#main");
-			},
-
-			transitionIn : function () {
-				this.$content.animate({opacity : 1}, 500, this.transitionInComplete);
-			},
-
-			transitionOut : function () {
-				this.$content.animate({opacity : 0}, 500, this.transitionOutComplete);
-			},
-
-			destroy : function () {
-				this.$content = null;
-			}
-		});
+		};
 	}
 );
 
@@ -8175,19 +8177,6 @@ the specific language governing permissions and limitations under the Apache Lic
 return $;
 });
 
-define('$plugin!pickadate', ['$'], function ($) {
-var jQuery = $;
-/*!
- * pickadate.js v1.3 - 26 November, 2012
- * By Amsul (http://amsul.ca)
- * Hosted on https://github.com/amsul/pickadate.js
- * Licensed under MIT ("expat" flavour) license.
- */
-;(function(d,j,o,f){var h=7,q=6,e=q*h,n="div",r="tr",p="/",m="pickadate__",l=d(j),k=Array.isArray||function(t){return{}.toString.call(t)=="[object Array]"},a=function(v,u,t){if(typeof v=="function"){return v.apply(u,t)}},b=function(t){return((t<10)?"0":"")+t},s=function(x,v,t,w,u){v=k(v)?v.join(""):v;w=w?" data-"+w.name+'="'+w.value+'"':"";t=t?' class="'+t+'"':"";u=u?" "+u:"";return"<"+x+w+t+u+">"+v+"</"+x+">"},i=function(y,w,v,u,x){var t="";y.map(function(B,A){A=u?u+A:A;var z=(a(x,y,[A])||"")+"value="+A+(w==A?" selected":"");t+=s("option",B,null,null,z)});return s("select",t,v)},c=function(u){var t;if(k(u)){t=new Date(u[0],u[1],u[2])}else{if(u===true){t=new Date();t.setHours(0,0,0,0)}else{if(!isNaN(u)){t=new Date(u)}}}return{YEAR:t.getFullYear(),MONTH:t.getMonth(),DATE:t.getDate(),DAY:t.getDay(),TIME:t.getTime()}},g=function(N,ah){var K,aa={id:~~(Math.random()*1000000000)},A={open:function(){z();return this},close:function(){u();return this},show:function(aj,ai){Q(--aj,ai);return this},getDate:function(){return(R?R.value:Y.value)},setDate:function(aj,ak,ai){F(c([aj,--ak,ai]));return this}},S=ah.klass,Y=(function(ai){if(ai.nodeName!="INPUT"){ah.format_submit=ah.format_submit||"yyyy-mm-dd"}else{ai.autofocus=(ai==o.activeElement);ai.type="text";ai.readOnly=true}return ai})(N[0]),R=(function(ai){return(ai)?(R=d("<input type=hidden name="+Y.name+ah.hidden_suffix+">").val(Y.value?P(ai):"")[0]):null})(ah.format_submit),O={d:function(){return U.DATE},dd:function(){return b(U.DATE)},ddd:function(){return ah.weekdays_short[U.DAY]},dddd:function(){return ah.weekdays_full[U.DAY]},m:function(){return U.MONTH+1},mm:function(){return b(U.MONTH+1)},mmm:function(){return ah.months_short[U.MONTH]},mmmm:function(){return ah.months_full[U.MONTH]},yy:function(){return U.YEAR.toString().substr(2,2)},yyyy:function(){return U.YEAR},toArray:function(ai){return ai.split(/(?=\b)(d{1,4}|m{1,4}|y{4}|yy)+(\b)/g)}},t=V(),U=y(),C=I(ah.date_min),ae=I(ah.date_max,1),Z=D(),v=(function(ai){if(k(ai)){if(ai[0]===true){aa.disabled=ai.shift()}return ai.map(function(aj){if(!isNaN(aj)){aa.disabledDays=true;return --aj+ah.first_day}--aj[1];return c(aj)})}})(ah.dates_disabled),J=(function(){var ai=function(aj){return this.TIME==aj.TIME||(aa.disabledDays&&v.indexOf(this.DAY)>-1)};if(aa.disabled){return function(aj,ak,al){return(al.map(ai,this).indexOf(true)<0)}}return ai})(),W=(function(ai){if(ah.first_day){ai.push(ai.splice(0,1)[0])}return s("thead",s(r,ai.map(function(aj){return s("th",aj,S.weekdays)})))})((ah.show_weekdays_short?ah.weekdays_short:ah.weekdays_full).slice(0)),x=(function(){K=d(s(n,H(),S.picker_holder)).on({click:M});N.on({keydown:function(ai){if(ai.keyCode==9){u()}},focusin:function(){z()}}).after([K,R]);af();if(Y.autofocus){z()}a(ah.onStart,A)})();function w(){var ai=function(ak){if((ak&&Z.YEAR>=ae.YEAR&&Z.MONTH>=ae.MONTH)||(!ak&&Z.YEAR<=C.YEAR&&Z.MONTH<=C.MONTH)){return""}var aj="month_"+(ak?"next":"prev");return s(n,ah[aj],S[aj],{name:"nav",value:(ak||-1)})};return ai()+ai(1)}function L(){var ai=ah.show_months_full?ah.months_full:ah.months_short;if(ah.month_selector){return i(ai,Z.MONTH,S.month_selector,0,function(aj){return B(aj,Z.YEAR,"disabled ")||""})}return s(n,ai[Z.MONTH],S.month)}function ac(){var ap=Z.YEAR,an=ah.year_selector;if(an){an=(an===true)?5:~~(an/2);var ak=[],ai=ap-an,ao=ad(ai,C.YEAR),am=ap+an+(ao-ai),al=ad(am,ae.YEAR,1);an=am-al;if(an){ao=ad(ai-an,C.YEAR)}for(var aj=0;aj<=al-ao;aj+=1){ak.push(ao+aj)}return i(ak,ap,S.year_selector,ao)}return s(n,ap,S.year)}function E(){var ao,ai,al,ap=[],an="",aq=G(Z.YEAR,Z.MONTH),aj=T(Z.DATE,Z.DAY),am=function(at,au){var av=false,ar=[S.calendar_date,(au?S.day_infocus:S.day_outfocus)];if(at.TIME<C.TIME||at.TIME>ae.TIME||(v&&v.filter(J,at).length)){av=true;ar.push(S.day_disabled)}if(at.TIME==t.TIME){ar.push(S.day_today)}if(at.TIME==U.TIME){ar.push(S.day_selected)}return[ar.join(" "),{name:av?"disabled":"date",value:[at.YEAR,at.MONTH+1,at.DATE,at.DAY,at.TIME].join(p)}]};for(var ak=0;ak<e;ak+=1){ai=ak-aj;ao=c([Z.YEAR,Z.MONTH,ai]);al=am(ao,(ai>0&&ai<=aq));ap.push(s("td",s(n,ao.DATE,al[0],al[1])));if((ak%h)+1==h){an+=s(r,ap.splice(0,h))}}return s("tbody",an,S.calendar_body)}function H(){return s(n,s(n,s(n,w(),S.month_nav)+s(n,L(),S.month_box)+s(n,ac(),S.year_box)+s("table",[W,E()],S.calendar),S.calendar_box),S.calendar_wrap)}function ad(ak,ai,aj){return((aj&&ak<ai)||(!aj&&ak>ai)?ak:ai)}function G(ai,ak){var aj=ak>6?true:false;if(ak==1){return((ai%400)===0||(ai%100)!==0)&&(ai%4)===0?29:28}if(ak%2){return aj?31:30}return aj?30:31}function T(aj,ak){var ai=aj%h,al=ak-ai+(ah.first_day?-1:0);return(ak>=ai)?al:h+al}function V(){return t||(t=c(true))}function y(){return U||(U=(function(ai){if(isNaN(ai)){return t}return c(ai)})(Date.parse(Y.value)))}function F(aj,ak){var ai=ab(S.day_selected);U=k(aj)?{YEAR:+aj[0],MONTH:+aj[1]-1,DATE:+aj[2],DAY:+aj[3],TIME:+aj[4]}:aj;if(ak&&U.MONTH==Z.MONTH){ai.removeClass(S.day_selected);ak.addClass(S.day_selected)}else{Z=U;ag()}Y.value=P();if(R){R.value=P(ah.format_submit)}a(ah.onSelect,A);return aa}function D(){return Z||(Z=y())}function X(aj,ai){return(Z=c([ai,aj,1]))}function I(ai,aj){if(ai===true){return t}if(k(ai)){--ai[1];return c(ai)}if(aj&&ai>0||!aj&&ai<0){return c([t.YEAR,t.MONTH,t.DATE+ai])}ai=aj?Infinity:-Infinity;return{YEAR:ai,MONTH:ai,TIME:ai}}function P(ai){return O.toArray(ai||ah.format).map(function(aj){return a(O[aj])||aj}).join("")}function ab(ai){return K.find("."+ai)}function Q(aj,ai){ai=ai||Z.YEAR;aj=B(aj,ai,C.MONTH,ae.MONTH)||aj;X(aj,ai);ag();return aa}function B(ak,aj,ai,al){if(aj<=C.YEAR&&ak<C.MONTH){return ai}if(aj>=ae.YEAR&&ak>ae.MONTH){return al||ai}}function ag(){K.html(H());af()}function af(){ab(S.month_selector).on({change:function(){Q(+this.value)}});ab(S.year_selector).on({change:function(){Q(Z.MONTH,+this.value)}})}function z(){if(aa.isOpen){return aa}aa.isOpen=true;N.addClass(S.input_focus);K.addClass(S.picker_open);l.on("click.P"+aa.id,function(ai){if(aa.isOpen&&Y!=ai.target){u()}});a(ah.onOpen,A);return aa}function u(){aa.isOpen=false;N.removeClass(S.input_focus);K.removeClass(S.picker_open);l.off("click.P"+aa.id);a(ah.onClose,A);return aa}function M(aj){var ai=d(aj.target),ak=ai.data();aj.stopPropagation();if(ak.date){F(ak.date.split(p),ai);u();return}if(ak.nav){Q(Z.MONTH+ak.nav)}N.focus()}return A};g.defaults={months_full:["January","February","March","April","May","June","July","August","September","October","November","December"],months_short:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],weekdays_full:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],weekdays_short:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],month_prev:"&#9664;",month_next:"&#9654;",show_months_full:true,show_weekdays_short:true,format:"d mmmm, yyyy",format_submit:false,hidden_suffix:"_submit",first_day:0,month_selector:false,year_selector:false,date_min:false,date_max:false,dates_disabled:false,disable_picker:false,onOpen:null,onClose:null,onSelect:null,onStart:null,klass:{input_focus:m+"input--focused",picker_holder:m+"holder",picker_open:m+"holder--opened",calendar_wrap:m+"calendar--wrap",calendar_box:m+"calendar--box",calendar:m+"calendar",calendar_body:m+"calendar--body",calendar_date:m+"calendar--date",year:m+"year",year_box:m+"year--box",year_selector:m+"year--selector",month:m+"month",month_box:m+"month--box",month_selector:m+"month--selector",month_nav:m+"month--nav",month_prev:m+"month--prev",month_next:m+"month--next",week:m+"week",weekdays:m+"weekday",day_disabled:m+"day--disabled",day_selected:m+"day--selected",day_today:m+"day--today",day_infocus:m+"day--infocus",day_outfocus:m+"day--outfocus",box_months:m+"holder--months",box_years:m+"holder--years",box_weekdays:m+"holder--weekdays"}};d.fn.pickadate=function(t){var u="pickadate";t=d.extend(true,{},g.defaults,t);if(t.disable_picker){return this}return this.each(function(){var v=d(this);if(!v.data(u)){v.data(u,new g(v,t))}})}})(jQuery,window,document);
-;
-return $;
-});
-
 define('$plugin!details', ['$'], function ($) {
 var jQuery = $;
 /*! http://mths.be/details v0.1.0 by @mathias | includes http://mths.be/noselect v1.0.3 */
@@ -8345,7 +8334,65 @@ var jQuery = $;
 return $;
 });
 
-define('$plugin!ui-timepicker', ['$'], function ($) {
+define(
+
+	'$plugin-ui',[
+		"module",
+		"text"
+	],
+
+	function (module, text) {
+
+		var prefix = "libs/plugins/jquery-ui/jquery.ui-";
+
+		return {
+
+			load: function (name, req, load, config) {
+
+				req(['$'], function ($, $ui) {
+
+					if (!config.isBuild) {
+
+						req(["text!" + prefix + name + ".js"], function (val) {
+
+							var contents = "define('" + module.id + "!" + name  +
+							"', ['$', '$ui'], function ($, $ui) {\nvar jQuery = $;\n" + val + ";\nreturn $;\n});\n";
+
+							eval(contents);
+
+							req([module.id + "!" + name], function (val) {
+								load(val);
+							});
+
+						});
+
+					}
+					else {
+						load("");
+					}
+				});
+			},
+
+			loadFromFileSystem : function (plugin, name) {
+				var fs = nodeRequire('fs');
+				var file = require.toUrl(prefix + name) + ".js";
+				var contents = fs.readFileSync(file).toString();
+
+				contents = "define('" + plugin + "!" + name  +
+				"', ['$', '$ui'], function ($, $ui) {\nvar jQuery = $;\n" + contents + ";\nreturn $;\n});\n";
+
+				return contents;
+			},
+
+			write: function (pluginName, moduleName, write, config) {
+				write(this.loadFromFileSystem(pluginName, moduleName));
+			}
+
+		};
+	}
+);
+
+define('$plugin-ui!timepicker', ['$', '$ui'], function ($, $ui) {
 var jQuery = $;
 /*! jQuery Timepicker Addon - v1.4.3 - 2013-11-30
 * http://trentrichardson.com/examples/timepicker
@@ -11040,12 +11087,12 @@ define(
 	'admin/modules/Formset',[
 		"rosy/base/DOMClass",
 		"$",
+		"$ui",
 		"$plugin!select2",
-		"$plugin!ui",
 		"./WidgetEvents"
 	],
 
-	function (DOMClass, $, jQuerySelect2, jQueryUI, WidgetEvents) {
+	function (DOMClass, $, $ui, jQuerySelect2, WidgetEvents) {
 
 		
 
@@ -15127,16 +15174,109 @@ define(
 );
 
 define(
-	'admin/modules/Widgets',['require','exports','module','rosy/base/DOMClass','$','$plugin!select2','$plugin!pickadate','$plugin!details','$plugin!ui-timepicker','./AssetSelect','./ApiSelect','./Formset','./Tabs','./InsertVideo','./InsertImage','./wysiwyg/Wysiwyg','./WidgetEvents','./WindowPopup','./OnExit','./InlineVideo','./FilterBar','./CropImage','./AutoSlug'],function (require, exports, module) {
+	'admin/modules/BatchActions',[
+		"rosy/base/DOMClass",
+		"$"
+	],
+	function (DOMClass, $) {
+
+		
+
+		return DOMClass.extend({
+
+			init : function (dom) {
+				this.ids = [];
+				this.dom = dom;
+				this.$actions = dom.find('.batch-action');
+				this.$batchCheck = dom.find('.batch-check');
+				this.$selectAll = dom.find('.select-all');
+
+				var self = this;
+
+				this.$selectAll.on('click', this.selectAll);
+
+				this.$batchCheck
+					.on('click', function () {
+						self.selectRow($(this).val());
+					})
+					.filter(':checked').each(function () {
+						self.selectRow($(this).val());
+					});
+
+				this.$actions
+					.on('click', function (e) {
+						if ($(this).hasClass('disabled')) {
+							return false;
+						}
+					});
+
+				this.linkCell();
+			},
+
+			linkCell: function () {
+				this.dom.find('.link-cell').on('click', function () {
+					window.location.href = $(this).data('edit-url');
+				});
+			},
+
+			selectAll : function (e) {
+				var self = this;
+
+				this.$batchCheck.each(function () {
+					var $this = $(this);
+					$this.prop('checked', $(e.currentTarget)[0].checked);
+					self.selectRow($this.val());
+				});
+			},
+
+			selectRow : function (id) {
+				var idIndex = $.inArray(id, this.ids);
+
+				if (idIndex > -1) {
+					this.ids.splice(idIndex, 1);
+				} else {
+					this.ids.push(id);
+				}
+
+				this.updateActionUrl(idIndex);
+
+				if (this.ids.length) {
+					this.enableActions();
+				} else {
+					this.disableActions();
+				}
+			},
+
+			updateActionUrl : function (index) {
+				var self = this;
+
+				this.$actions.each(function () {
+					var $this = $(this),
+						href = $this.attr('href').replace(/(_selected=)[^\&]+/, '$1');
+					$this.attr('href',  href + self.ids.join(','));
+				});
+			},
+
+			enableActions : function () {
+				this.$actions.removeClass('disabled');
+			},
+
+			disableActions : function () {
+				this.$actions.addClass('disabled');
+				this.$selectAll.prop('checked', false);
+			}
+		});
+	});
+define(
+	'admin/modules/Widgets',['require','exports','module','rosy/base/DOMClass','$','$plugin!select2','$plugin!details','$plugin-ui!timepicker','./AssetSelect','./ApiSelect','./Formset','./Tabs','./InsertVideo','./InsertImage','./wysiwyg/Wysiwyg','./WidgetEvents','./WindowPopup','./OnExit','./InlineVideo','./FilterBar','./CropImage','./AutoSlug','./BatchActions'],function (require, exports, module) {
 
 		
 
 		var DOMClass             = require("rosy/base/DOMClass"),
 			$                    = require("$"),
 			jQuerySelect2        = require("$plugin!select2"),
-			jQueryPickadate      = require("$plugin!pickadate"),
 			jQueryDetails        = require("$plugin!details"),
-			jQueryTimePicker     = require("$plugin!ui-timepicker"),
+			jQueryTimePicker     = require("$plugin-ui!timepicker"),
 			AssetSelect          = require("./AssetSelect"),
 			ApiSelect            = require("./ApiSelect"),
 			Formset              = require("./Formset"),
@@ -15150,7 +15290,8 @@ define(
 			InlineVideo          = require("./InlineVideo"),
 			FilterBar            = require("./FilterBar"),
 			CropImage            = require("./CropImage"),
-			AutoSlug             = require("./AutoSlug");
+			AutoSlug             = require("./AutoSlug"),
+			BatchActions         = require("./BatchActions");
 
 		return DOMClass.extend({
 
@@ -15178,6 +15319,13 @@ define(
 
 				this._autoSlug(dom);
 				this._handlePopup(dom);
+				this._handleBatchActions(dom);
+			},
+
+			_handleBatchActions : function (dom) {
+				dom.find('.list').each(function (i, el) {
+					var actions = new BatchActions($(el));
+				});
 			},
 
 			_renderDateTimePicker : function (dom) {
@@ -15420,13 +15568,14 @@ define(
 	'admin/views/Admin',[
 		"./Page",
 		"$",
+		"$ui",
 		"$plugin!select2",
 		"../modules/Widgets",
 		"../modules/WidgetEvents",
 		"detailsShim"
 	],
 
-	function (Page, $, jQuerySelect2, Widgets, WidgetEvents, detailsShim) {
+	function (Page, $, $ui, jQuerySelect2, Widgets, WidgetEvents, detailsShim) {
 
 		
 
@@ -15487,11 +15636,10 @@ define(
 
 	'admin/Site',[
 		"rosy/base/Class",
-		"$plugin!ui",
 		"./views/Admin"
 	],
 
-	function (Class, $ui, Admin) {
+	function (Class, Admin) {
 
 		
 
@@ -15520,7 +15668,9 @@ require.config({
 
 	paths : {
 		"$" : "//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min",
+		"$ui" : "libs/jquery.ui",
 		"$plugin" : "libs/plugins/amd/jquery-plugin",
+		"$plugin-ui" : "libs/plugins/amd/jquery-ui-plugin",
 		"wysihtml5" : "libs/wysihtml5",
 		"text" : "libs/plugins/amd/text",
 		"rosy" : "libs/rosy/src",
@@ -15532,6 +15682,11 @@ require.config({
 	shim : {
 		"$" : {
 			exports : "jQuery"
+		},
+
+		"$ui" : {
+			exports: "jQueryUi",
+			deps : ["$"]
 		},
 
 		"zynga/Scroller" : {

@@ -10,15 +10,17 @@ define(
 		return DOMClass.extend({
 
 			init : function (dom) {
-				this.ids = [],
-				this.dom = dom,
-				this.$actions = $('.actions-toolbar').find('.batch-action');
+				this.ids = [];
+				this.dom = dom;
+				this.$actions = dom.find('.batch-action');
+				this.$batchCheck = dom.find('.batch-check');
+				this.$selectAll = dom.find('.select-all');
 
 				var self = this;
 
-				dom.find('.select-all').on('click', this.selectAll);
+				this.$selectAll.on('click', this.selectAll);
 
-				dom.find('.batch-check')
+				this.$batchCheck
 					.on('click', function () {
 						self.selectRow($(this).val());
 					})
@@ -26,18 +28,26 @@ define(
 						self.selectRow($(this).val());
 					});
 
-				dom.find('.batch-action')
+				this.$actions
 					.on('click', function (e) {
 						if ($(this).hasClass('disabled')) {
 							return false;
 						}
 					});
+
+				this.linkCell();
+			},
+
+			linkCell: function () {
+				this.dom.find('.link-cell').on('click', function () {
+					window.location.href = $(this).data('edit-url');
+				});
 			},
 
 			selectAll : function (e) {
 				var self = this;
 
-				this.dom.find('.batch-check').each(function () {
+				this.$batchCheck.each(function () {
 					var $this = $(this);
 					$this.prop('checked', $(e.currentTarget)[0].checked);
 					self.selectRow($this.val());
@@ -78,6 +88,7 @@ define(
 
 			disableActions : function () {
 				this.$actions.addClass('disabled');
+				this.$selectAll.prop('checked', false);
 			}
 		});
 	});

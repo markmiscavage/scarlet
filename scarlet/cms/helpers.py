@@ -32,6 +32,12 @@ class AdminList(object):
         self.sort_field = sort_field
         self.model_name = model_name
         self.empty = len(object_list) == 0
+        self.link_num = 0
+        if formset:
+            for i, field in enumerate(visible_fields):
+                if not formset.empty_form.fields.get(field):
+                    self.link_num = i
+                    break
 
         self.auto_sort = False
         if self.formset:

@@ -628,14 +628,18 @@ class ModelCMSMixin(object):
             if self.parent_lookups is None:
                 self.parent_lookups = ('pk',)
 
-            offset = len(self.bundle.url_params) - len(self.parent_lookups)
+            url_params = list(self.bundle.url_params)
+            if url_params and getattr(self.bundle, 'delegated', False):
+                url_params = url_params[:-1]
+
+            offset = len(url_params) - len(self.parent_lookups)
             kwargs = {}
             for i in range(len(self.parent_lookups) - 1):
-                k = self.bundle.url_params[offset + i]
+                k = url_params[offset + i]
                 value = self.kwargs[k]
                 kwargs[self.parent_lookups[i + 1]] = value
 
-            main_arg = self.kwargs[self.bundle.url_params[-1]]
+            main_arg = self.kwargs[url_params[-1]]
             main_key = self.parent_lookups[0]
 
             if m2m:

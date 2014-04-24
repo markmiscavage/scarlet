@@ -50,7 +50,6 @@
 				<a class="button" href="{{ cancel_url }}">Cancel</a>
 				<input class="button" type="submit" value="Save" />
 			</p>
-		</form>
 		{% endif %}
 		{% endblock %}
 	</div>
@@ -107,7 +106,8 @@
 			{% endif %}
 
 			{% for elem in row %}
-				<td>
+                {% bundle_url bundle "edit" object=row.instance follow_parent=False as edit_url %}
+				<td  {% if edit_url and forloop.counter0 == list.link_num %}class="link-cell" data-edit-url="{{edit_url}}"{% endif %}>
 				{% if show_form and forloop.first %}
 					{% for hidden_f in row.form.hidden_fields %}
 						{{ hidden_f }}
@@ -117,7 +117,7 @@
 				{% if elem.field %}
 					{{ elem.field }}
 				{% else %}
-					{{ elem }}
+                    {{ elem }}
 				{% endif %}
 
 				{% with elem.errors as errors %}
@@ -131,6 +131,10 @@
 		{% endfor %}
 		</tbody>
 	</table>
+
+	{% if show_form %}
+	</form>
+	{% endif %}
 
 	{% if is_paginated and not list.empty %}
 		<div class="pagination">

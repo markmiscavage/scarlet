@@ -386,7 +386,7 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         msg = None
         action = request.POST.get('actions', None)
         selected = request.POST.getlist(CHECKBOX_NAME)
-        if not action == 'None':
+        if not action == 'None' and action is not None:
             if len(selected) > 0:
                 sel = {CHECKBOX_NAME : ','.join(selected)}
                 qs = '?' + urlencode(sel)
@@ -412,6 +412,7 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
             # have the instance we want
             for form in formset.forms:
                 if not form.has_changed():
+                    form.cleaned_data = {}
                     form._errors = {}
 
         if formset and formset.is_valid():
