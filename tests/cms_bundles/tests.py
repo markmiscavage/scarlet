@@ -8,6 +8,7 @@ from django.test.client import Client, RequestFactory
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.template import TemplateDoesNotExist
+from django.forms.models import inlineformset_factory
 
 from scarlet.cms import bundles, views, actions
 from scarlet.cms.item import FormView
@@ -377,6 +378,17 @@ class MiscViewTestCase(TestCaseDeactivate):
         form_class = f.get_form_class()
         form = form_class()
         self.assertEqual(form.fields.keys(), ['title'])
+
+
+    def test_inline_model_with_to_field(self): 
+        "An inline model with a to_field of a formset with instance have working relations. Regression for #13794" 
+        FormSet = inlineformset_factory(User, UserSite) 
+        user = User.objects.create(username="guido")
+        UserSite.objects.create(user=user, data=10) 
+        formset = FormSet(instance=user) 
+        formset[0] 
+        # Testing the inline model's relation 
+        self.assertEqual(formset[0].instance.user_id, "guido") 
 
 
 class TestMainBundle(bundles.Bundle):
