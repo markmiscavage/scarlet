@@ -67,7 +67,7 @@ setup(
           'Framework :: Django',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: MIT License',
-          'Operating System :: NIX',
+          'Operating System :: POSIX',
           'Programming Language :: Python',
     ]
 )
