@@ -15,6 +15,7 @@ class CacheMethodResponse(object):
         @wraps(func, assigned=available_attrs(func))
         def inner(self, request, *args, **kwargs):
             response = None
+            self.cache_middleware = None
             if self.should_cache():
                 prefix = "%s:%s" % (self.get_cache_version(),
                                     self.get_cache_prefix())
