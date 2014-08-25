@@ -8,20 +8,10 @@ TEST_RUNNER="run_tests.py"
 
 PWD=$(pwd)
 if [ $TESTDIR = "." ]; then
-    PYPATH="$PWD"
+    echo "already in dir"
 else
-    PYPATH="$PWD:$PWD/$TESTDIR"
     TEST_RUNNER="$TESTDIR/run_tests.py"
 fi
-
-PYPATH="$PYPATH:$PWD/$TESTDIR/../"
-if [ -z $PYTHONPATH ]; then
-    PYTHONPATH="$PYPATH"
-else
-    PYTHONPATH="$PYPATH:$PYTHONPATH"
-fi
-
-export PYTHONPATH
 
 if [ -z $TEST_RUNNER ]; then
     echo "django-admin command not found"

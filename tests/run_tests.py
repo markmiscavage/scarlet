@@ -68,6 +68,11 @@ def runtests(settings_overide, test_args):
     if that module is present in the environment
     """
 
+    parent = os.path.dirname(os.path.abspath(__file__))
+    sys.path.insert(0, parent)
+    scarlet_root = os.path.abspath(os.path.join(parent, '..'))
+    sys.path.insert(0, scarlet_root)
+
     settings_dict = {}
     if settings_overide:
         mod = importlib.import_module(settings_overide)
@@ -90,10 +95,6 @@ def runtests(settings_overide, test_args):
         with_scarlet_blog = True
 
     setup_test_environment(settings_dict, with_scarlet_blog=with_scarlet_blog)
-    parent = os.path.dirname(os.path.abspath(__file__))
-    sys.path.insert(0, parent)
-    scarlet_root = os.path.abspath(os.path.join(parent, '..'))
-    sys.path.insert(0, scarlet_root)
 
     try:
         from django.test.simple import DjangoTestSuiteRunner
