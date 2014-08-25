@@ -9,3 +9,11 @@ cms.autodiscover()
 urlpatterns = patterns('',
     (r'^admin/', include(cms.site.urls)),
 )
+
+try:
+    from scarlet_blog import blog
+    urlpatterns += patterns('',
+        (r'', include('scarlet_blog.blog.urls')),
+    )
+except ImportError:
+    pass
