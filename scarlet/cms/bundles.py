@@ -15,8 +15,7 @@ from django.core.exceptions import ImproperlyConfigured
 from . import views
 from . import options
 from . import helpers
-from . import actions
-from .item import VersionsList
+from .views.item import VersionsList
 
 # Constant that defines a attribute points to it's parent
 PARENT = 'parent'
@@ -235,7 +234,7 @@ class Bundle(object):
     main = views.ListView()
     add = views.FormView(force_add=True)
     edit = views.FormView()
-    delete = actions.DeleteActionView()
+    delete = views.actions.DeleteActionView()
 
     main_list = URLAlias(alias_to="main")
 
@@ -729,8 +728,8 @@ class BlankBundle(Bundle):
 class VersionMixin(object):
     _views = ('publish', 'unpublish', 'versions')
 
-    publish = actions.PublishActionView()
-    unpublish = actions.UnPublishActionView()
+    publish = views.actions.PublishActionView()
+    unpublish = views.actions.UnPublishActionView()
     versions = VersionsList()
 
 
@@ -813,9 +812,8 @@ class ChildBundle(Bundle):
 
 class ParentVersionedBundle(ChildBundle):
     """
-    Same as ChildBundle expect that is also changes:
-
-    * object_view is inherited from PARENT.
+    Same as ChildBundle except that
+    object_view is also inherited from PARENT.
     """
 
     object_view = PARENT

@@ -7,13 +7,13 @@ from django.contrib.admin.util import flatten_fieldsets
 from django.db.models.fields import FieldDoesNotExist
 from django.db import models
 
-from . import helpers
-from . import renders
-from . import transaction
-from .forms import LazyFormSetFactory
-from .models import CMSLog
-from .internal_tags import handler as tag_handler
-from .base_views import ModelCMSMixin, ModelCMSView
+from .. import helpers
+from .. import renders
+from .. import transaction
+from ..forms import LazyFormSetFactory
+from ..models import CMSLog
+from ..internal_tags import handler as tag_handler
+from .base import ModelCMSMixin, ModelCMSView
 from .actions import PublishView
 
 
@@ -237,7 +237,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
                 # from that
                 model = self.get_queryset().model
 
-        
+
         return model_forms.modelform_factory(model, **params)
 
     def get_form_kwargs(self):

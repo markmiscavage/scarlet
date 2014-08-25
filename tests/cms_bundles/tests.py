@@ -4,8 +4,8 @@ from django import forms
 from django.test import TestCase
 from django.test.client import Client
 
-from scarlet.cms.item import FormView
 from scarlet.cms import bundles, views
+from scarlet.cms.views.item import FormView
 from scarlet.versioning import manager
 from django.contrib.auth.models import User
 from django.forms.models import inlineformset_factory

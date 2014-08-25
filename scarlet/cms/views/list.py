@@ -6,15 +6,16 @@ from django.forms import models as model_forms
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 
-from . import fields
-from . import helpers
-from . import renders
-from . import transaction
-from . import widgets
+from .. import fields
+from .. import helpers
+from .. import renders
+from .. import transaction
+from .. import widgets
+from ..forms import VersionFilterForm
+from ..models import CMSLog
+
+from .base import ModelCMSMixin, ModelCMSView
 from .actions import ActionView
-from .forms import VersionFilterForm
-from .models import CMSLog
-from .base_views import ModelCMSMixin, ModelCMSView
 from .actions import CHECKBOX_NAME
 
 

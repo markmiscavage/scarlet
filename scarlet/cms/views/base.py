@@ -11,11 +11,11 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.utils.encoding import force_unicode
 
-from . import helpers
-from . import renders
-from . import widgets
-from .models import CMSLog
-from .internal_tags import handler as tag_handler
+from .. import helpers
+from .. import renders
+from .. import widgets
+from ..models import CMSLog
+from ..internal_tags import handler as tag_handler
 
 
 class BaseView(generic.base.View):

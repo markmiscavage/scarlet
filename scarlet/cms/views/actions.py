@@ -7,11 +7,11 @@ from django.db.models import ProtectedError
 from django.utils.decorators import classonlymethod
 from django.utils.encoding import force_unicode
 
-from . import renders
-from . import transaction
-from .forms import WhenForm
-from .models import CMSLog
-from .base_views import ModelCMSMixin, ModelCMSView
+from .. import renders
+from .. import transaction
+from ..forms import WhenForm
+from ..models import CMSLog
+from .base import ModelCMSMixin, ModelCMSView
 
 
 CHECKBOX_NAME = '_selected'
