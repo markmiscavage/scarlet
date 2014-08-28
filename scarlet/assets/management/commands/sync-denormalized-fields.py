@@ -25,6 +25,8 @@ class Command(BaseCommand):
                                     cache_name: F('{0}__file'.format(field.name))
                                 }).select_related(field.name)
 
+                        m.objects.filter(**{'{0}__isnull'.format(field.name): True}
+                                        ).update(**{cache_name : ""})
                         for ins in qs:
                             name = getattr(ins, field.name).file.name
                             m.objects.filter(pk=ins.pk).update(**{cache_name : name})
