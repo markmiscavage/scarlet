@@ -146,10 +146,13 @@ def denormalize_assets(sender, instance, **kwargs):
             cache_name = field.get_denormalized_field_name(field.name)
             try:
                 asset_ins = getattr(instance, field.name)
-                if asset_ins and field.denormalize:
-                    cache_ins = getattr(instance, cache_name, None)
-                    if not cache_ins or cache_ins.name != asset_ins.file.name:
-                        setattr(instance, cache_name, asset_ins.file.name)
-                        asset_ins.ensure_crops(*field.image_sizes)
+                if field.denormalize:
+                    if asset_ins:
+                        cache_ins = getattr(instance, cache_name, None)
+                        if not cache_ins or cache_ins.name != asset_ins.file.name:
+                            setattr(instance, cache_name, asset_ins.file.name)
+                            asset_ins.ensure_crops(*field.image_sizes)
+                    else:
+                        setattr(instance, cache_name, "")
             except ObjectDoesNotExist:
                     setattr(instance, cache_name, "")
