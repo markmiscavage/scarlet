@@ -12,7 +12,7 @@ Every developer has has a love hate relationship with the Django Admin. It is a 
 
 As users mature in their needs the Django Admin begins to break down. One has to start grappling with a number of new questions. How do I enable WYSIWYG editing? How do I empower users to crop images? If one image is used in multiple places, how do I create multiple crops for that one image?  How do I save what I'm working on without making it live? Why do I have to nagivate to 10 different places to update one thing? And so on... When we start asking these questions we have arrived in the world of Content Management. 
 
-At RED we needed content management features, and we believe that the Django Admin was right in its approach. Websites are not flat documents, and approaching content management from that perspective is why Wordpress users can't have nice things. What users really want is to manage the data that their website is composed of and they want to manage it the way that a human thinks of it, not in the way that the database thinks of it. They don't want to know that there are 49 versions of their one image, and the certainly don't try and figure out which of those 40 image is the one they should assocaite with a given piece of content. Users don't want to copy and paste the summary of an article into 3 different pages via a WYSIWYG. They want to edit the article and have it appear automatically in the three locations it should appear, AS it should appear. 
+At RED we needed content management features, and we believe that the Django Admin was right in its approach. Websites are not flat documents, and approaching content management from that perspective is why Wordpress users can't have nice things. What users really want is to manage the data that their website is composed of and they want to manage it the way that a human thinks of it, not in the way that the database thinks of it. They don't want to know that there are 49 versions of their one image, and the certainly don't want to try and figure out which of those 40 image is the one they should assocaite with a given piece of content. Users don't want to copy and paste the summary of an article into 3 different pages via a WYSIWYG. They want to edit the article and have it appear automatically in the three locations it should appear, AS it should appear. 
 
 
 How?
@@ -51,7 +51,7 @@ Consider a simple Image Gallery app
         order = models.PositiveInteger()
 
 
-A simple admin for this app that lets a user perfom simple gallery editing might look like this
+An admin for this app that lets a user perfom simple gallery editing might look like this
 
 :: 
     
@@ -143,7 +143,7 @@ The above is compatible with the Django Admin.  You'll need to register the temp
 
 Where things get interesting is when we start composing objects. Let's say we have a Blog post, aside from allowing the Blog Administrator to just write text we want to allow them to manage Galleries within their posts. 
 
-Here we need to depart from the Django Admin. While the Administrator could do this in the Django Admin, it would involve a lot of clicking around between the Blog and the Gallery Admins. What we want is the galleries that are associated with our blog post to be managed with our blog post. This is were Scarlet shines. The administration interface in Scarlet still acts on Django Models as does the Django Admin, only it adds the concept of Bundles. Bundles are Objects which group Models and Django's Class Based Views to produce an Administrative Interface where associated data can be grouped together.
+Here we need to depart from the Django Admin. While the Administrator could do this in the Django Admin, it would involve a lot of clicking around between the Blog and the Gallery Admins. What we want is the galleries that are associated with our blog post to be managed with our blog post. This is where Scarlet shines. The administration interface in Scarlet still acts on Django Models as does the Django Admin, only it adds the concept of Bundles. Bundles are Objects which group Models and Django's Class Based Views to produce an Administrative Interface where associated data can be grouped together.
 
 So let's see a bundle.
 
