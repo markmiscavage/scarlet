@@ -473,7 +473,13 @@ define(function () {
 				"set_class": "wysiwyg-text-align-center"
 			},
 			"audio": {
-				"remove": 1
+				"remove": 0,
+				"set_attributes": {
+					"controls": "controls"
+				},
+				"check_attributes": {
+					"src": "src" // if you compiled master manually then change this from 'url' to 'src'
+				}
 			},
 			"datalist": {
 				"rename_tag": "span"
