@@ -12448,7 +12448,13 @@ define('admin/modules/wysiwyg/WysiwygRules',[],function () {
 				"set_class": "wysiwyg-text-align-center"
 			},
 			"audio": {
-				"remove": 1
+				"remove": 0,
+				"set_attributes": {
+					"controls": "controls"
+				},
+				"check_attributes": {
+					"src": "src" // if you compiled master manually then change this from 'url' to 'src'
+				}
 			},
 			"datalist": {
 				"rename_tag": "span"
@@ -12559,6 +12565,11 @@ define(
 					style: false,
 					toolbar: toolbarId,
 					stylesheets: "/static/css/wysiwyg.css"
+				});
+
+				// load audio sources
+				this.dom.find('audio').each(function () {
+					$(this)[0].load();
 				});
 			}
 		});
