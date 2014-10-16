@@ -197,6 +197,7 @@ class CombinedMultiFormSet(object):
         self.keys = keys
         self.order_by = order_by
         self.admin_formset = admin_formset
+        self.combined = True
 
     @property
     def formsets(self):
@@ -212,12 +213,12 @@ class CombinedMultiFormSet(object):
 
     def __iter__(self):
         forms = []
-        for formset in self.formsets.values():
-            forms = forms + list(formset)
+        for k, formset in self.formsets.items():
+            forms = forms + [(x, k) for x in formset ]
 
-        forms = sorted(forms, key=lambda f: getattr(f.instance, self.order_by))
+        forms = sorted(forms, key=lambda f: getattr(f[0].instance, self.order_by))
         for f in forms:
-            yield f
+            yield f[0], self.formsets[f[1]]
 
 
 
