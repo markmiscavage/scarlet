@@ -334,7 +334,10 @@ class VersionViewMeta(SharedMeta):
             parent_fields = base_model._meta.local_fields
             for field in parent_fields:
                 if not field.primary_key:
-                    ab_base_model.add_to_class(field.name,
+                    try:
+                        ab_base_model._meta.get_field(field.name)
+                    except FieldDoesNotExist:
+                        ab_base_model.add_to_class(field.name,
                                                copy.deepcopy(field))
 
         # Create a base model that isn't abstract
@@ -410,6 +413,7 @@ class VersionViewMeta(SharedMeta):
             'version_model': version_model
         }))
 
+
         mod = super(VersionViewMeta, cls).__new__(cls, name,
                                             tuple(new_bases), attrs)
 
@@ -439,6 +443,15 @@ class VersionViewMeta(SharedMeta):
 
         return mod
 
+    def add_to_class(cls, name, value):
+        try:
+            BaseVersionedModel._meta.get_field(name)
+            cls._meta.get_field(name)
+            return
+        except FieldDoesNotExist:
+            pass
+
+        return super(VersionViewMeta, cls).add_to_class(name, value)
 
 class VersionModelMeta(models.base.ModelBase):
     """
