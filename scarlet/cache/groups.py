@@ -1,4 +1,4 @@
-from router import CacheRouter
+import router
 
 class CacheConfig(object):
     ALL = 'all'
@@ -34,8 +34,10 @@ class CacheGroup(object):
         assert key
         self.key = key
 
-        self.cache = CacheRouter()
-        self.route_group = None
+        self.route_group = 'default'
+        self.multi_router = router.MultiRouter()
+        self.cache_router = self.cache_router.get_cache_router()
+        self.cache = self.cache_router.get_cache()
 
         # Version expiry needs to be at least twice
         # as long as the longest lasting cache entry
