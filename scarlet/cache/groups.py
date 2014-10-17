@@ -1,5 +1,4 @@
-from django.core.cache import get_cache, DEFAULT_CACHE_ALIAS
-
+from router import CacheRouter
 
 class CacheConfig(object):
     ALL = 'all'
@@ -31,14 +30,12 @@ class CacheGroup(object):
     as long as the longest lasting cache entry.
     """
 
-    def __init__(self, key=None, cache_name=None, version_expiry=None):
+    def __init__(self, key=None, version_expiry=None):
         assert key
         self.key = key
 
-        if not cache_name:
-            cache_name = DEFAULT_CACHE_ALIAS
-
-        self.cache = get_cache(cache_name)
+        self.cache = CacheRouter()
+        self.route_group = None
 
         # Version expiry needs to be at least twice
         # as long as the longest lasting cache entry
@@ -140,7 +137,7 @@ class CacheGroup(object):
         # An extra key is based on the main version
         # plus the extra value. So that if the main
         # version changes the keys do too.
-        v = self.cache.get(self.key)
+        v = self.cache.get_cache(self.route_group).get(self.key)
         if v == None:
             # Set the base key, otherwise extras
             # that are created first won't be flushed
@@ -168,7 +165,7 @@ class CacheGroup(object):
         else:
             key = self.key
 
-        v = self.cache.get(key)
+        v = self.cache.get_cache(self.route_group).get(key)
         if v == None:
             v = self._increment_version(extra=extra)
 
@@ -183,11 +180,11 @@ class CacheGroup(object):
             key = self.key
 
         try:
-            val = self.cache.incr(key)
+            val = self.cache.get_cache(self.route_group).incr(key)
             if val > 1000 * 1000:
                 val = 0
-                self.cache.set(key, val, timeout=self.version_expiry)
+                self.cache.get_cache(self.route_group).set(key, val, timeout=self.version_expiry)
         except ValueError:
             val = 0
-            self.cache.set(key, val, timeout=self.version_expiry)
+            self.cache.get_cache(self.route_group).set(key, val, timeout=self.version_expiry)
         return val
