@@ -1,15 +1,11 @@
-from django.core import cache as settings_cache
+from django.contrib import settings
+from django.core import cache
+
 
 class CacheRouter(object):
 
-    cache = None
-
-    def __init__(self, *args, **kwargs):
-        self.cache = settings_cache.get_cache('default')
-
-    def get_cache(self, route_group='default', **kwargs):
-        return self.cache
-
+    def get_cache(self, route_group='default', *kwargs):
+        return cache.get_cache('default')
 
 
 
@@ -17,8 +13,15 @@ class MultiRouter(object):
 
     cache_router = None
 
-    def get_cache_router(self, *args, **kwargs):
-        if self.cache_router:
-            return self.cache_router
-        self.cache_router = CacheRouter(*args, **kwargs)
+    def __new__(cls, *args, **kwargs):
+        if settings.CACHE_ROUTER:
+            router = __import__(settings.CACHE_ROUTER)
+            cls._router = router
+        else:
+            cls._router = CacheRouter
+
+    @classmethod
+    def router(self):
         return self.cache_router
+
+

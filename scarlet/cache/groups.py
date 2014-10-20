@@ -35,9 +35,8 @@ class CacheGroup(object):
         self.key = key
 
         self.route_group = 'default'
-        self.multi_router = router.MultiRouter()
-        self.cache_router = self.cache_router.get_cache_router()
-        self.cache = self.cache_router.get_cache()
+        self.cache_router = router.MultiRouter().router()
+        self.cache = self.cache_router.get_cache(self.route_group)
 
         # Version expiry needs to be at least twice
         # as long as the longest lasting cache entry
@@ -139,7 +138,7 @@ class CacheGroup(object):
         # An extra key is based on the main version
         # plus the extra value. So that if the main
         # version changes the keys do too.
-        v = self.cache.get_cache(self.route_group).get(self.key)
+        v = self.cache.get(self.key)
         if v == None:
             # Set the base key, otherwise extras
             # that are created first won't be flushed
@@ -167,7 +166,7 @@ class CacheGroup(object):
         else:
             key = self.key
 
-        v = self.cache.get_cache(self.route_group).get(key)
+        v = self.cache.get(key)
         if v == None:
             v = self._increment_version(extra=extra)
 
@@ -182,11 +181,11 @@ class CacheGroup(object):
             key = self.key
 
         try:
-            val = self.cache.get_cache(self.route_group).incr(key)
+            val = self.cache.incr(key)
             if val > 1000 * 1000:
                 val = 0
-                self.cache.get_cache(self.route_group).set(key, val, timeout=self.version_expiry)
+                self.cache.set(key, val, timeout=self.version_expiry)
         except ValueError:
             val = 0
-            self.cache.get_cache(self.route_group).set(key, val, timeout=self.version_expiry)
+            self.cache.set(key, val, timeout=self.version_expiry)
         return val
