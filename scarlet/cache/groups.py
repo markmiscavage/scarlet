@@ -35,8 +35,6 @@ class CacheGroup(object):
         self.key = key
 
         self.route_group = 'default'
-        self.cache_router = router.MultiRouter().router()
-        self.cache = self.cache_router.get_cache(self.route_group)
 
         # Version expiry needs to be at least twice
         # as long as the longest lasting cache entry
@@ -44,6 +42,10 @@ class CacheGroup(object):
         if not self.version_expiry:
             self.version_expiry = 60 * 60 * 24 * 30
         self._models = {}
+
+    def _get_cache(self, key):
+        return router.router.get_cache(route_group=self.route_group,
+                                           key=key)
 
     def register_models(self, *models, **kwargs):
         """
@@ -138,7 +140,7 @@ class CacheGroup(object):
         # An extra key is based on the main version
         # plus the extra value. So that if the main
         # version changes the keys do too.
-        v = self.cache.get(self.key)
+        v = self._get_cache().get(self.key)
         if v == None:
             # Set the base key, otherwise extras
             # that are created first won't be flushed
@@ -166,7 +168,7 @@ class CacheGroup(object):
         else:
             key = self.key
 
-        v = self.cache.get(key)
+        v = self._get_cache(key).get(key)
         if v == None:
             v = self._increment_version(extra=extra)
 
@@ -180,12 +182,13 @@ class CacheGroup(object):
         else:
             key = self.key
 
+        cache = self._get_cache(key)
         try:
-            val = self.cache.incr(key)
+            val = cache.incr(key)
             if val > 1000 * 1000:
                 val = 0
-                self.cache.set(key, val, timeout=self.version_expiry)
+                cache.set(key, val, timeout=self.version_expiry)
         except ValueError:
             val = 0
-            self.cache.set(key, val, timeout=self.version_expiry)
+            cache.set(key, val, timeout=self.version_expiry)
         return val

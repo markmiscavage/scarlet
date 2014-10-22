@@ -105,8 +105,10 @@ class CacheMixin(object):
         return response
 
     def set_cache_middleware(self, cache_time, prefix):
+        name = router.router.get_cache_name(prefix=prefix)
         self.cache_middleware = CacheMiddleware(cache_timeout=cache_time,
-                                                  key_prefix=prefix)
+                                                  key_prefix=prefix,
+                                                cache_alias=name)
 
     def _finalize_cached_response(self, request, response):
         headers = self.get_vary_headers(request, response)
@@ -141,8 +143,6 @@ class CacheView(View, CacheMixin):
     """
 
 
-    cache_router = router.MultiRouter().router()
-    cache = cache_router.get_cache()
     cache_time = 60 * 60
     max_age = 0
 
@@ -155,17 +155,20 @@ class CacheView(View, CacheMixin):
         """
 
         value = None
+        cache = None
+        prefix = None
         if self.should_cache():
-            prefix = "%s:%s" % (self.get_cache_version(),
+            prefix = "%s:%s:string" % (self.get_cache_version(),
                                 self.get_cache_prefix())
-            value = self.cache.get(prefix + ":string")
+            cache = router.router.get_cache(prefix)
+            value = cache.get(prefix)
 
         if not value:
             value = super(CacheView, self).get_as_string(request, *args,
                                                          **kwargs)
             if self.should_cache() and value and \
                     getattr(self.request, '_cache_update_cache', False):
-                self.cache.set(prefix + ":string", value, self.cache_time)
+                cache.set(prefix, value, self.cache_time)
 
         return value
 

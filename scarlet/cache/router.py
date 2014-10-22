@@ -1,27 +1,23 @@
-from django.contrib import settings
+from django.conf import settings
 from django.core import cache
-
+try:
+    from django.utils.module_loading import import_string
+except ImportError:
+    from django.utils.module_loading import import_by_path as import_string
 
 class CacheRouter(object):
 
-    def get_cache(self, route_group='default', *kwargs):
-        return cache.get_cache('default')
+    def get_cache(self, **kwargs):
+        return cache.get_cache(self.get_cache_name(**kwargs))
 
+    def get_cache_name(self, **kwargs):
+        return 'default'
 
+def _get_router():
+    if getattr(settings, 'CACHE_ROUTER', None):
+        router = import_string(settings.CACHE_ROUTER)
+        return router()
+    else:
+        return CacheRouter()
 
-class MultiRouter(object):
-
-    cache_router = None
-
-    def __new__(cls, *args, **kwargs):
-        if settings.CACHE_ROUTER:
-            router = __import__(settings.CACHE_ROUTER)
-            cls._router = router
-        else:
-            cls._router = CacheRouter
-
-    @classmethod
-    def router(self):
-        return self.cache_router
-
-
+router = _get_router()
