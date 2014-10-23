@@ -140,7 +140,7 @@ class CacheGroup(object):
         # An extra key is based on the main version
         # plus the extra value. So that if the main
         # version changes the keys do too.
-        v = self._get_cache().get(self.key)
+        v = self._get_cache(self.key).get(self.key)
         if v == None:
             # Set the base key, otherwise extras
             # that are created first won't be flushed
