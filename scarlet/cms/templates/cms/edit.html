@@ -49,10 +49,10 @@
 		{% if formsets %}
 			{% for title, formset in formsets.visible_formsets %}
                 {% if title %}
-        		<legend>{{ title }}</legend>
+        			<legend class="widget-formset-title">{{ title }}:</legend>
                 {% endif %}
 
-				<fieldset class="widget-formset" >
+				<fieldset class="widget-formset">
 					{{ formset.management_form }}
 
 					{{ formset.non_form_errors }}
@@ -75,15 +75,19 @@
 				</fieldset>
 			{% endfor %}
 
-
-        {% for title, formset in formsets.all_formsets %}
-            <ul>
-		        <li data-count="{{ formset.count }}" data-prefix="{{ formset.prefix }}" class="widget-formset-add button">Add One {{ title }}</span>
-            </ul>
-            <script type="text/html" data-prefix="{{ formset.prefix }}" class="widget-formset-form-template">
-	            {% include "cms/formset.html" with form=formset.empty_form formset=formset %}
-            </script>
-        {% endfor %}
+			<div class="widget-formset-controls {% if formsets.formsets|length > 1 %}dropdown{% endif %}">
+				<ul>
+			        {% for title, formset in formsets.all_formsets %}
+				        <li data-count="{{ formset.count }}" data-prefix="{{ formset.prefix }}" class="widget-formset-add button">
+				        	{{ title }}
+							<script type="text/html" data-prefix="{{ formset.prefix }}" class="widget-formset-form-template">
+							{% include "cms/formset.html" with form=formset.empty_form formset=formset %}
+							</script>
+				        </li>
+			        {% endfor %}
+		        </ul>
+		        <span class="select-label">Add a new module<span class="select-arrow"></span></span>
+		    </div>
 		{% endif %}
 	{% endblock formsets %}
 
