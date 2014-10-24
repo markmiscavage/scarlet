@@ -229,36 +229,6 @@ section#main {
 			p {
 				display: block;
 				position: relative;
-
-				&.submit-row {
-					text-align: right;
-
-					.button {
-						margin-top: 8px;
-					}
-				}
-
-				&.checkbox {
-					margin-bottom: $spacer * 3;
-
-					label {
-						position: absolute;
-						left: $gridlet*7;
-					}
-
-					.help {
-						position: absolute;
-						top: 25px;
-						left: 21px;
-					}
-				}
-
-				&.date {
-
-					label {
-						display: block;
-					}
-				}
 			}
 
 			em {
@@ -321,119 +291,40 @@ section#main {
 					@include big-button;
 				}
 			}
+		}
 
-			input.date,
-			input.datetime {
-				background-repeat: no-repeat;
-				background-position: 95% 6px;
-				width: auto;
+		.date,
+		.datetime {
+			background-repeat: no-repeat;
+			background-position: 95% 6px;
+			width: auto;
 
-				&.date {
-					background-image: url('../img/icon-date.png');
-				}
-
-				&.datetime {
-					background-image: url('../img/icon-datetime.png');
-					padding-right: 40px;
-				}
+			&.date {
+				background-image: url('../img/icon-date.png');
 			}
 
-			fieldset.datetime {
-
-				label:last-of-type {
-					margin-left: 20px;
-				}
+			&.datetime {
+				background-image: url('../img/icon-datetime.png');
+				padding-right: 40px;
 			}
+		}
 
-			.widget-asset {
-				// @include clearfix;
-				// height: $gridlet*20;
-				margin-left: $spacer*2;
-				position: relative;
+		.datetime {
 
-				.widget-asset-preview {
-					width: $gridlet*20;
-					height: $gridlet*20;
-					background-color: #eee;
-					background-position: 50% 50%;
-					background-size: contain;
-					background-repeat: no-repeat;
-					border: 1px solid $light-blue;
-					border-radius: $gridlet;
-					box-shadow: inset 0 0 10px rgba(#000, 0.1);
-					float: left;
-				}
-
-				.widget-asset-actions {
-					margin-left: $gridlet*22;
-					max-width: $gridlet*100;
-				}
-
-				.select2-container {
-					margin-bottom: $gridlet*2;
-				}
-
-				.crops-list {
-					padding-left: 0;
-
-					li {
-						margin-bottom: 10px;
-					}
-
-					.name,
-					.size {
-						display: inline-block;
-						width: 105px;
-					}
-
-					.size {
-						width: 115px;
-					}
-
-					.crop-link {
-						position: static;
-						font-size: 12px;
-						margin-left: 6px;
-
-						&:before {
-							display: none;
-						}
-					}
-				}
-
-				.button {
-					@include button;
-					position: absolute;
-					left: 410px;
-					top: 2px;
-
-					&:before {
-						content: "";
-						border-left: 2px solid #747474;
-						position: absolute;
-						height: 100%;
-						left: -25px;
-						top: 0;
-					}
-				}
-
-				input {
-					display: none;
-				}
+			label:last-of-type {
+				margin-left: 20px;
 			}
+		}
 
-			.widget-asset-simple {
-				@include clearfix;
+		.widget-asset {
+			// @include clearfix;
+			// height: $gridlet*20;
+			margin-left: $spacer*2;
+			position: relative;
 
-				input {
-					margin-top: 5px;
-					width: auto;
-				}
-			}
-
-			.widget-asset-simple-preview {
-				width: $gridlet*22;
-				height: $gridlet*22;
+			.widget-asset-preview {
+				width: $gridlet*20;
+				height: $gridlet*20;
 				background-color: #eee;
 				background-position: 50% 50%;
 				background-size: contain;
@@ -442,138 +333,327 @@ section#main {
 				border-radius: $gridlet;
 				box-shadow: inset 0 0 10px rgba(#000, 0.1);
 				float: left;
-				margin-right: 10px;
 			}
 
-			.widget-formset-form {
-				padding: $spacer $spacer*8 $spacer $spacer*2;
-				margin: 0;
-				position: relative;
-				background: rgba(#fff, 0.5);
-				border: 1px solid $gray;
+			.widget-asset-actions {
+				margin-left: $gridlet*22;
+				max-width: $gridlet*100;
+			}
 
-				+ .widget-formset-form {
-					margin-top: -1px;
+			.select2-container {
+				margin-bottom: $gridlet*2;
+			}
+
+			.crops-list {
+				padding-left: 0;
+
+				li {
+					margin-bottom: 10px;
 				}
 
-				&.odd {
-					background-color: rgba($gray, 0.5);
+				.name,
+				.size {
+					display: inline-block;
+					width: 105px;
 				}
 
-				&.was-deleted {
-					display: none;
+				.size {
+					width: 115px;
 				}
 
-				.api-select {
-					margin-left: 0;
-				}
+				.crop-link {
+					position: static;
+					font-size: 12px;
+					margin-left: 6px;
 
-				.widget-formset-delete {
-					@include button;
-					position: absolute;
-					top: $spacer;
-					right: $spacer;
-					font: 18px/1 AvenirBlack;
-
-					b {
-						font-weight: normal;
-					}
-
-					input {
+					&:before {
 						display: none;
 					}
 				}
+			}
 
-				.widget-formset-order {
+			.button {
+				@include button;
+				position: absolute;
+				left: 410px;
+				top: 2px;
+
+				&:before {
+					content: "";
+					border-left: 2px solid #747474;
+					position: absolute;
+					height: 100%;
+					left: -25px;
+					top: 0;
+				}
+			}
+
+			input {
+				display: none;
+			}
+		}
+
+		.widget-asset-simple {
+			@include clearfix;
+
+			input {
+				margin-top: 5px;
+				width: auto;
+			}
+		}
+
+		.widget-asset-simple-preview {
+			width: $gridlet*22;
+			height: $gridlet*22;
+			background-color: #eee;
+			background-position: 50% 50%;
+			background-size: contain;
+			background-repeat: no-repeat;
+			border: 1px solid $light-blue;
+			border-radius: $gridlet;
+			box-shadow: inset 0 0 10px rgba(#000, 0.1);
+			float: left;
+			margin-right: 10px;
+		}
+
+		.widget-formset {
+			margin: 0 12px 0 24px;
+
+			.button {
+				@include button;
+
+				&.add-button {
+					font: 18px/1 AvenirBlack;
+				}
+			}
+
+			.draggable {
+				cursor: move;
+			}
+		}
+
+		.widget-formset-forms {
+			margin-bottom: $spacer;
+		}
+
+		.widget-formset-form {
+			padding: $spacer $spacer*8 $spacer $spacer*2;
+			margin: 0;
+			position: relative;
+			background: rgba(#fff, 0.5);
+			border: 1px solid $gray;
+
+			+ .widget-formset-form {
+				margin-top: -1px;
+			}
+
+			&.odd {
+				background-color: rgba($gray, 0.5);
+			}
+
+			&.was-deleted {
+				display: none;
+			}
+
+			.api-select {
+				margin-left: 0;
+			}
+
+			.widget-formset-delete {
+				@include button;
+				position: absolute;
+				top: $spacer;
+				right: $spacer;
+				font: 18px/1 AvenirBlack;
+
+				b {
+					font-weight: normal;
+				}
+
+				input {
 					display: none;
 				}
 			}
 
-			.widget-formset {
-				.widget-formset-forms {
-					margin-bottom: $spacer;
-				}
+			.widget-formset-order {
+				display: none;
+			}
+		}
 
-				.widget-formset-add {
-					// margin-top: $spacer;
-				}
+		.widget-formset-title {
+			color: #11232E;
+			margin: 0 12px 12px 24px;
+		}
 
-				.button {
-					@include button;
+		.widget-formset-controls {
+			@extend %select-box;
+			margin: 0 12px 12px 24px;
 
-					&.add-button {
-						font: 18px/1 AvenirBlack;
-					}
-				}
-
-				.draggable {
-					cursor: move;
-				}
+			.select-arrow {
+				@extend %select-arrow;
 			}
 
-			.api-select {
+			.select-label {
+				display: none;
 				position: relative;
-				// margin-left: $spacer*2;
-
-				&.has-add-button {
-					padding-right: 40px;
-				}
-
-				.add-button {
-					position: absolute;
-					top: 0;
-					right: 0;
-				}
-
-				.toggle {
-					position: absolute;
-					top: -35px;
-					height: 30px;
-					right: 0;
-
-					.toggle-button {
-						float: right;
-						line-height: 28px;
-						padding: 0 10px;
-						background: #fff;
-						border: 1px solid $gray;
-						color: $gray;
-						cursor: pointer;
-
-						+ .toggle-button {
-							border-right: 0;
-						}
-
-						&.active {
-							border-color: rgba($blue, 0.5);
-							background: $light-blue;
-							color: $blue;
-						}
-
-						&.last {
-							border-radius: $gridlet 0 0 $gridlet;
-						}
-
-						&.first {
-							border-radius: 0 $gridlet $gridlet 0;
-						}
-					}
-				}
+				padding: 7px;
 			}
 
-			.widget-wysiwyg {
-				margin-left: 24px;
-			}
-
-			.error-field {
-				margin: 0 0 0 24px;
-			}
-
-			.errorlist {
-				color: #ff0000;
-				margin: -7px 0 1em 24px;
+			ul {
+				background: #fff;
+				box-sizing: content-box;
+				width: 100%;
+				margin: 0;
 				padding: 0;
-				position: relative;
+			}
+
+			li {
+				cursor: pointer;
+				padding: 10px;
+
+				&:only-child  {
+					background: #B6CAD1;
+				}
+
+				&:before {
+					content: '+ Add ';
+				}
+
+				&:hover {
+					background: #314B5D;
+					color: #B6CAD1;
+				}
+
+			}
+
+			&.dropdown {
+
+				.select-label {
+					display: block;
+				}
+
+				ul {
+					position: absolute;
+					top: 10px;
+					left: -1px;
+					margin: 1em 0;
+					padding: 4px 0 0;
+				}
+
+				li {
+
+					&:before {
+						display: none;
+					}
+				}
+			}
+
+			&.show {
+				overflow: visible;
+				border-bottom: none;
+				z-index: 1;
+
+				ul {
+					border: 1px solid rgba(49, 75, 93, 0.5);
+					border-width: 0 1px 1px 1px;
+					border-radius: 3px;
+					box-shadow: 1px 4px 5px rgba(49, 75, 93, 0.25);
+				}
+			}
+		}
+
+		.widget-wysiwyg {
+			margin-left: 24px;
+		}
+
+		.api-select {
+			position: relative;
+			// margin-left: $spacer*2;
+
+			&.has-add-button {
+				padding-right: 40px;
+			}
+
+			.add-button {
+				position: absolute;
+				top: 0;
+				right: 0;
+			}
+
+			.toggle {
+				position: absolute;
+				top: -35px;
+				height: 30px;
+				right: 0;
+
+				.toggle-button {
+					float: right;
+					line-height: 28px;
+					padding: 0 10px;
+					background: #fff;
+					border: 1px solid $gray;
+					color: $gray;
+					cursor: pointer;
+
+					+ .toggle-button {
+						border-right: 0;
+					}
+
+					&.active {
+						border-color: rgba($blue, 0.5);
+						background: $light-blue;
+						color: $blue;
+					}
+
+					&.last {
+						border-radius: $gridlet 0 0 $gridlet;
+					}
+
+					&.first {
+						border-radius: 0 $gridlet $gridlet 0;
+					}
+				}
+			}
+		}
+
+		.error-field {
+			margin: 0 0 0 24px;
+		}
+
+		.errorlist {
+			color: #ff0000;
+			margin: -7px 0 1em 24px;
+			padding: 0;
+			position: relative;
+		}
+
+		.submit-row {
+			text-align: right;
+
+			.button {
+				margin-top: 8px;
+			}
+		}
+
+		.checkbox {
+			margin-bottom: $spacer * 3;
+
+			label {
+				position: absolute;
+				left: $gridlet*7;
+			}
+
+			.help {
+				position: absolute;
+				top: 25px;
+				left: 21px;
+			}
+		}
+
+		.date {
+
+			label {
+				display: block;
 			}
 		}
 
