@@ -1,3 +1,5 @@
+/* jshint loopfunc: true */
+
 define(
 
 	[
@@ -5,10 +7,11 @@ define(
 		"$",
 		"$ui",
 		"$plugin!select2",
-		"./WidgetEvents"
+		"./WidgetEvents",
+		"./wysiwyg/Wysiwyg",
 	],
 
-	function (DOMClass, $, $ui, jQuerySelect2, WidgetEvents) {
+	function (DOMClass, $, $ui, jQuerySelect2, WidgetEvents, Wysiwyg) {
 
 		"use strict";
 
@@ -17,6 +20,8 @@ define(
 			dom : null,
 			forms : null,
 
+			types: [],
+
 			prefix : '',
 
 			isDraggable : false,
@@ -24,12 +29,16 @@ define(
 			init : function (dom) {
 				this.dom = dom;
 				this.forms = dom.find('.widget-formset-forms');
+				this.controls = dom.next('.widget-formset-controls');
 				this.prefix = this.dom.data('prefix');
 
 				this.dom.on('click', '.widget-formset-delete', this._delete);
-				this.dom.on('click', '.widget-formset-add', this._add);
+				this.controls.on('click', '.widget-formset-add', this._add);
 
+				this._initTypes();
 				this._initSort();
+
+				this._initControls();
 			},
 
 			_delete : function (e) {
@@ -48,15 +57,17 @@ define(
 				Add
 			************************************/
 
-			_count : function () {
-				return this.dom.find('.widget-formset-form').length;
+			_count : function (typeOf) {
+				return this.dom.find('.widget-formset-form[data-prefix=' + typeOf + ']').length;
 			},
 
-			_add : function () {
-				var clone = $('<div>').addClass('widget-formset-form added-with-js'),
-					html = this.dom.find('.widget-formset-form-template').html();
+			_add : function (e) {
+				var $scope = $(e.currentTarget),
+					typeOf = $scope.data('prefix'),
+					clone = $('<div>').addClass('widget-formset-form added-with-js').attr('data-prefix', typeOf),
+					html = $scope.find('.widget-formset-form-template').html();
 
-				html = html.replace(/(__prefix__)/g, this._count());
+				html = html.replace(/(__prefix__)/g, this._count(typeOf));
 				clone.html(html);
 
 				this.forms.append(clone);
@@ -69,7 +80,11 @@ define(
 					dom : clone
 				});
 
-				this._resort();
+				if (this.types.indexOf(typeOf) === -1) {
+					this.types.push(typeOf);
+				}
+
+				this._initSort();
 			},
 
 			/************************************
@@ -80,7 +95,8 @@ define(
 				if (this.forms.find('.widget-formset-order').length) {
 					this.forms.sortable({
 						update : this._resort,
-						change : this._resort
+						change : this._resort,
+						stop   : this._repairWysiwyg
 					});
 					this.dom.find('.widget-formset-form').addClass('draggable');
 					this.isDraggable = true;
@@ -89,26 +105,23 @@ define(
 			},
 
 			_resort : function () {
-				var order = 0,
-					forms = this.dom.find('.widget-formset-form'),
-					helper = this.dom.find('.ui-sortable-helper'),
+				var helper = this.dom.find('.ui-sortable-helper'),
 					placeholder = this.dom.find('.ui-sortable-placeholder');
 
-				forms.each(function (i, dom) {
+				this.dom.find('.widget-formset-form').each(function (i, dom) {
 					dom = $(dom);
 
 					if (dom.is('.was-deleted, .ui-sortable-helper')) {
 						return;
 					}
 
-					if (order % 2) {
+					if (i % 2) {
 						dom.addClass('odd');
 					} else {
 						dom.removeClass('odd');
 					}
 
-					dom.find('.widget-formset-order input').val(order);
-					order++;
+					dom.find('.widget-formset-order input').val(i);
 				});
 
 				if (placeholder.hasClass('odd')) {
@@ -117,7 +130,78 @@ define(
 					helper.removeClass('odd');
 				}
 
-				this.dom.find('#id_' + this.prefix + '-TOTAL_FORMS').val(forms.length);
+				this._updateMetadata();
+			},
+
+			// workaround for WYSIHTML5 failing after iframe is moved
+			_repairWysiwyg : function (e, elem) {
+				var $wysiwyg = $(elem.item[0]).find('.widget-wysiwyg');
+
+				if ($wysiwyg.length) {
+					$('.wysihtml5-sandbox', $wysiwyg).remove();
+					var wysiwyg = new Wysiwyg($wysiwyg);
+				}
+			},
+
+			/************************************
+				Metadata
+			************************************/
+
+			_initTypes : function () {
+				var self = this;
+				this.controls.find('.widget-formset-add').each(function () {
+					self.types.push($(this).data('prefix'));
+				});
+			},
+
+			_updateMetadata : function () {
+				for (var i = 0; i < this.types.length; i++) {
+					var typeOf = this.types[i],
+						$formset = $('.widget-formset-form[data-prefix=' + typeOf + ']');
+
+					$formset.each(function (n, el) {
+						$(this).find('.widget-formset-order input').val(n);
+					});
+
+					$('#id_' + typeOf + '-TOTAL_FORMS').val($formset.length);
+				}
+			},
+
+			/************************************
+				Controls
+			************************************/
+
+			_initControls : function () {
+				this.controls.filter('.dropdown')
+					.on('click', this._toggleOptions)
+					.on('mouseout', this._closeOptions);
+			},
+
+			_toggleOptions : function (e) {
+				$(e.currentTarget).toggleClass('show');
+			},
+
+			_closeOptions : function (e) {
+				var parent = e.currentTarget,
+					child = e.toElement || e.relatedTarget;
+
+				// check all children (checking from bottom up)
+				// prevent closing on child event
+				while (child && child.parentNode && child.parentNode !== window) {
+
+					if (child.parentNode === parent || child === parent) {
+
+						if (child.preventDefault) {
+							child.preventDefault();
+						}
+
+						return false;
+					}
+
+					child = child.parentNode;
+				}
+
+				$(parent).removeClass('show');
 			}
 		});
 	}
