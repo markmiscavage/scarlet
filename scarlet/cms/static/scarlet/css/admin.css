@@ -3315,20 +3315,20 @@ section#main article form input[type='submit'].big:hover {
   background: #314b5d;
 }
 /* line 297, ../compass/scss/admin/views/_admin.scss */
-section#main article .date,
-section#main article .datetime {
+section#main article input.date,
+section#main article input.datetime {
   background-repeat: no-repeat;
   background-position: 95% 6px;
   width: auto;
 }
 /* line 302, ../compass/scss/admin/views/_admin.scss */
-section#main article .date.date,
-section#main article .datetime.date {
+section#main article input.date.date,
+section#main article input.datetime.date {
   background-image: url("../img/icon-date.png");
 }
 /* line 306, ../compass/scss/admin/views/_admin.scss */
-section#main article .date.datetime,
-section#main article .datetime.datetime {
+section#main article input.date.datetime,
+section#main article input.datetime.datetime {
   background-image: url("../img/icon-datetime.png");
   padding-right: 40px;
 }

@@ -12061,11 +12061,9 @@ define(
 				this.prefix = this.dom.data('prefix');
 
 				this.dom.on('click', '.widget-formset-delete', this._delete);
-				this.controls.on('click', '.widget-formset-add', this._add);
 
 				this._initTypes();
 				this._initSort();
-
 				this._initControls();
 			},
 
@@ -12123,7 +12121,7 @@ define(
 				if (this.forms.find('.widget-formset-order').length) {
 					this.forms.sortable({
 						update : this._resort,
-						change : this._resort,
+						//change : this._resort,
 						stop   : this._repairWysiwyg
 					});
 					this.dom.find('.widget-formset-form').addClass('draggable');
@@ -12184,11 +12182,13 @@ define(
 
 			_updateMetadata : function () {
 				for (var i = 0; i < this.types.length; i++) {
+
 					var typeOf = this.types[i],
 						$formset = $('.widget-formset-form[data-prefix=' + typeOf + ']');
 
 					$formset.each(function (n, el) {
-						$(this).find('.widget-formset-order input').val(n);
+						var $this = $(this);
+						$this.find('.widget-formset-order input').val($this.prevAll().length);
 					});
 
 					$('#id_' + typeOf + '-TOTAL_FORMS').val($formset.length);
@@ -12200,6 +12200,10 @@ define(
 			************************************/
 
 			_initControls : function () {
+				var attrDataPrefix = this.prefix ? '[data-prefix=' + this.prefix + ']' : '[data-prefix]';
+
+				$('.widget-formset-add' + attrDataPrefix).on('click', this._add);
+
 				this.controls.filter('.dropdown')
 					.on('click', this._toggleOptions)
 					.on('mouseout', this._closeOptions);
