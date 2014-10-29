@@ -6,7 +6,7 @@ except ImportError:
     try:
         from django.utils.module_loading import import_by_path as import_string
     except ImportError:
-        from django.utils.importlib import import_module
+        from django.utils.importlib import import_module as import_string
 
 class CacheRouter(object):
 
