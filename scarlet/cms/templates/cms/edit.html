@@ -52,26 +52,25 @@
         			<legend class="widget-formset-title">{{ title }}:</legend>
                 {% endif %}
 
-				<fieldset class="widget-formset">
+				<fieldset class="widget-formset" data-prefix="{{ formset.prefix }}">
 					{{ formset.management_form }}
-
 					{{ formset.non_form_errors }}
-					<div class="widget-formset-forms">
 
-                    {% if formset.combined %}
-					    {% for form, fset in formset %}
-						    <div class="widget-formset-form" data-prefix="{{ fset.prefix }}">
-							    {% include "cms/formset.html" with form=form formset=fset %}
-						    </div>
-					    {% endfor %}
-                    {% else %}
-					    {% for form in formset %}
-						    <div class="widget-formset-form" data-prefix="{{ formset.prefix }}">
-							    {% include "cms/formset.html" with form=form formset=formset %}
-						    </div>
-					    {% endfor %}
-                    {% endif %}
-				    </div>
+					<div class="widget-formset-forms">
+	                    {% if formset.combined %}
+						    {% for form, fset in formset %}
+							    <div class="widget-formset-form" data-prefix="{{ fset.prefix }}">
+								    {% include "cms/formset.html" with form=form formset=fset %}
+							    </div>
+						    {% endfor %}
+	                    {% else %}
+						    {% for form in formset %}
+							    <div class="widget-formset-form" data-prefix="{{ formset.prefix }}">
+								    {% include "cms/formset.html" with form=form formset=formset %}
+							    </div>
+						    {% endfor %}
+	                    {% endif %}
+                    </div>
 				</fieldset>
 			{% endfor %}
 
