@@ -302,7 +302,9 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         """
         Hook for specifying custom admin formsets
         """
-        return helpers.AdminFormSets(formsets, self.get_combined_formset_defs())
+        if formsets:
+            return helpers.AdminFormSets(formsets, self.get_combined_formset_defs())
+        return None
 
     def get_admin_form(self, form):
         """
