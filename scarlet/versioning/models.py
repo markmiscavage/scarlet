@@ -1,4 +1,5 @@
 import copy
+import sys
 
 from django.utils import timezone
 from django.db import models
@@ -18,7 +19,6 @@ try:
 except ImportError:
     from .transactions import xact
 from . import manager
-
 
 class Cloneable(models.Model):
     """
@@ -334,7 +334,10 @@ class VersionViewMeta(SharedMeta):
             parent_fields = base_model._meta.local_fields
             for field in parent_fields:
                 if not field.primary_key:
-                    ab_base_model.add_to_class(field.name,
+                    try:
+                        ab_base_model._meta.get_field(field.name)
+                    except FieldDoesNotExist:
+                        ab_base_model.add_to_class(field.name,
                                                copy.deepcopy(field))
 
         # Create a base model that isn't abstract
@@ -386,15 +389,18 @@ class VersionViewMeta(SharedMeta):
             else:
                 version_bases.append(base)
 
-        version_bases.append(type("%sVersionReferences" % name, (object,), {
+        vname = "%sVersionReferences" % name
+        v_mod = type(vname, (object,), {
             '__module__': attrs.get('__module__'),
             'base_model': base_model,
             'version_model': None
-        }))
+        })
+        version_bases.append(v_mod)
+        setattr(sys.modules[attrs.get('__module__')], vname, v_mod)
         version_model = SharedMeta("%s_version" % name,
                                   tuple(version_bases), versioned_attrs)
 
-        # Make sure the managed = False is set
+        # Make sure the managed = False
         attrs['Meta'] = get_meta(meta, managed=False)
 
         attrs = add_managers(attrs)
@@ -404,11 +410,14 @@ class VersionViewMeta(SharedMeta):
             if not issubclass(base, BaseModel):
                 new_bases.append(base)
 
-        new_bases.append(type("%sReferences" % name, (object,), {
+        rname = "%sReferences" % name
+        ref_mod = type(rname, (object,), {
             '__module__': attrs.get('__module__'),
             'base_model': base_model,
             'version_model': version_model
-        }))
+        })
+        setattr(sys.modules[attrs.get('__module__')], rname, ref_mod)
+        new_bases.append(ref_mod)
 
         mod = super(VersionViewMeta, cls).__new__(cls, name,
                                             tuple(new_bases), attrs)
@@ -439,6 +448,15 @@ class VersionViewMeta(SharedMeta):
 
         return mod
 
+    def add_to_class(cls, name, value):
+        try:
+            BaseVersionedModel._meta.get_field(name)
+            cls._meta.get_field(name)
+            return
+        except FieldDoesNotExist:
+            pass
+
+        return super(VersionViewMeta, cls).add_to_class(name, value)
 
 class VersionModelMeta(models.base.ModelBase):
     """

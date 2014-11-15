@@ -45,6 +45,11 @@ define(
 					toolbar: toolbarId,
 					stylesheets: "/static/css/wysiwyg.css"
 				});
+
+				// load audio sources
+				this.dom.find('audio').each(function () {
+					$(this)[0].load();
+				});
 			}
 		});
 	}

@@ -60,6 +60,9 @@ class VersionManager(models.Manager):
     use_for_related_fields = True
 
     def get_query_set(self):
+        return self.get_queryset()
+
+    def get_queryset(self):
         q = super(VersionManager, self).get_query_set()
         q = q.filter(state=ContextState())
         return q

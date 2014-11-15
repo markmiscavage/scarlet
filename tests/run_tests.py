@@ -4,7 +4,9 @@ import argparse
 import importlib
 import imp
 
+import django
 from django.conf import settings
+from django import VERSION as DJANGO_VERSION
 
 def setup_test_environment(settings_overide, with_scarlet_blog=False):
     """
@@ -52,6 +54,11 @@ def setup_test_environment(settings_overide, with_scarlet_blog=False):
                 'PORT': '',
             },
         },
+        'MIDDLEWARE_CLASSES' : (
+            'django.contrib.sessions.middleware.SessionMiddleware',
+            'django.contrib.auth.middleware.AuthenticationMiddleware',
+            'django.contrib.messages.middleware.MessageMiddleware'
+        )
     }
 
     if settings_overide:
@@ -83,7 +90,6 @@ def runtests(settings_overide, test_args):
     with_scarlet_blog = False
     if not test_args:
         test_args = ['cms_bundles', 'version_models', 'version_twomodels']
-
         try:
             imp.find_module('scarlet_blog')
             test_args.append('blog')
@@ -98,7 +104,6 @@ def runtests(settings_overide, test_args):
 
     try:
         from django.test.simple import DjangoTestSuiteRunner
-
         def run_tests(test_args, verbosity, interactive):
             runner = DjangoTestSuiteRunner(
                 verbosity=verbosity, interactive=interactive,
@@ -107,6 +112,10 @@ def runtests(settings_overide, test_args):
             return runner.run_tests(test_args)
     except ImportError:
         from django.test.simple import run_tests
+
+    # 1.7+ requires an explicit setup call
+    if DJANGO_VERSION >= (1, 7):
+        django.setup()
 
     failures = run_tests(test_args, verbosity=1, interactive=True)
     sys.exit(failures)

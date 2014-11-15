@@ -11592,6 +11592,46 @@ define(
 
 	});
 
+define(
+	'admin/modules/InsertAudio',[
+		"./Insert",
+		"$"
+	],
+	function (Insert, $) {
+
+		
+
+		return Insert.extend({
+
+			// Extending to bind to a special data-respond attribute for Select2.
+			bindInputs : function () {
+				this.sup();
+				this.$dom.find('[data-respond=\"true\"]').on("change", this.onInput);
+			},
+
+			// Generates or updates the audio with the latest input value.
+			onInput : function (e) {
+
+				var $target = $(e.currentTarget),
+					attribute = $target.data('attribute'),
+					value = $(e.currentTarget).val(),
+					$audio = this.$dom.find('audio');
+
+				// Adjusts the source to come from the data attribute.
+				if ($target.attr('data-src') && value) {
+					value = $target.attr('data-src');
+				}
+
+				$audio[0].src = value;
+				$audio[0].load();
+
+				this.vars.$node = $audio;
+			}
+
+		});
+
+	});
+
 /*
  wysihtml5 v0.4.0pre
  https://github.com/xing/wysihtml5
@@ -12408,7 +12448,13 @@ define('admin/modules/wysiwyg/WysiwygRules',[],function () {
 				"set_class": "wysiwyg-text-align-center"
 			},
 			"audio": {
-				"remove": 1
+				"remove": 0,
+				"set_attributes": {
+					"controls": "controls"
+				},
+				"check_attributes": {
+					"src": "src" // if you compiled master manually then change this from 'url' to 'src'
+				}
 			},
 			"datalist": {
 				"rename_tag": "span"
@@ -12519,6 +12565,11 @@ define(
 					style: false,
 					toolbar: toolbarId,
 					stylesheets: "/static/css/wysiwyg.css"
+				});
+
+				// load audio sources
+				this.dom.find('audio').each(function () {
+					$(this)[0].load();
 				});
 			}
 		});
@@ -15268,7 +15319,7 @@ define(
 		});
 	});
 define(
-	'admin/modules/Widgets',['require','exports','module','rosy/base/DOMClass','$','$plugin!select2','$plugin!details','$plugin-ui!timepicker','./AssetSelect','./ApiSelect','./Formset','./Tabs','./InsertVideo','./InsertImage','./wysiwyg/Wysiwyg','./WidgetEvents','./WindowPopup','./OnExit','./InlineVideo','./FilterBar','./CropImage','./AutoSlug','./BatchActions'],function (require, exports, module) {
+	'admin/modules/Widgets',['require','exports','module','rosy/base/DOMClass','$','$plugin!select2','$plugin!details','$plugin-ui!timepicker','./AssetSelect','./ApiSelect','./Formset','./Tabs','./InsertVideo','./InsertImage','./InsertAudio','./wysiwyg/Wysiwyg','./WidgetEvents','./WindowPopup','./OnExit','./InlineVideo','./FilterBar','./CropImage','./AutoSlug','./BatchActions'],function (require, exports, module) {
 
 		
 
@@ -15283,6 +15334,7 @@ define(
 			Tabs                 = require("./Tabs"),
 			InsertVideo          = require("./InsertVideo"),
 			InsertImage          = require("./InsertImage"),
+			InsertAudio          = require("./InsertAudio"),
 			Wysiwyg              = require("./wysiwyg/Wysiwyg"),
 			WidgetEvents         = require("./WidgetEvents"),
 			WindowPopup          = require("./WindowPopup"),
@@ -15312,6 +15364,7 @@ define(
 				this._renderTabs(dom);
 				this._renderInsertVideo(dom);
 				this._renderInsertImage(dom);
+				this._renderInsertAudio(dom);
 				this._renderInlineVideo(dom);
 				this._renderFilterBar(dom);
 				this._renderjQueryCrop(dom);
@@ -15436,6 +15489,14 @@ define(
 			_renderInsertImage : function (dom) {
 				dom.find(".widget-insert-image").each(function (i, el) {
 					var insertImage = new InsertImage({
+						$dom : $(el)
+					});
+				});
+			},
+
+			_renderInsertAudio : function (dom) {
+				dom.find(".widget-insert-audio").each(function (i, el) {
+					var insertAudio = new InsertAudio({
 						$dom : $(el)
 					});
 				});

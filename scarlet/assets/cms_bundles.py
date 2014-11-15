@@ -60,7 +60,7 @@ class EmbedView(cms_bundles.EmbedView):
         if bundle:
             api_link = bundle.get_view_url("main", request.user)
             if api_link:
-                api_link = "{0}?type=choices&ftype=image".format(api_link)
+                api_link = "{0}?type=choices".format(api_link)
 
         return self.render(request, tags=tags, api_link=api_link)
 

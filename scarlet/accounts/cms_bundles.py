@@ -1,12 +1,11 @@
 from django.contrib.auth.forms import AdminPasswordChangeForm
+from django.contrib.auth import get_user_model
 
 try:
     from ..cms import site, bundles, views
 except ValueError:
     from cms import site, bundles, views
 
-from .utils import get_user_model
-from . import signals as accounts_signals
 from . import forms
 from . import groups
 
@@ -23,13 +22,6 @@ class AddView(views.FormView):
             'fields': ('password1', 'password2')
         }),
     )
-
-    def save_form(self, form):
-        user = super(AddView, self).save_form(form)
-        accounts_signals.signup_complete.send(sender=None,
-                                             user=user)
-        return user
-
 
 class PasswordView(views.FormView):
     redirect_to_view = "edit"
@@ -49,14 +41,6 @@ class PasswordView(views.FormView):
         instance = kwargs.pop('instance')
         kwargs['user'] = instance
         return kwargs
-
-    def save_form(self, form):
-        user = form.save()
-        # Send a signal that the password has changed
-        accounts_signals.password_complete.send(sender=None,
-                                               user=user)
-        return user
-
 
 class AccountBundle(bundles.Bundle):
     required_groups = (groups.ADMIN,)
