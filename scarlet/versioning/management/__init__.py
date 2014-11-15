@@ -1,8 +1,7 @@
 from django.conf import settings
-from django.db.models.signals import post_syncdb
+from django.db.models.signals import post_migrate, post_syncdb
 from django.db import connection, transaction, utils
 from django import VERSION as DJANGO_VERSION
-
 
 VIEW_SQL = "CREATE OR REPLACE VIEW %(schema)s.%(model_table)s as select * from %(version_model)s inner join %(base_model)s on %(base_model)s.id = %(version_model)s.object_id"
 DROP_SQL = "DROP VIEW IF EXISTS %(schema)s.%(model_table)s;"
@@ -41,48 +40,60 @@ def trigger_function(base_model, version_model, args):
     $function$;
     """ % local_args
 
-def update_schema(app, created_models, verbosity, **kwargs):
+def do_updates(m):
+    if getattr(m._meta, '_is_view', None):
+        qn = connection.ops.quote_name
+        args = {'base_model': qn(m._meta._base_model._meta.db_table),
+                'version_model': qn(m._meta._version_model._meta.db_table),
+                'model_table': qn(m._meta.db_table),
+                'function_name' : qn(m._meta.db_table + '_func'),
+                'trigger_name' : qn(m._meta.db_table + '_trigger'),
+                'schema': qn('public'),
+                'state': qn('state')}
 
-    for m in created_models:
-        if getattr(m._meta, '_is_view', None):
-            qn = connection.ops.quote_name
-            args = {'base_model': qn(m._meta._base_model._meta.db_table),
-                    'version_model': qn(m._meta._version_model._meta.db_table),
-                    'model_table': qn(m._meta.db_table),
-                    'function_name' : qn(m._meta.db_table + '_func'),
-                    'trigger_name' : qn(m._meta.db_table + '_trigger'),
-                    'schema': qn('public'),
-                    'state': qn('state')}
+        base_sql = VIEW_SQL % args
+        cursor = connection.cursor()
 
-            base_sql = VIEW_SQL % args
-            cursor = connection.cursor()
+        cursor.execute(DROP_SQL % args)
+        cursor.execute(base_sql)
+
+        trigger_sql = trigger_function(m._meta._base_model,
+                                       m._meta._version_model, args)
+        cursor.execute(trigger_sql)
+        cursor.execute(TRIGGER % args)
+        for schema in m._meta._version_model.UNIQUE_STATES:
+            qn_schema = qn(schema)
+
+            # Make sure schema exists
+            cursor.execute("SELECT exists(select schema_name FROM information_schema.schemata WHERE schema_name = %s)", (schema,))
+            if not cursor.fetchone()[0]:
+                cursor.execute("CREATE SCHEMA %s" % qn_schema)
+
+            args['schema'] = qn_schema
 
             cursor.execute(DROP_SQL % args)
-            cursor.execute(base_sql)
+            where = "WHERE %(version_model)s.%(state)s = %%s" % args
 
-            trigger_sql = trigger_function(m._meta._base_model,
-                                           m._meta._version_model, args)
-            cursor.execute(trigger_sql)
+            base_sql = VIEW_SQL % args
+            sql = " ".join([base_sql, where])
+            cursor.execute(sql, (schema,))
             cursor.execute(TRIGGER % args)
-            for schema in m._meta._version_model.UNIQUE_STATES:
-                qn_schema = qn(schema)
 
-                # Make sure schema exists
-                cursor.execute("SELECT exists(select schema_name FROM information_schema.schemata WHERE schema_name = %s)", (schema,))
-                if not cursor.fetchone()[0]:
-                    cursor.execute("CREATE SCHEMA %s" % qn_schema)
+        if DJANGO_VERSION < (1, 6):
+            transaction.commit_unless_managed()
 
-                args['schema'] = qn_schema
+def update_schema(sender=None, **kwargs):
+    if sender:
+        for m in sender.get_models():
+            if getattr(m._meta, '_view_model', None):
+                do_updates(m._meta._view_model)
 
-                cursor.execute(DROP_SQL % args)
-                where = "WHERE %(version_model)s.%(state)s = %%s" % args
 
-                base_sql = VIEW_SQL % args
-                sql = " ".join([base_sql, where])
-                cursor.execute(sql, (schema,))
-                cursor.execute(TRIGGER % args)
+def update_syncdb_schema(app, created_models, verbosity, **kwargs):
+    for m in created_models:
+        do_updates(m)
 
-            if DJANGO_VERSION < (1, 6):
-                transaction.commit_unless_managed()
-
-post_syncdb.connect(update_schema, dispatch_uid='update_schema')
+if DJANGO_VERSION < (1, 7):
+    post_syncdb.connect(update_syncdb_schema, dispatch_uid='update_syncdb_schema')
+else:
+    post_migrate.connect(update_schema, dispatch_uid='update_schema')

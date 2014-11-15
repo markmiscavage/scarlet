@@ -4,6 +4,7 @@ import urlparse
 from django.db import models
 from django.db.models.signals import pre_save
 from django.db.models.fields.files import FieldFile
+from django.db.models.fields import FieldDoesNotExist
 from django.core.exceptions import ObjectDoesNotExist
 
 try:
@@ -112,8 +113,8 @@ class AssetsFileField(TaggedRelationField):
                 cropper.register(c)
                 self.image_sizes.append(c.name)
 
-        return super(AssetsFileField, self).__init__(
-            settings.ASSET_MODEL, **kwargs)
+        kwargs['to'] = settings.ASSET_MODEL
+        return super(AssetsFileField, self).__init__(**kwargs)
 
     def get_formfield_defaults(self):
         # This is a fairly standard way to set up some defaults
@@ -125,13 +126,17 @@ class AssetsFileField(TaggedRelationField):
 
     def contribute_to_class(self, cls, name):
         if self.denormalize and not cls._meta.abstract:
-            denormalize_field = self.cache_field_class(max_length=255,
+            cache_name = self.get_denormalized_field_name(name)
+            try:
+                cls._meta.get_field(cache_name)
+            except FieldDoesNotExist:
+                denormalize_field = self.cache_field_class(max_length=255,
                                                 editable=False,
                                                 blank=self.blank,
                                                 upload_to=utils.assets_dir,
                                                 image_sizes=self.image_sizes)
-            cache_name = self.get_denormalized_field_name(name)
-            cls.add_to_class(cache_name, denormalize_field)
+
+                cls.add_to_class(cache_name, denormalize_field)
             pre_save.connect(denormalize_assets, sender=cls)
 
         # add the field normally

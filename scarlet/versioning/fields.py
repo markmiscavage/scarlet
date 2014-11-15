@@ -14,6 +14,14 @@ class FKToVersion(models.ForeignKey):
         kwargs['to_field'] = 'vid'
         super(FKToVersion, self).__init__(*args, **kwargs)
 
+    def deconstruct(self):
+        """
+        FK to version always points to a version table
+        """
+        name, path, args, kwargs = super(FKToVersion, self).deconstruct()
+        if not kwargs['to'].endswith('_version'):
+            kwargs['to'] = '{0}_version'.format(kwargs['to'])
+        return name, path, args, kwargs
 
 class M2MFromVersion(models.ManyToManyField):
     """
@@ -47,8 +55,16 @@ class M2MFromVersion(models.ManyToManyField):
                 app_label = klass._meta.app_label
                 model_name = relation
 
-            model = models.get_model(app_label, model_name,
+            model = None
+            try:
+                model = klass._meta.apps.get_registered_model(app_label, model_name)
+            # For django < 1.6
+            except AttributeError:
+                model = models.get_model(app_label, model_name,
                             seed_cache=False, only_installed=False)
+            except LookupError:
+                pass
+
             if model:
                 self.rel.to = model
 
@@ -64,6 +80,7 @@ class M2MFromVersion(models.ManyToManyField):
 
         # Called to get a name
         self.set_attributes_from_name(name)
+        self.model = cls
 
         # Set the through field
         if not self.rel.through and not cls._meta.abstract:
@@ -72,7 +89,6 @@ class M2MFromVersion(models.ManyToManyField):
 
         # Do the rest
         super(M2MFromVersion, self).contribute_to_class(cls, name)
-
 
 def create_many_to_many_intermediary_model(field, klass):
     """
@@ -122,14 +138,17 @@ def create_many_to_many_intermediary_model(field, klass):
                                                           'to': to},
         'verbose_name_plural': '%(from)s-%(to)s relationships' % {
                                                       'from': from_, 'to': to},
+        'apps': field.model._meta.apps,
     })
 
     # Construct and return the new class.
-    return type(name, (models.Model,), {
+    return type(str(name), (models.Model,), {
         'Meta': meta,
         '__module__': klass.__module__,
         'from': FKToVersion(klass, related_name='%s+' % name,
-                            db_tablespace=field.db_tablespace),
+                            db_tablespace=field.db_tablespace,
+                            db_constraint=field.rel.db_constraint),
         'to': models.ForeignKey(to_model, related_name='%s+' % name,
-                                db_tablespace=field.db_tablespace)
+                                db_tablespace=field.db_tablespace,
+                                db_constraint=field.rel.db_constraint)
     })
