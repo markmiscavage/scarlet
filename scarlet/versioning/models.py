@@ -144,6 +144,7 @@ class Cloneable(models.Model):
 
             # Do the clone
             self.prep_for_clone()
+            self.validate_unique()
             # Prevent last save from changing
             self.save(last_save=self.last_save)
 
