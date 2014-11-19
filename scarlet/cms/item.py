@@ -6,6 +6,7 @@ from django.forms import models as model_forms
 from django.contrib.admin.util import flatten_fieldsets
 from django.db.models.fields import FieldDoesNotExist
 from django.db import models
+from django.core.exceptions import ValidationError
 
 from . import helpers
 from . import renders
@@ -237,7 +238,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
                 # from that
                 model = self.get_queryset().model
 
-        
+
         return model_forms.modelform_factory(model, **params)
 
     def get_form_kwargs(self):
@@ -445,6 +446,28 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         }
         return self.render(request, **context)
 
+    def is_valid(self, form, formsets):
+        valid_formsets = True
+        for formset in formsets.values():
+            if not formset.is_valid():
+                valid_formsets = False
+                break
+
+        if form.is_valid() and valid_formsets:
+            # Add any force_instance_values
+            force = self.get_force_instance_values()
+            if force:
+                for k, v in force.items():
+                    setattr(form.instance, k, v)
+                try:
+                    form.instance.full_clean()
+                except ValidationError, e:
+                    form._update_errors(e)
+                    return False
+            return True
+
+        return False
+
     def post(self, request, *args, **kwargs):
         """
         Method for handling POST requests.
@@ -470,7 +493,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
                 valid_formsets = False
                 break
 
-        if form.is_valid() and valid_formsets:
+        if self.is_valid(form, formsets):
             return self.form_valid(form, formsets)
         else:
             return self.form_invalid(form=form, **context)

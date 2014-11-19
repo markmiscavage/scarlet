@@ -8,8 +8,8 @@ except ImportError:
 
 from django.middleware.cache import CacheMiddleware
 from django.utils.cache import patch_response_headers, get_max_age, patch_vary_headers
-from django.core.cache import cache
 from django.conf import settings
+import router
 
 class CacheMixin(object):
 
@@ -43,6 +43,16 @@ class CacheMixin(object):
         By default raises a NotImplemented errors
         """
         raise NotImplemented
+
+    def get_cache_route_group(self):
+        """
+        Hook for getting the route group for caches
+
+        Should use the cache group to get the value
+
+        By default it uses the default route group
+        """
+        return 'default'
 
     def get_cache_prefix(self, prefix=''):
         """
@@ -95,8 +105,10 @@ class CacheMixin(object):
         return response
 
     def set_cache_middleware(self, cache_time, prefix):
+        name = router.router.get_cache_name(prefix=prefix)
         self.cache_middleware = CacheMiddleware(cache_timeout=cache_time,
-                                                  key_prefix=prefix)
+                                                  key_prefix=prefix,
+                                                cache_alias=name)
 
     def _finalize_cached_response(self, request, response):
         headers = self.get_vary_headers(request, response)
@@ -130,6 +142,7 @@ class CacheView(View, CacheMixin):
     you specify here it will be replaced by this value. Defaults to 0.
     """
 
+
     cache_time = 60 * 60
     max_age = 0
 
@@ -142,17 +155,20 @@ class CacheView(View, CacheMixin):
         """
 
         value = None
+        cache = None
+        prefix = None
         if self.should_cache():
-            prefix = "%s:%s" % (self.get_cache_version(),
+            prefix = "%s:%s:string" % (self.get_cache_version(),
                                 self.get_cache_prefix())
-            value = cache.get(prefix + ":string")
+            cache = router.router.get_cache(prefix)
+            value = cache.get(prefix)
 
         if not value:
             value = super(CacheView, self).get_as_string(request, *args,
                                                          **kwargs)
             if self.should_cache() and value and \
                     getattr(self.request, '_cache_update_cache', False):
-                cache.set(prefix + ":string", value, self.cache_time)
+                cache.set(prefix, value, self.cache_time)
 
         return value
 
