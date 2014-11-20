@@ -33,6 +33,7 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = get_user_model()
+        exclude = []
 
 
 class SignupModelForm(forms.ModelForm):
