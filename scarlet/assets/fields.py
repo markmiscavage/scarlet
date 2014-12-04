@@ -145,6 +145,14 @@ class AssetsFileField(TaggedRelationField):
     def get_denormalized_field_name(self, name):
         return u"{0}_cache".format(name)
 
+    def deconstruct(self):
+        """
+        Denormalize is always false migrations
+        """
+        name, path, args, kwargs = super(AssetsFileField, self).deconstruct()
+        kwargs['denormalize'] = False
+        return name, path, args, kwargs
+
 def denormalize_assets(sender, instance, **kwargs):
     for field in instance._meta.fields:
         if isinstance(field, AssetsFileField):
