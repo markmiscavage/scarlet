@@ -619,7 +619,10 @@ class AnnotatedHTMLWidget(widgets.MultiWidget):
         if value:
             parts = value.rpartition(self.START_HTML)
             if parts[1]:
-                return parts[0], parts[2].rstrip(self.END_HTML)
+                annotation = parts[2]
+                if annotation.endswith(self.END_HTML):
+                    annotation = annotation[:-len(self.END_HTML)]
+                return parts[0], annotation
             return [value, ""]
         return ["", ""]
 
