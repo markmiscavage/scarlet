@@ -1,81 +1,124 @@
 // Insert Media WYSIHTML5 Command Module
 define(
 	[
-		"$",
-		"admin/modules/WindowPopup"
+		"$"
 	],
-	function ($, WindowPopup) {
+	function ($) {
+		var undef,
+			NODE_NAME = "A",
+			dom       = wysihtml5.dom,
+			className = "wysiwyg-text-annotated";
 
-		return {
+	  function _removeFormat(composer, anchors) {
+		var length  = anchors.length,
+			i       = 0,
+			anchor,
+			codeElement,
+			textContent;
+		for (; i<length; i++) {
+			anchor      = anchors[i];
+			codeElement = dom.getParentElement(anchor, { nodeName: "code" });
+			textContent = dom.getTextContent(anchor);
 
-			// Launches a centered popup.
-			launchWindow : function (url, width, height, top, left, cb) {
+			// if <a> contains url-like text content, rename it to <code> to prevent re-autolinking
+			// else replace <a> with its childNodes
+			if (textContent.match(dom.autoLink.URL_REG_EXP) && !codeElement) {
+				// <code> element is used to prevent later auto-linking of the content
+				codeElement = dom.renameElement(anchor, "code");
+			} else {
+				dom.replaceWithChildNodes(anchor);
+			}
+		}
 
-				left = left || (screen.width) ? (screen.width - width) / 2 : 0;
-				top = top || (screen.height) ? (screen.height - height) / 2 : 0;
+		composer.parent.fire("change");
+	  }
 
-				WindowPopup.request(url, [
-					'width=' + width,
-					'height=' + height,
-					'top=' + top,
-					'left=' + left,
-					'scrollbars=yes',
-					'location=no',
-					'directories=no',
-					'status=no',
-					'menubar=no',
-					'toolbar=no',
-					'resizable=no'
-				].join(','), cb);
+	  function _format(composer, attributes) {
+		var doc             = composer.doc,
+			tempClass       = "_wysihtml5-temp-" + (+new Date()),
+			tempClassRegExp = /non-matching-class/g,
+			i               = 0,
+			length,
+			anchors,
+			anchor,
+			hasElementChild,
+			isEmpty,
+			elementToSetCaretAfter,
+			textContent,
+			whiteSpace,
+			j;
+		wysihtml5.commands.formatInline.exec(composer, undef, NODE_NAME, tempClass, tempClassRegExp);
+		anchors = doc.querySelectorAll(NODE_NAME + "." + tempClass);
+		length  = anchors.length;
 
-			},
+		// set unique annotation ID
+		attributes['data-annotation-id'] = "a-" + Math.round(+new Date()/1000);
 
-			// Base execute (executes when "insert annotation" is clicked)
-			exec : function (composer, command, value) {
+		for (; i<length; i++) {
+			anchor = anchors[i];
+			anchor.removeAttribute("class");
+			for (j in attributes) {
+				anchor.setAttribute(j, attributes[j]);
+			}
+		}
 
-				var pre = this.state(composer);
+		elementToSetCaretAfter = anchor;
+		if (length === 1) {
+			textContent = dom.getTextContent(anchor);
+			hasElementChild = !!anchor.querySelector("*");
+			isEmpty = textContent === "" || textContent === wysihtml5.INVISIBLE_SPACE;
+			if (!hasElementChild && isEmpty) {
+				dom.setTextContent(anchor, attributes.text || anchor.href);
+				whiteSpace = doc.createTextNode(" ");
+				composer.selection.setAfter(anchor);
+				dom.insert(whiteSpace).after(anchor);
+				elementToSetCaretAfter = whiteSpace;
+			}
+		}
+		composer.selection.setAfter(elementToSetCaretAfter);
+	}
 
-				if (pre) {
-					composer.selection.executeAndRestore(function() {
-						var code = pre.querySelector("code");
-						wysihtml5.dom.replaceWithChildNodes(pre);
-						if (code) {
-							wysihtml5.dom.replaceWithChildNodes(pre);
-						}
-					});
+	function _disableCommand(element) {
+		if (element.className.indexOf('disabled') < 0) {
+			element.className = element.className + ' disabled';
+		}
+	}
 
-				} else {
+	function _enableCommand(element) {
+		if (element.className.indexOf('disabled') > -1) {
+			element.className = element.className.replace(/\bdisabled\b/, '');
+		}
+	}
 
-					// Launches a popup, given a URL.
-					this.launchWindow(value.mediaUrl, 1025, 600, null, null, function (data) {
+	return {
 
-						// Inserts the response from the popup as a DOM node
-						var range = composer.selection.getRange(),
-							selectedNodes = range.extractContents(),
-							annotationHtml = $(data)[0].value,
-							pre = composer.doc.createElement("pre"),
-							code = composer.doc.createElement("code");
+		exec: function(composer, command, value) {
+			var anchors = this.state(composer, command);
 
-						pre.setAttribute("class", "annotated");
-						code.setAttribute("class", "annotation");
+			if (anchors) {
+				// Selection contains links
+				composer.selection.executeAndRestore(function() {
+					_removeFormat(composer, anchors);
+				});
+			} else {
+				// Create links
+				value = typeof(value) === "object" ? value : { href: value };
+				_format(composer, value);
+			}
+		},
 
-						pre.appendChild(selectedNodes);
-						pre.appendChild(code);
+		state: function(composer, command) {
+			var range = composer.selection.getRange(),
+				element = document.getElementById(composer.textarea.parent.id + '-toolbar').querySelector('[data-wysihtml5-command="insertAnnotation"]'),
+				state = wysihtml5.commands.formatInline.state(composer, command, "A", className, new RegExp(className, "g"));
 
-						code.innerText = annotationHtml;
-
-						range.insertNode(pre);
-						composer.selection.selectNode(pre);
-
-					}.bind(this));
-				}
-			},
-
-			state: function (composer, command, value) {
-				var selectedNode = composer.selection.getSelectedNode();
-
-				return wysihtml5.dom.getParentElement(selectedNode, { nodeName: "code" });
+			if (range.collapsed && !state) {
+				_disableCommand(element);
+			} else {
+				_enableCommand(element);
 			}
 
-		};
-	});
+			return state;
+		}
+	}
+});
