@@ -132,7 +132,7 @@ define(
 			onSaveDialog: function (data) {
 				var annotationId = $(this.editor.composer.selection.getSelection().nativeSelection.anchorNode.parentNode).attr('data-annotation-id'),
 					annotationsEl = this.dom.find('.wysiwyg-annotations'),
-					annotationHtml = '<span id=" + annotationId + ">' + $(data.dialogContainer).find('textarea').val() + '</span>';
+					annotationHtml = '<span id="' + annotationId + '">' + $(data.dialogContainer).find('textarea').val() + '</span>';
 
 				annotationsEl.val(annotationsEl.val() + annotationHtml);
 				this.enableEditor();
