@@ -358,8 +358,8 @@ class VersionViewMeta(SharedMeta):
         versioned_attrs['vid'] = models.AutoField(primary_key=True)
 
         # Create a FK to base
-        versioned_attrs['object'] = models.ForeignKey(base_name,
-                                                  related_name='version')
+        versioned_attrs['object'] = models.ForeignKey(
+            base_name, related_name=base_model.get_related_name(name))
 
         versioned_attrs = add_managers(versioned_attrs)
 
@@ -481,8 +481,11 @@ class VersionModelMeta(models.base.ModelBase):
                 meta._base_model = None
 
             # Create a FK to base
-            attrs['object'] = models.ForeignKey(base_model.__name__,
-                                    related_name='version', editable=False)
+            attrs['object'] = models.ForeignKey(
+                base_model.__name__,
+                related_name=base_model.get_related_name(name),
+                editable=False,
+            )
             attrs = add_managers(attrs)
 
         mod = super(VersionModelMeta, cls).__new__(cls, name, bases, attrs)
@@ -523,6 +526,15 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
+
+    @classmethod
+    def get_related_name(cls, name=None):
+        """
+        Override this method and provide a unique related_name to avoid
+        conflicts if multiple VersionViews are using the same _base_model
+        in their Meta attributes.
+        """
+        return 'version'
 
     def get_version(self, state=None, date=None):
         """
