@@ -1927,8 +1927,16 @@ table tbody tr td.checkbox {
   border-top-left-radius: 3px;
   border-bottom-left-radius: 3px;
 }
-
 /* line 71, ../compass/scss/admin/modules/_wysiwyg.scss */
+.wysiwyg-buttons .disabled,
+.wysiwyg-buttons .disabled:hover {
+  cursor: default;
+  color: #B8B8B8;
+  border-color: #B8B8B8;
+  background-color: #E5E5E5;
+}
+
+/* line 79, ../compass/scss/admin/modules/_wysiwyg.scss */
 .wysiwyg-modals .modal {
   position: absolute;
   top: 100%;
@@ -1939,6 +1947,7 @@ table tbody tr td.checkbox {
   padding: 20px;
   width: 400px;
   margin-left: -200px;
+  z-index: 1;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   -ms-border-radius: 3px;
@@ -1947,7 +1956,7 @@ table tbody tr td.checkbox {
   -moz-box-shadow: 1px 4px 5px rgba(49, 75, 93, 0.25);
   box-shadow: 1px 4px 5px rgba(49, 75, 93, 0.25);
 }
-/* line 84, ../compass/scss/admin/modules/_wysiwyg.scss */
+/* line 93, ../compass/scss/admin/modules/_wysiwyg.scss */
 .wysiwyg-modals .modal a {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -1979,14 +1988,22 @@ table tbody tr td.checkbox {
   color: #b6cad1;
 }
 
-/* line 90, ../compass/scss/admin/modules/_wysiwyg.scss */
+/* line 99, ../compass/scss/admin/modules/_wysiwyg.scss */
 [data-wysihtml5-command=bold] {
   font-weight: bold;
 }
 
-/* line 94, ../compass/scss/admin/modules/_wysiwyg.scss */
+/* line 103, ../compass/scss/admin/modules/_wysiwyg.scss */
 [data-wysihtml5-command=italic] {
   font-style: italic;
+}
+
+/* line 107, ../compass/scss/admin/modules/_wysiwyg.scss */
+.wysiwyg-annotations {
+  visibility: hidden;
+  position: absolute;
+  width: 0;
+  height: 0;
 }
 
 /* line 5, ../compass/scss/admin/modules/_insert-media.scss */
