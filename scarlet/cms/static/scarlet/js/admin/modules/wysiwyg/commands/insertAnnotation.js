@@ -1,9 +1,10 @@
 // Insert Media WYSIHTML5 Command Module
 define(
 	[
-		"$"
+		"$",
+		"wysihtml5"
 	],
-	function ($) {
+	function ($, wysihtml5) {
 		var undef,
 			NODE_NAME = "A",
 			dom       = wysihtml5.dom,
