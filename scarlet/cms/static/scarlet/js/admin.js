@@ -20743,9 +20743,10 @@ define(
 // Insert Media WYSIHTML5 Command Module
 define(
 	'admin/modules/wysiwyg/commands/insertAnnotation',[
-		"$"
+		"$",
+		"wysihtml5"
 	],
-	function ($) {
+	function ($, wysihtml5) {
 		var undef,
 			NODE_NAME = "A",
 			dom       = wysihtml5.dom,
@@ -20868,9 +20869,10 @@ define(
 // Insert Media WYSIHTML5 Command Module
 define(
 	'admin/modules/wysiwyg/commands/insertLink',[
-		"$"
+		"$",
+		"wysihtml5"
 	],
-	function ($) {
+	function ($, wysihtml5) {
 		var undef,
 			NODE_NAME = "A",
 			dom       = wysihtml5.dom;
