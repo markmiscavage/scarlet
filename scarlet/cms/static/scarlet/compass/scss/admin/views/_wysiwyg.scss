@@ -65,3 +65,16 @@ a,
 a:visited {
 	color: $medium-blue;
 }
+
+.wysiwyg-text-annotated,
+a.wysiwyg-text-annotated {
+	background: #B6CAD1;
+	color: #fff;
+	text-decoration: none;
+	padding: 1px 3px;
+
+	&:after {
+		content: ' *';
+		font-weight: normal;
+	}
+}

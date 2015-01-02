@@ -1,0 +1,37 @@
+{% extends "cms/base_popup.html" %}
+
+{% block page_class %}{% endblock page_class %}
+
+{% block popup_header %}
+{% endblock popup_header %}
+
+{% block content %}
+
+<div class="widget-insert-annotation">
+	<div class="widget-wysiwyg">
+		<div class="wysiwyg-toolbar">
+			<div class="wysiwyg-buttons">
+				<a data-wysihtml5-command="bold" title="CTRL+B">b</a>
+				<a data-wysihtml5-command="italic" title="CTRL+I">i</a>
+				<a class="spacer" data-wysihtml5-command="createLink">link</a>
+				<a data-wysihtml5-command="undo">undo</a>
+				<a class="spacer" data-wysihtml5-command="redo">redo</a>
+				<a class="spacer" data-wysihtml5-action="change_view">view html</a>
+			</div>
+			<div class="wysiwyg-modals">
+				<div class="modal" data-wysihtml5-dialog="createLink" style="display: none;">
+					<label>Enter link</label>
+					<input data-wysihtml5-dialog-field="href" value="http://" class="text">
+					<a data-wysihtml5-dialog-action="save">OK</a>
+					<a data-wysihtml5-dialog-action="cancel">Cancel</a>
+				</div>
+			</div>
+		</div>
+		<form>
+			<textarea class="wysiwyg-textarea"></textarea>
+		</form>
+	</div>
+	<div id="test">OK</div>
+</div>
+
+{% endblock content %}
