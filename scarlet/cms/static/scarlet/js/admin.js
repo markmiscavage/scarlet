@@ -11082,598 +11082,6 @@ define(
 	}
 );
 
-define(
-
-	'admin/modules/Formset',[
-		"rosy/base/DOMClass",
-		"$",
-		"$ui",
-		"$plugin!select2",
-		"./WidgetEvents"
-	],
-
-	function (DOMClass, $, $ui, jQuerySelect2, WidgetEvents) {
-
-		
-
-		return DOMClass.extend({
-
-			dom : null,
-			forms : null,
-
-			prefix : '',
-
-			isDraggable : false,
-
-			init : function (dom) {
-				this.dom = dom;
-				this.forms = dom.find('.widget-formset-forms');
-				this.prefix = this.dom.data('prefix');
-
-				this.dom.on('click', '.widget-formset-delete', this._delete);
-				this.dom.on('click', '.widget-formset-add', this._add);
-
-				this._initSort();
-			},
-
-			_delete : function (e) {
-				var dom = $(e.currentTarget),
-					form = dom.closest('.widget-formset-form');
-
-				dom.find('input').attr('checked', true);
-
-				form.addClass('was-deleted');
-				form.find('.widget-formset-order input').val(0);
-
-				this._resort();
-			},
-
-			/************************************
-				Add
-			************************************/
-
-			_count : function () {
-				return this.dom.find('.widget-formset-form').length;
-			},
-
-			_add : function () {
-				var clone = $('<div>').addClass('widget-formset-form added-with-js'),
-					html = this.dom.find('.widget-formset-form-template').html();
-
-				html = html.replace(/(__prefix__)/g, this._count());
-				clone.html(html);
-
-				this.forms.append(clone);
-
-				if (this.isDraggable) {
-					clone.addClass('draggable');
-				}
-
-				this.publish(WidgetEvents.RENDER, {
-					dom : clone
-				});
-
-				this._resort();
-			},
-
-			/************************************
-				Sorting
-			************************************/
-
-			_initSort : function () {
-				if (this.forms.find('.widget-formset-order').length) {
-					this.forms.sortable({
-						update : this._resort,
-						change : this._resort
-					});
-					this.dom.find('.widget-formset-form').addClass('draggable');
-					this.isDraggable = true;
-				}
-				this._resort();
-			},
-
-			_resort : function () {
-				var order = 0,
-					forms = this.dom.find('.widget-formset-form'),
-					helper = this.dom.find('.ui-sortable-helper'),
-					placeholder = this.dom.find('.ui-sortable-placeholder');
-
-				forms.each(function (i, dom) {
-					dom = $(dom);
-
-					if (dom.is('.was-deleted, .ui-sortable-helper')) {
-						return;
-					}
-
-					if (order % 2) {
-						dom.addClass('odd');
-					} else {
-						dom.removeClass('odd');
-					}
-
-					dom.find('.widget-formset-order input').val(order);
-					order++;
-				});
-
-				if (placeholder.hasClass('odd')) {
-					helper.addClass('odd');
-				} else {
-					helper.removeClass('odd');
-				}
-
-				this.dom.find('#id_' + this.prefix + '-TOTAL_FORMS').val(forms.length);
-			}
-		});
-	}
-);
-
-define(
-	'admin/modules/Tabs',[
-		"rosy/base/DOMClass",
-		"$"
-	],
-	function (DOMClass, $) {
-
-		
-
-		return DOMClass.extend({
-
-			dom : null,
-			tabs : null,
-
-			init : function (dom) {
-				this.dom = dom;
-				this.data = this.dom.data();
-				this.bindTabEvents();
-				this.autoSelectFirstTab();
-			},
-
-			bindTabEvents : function () {
-				this.$container = $(this.data.tabsContainer);
-				this.$tabs = this.dom.find('[data-tabs-content]');
-
-				if (!this.$container.length) {
-					return;
-				}
-
-				this.$tabs.on('click', this.onTabClick);
-
-			},
-
-			unbindTabEvents : function () {
-				if (this.$tabs && this.$tabs.length) {
-					this.$tabs.off();
-				}
-			},
-
-			onTabClick : function (e) {
-				e.preventDefault();
-
-				var $tab = $(e.currentTarget);
-
-				this.highlightTab($tab);
-				this.selectTab($tab.data('tabsContent'));
-
-			},
-
-			highlightTab : function ($tab) {
-				this.$tabs.removeClass('active');
-				$tab.addClass('active');
-			},
-
-			selectTab : function (selector) {
-				var $content = this.$container.find(selector);
-
-				if (!$content.length) {
-					return;
-				}
-
-				this.hideTabContent();
-				$content.show();
-
-			},
-
-			hideTabContent : function () {
-				this.$container.children().hide();
-			},
-
-			autoSelectFirstTab : function () {
-				var $firstTab = this.$tabs.eq(0);
-				this.highlightTab($firstTab);
-				this.selectTab($firstTab.data('tabsContent'));
-			},
-
-			destroy : function () {
-				this.unbindTabEvents();
-				this.sup();
-			}
-
-		});
-
-	});
-
-define(
-	'admin/modules/Insert',[
-		"rosy/base/DOMClass",
-		"$",
-		"admin/modules/WindowPopup"
-	],
-	function (DOMClass, $, WindowPopup) {
-
-		
-
-		return DOMClass.extend({
-
-			$dom : null,
-
-			vars : {
-				$inputs : null,
-				$form : null,
-				$node : false,
-				constrain : false,
-				size : {
-					width : null,
-					height : null
-				}
-			},
-
-			init : function () {
-
-				this.$dom = this.vars.$dom;
-				this.vars.$inputs = this.$dom.find("[data-attribute]");
-				this.vars.$form = this.$dom.find("form");
-
-				this.bindInputs();
-				this.sup();
-
-			},
-
-			bindInputs : function () {
-				this.vars.$inputs.on("keypress paste", this.onDelayInput);
-				this.vars.$form.on("submit", this.onSubmit);
-				this.vars.$form.find(".cancel").on("click", this.onCancel);
-				this.$dom.find(".constrain").on("change", this.onConstrainChange);
-			},
-
-			unbindInputs : function () {
-				this.vars.$inputs.off();
-				this.vars.$form.off();
-				this.vars.$form.find(".cancel").off();
-				this.$dom.find(".constrain").off();
-			},
-
-			// Helper to delay onInput call on paste
-			// http://stackoverflow.com/a/1503425
-			onDelayInput : function (e) {
-				this.setTimeout(function () {
-					this.onInput(e);
-				});
-			},
-
-			// NOTE: this method must be overwritten by the extending class.
-			onInput : function (e) {
-				throw "You must override the `onInput` method.";
-			},
-
-			// Helper to constrain proportions
-			// given a dimension("width" || "height") and integer value.
-			constrainProportion : function (dimension, value) {
-
-				value = parseInt(value, 10);
-
-				if (!this.vars.$node || isNaN(value)) {
-					return;
-				}
-
-				var opposite = (dimension === "width") ? "height" : "width",
-					oppositeValue = this.vars.size[opposite],
-					ratio = ((value - this.vars.size[dimension]) / this.vars.size[dimension]) + 1;
-
-				// Sets the opposing axis based on the ratio difference in value.
-				this.vars.size[opposite] = Math.round(oppositeValue * ratio);
-
-				// Updates the proportion attribute.
-				this.setAttribute(opposite, this.vars.size[opposite]);
-
-			},
-
-			// Helper to set a given attribute
-			setAttribute : function (attr, val) {
-				this.vars.$inputs.filter("[data-attribute=\"" + attr + "\"]").val(val);
-				this.vars.$node.attr(attr, val);
-			},
-
-			// Sets the constrain value to the state of the check-box
-			onConstrainChange : function (e) {
-				this.vars.constrain = !!($(e.currentTarget).is(":checked"));
-			},
-
-			// Sends data back to the parent window.
-			onSubmit : function (e) {
-				e.preventDefault();
-				WindowPopup.respond(this.vars.$node);
-			},
-
-			onCancel : function () {
-				window.close();
-			},
-
-			destroy : function () {
-				this.unbindInputs();
-				this.sup();
-			}
-
-		});
-
-	}
-);
-
-define(
-	'admin/modules/InsertVideo',[
-		"./Insert",
-		"$",
-	],
-	function (Insert, $) {
-
-		
-
-		return Insert.extend({
-
-			vars : {
-				size : {
-					width : 560,
-					height : 315
-				},
-				providers : [
-					{
-						name : "youtube",
-						regex : /(?:youtube(?:-nocookie)?\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/,
-						embed : "http://www.youtube.com/embed/"
-					},
-					{
-						name : "vimeo",
-						regex : /(?:vimeo.com\/(.*))/,
-						embed : "http://player.vimeo.com/video/"
-					}
-				],
-			},
-
-			// Generates or updates the iframe with the latest input value.
-			onInput : function (e) {
-
-				var $target = $(e.currentTarget),
-					attribute = $target.data("attribute"),
-					value = $(e.currentTarget).val(),
-					$preview = this.$dom.find(".video-preview"),
-					$video = $preview.find("iframe");
-
-				if (attribute === "src") {
-					value = this.validateVideo(value);
-				}
-
-				if (!$video.length) {
-
-					$video = $("<iframe />");
-					$video.attr({
-						"frameborder" : "0",
-						"allowfullscreen" : ""
-					});
-
-					$preview.append($video);
-
-					this.vars.$node = $video;
-
-					this.setAttribute("width", this.vars.size.width);
-					this.setAttribute("height", this.vars.size.height);
-
-				} else {
-					this.vars.$node = $video;
-				}
-
-				if (attribute === "width" || attribute === "height") {
-
-					value = value.replace("px", "");
-
-					if (this.vars.constrain) {
-						this.constrainProportion(attribute, value);
-					}
-
-					this.vars.size[attribute] = value;
-
-				}
-
-				this.vars.$node = $video.attr(attribute, value);
-
-			},
-
-			// Validates the video URL to a matching provider.
-			// Useful for video URLs that are not necessarily "embeddable" URLs.
-			validateVideo : function (url) {
-
-				var i = 0,
-					match,
-					providers = this.vars.providers,
-					provider;
-
-				for (; i < providers.length; i++) {
-
-					provider = providers[i];
-					match = url.match(provider.regex);
-
-					if (match) {
-						return provider.embed + match[1];
-					}
-
-				}
-
-				return url;
-
-			},
-
-		});
-
-	});
-
-define(
-	'admin/modules/InsertImage',[
-		"./Insert",
-		"$"
-	],
-	function (Insert, $) {
-
-		
-
-		return Insert.extend({
-
-			// Extending to bind to a special data-respond attribute for Select2.
-			bindInputs : function () {
-				this.sup();
-				this.$dom.find('[data-respond=\"true\"]').on("change", this.onInput);
-			},
-
-			// Generates or updates the image with the latest input value.
-			onInput : function (e) {
-
-				var $target = $(e.currentTarget),
-					attribute = $target.data('attribute'),
-					value = $(e.currentTarget).val(),
-					$preview = this.$dom.find(".image-preview"),
-					$img = $preview.find('img');
-
-				// Adjusts the source to come from the data attribute.
-				if ($target.attr('data-src')) {
-					$preview.empty();
-					$img = $preview.find('img');
-					value = $target.attr('data-src');
-				}
-
-				if (!$img.length) {
-
-					$img = $("<img />");
-					$preview.append($img);
-
-					this.vars.$node = $img;
-
-					$img.on("load", this.proxy(function (e) {
-
-						var width = $img.width(),
-							height = $img.height();
-
-						this.vars.size.width = width;
-						this.vars.size.height = height;
-
-						this.setAttribute("width", width);
-						this.setAttribute("height", height);
-
-					}));
-
-				} else {
-					this.vars.$node = $img;
-				}
-
-				if (attribute === "width" || attribute === "height") {
-
-					value = value.replace("px", "");
-
-					if (this.vars.constrain) {
-						this.constrainProportion(attribute, value);
-					}
-
-					this.vars.size[attribute] = value;
-
-				}
-
-				this.vars.$node = $img.attr(attribute, value);
-
-			}
-
-
-		});
-
-	});
-
-define(
-	'admin/modules/InsertAudio',[
-		"./Insert",
-		"$"
-	],
-	function (Insert, $) {
-
-		
-
-		return Insert.extend({
-
-			// Extending to bind to a special data-respond attribute for Select2.
-			bindInputs : function () {
-				this.sup();
-				this.$dom.find('[data-respond=\"true\"]').on("change", this.onInput);
-			},
-
-			// Generates or updates the audio with the latest input value.
-			onInput : function (e) {
-
-				var $target = $(e.currentTarget),
-					attribute = $target.data('attribute'),
-					value = $(e.currentTarget).val(),
-					$audio = this.$dom.find('audio');
-
-				// Adjusts the source to come from the data attribute.
-				if ($target.attr('data-src') && value) {
-					value = $target.attr('data-src');
-				}
-
-				$audio[0].src = value;
-				$audio[0].load();
-
-				this.vars.$node = $audio;
-			}
-
-		});
-
-	});
-
-define(
-	'admin/modules/InsertAnnotation',[
-		"./Insert",
-		"$"
-	],
-	function (Insert, $) {
-
-		
-
-		return Insert.extend({
-
-			init: function () {
-				console.log(window.frameElement)
-				window.frameElement._cbInit();
-				this.sup();
-			},
-
-			onSubmit: function (e) {
-				e.preventDefault();
-				window.frameElement._cbSubmit(this.vars.$node.val());
-				console.log(window.frameElement);
-			},
-
-			bindInputs : function () {
-				this.sup();
-				this.vars.$node = this.$dom.find('.wysiwyg-textarea');
-
-				this.vars.$node.addEventListener('input', function() {
-					console.log('changed')
-				}, false);
-
-				this.vars.$form.find(".remove").on("click", this.onRemove);
-			},
-
-			onRemove : function () {
-				this.$dom.find('.wysiwyg-textarea').val(null);
-				this.vars.$form.submit();
-			}
-		});
-
-	});
-
 // THIS LIBRARY HAS BEEN MODIFIED IN 2 PLACES
 // LOOK FOR "// NOTE: custom -"
 
@@ -22279,6 +21687,670 @@ define(
 		});
 	}
 );
+
+/* jshint loopfunc: true */
+
+define(
+
+	'admin/modules/Formset',[
+		"rosy/base/DOMClass",
+		"$",
+		"$ui",
+		"$plugin!select2",
+		"./WidgetEvents",
+		"./wysiwyg/Wysiwyg",
+	],
+
+	function (DOMClass, $, $ui, jQuerySelect2, WidgetEvents, Wysiwyg) {
+
+		
+
+		return DOMClass.extend({
+
+			dom : null,
+			forms : null,
+
+			types: [],
+
+			prefix : '',
+
+			isDraggable : false,
+
+			init : function (dom) {
+				this.dom = dom;
+				this.forms = dom.find('.widget-formset-forms');
+				this.controls = dom.next('.widget-formset-controls');
+				this.prefix = this.dom.data('prefix');
+
+				this.dom.on('click', '.widget-formset-delete', this._delete);
+
+				this._initTypes();
+				this._initSort();
+				this._initControls();
+			},
+
+			_delete : function (e) {
+				var dom = $(e.currentTarget),
+					form = dom.closest('.widget-formset-form');
+
+				dom.find('input').attr('checked', true);
+
+				form.addClass('was-deleted');
+				form.find('.widget-formset-order input').val(0);
+
+				this._resort();
+			},
+
+			/************************************
+				Add
+			************************************/
+
+			_count : function (typeOf) {
+				return this.dom.find('.widget-formset-form[data-prefix=' + typeOf + ']').length;
+			},
+
+			_add : function (e) {
+				var $scope = $(e.currentTarget),
+					typeOf = $scope.data('prefix'),
+					clone = $('<div>').addClass('widget-formset-form added-with-js').attr('data-prefix', typeOf),
+					html = $scope.find('.widget-formset-form-template').html();
+
+				html = html.replace(/(__prefix__)/g, this._count(typeOf));
+				clone.html(html);
+
+				this.forms.append(clone);
+
+				if (this.isDraggable) {
+					clone.addClass('draggable');
+				}
+
+				this.publish(WidgetEvents.RENDER, {
+					dom : clone
+				});
+
+				if (this.types.indexOf(typeOf) === -1) {
+					this.types.push(typeOf);
+				}
+
+				this._initSort();
+			},
+
+			/************************************
+				Sorting
+			************************************/
+
+			_initSort : function () {
+				if (this.forms.find('.widget-formset-order').length) {
+					this.forms.sortable({
+						update : this._resort,
+						//change : this._resort,
+						stop   : this._repairWysiwyg
+					});
+					this.dom.find('.widget-formset-form').addClass('draggable');
+					this.isDraggable = true;
+				}
+				this._resort();
+			},
+
+			_resort : function () {
+				var helper = this.dom.find('.ui-sortable-helper'),
+					placeholder = this.dom.find('.ui-sortable-placeholder');
+
+				this.dom.find('.widget-formset-form').each(function (i, dom) {
+					dom = $(dom);
+
+					if (dom.is('.was-deleted, .ui-sortable-helper')) {
+						return;
+					}
+
+					if (i % 2) {
+						dom.addClass('odd');
+					} else {
+						dom.removeClass('odd');
+					}
+
+					dom.find('.widget-formset-order input').val(i);
+				});
+
+				if (placeholder.hasClass('odd')) {
+					helper.addClass('odd');
+				} else {
+					helper.removeClass('odd');
+				}
+
+				this._updateMetadata();
+			},
+
+			// workaround for WYSIHTML5 failing after iframe is moved
+			_repairWysiwyg : function (e, elem) {
+				var $wysiwyg = $(elem.item[0]).find('.widget-wysiwyg');
+
+				if ($wysiwyg.length) {
+					$('.wysihtml5-sandbox', $wysiwyg).remove();
+					var wysiwyg = new Wysiwyg($wysiwyg);
+				}
+			},
+
+			/************************************
+				Metadata
+			************************************/
+
+			_initTypes : function () {
+				var self = this;
+				this.controls.find('.widget-formset-add').each(function () {
+					self.types.push($(this).data('prefix'));
+				});
+			},
+
+			_updateMetadata : function () {
+				for (var i = 0; i < this.types.length; i++) {
+
+					var typeOf = this.types[i],
+						$formset = $('.widget-formset-form[data-prefix=' + typeOf + ']');
+
+					$formset.each(function (n, el) {
+						var $this = $(this);
+						$this.find('.widget-formset-order input').val($this.prevAll().length);
+					});
+
+					$('#id_' + typeOf + '-TOTAL_FORMS').val($formset.length);
+				}
+			},
+
+			/************************************
+				Controls
+			************************************/
+
+			_initControls : function () {
+				var attrDataPrefix = this.prefix ? '[data-prefix=' + this.prefix + ']' : '[data-prefix]';
+
+				$('.widget-formset-add' + attrDataPrefix).on('click', this._add);
+
+				this.controls.filter('.dropdown')
+					.on('click', this._toggleOptions)
+					.on('mouseout', this._closeOptions);
+			},
+
+			_toggleOptions : function (e) {
+				$(e.currentTarget).toggleClass('show');
+			},
+
+			_closeOptions : function (e) {
+				var parent = e.currentTarget,
+					child = e.toElement || e.relatedTarget;
+
+				// check all children (checking from bottom up)
+				// prevent closing on child event
+				while (child && child.parentNode && child.parentNode !== window) {
+
+					if (child.parentNode === parent || child === parent) {
+
+						if (child.preventDefault) {
+							child.preventDefault();
+						}
+
+						return false;
+					}
+
+					child = child.parentNode;
+				}
+
+				$(parent).removeClass('show');
+			}
+		});
+	}
+);
+
+define(
+	'admin/modules/Tabs',[
+		"rosy/base/DOMClass",
+		"$"
+	],
+	function (DOMClass, $) {
+
+		
+
+		return DOMClass.extend({
+
+			dom : null,
+			tabs : null,
+
+			init : function (dom) {
+				this.dom = dom;
+				this.data = this.dom.data();
+				this.bindTabEvents();
+				this.autoSelectFirstTab();
+			},
+
+			bindTabEvents : function () {
+				this.$container = $(this.data.tabsContainer);
+				this.$tabs = this.dom.find('[data-tabs-content]');
+
+				if (!this.$container.length) {
+					return;
+				}
+
+				this.$tabs.on('click', this.onTabClick);
+
+			},
+
+			unbindTabEvents : function () {
+				if (this.$tabs && this.$tabs.length) {
+					this.$tabs.off();
+				}
+			},
+
+			onTabClick : function (e) {
+				e.preventDefault();
+
+				var $tab = $(e.currentTarget);
+
+				this.highlightTab($tab);
+				this.selectTab($tab.data('tabsContent'));
+
+			},
+
+			highlightTab : function ($tab) {
+				this.$tabs.removeClass('active');
+				$tab.addClass('active');
+			},
+
+			selectTab : function (selector) {
+				var $content = this.$container.find(selector);
+
+				if (!$content.length) {
+					return;
+				}
+
+				this.hideTabContent();
+				$content.show();
+
+			},
+
+			hideTabContent : function () {
+				this.$container.children().hide();
+			},
+
+			autoSelectFirstTab : function () {
+				var $firstTab = this.$tabs.eq(0);
+				this.highlightTab($firstTab);
+				this.selectTab($firstTab.data('tabsContent'));
+			},
+
+			destroy : function () {
+				this.unbindTabEvents();
+				this.sup();
+			}
+
+		});
+
+	});
+
+define(
+	'admin/modules/Insert',[
+		"rosy/base/DOMClass",
+		"$",
+		"admin/modules/WindowPopup"
+	],
+	function (DOMClass, $, WindowPopup) {
+
+		
+
+		return DOMClass.extend({
+
+			$dom : null,
+
+			vars : {
+				$inputs : null,
+				$form : null,
+				$node : false,
+				constrain : false,
+				size : {
+					width : null,
+					height : null
+				}
+			},
+
+			init : function () {
+
+				this.$dom = this.vars.$dom;
+				this.vars.$inputs = this.$dom.find("[data-attribute]");
+				this.vars.$form = this.$dom.find("form");
+
+				this.bindInputs();
+				this.sup();
+
+			},
+
+			bindInputs : function () {
+				this.vars.$inputs.on("keypress paste", this.onDelayInput);
+				this.vars.$form.on("submit", this.onSubmit);
+				this.vars.$form.find(".cancel").on("click", this.onCancel);
+				this.$dom.find(".constrain").on("change", this.onConstrainChange);
+			},
+
+			unbindInputs : function () {
+				this.vars.$inputs.off();
+				this.vars.$form.off();
+				this.vars.$form.find(".cancel").off();
+				this.$dom.find(".constrain").off();
+			},
+
+			// Helper to delay onInput call on paste
+			// http://stackoverflow.com/a/1503425
+			onDelayInput : function (e) {
+				this.setTimeout(function () {
+					this.onInput(e);
+				});
+			},
+
+			// NOTE: this method must be overwritten by the extending class.
+			onInput : function (e) {
+				throw "You must override the `onInput` method.";
+			},
+
+			// Helper to constrain proportions
+			// given a dimension("width" || "height") and integer value.
+			constrainProportion : function (dimension, value) {
+
+				value = parseInt(value, 10);
+
+				if (!this.vars.$node || isNaN(value)) {
+					return;
+				}
+
+				var opposite = (dimension === "width") ? "height" : "width",
+					oppositeValue = this.vars.size[opposite],
+					ratio = ((value - this.vars.size[dimension]) / this.vars.size[dimension]) + 1;
+
+				// Sets the opposing axis based on the ratio difference in value.
+				this.vars.size[opposite] = Math.round(oppositeValue * ratio);
+
+				// Updates the proportion attribute.
+				this.setAttribute(opposite, this.vars.size[opposite]);
+
+			},
+
+			// Helper to set a given attribute
+			setAttribute : function (attr, val) {
+				this.vars.$inputs.filter("[data-attribute=\"" + attr + "\"]").val(val);
+				this.vars.$node.attr(attr, val);
+			},
+
+			// Sets the constrain value to the state of the check-box
+			onConstrainChange : function (e) {
+				this.vars.constrain = !!($(e.currentTarget).is(":checked"));
+			},
+
+			// Sends data back to the parent window.
+			onSubmit : function (e) {
+				e.preventDefault();
+				WindowPopup.respond(this.vars.$node);
+			},
+
+			onCancel : function () {
+				window.close();
+			},
+
+			destroy : function () {
+				this.unbindInputs();
+				this.sup();
+			}
+
+		});
+
+	}
+);
+
+define(
+	'admin/modules/InsertVideo',[
+		"./Insert",
+		"$",
+	],
+	function (Insert, $) {
+
+		
+
+		return Insert.extend({
+
+			vars : {
+				size : {
+					width : 560,
+					height : 315
+				},
+				providers : [
+					{
+						name : "youtube",
+						regex : /(?:youtube(?:-nocookie)?\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/,
+						embed : "http://www.youtube.com/embed/"
+					},
+					{
+						name : "vimeo",
+						regex : /(?:vimeo.com\/(.*))/,
+						embed : "http://player.vimeo.com/video/"
+					}
+				],
+			},
+
+			// Generates or updates the iframe with the latest input value.
+			onInput : function (e) {
+
+				var $target = $(e.currentTarget),
+					attribute = $target.data("attribute"),
+					value = $(e.currentTarget).val(),
+					$preview = this.$dom.find(".video-preview"),
+					$video = $preview.find("iframe");
+
+				if (attribute === "src") {
+					value = this.validateVideo(value);
+				}
+
+				if (!$video.length) {
+
+					$video = $("<iframe />");
+					$video.attr({
+						"frameborder" : "0",
+						"allowfullscreen" : ""
+					});
+
+					$preview.append($video);
+
+					this.vars.$node = $video;
+
+					this.setAttribute("width", this.vars.size.width);
+					this.setAttribute("height", this.vars.size.height);
+
+				} else {
+					this.vars.$node = $video;
+				}
+
+				if (attribute === "width" || attribute === "height") {
+
+					value = value.replace("px", "");
+
+					if (this.vars.constrain) {
+						this.constrainProportion(attribute, value);
+					}
+
+					this.vars.size[attribute] = value;
+
+				}
+
+				this.vars.$node = $video.attr(attribute, value);
+
+			},
+
+			// Validates the video URL to a matching provider.
+			// Useful for video URLs that are not necessarily "embeddable" URLs.
+			validateVideo : function (url) {
+
+				var i = 0,
+					match,
+					providers = this.vars.providers,
+					provider;
+
+				for (; i < providers.length; i++) {
+
+					provider = providers[i];
+					match = url.match(provider.regex);
+
+					if (match) {
+						return provider.embed + match[1];
+					}
+
+				}
+
+				return url;
+
+			},
+
+		});
+
+	});
+
+define(
+	'admin/modules/InsertImage',[
+		"./Insert",
+		"$"
+	],
+	function (Insert, $) {
+
+		
+
+		return Insert.extend({
+
+			// Extending to bind to a special data-respond attribute for Select2.
+			bindInputs : function () {
+				this.sup();
+				this.$dom.find('[data-respond=\"true\"]').on("change", this.onInput);
+			},
+
+			// Generates or updates the image with the latest input value.
+			onInput : function (e) {
+
+				var $target = $(e.currentTarget),
+					attribute = $target.data('attribute'),
+					value = $(e.currentTarget).val(),
+					$preview = this.$dom.find(".image-preview"),
+					$img = $preview.find('img');
+
+				// Adjusts the source to come from the data attribute.
+				if ($target.attr('data-src')) {
+					$preview.empty();
+					$img = $preview.find('img');
+					value = $target.attr('data-src');
+				}
+
+				if (!$img.length) {
+
+					$img = $("<img />");
+					$preview.append($img);
+
+					this.vars.$node = $img;
+
+					$img.on("load", this.proxy(function (e) {
+
+						var width = $img.width(),
+							height = $img.height();
+
+						this.vars.size.width = width;
+						this.vars.size.height = height;
+
+						this.setAttribute("width", width);
+						this.setAttribute("height", height);
+
+					}));
+
+				} else {
+					this.vars.$node = $img;
+				}
+
+				if (attribute === "width" || attribute === "height") {
+
+					value = value.replace("px", "");
+
+					if (this.vars.constrain) {
+						this.constrainProportion(attribute, value);
+					}
+
+					this.vars.size[attribute] = value;
+
+				}
+
+				this.vars.$node = $img.attr(attribute, value);
+
+			}
+
+
+		});
+
+	});
+
+define(
+	'admin/modules/InsertAudio',[
+		"./Insert",
+		"$"
+	],
+	function (Insert, $) {
+
+		
+
+		return Insert.extend({
+
+			// Extending to bind to a special data-respond attribute for Select2.
+			bindInputs : function () {
+				this.sup();
+				this.$dom.find('[data-respond=\"true\"]').on("change", this.onInput);
+			},
+
+			// Generates or updates the audio with the latest input value.
+			onInput : function (e) {
+
+				var $target = $(e.currentTarget),
+					attribute = $target.data('attribute'),
+					value = $(e.currentTarget).val(),
+					$audio = this.$dom.find('audio');
+
+				// Adjusts the source to come from the data attribute.
+				if ($target.attr('data-src') && value) {
+					value = $target.attr('data-src');
+				}
+
+				$audio[0].src = value;
+				$audio[0].load();
+
+				this.vars.$node = $audio;
+			}
+
+		});
+
+	});
+
+define(
+	'admin/modules/InsertAnnotation',[
+		"./Insert",
+		"$"
+	],
+	function (Insert, $) {
+
+		
+
+		return Insert.extend({
+
+			bindInputs : function () {
+				this.sup();
+				this.vars.$node = this.$dom.find('.wysiwyg-textarea');
+
+				this.$dom.find('#test').on("click", this.test);
+			},
+
+			test : function () {
+				this.vars.$form.submit();
+			}
+
+		});
+
+	});
 
 define(
 	'admin/modules/OnExit',['require','exports','module','rosy/base/DOMClass','$'],function (require, exports, module) {
