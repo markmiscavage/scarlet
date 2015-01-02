@@ -46,5 +46,6 @@ class HTMLTextField(models.TextField):
     """
 
     def formfield(self, *args, **kwargs):
-        kwargs['widget'] = widgets.HTMLWidget
+        if not kwargs['widget']:
+            kwargs['widget'] = widgets.HTMLWidget
         return super(HTMLTextField, self).formfield(*args, **kwargs)

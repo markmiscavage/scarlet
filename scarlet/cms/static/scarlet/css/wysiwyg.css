@@ -195,3 +195,18 @@ a,
 a:visited {
   color: #8197a3;
 }
+
+/* line 70, ../compass/scss/admin/views/_wysiwyg.scss */
+.wysiwyg-text-annotated,
+a.wysiwyg-text-annotated {
+  background: #B6CAD1;
+  color: #fff;
+  text-decoration: none;
+  padding: 1px 3px;
+}
+/* line 76, ../compass/scss/admin/views/_wysiwyg.scss */
+.wysiwyg-text-annotated:after,
+a.wysiwyg-text-annotated:after {
+  content: ' *';
+  font-weight: normal;
+}

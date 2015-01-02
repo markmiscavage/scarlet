@@ -48,6 +48,8 @@ define(function () {
 			"wysiwyg-text-align-justify": 1,
 			"wysiwyg-text-align-left": 1,
 			"wysiwyg-text-align-right": 1,
+			"wysiwyg-text-annotated": 1,
+			"wysiwyg-link": 1,
 			"arrow": 1
 		},
 		/**
@@ -164,7 +166,10 @@ define(function () {
 			},
 			"a": {
 				"check_attributes": {
-					"href": "href" // if you compiled master manually then change this from 'url' to 'href'
+					"href": "preserve", // if you compiled master manually then change this from 'url' to 'href'
+					"rel": "preserve",
+					"data-annotation-id": "preserve",
+					"data-annotation-text": "preserve"
 				},
 				"set_attributes": {
 					"rel": "nofollow",
