@@ -603,7 +603,7 @@ class AnnotatedHTMLWidget(widgets.MultiWidget):
     Combines WYSIWYG with a hidden widget for seperating
     annotation data from annotated text.
     """
-    template = "cms/toolbar.html"
+    template = "cms/annotation_toolbar.html"
 
     START_HTML = '<div class="wysiwyg-annotation-data">'
     END_HTML = '</div>'
