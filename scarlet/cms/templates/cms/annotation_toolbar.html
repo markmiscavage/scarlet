@@ -12,6 +12,7 @@
 		<a class="spacer" data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="p">p</a>
 		<a data-wysihtml5-command="insertUnorderedList">ul</a>
 		<a class="spacer" data-wysihtml5-command="insertOrderedList">ol</a>
+		<a class="spacer disabled" data-wysihtml5-command="insertAnnotation">annotate</a>
 		<a data-wysihtml5-command="undo">undo</a>
 		<a class="spacer" data-wysihtml5-command="redo">redo</a>
 		<a class="spacer" data-wysihtml5-action="change_view">view html</a>
@@ -22,6 +23,14 @@
 			<label>Enter link</label>
 			<input data-wysihtml5-dialog-field="href" value="http://" class="text">
 			<input data-wysihtml5-dialog-field="class" value="wysiwyg-link" class="text">
+			<a data-wysihtml5-dialog-action="save">OK</a>
+			<a data-wysihtml5-dialog-action="cancel">Cancel</a>
+		</div>
+		<div class="modal" data-wysihtml5-dialog="insertAnnotation" style="display: none;">
+			<label>Enter annotation</label>
+			<input type="hidden" data-wysihtml5-dialog-field="href">
+			<input type="hidden" data-wysihtml5-dialog-field="class" value="wysiwyg-text-annotated">
+			<textarea class="text"></textarea>
 			<a data-wysihtml5-dialog-action="save">OK</a>
 			<a data-wysihtml5-dialog-action="cancel">Cancel</a>
 		</div>
