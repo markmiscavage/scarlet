@@ -598,20 +598,21 @@ class HTMLWidget(widgets.Textarea):
         text = super(HTMLWidget, self).render(*args, **kwargs)
         return mark_safe(u"<div class=\"widget-wysiwyg\">{1} {0}</div>".format(text, render_to_string(self.template)))
 
+
 class AnnotatedHTMLWidget(widgets.MultiWidget):
     """
     Combines WYSIWYG with a hidden widget for seperating
     annotation data from annotated text.
     """
-    template = "cms/annotation_toolbar.html"
+    template = "cms/toolbar_annotation.html"
 
     START_HTML = '<div class="wysiwyg-annotation-data">'
     END_HTML = '</div>'
 
     def __init__(self, attrs=None):
         _widgets = (
-            widgets.Textarea(attrs={'class' : "wysiwyg-textarea"}),
-            widgets.Textarea(attrs={'class' : "wysiwyg-annotations"}),
+            widgets.Textarea(attrs={'class': "wysiwyg-textarea"}),
+            widgets.Textarea(attrs={'class': "wysiwyg-annotations"}),
         )
         super(AnnotatedHTMLWidget, self).__init__(_widgets, attrs=attrs)
 
