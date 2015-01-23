@@ -28,12 +28,12 @@ def tokenize_tags(tags_string):
     # the first step extract every single world that is 3 > chars long
     # and that contains only alphanumeric characters, underscores and dashes
     tags_string = tags_string.lower().strip(",")
-    single_worlds = set([w for w in re.split(';|,|\*|\n| ', tags_string)
+    single_words = set([w[:100] for w in re.split(';|,|\*|\n| ', tags_string)
                           if len(w) >= 3 and re.match("^[A-Za-z0-9_-]*$", w)])
     # the second step divide the original string using comma as separator
-    comma_separated = set([t for t in tags_string.split(",") if t])
+    comma_separated = set([t[:100] for t in tags_string.split(",") if t])
     # resulting set are merged using union
-    return list(single_worlds | comma_separated)
+    return list(single_words | comma_separated)
 
 
 def tags_to_string(tags):
@@ -88,4 +88,4 @@ def get_tags_from_data(data, view_tags):
     if changed_tags:
         auto_tags = changed_tags.union(auto_tags)
 
-    return auto_tags, changed_tags, old_tags
+    return set(auto_tags), changed_tags, old_tags

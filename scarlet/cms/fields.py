@@ -3,6 +3,7 @@ from django import forms
 
 from . import widgets
 
+
 class OrderFormField(forms.IntegerField):
     """
     Form field for order fields.
@@ -19,14 +20,14 @@ class OrderField(models.PositiveIntegerField):
     it appears in. Default is set to 0.
 
     When this field is added to a model that does not specify
-    default ordering on it's meta class, ordering will be set to
+    default ordering on its meta class, ordering will be set to
     this field.
 
-    Uses `OrderFormField` as it's default form field.
+    Uses `OrderFormField` as its default form field.
     """
 
     def __init__(self, *args, **kwargs):
-        if not 'default' in kwargs:
+        if 'default' not in kwargs:
             kwargs['default'] = 0
         kwargs['db_index'] = True
         super(OrderField, self).__init__(*args, **kwargs)
@@ -40,11 +41,23 @@ class OrderField(models.PositiveIntegerField):
         return super(OrderField, self).formfield(form_class=form_class,
                                                  **kwargs)
 
+
 class HTMLTextField(models.TextField):
     """
-    TextField that uses a WYSIWYG editor as it's default widget.
+    TextField that uses a WYSIWYG editor as its default widget.
     """
 
     def formfield(self, *args, **kwargs):
-        kwargs['widget'] = widgets.HTMLWidget
+        if kwargs.get('widget', None) is None:
+            kwargs['widget'] = widgets.HTMLWidget
+        return super(HTMLTextField, self).formfield(*args, **kwargs)
+
+
+class AnnotationHTMLTextField(HTMLTextField):
+    """
+    TextField that uses a WYSIWYG editor with annotation support as its
+    default widget.
+    """
+    def formfield(self, *args, **kwargs):
+        kwargs['widget'] = widgets.AnnotatedHTMLWidget
         return super(HTMLTextField, self).formfield(*args, **kwargs)
