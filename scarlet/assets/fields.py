@@ -41,7 +41,7 @@ class AssetFieldFile(FieldFile):
 
     def __init__(self, *args, **kwargs):
         super(AssetFieldFile, self).__init__(*args, **kwargs)
-        sizes = getattr(self.field, 'image_sizes', [])
+        sizes = list(getattr(self.field, 'image_sizes', []))
         sizes.extend(get_image_cropper().required_crops())
 
         for size in sizes:
