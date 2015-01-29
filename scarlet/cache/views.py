@@ -40,9 +40,13 @@ class CacheMixin(object):
         Should use either a cache_manager or cache_group to get
         a version value.
 
-        By default raises a NotImplemented errors
+        Raises
+        ------
+        NotImplementedError
+            Unless overridden.
+
         """
-        raise NotImplemented
+        raise NotImplementedError('get_cache_version() must be overridden')
 
     def get_cache_route_group(self):
         """
