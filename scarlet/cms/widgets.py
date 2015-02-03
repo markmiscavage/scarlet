@@ -573,7 +573,7 @@ class HiddenTextInput(widgets.HiddenInput):
     *orderfield*.
     """
 
-    input_type = 'text'
+    input_type = 'hidden'
 
     def __init__(self, *args, **kwargs):
         super(HiddenTextInput, self).__init__(*args, **kwargs)
