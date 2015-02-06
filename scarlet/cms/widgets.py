@@ -573,11 +573,14 @@ class HiddenTextInput(widgets.HiddenInput):
     *orderfield*.
     """
 
-    input_type = 'hidden'
+    input_type = 'text'
 
     def __init__(self, *args, **kwargs):
         super(HiddenTextInput, self).__init__(*args, **kwargs)
         self.attrs['class'] = 'orderfield'
+
+    def is_hidden(self):
+        return True
 
 
 class HTMLWidget(widgets.Textarea):
