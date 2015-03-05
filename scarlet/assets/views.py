@@ -87,7 +87,7 @@ class CropView(views.ModelCMSMixin, views.ModelFormMixin,
         context = {
             'form': form,
             'obj': self.object,
-            'cancel_url' : self.get_asset_url()
+            'cancel_url': self.get_asset_url()
         }
         return self.render(request, **context)
 

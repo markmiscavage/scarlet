@@ -9,27 +9,31 @@ from django.core.files import File
 try:
     from PIL import Image, ImageFile
 except ImportError:
-    import Image, ImageFile
+    import Image
+    import ImageFile
+
 ImageFile.MAXBLOCK = 1024*1024
 
 from . import utils
 from . import signals
 from . import settings
 
-class CropSpec(namedtuple('CropSpec', ['name','editable', 'width',
-                                   'height','x', 'x2', 'y', 'y2'])):
+
+class CropSpec(namedtuple('CropSpec', ['name', 'editable', 'width',
+                                   'height', 'x', 'x2', 'y', 'y2'])):
     def to_dict(self):
         return self._asdict()
+
 
 class CropConfig(object):
     def __init__(self, name, width=None, height=None,
                  quality=90, editable=True, upscale=False):
         self.name = name
-        self.width=width
-        self.height=height
-        self.upscale=upscale
-        self.quality=quality
-        self.editable=editable
+        self.width = width
+        self.height = height
+        self.upscale = upscale
+        self.quality = quality
+        self.editable = editable
 
     def _adjust_coordinates(self, ratio, current_size, needed_size):
         diff = current_size - (needed_size / ratio)
@@ -45,7 +49,7 @@ class CropConfig(object):
         """
         w, h = [float(v) for v in im.size]
         upscale = self.upscale
-        if x != None and x2 and y != None and y2:
+        if x is not None and x2 and y is not None and y2:
             upscale = True
             w = float(x2)-x
             h = float(y2)-y
@@ -83,11 +87,11 @@ class CropConfig(object):
         if ratio > 1 and not upscale:
             return
 
-        x, x2, y, y2 = int(x),int(x2),int(y),int(y2)
+        x, x2, y, y2 = int(x), int(x2), int(y), int(y2)
         return CropSpec(name=self.name,
                         editable=self.editable,
-                        width=width,height=height,
-                        x=x,x2=x2,y=y,y2=y2)
+                        width=width, height=height,
+                        x=x, x2=x2, y=y, y2=y2)
 
     def rotate_by_exif(self, im):
         if 'exif' in im.info:
@@ -96,7 +100,7 @@ class CropConfig(object):
             except (IOError, KeyError, IndexError):
                 return im
 
-            if exifinfo != None:
+            if exifinfo is not None:
                 # 274 is exif code for orientation
                 orientation = exifinfo.get(274, None)
                 if orientation == 3:
@@ -116,6 +120,7 @@ class CropConfig(object):
 
         if crop_spec:
             return scale_and_crop(im, crop_spec)
+
 
 class Cropper(object):
     _registry = {}
@@ -159,20 +164,20 @@ class Cropper(object):
         Returns the spec for the crop that was created.
         """
 
-        if not name in self._registry:
+        if name not in self._registry:
             return
 
         file_obj.seek(0)
         im = Image.open(file_obj)
         config = self._registry[name]
 
-        if x != None and x2 and y != None and y2 and not config.editable:
+        if x is not None and x2 and y is not None and y2 and not config.editable:
             # You can't ask for something special
             # for non editable images
             return
 
         im = config.rotate_by_exif(im)
-        crop_spec = config.get_crop_spec(im, x=x, x2=x2, y=y, y2=y2 )
+        crop_spec = config.get_crop_spec(im, x=x, x2=x2, y=y, y2=y2)
         image = config.process_image(im, crop_spec=crop_spec)
         if image:
             crop_name = utils.get_size_filename(file_obj.name, name)
@@ -181,13 +186,13 @@ class Cropper(object):
 
     def replace_image(self, file_obj,
                     x=None, x2=None, y=None, y2=None):
-        assert x != None and x2 and y != None and y2
+        assert x is not None and x2 and y is not None and y2
 
         file_obj.seek(0)
         im = Image.open(file_obj)
 
-        crop_spec = CropSpec(x=x,x2=x2,y=y,y2=y2,
-                             width=x2-x,height=y2-y,name='original',
+        crop_spec = CropSpec(x=x, x2=x2, y=y, y2=y2,
+                             width=x2-x, height=y2-y, name='original',
                              editable=False)
         image = scale_and_crop(im, crop_spec=crop_spec)
         if image:
@@ -213,6 +218,7 @@ class Cropper(object):
             signals.file_saved.send(filename)
         finally:
             tmpfile.close()
+
 
 def scale_and_crop(im, crop_spec):
     """

@@ -8,6 +8,7 @@ from distutils.command.build_py import build_py
 packages = []
 base_path = os.path.abspath(os.path.dirname(__file__))
 
+
 class my_build_py(build_py):
     def get_data_files(self):
         return build_py.get_data_files(self)
@@ -19,9 +20,10 @@ class my_build_py(build_py):
                 if os.path.exists(os.path.join(src_dir, dirname, '__init__.py')):
                     del dirnames[i]
 
-            if not '__init__.py' in filenames:
+            if '__init__.py' not in filenames:
                 files.extend([os.path.join(dirpath, x) for x in filenames if not x.startswith('.')])
         return files
+
 
 def fullsplit(path, result=None, base_path=None):
     """

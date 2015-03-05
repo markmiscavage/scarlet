@@ -83,14 +83,15 @@ class AssetRealFileField(models.FileField):
         self.image_sizes = kwargs.pop('image_sizes', [])
         super(AssetRealFileField, self).__init__(*args, **kwargs)
 
+
 class AssetsFileField(TaggedRelationField):
     default_form_class = AssetsFileFormField
     default_cache_field_class = AssetRealFileField
     def __init__(self, *args, **kwargs):
-        if not 'related_name' in kwargs:
+        if 'related_name' not in kwargs:
             kwargs['related_name'] = '+'
 
-        if not 'on_delete' in kwargs:
+        if 'on_delete' not in kwargs:
             kwargs['on_delete'] = models.PROTECT
 
         self.cache_field_class = kwargs.pop('cache_field_class',
@@ -152,6 +153,7 @@ class AssetsFileField(TaggedRelationField):
         name, path, args, kwargs = super(AssetsFileField, self).deconstruct()
         kwargs['denormalize'] = False
         return name, path, args, kwargs
+
 
 def denormalize_assets(sender, instance, **kwargs):
     for field in instance._meta.fields:

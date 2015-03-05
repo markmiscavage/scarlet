@@ -457,8 +457,8 @@ class Bundle(object):
             return url
 
     def _view_uses_name_as_url_kwarg(self, view_name):
-        #Returns True if the given view_name uses
-        #self.name in url kwargs
+        # Returns True if the given view_name uses
+        # self.name in url kwargs
         view_name = view_name.replace(ACTION_ALIAS, '')
         return (view_name in self._meta.item_views) or \
                 (view_name in self._meta.action_views)
@@ -537,7 +537,7 @@ class Bundle(object):
                                        self._meta.custom_model_name_plural,
                                        plural)
         elif self.title and plural:
-            value = helpers.pluralize(self.title,self.title_plural)
+            value = helpers.pluralize(self.title, self.title_plural)
 
         return helpers.capfirst_if_needed(value)
 
@@ -581,7 +581,6 @@ class Bundle(object):
                 return self.parent_attr, None
             elif isinstance(view, URLAlias):
                 return view, None
-
 
         return None, None
 
@@ -770,6 +769,7 @@ class DelegatedObjectBundle(Bundle):
     class Meta(options.VersionMeta):
         pass
 
+
 class ObjectOnlyBundle(Bundle):
     """
     Base Bundle for sub bundles that do not contain a list
@@ -794,11 +794,13 @@ class ObjectOnlyBundle(Bundle):
         action_views = ()
         live_views = ('delete', 'publish', 'unpublish', 'versions')
 
+
 class VersionedObjectOnlyBundle(ObjectOnlyBundle, VersionMixin):
     """
     Same as ObjectOnlyBundle but adds version management views.
     """
     pass
+
 
 class ChildBundle(Bundle):
     """
@@ -810,6 +812,7 @@ class ChildBundle(Bundle):
 
     class Meta:
         pass
+
 
 class ParentVersionedBundle(ChildBundle):
     """
