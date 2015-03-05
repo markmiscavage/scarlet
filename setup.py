@@ -1,9 +1,6 @@
 #!/usr/bin/env python
-import subprocess
-from subprocess import Popen, PIPE
 
 import os
-import sys
 
 from distutils.core import setup
 from distutils.command.build_py import build_py
@@ -55,10 +52,11 @@ for dirpath, dirnames, filenames in os.walk(os.path.join(base_path, 'scarlet'), 
 setup(
     name='scarlet',
     version=__import__('scarlet').__version__,
-    description='',
+    description='A replacement for the Django Admin, focused on Content Managment',
     author='RED Interactive Agency',
     author_email='geeks@ff0000.com',
     url='http://github.com/ff0000/scarlet/',
+    install_requires=['django-taggit==0.12.3', 'pillow==2.7.0', 'django==1.7.3'],
     packages=packages,
     cmdclass={'build_py': my_build_py},
     classifiers=[
