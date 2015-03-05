@@ -52,7 +52,7 @@ for dirpath, dirnames, filenames in os.walk(os.path.join(base_path, 'scarlet'), 
 setup(
     name='scarlet',
     version=__import__('scarlet').__version__,
-    description='A replacement for the Django Admin, focused on Content Managment',
+    description='A replacement for the Django Admin, focused on Content Management',
     author='RED Interactive Agency',
     author_email='geeks@ff0000.com',
     url='http://github.com/ff0000/scarlet/',
