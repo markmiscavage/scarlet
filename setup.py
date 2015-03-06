@@ -2,8 +2,8 @@
 
 import os
 
-from distutils.core import setup
-from distutils.command.build_py import build_py
+from setuptools import setup
+from setuptools.command.build_py import build_py
 
 packages = []
 base_path = os.path.abspath(os.path.dirname(__file__))
@@ -58,16 +58,17 @@ setup(
     author='RED Interactive Agency',
     author_email='geeks@ff0000.com',
     url='http://github.com/ff0000/scarlet/',
+    license='MIT',
     install_requires=['django-taggit==0.12.3', 'pillow==2.7.0', 'django==1.7.3'],
     packages=packages,
     cmdclass={'build_py': my_build_py},
     classifiers=[
-          'Development Status :: 3 - Alpha',
+          'Development Status :: 4 - Beta',
           'Environment :: Web Environment',
           'Framework :: Django',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: MIT License',
           'Operating System :: POSIX',
-          'Programming Language :: Python',
+          'Programming Language :: Python'
     ]
 )
