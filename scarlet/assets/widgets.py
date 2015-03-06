@@ -12,6 +12,7 @@ except ValueError:
 
 from . import settings
 
+
 class AssetsFileWidget(TaggedRelationWidget):
     crop_link = "crops/{0}/edit/"
 
@@ -35,10 +36,10 @@ class AssetsFileWidget(TaggedRelationWidget):
                 crop = get_image_cropper().get_crop_config(x)
                 if crop and crop.editable:
                     sizes.append({
-                        'name' : crop.name,
-                        'width' : crop.width,
-                        'height' : crop.height,
-                        'post_link' : self.crop_link.format(x)
+                        'name': crop.name,
+                        'width': crop.width,
+                        'height': crop.height,
+                        'post_link': self.crop_link.format(x)
                     })
         return sizes
 

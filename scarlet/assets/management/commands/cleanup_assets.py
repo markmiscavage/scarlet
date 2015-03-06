@@ -7,6 +7,7 @@ from django.core.management.base import BaseCommand
 
 from ... import get_asset_model
 
+
 # http://djangosnippets.org/snippets/1949/ + IndexError fix
 def queryset_iterator(queryset, chunksize=1000):
     '''''

@@ -21,6 +21,7 @@ FORMFIELD_FOR_DBFIELD_DEFAULTS = {
     models.DateField:        {'widget': widgets.DateWidget},
 }
 
+
 class AdminList(object):
     ASC = 'asc'
     DESC = 'desc'

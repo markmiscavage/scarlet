@@ -9,6 +9,7 @@ except ValueError:
 from . import get_asset_model
 from . models import AssetBase
 
+
 class UploadAssetForm(forms.ModelForm):
     """
     Form for handling new asset creation
@@ -53,12 +54,12 @@ class AssetFilterForm(TaggedRelationFilterForm):
 
         return args
 
+
 class CropForm(forms.Form):
     x = forms.IntegerField()
     x2 = forms.IntegerField()
     y = forms.IntegerField()
     y2 = forms.IntegerField()
-
 
     def check_params(self, v, v2):
         if v != None and v2 != None and v2 < v:
