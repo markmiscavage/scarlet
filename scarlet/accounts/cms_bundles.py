@@ -15,12 +15,14 @@ class AddView(views.FormView):
     force_add = True
     form_class = forms.SignupModelForm
 
+    # N.b.: Original password field must be visible for validation.
+    # We remove it from the add user form in forms.py.
     fieldsets = (
         ("User Information", {
             'fields': ('username', 'first_name', 'last_name', 'email')
         }),
         ("Password", {
-            'fields': ('password1', 'password2')
+            'fields': ('password1', 'password2', 'password')
         }),
     )
 
