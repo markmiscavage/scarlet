@@ -5,6 +5,7 @@ except ValueError:
 
 from . import settings
 
+
 class AssetRenderer(renders.ChoicesRender):
     def get_object_list(self, adm_list):
         l = []
@@ -17,7 +18,7 @@ class AssetRenderer(renders.ChoicesRender):
             data = {
                 'id': o.pk,
                 'user_filename': o.user_filename,
-                'url' : o.file.url
+                'url': o.file.url
             }
             if thumbnail:
                 data['thumbnail'] = thumbnail

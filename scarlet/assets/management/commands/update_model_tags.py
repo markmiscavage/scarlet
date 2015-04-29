@@ -8,6 +8,7 @@ except ImportError:
 from ...models import Asset
 from ...fields import AssetsFileField
 
+
 class Command(BaseCommand):
     args = None
     help = 'Make sure all uploaded files have the minumum required tags'

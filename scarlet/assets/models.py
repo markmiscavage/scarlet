@@ -3,7 +3,6 @@ import uuid
 
 from django.db import models
 from django.core.files.uploadedfile import UploadedFile
-from django.db.models.deletion import Collector
 from django.forms.forms import pretty_name
 
 from . import get_image_cropper
@@ -23,6 +22,7 @@ try:
     from ..cms.internal_tags.models import AutoTagModel
 except ValueError:
     from cms.internal_tags.models import AutoTagModel
+
 
 class AssetBase(AutoTagModel):
     UNKNOWN = 'unknown'
@@ -168,9 +168,8 @@ class AssetBase(AutoTagModel):
                             related.model.objects.filter(**{
                                 field.name: self.pk
                             }).update(**{
-                                cname : self.file.name
+                                cname: self.file.name
                             })
-
 
     def delete(self, *args, **kwargs):
         """

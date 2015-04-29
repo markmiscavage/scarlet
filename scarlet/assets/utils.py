@@ -1,11 +1,11 @@
 from functools import wraps
 import os
 import random
-import urlparse
 
 from django.core.cache import cache
 
 from . import settings
+
 
 def partial(func, *parameters, **kparms):
     @wraps(func)
@@ -13,6 +13,7 @@ def partial(func, *parameters, **kparms):
         kw.update(kparms)
         return func(*(args + parameters), **kw)
     return wrapped
+
 
 def assets_dir(instance, filename):
     name, ext = os.path.splitext(filename)
@@ -23,9 +24,11 @@ def assets_dir(instance, filename):
     else:
         return instance.slug + ext
 
+
 def get_size_filename(filename, size_name):
     filename, ext = os.path.splitext(filename)
     return filename + "_" + size_name + ext
+
 
 
 def get_cache_bust_version(url):
@@ -35,6 +38,7 @@ def get_cache_bust_version(url):
         # We could look it up but for now just make it up
         value = update_cache_bust_version(url, random.randint(0, 60))
     return value
+
 
 def update_cache_bust_version(url, value=None):
     key = "cbversion.{0}".format(url)

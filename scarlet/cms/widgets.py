@@ -107,8 +107,8 @@ class TimeChoiceWidget(widgets.Select):
     def __init__(self, attrs=None, min_interval=15, sec_interval=60,
                  twenty_four_hour=False):
         super(TimeChoiceWidget, self).__init__(attrs)
-        assert min_interval <= 60 and min_interval > 0
-        assert sec_interval <=60 and sec_interval > 0
+        assert 60 >= min_interval > 0
+        assert 60 >= sec_interval > 0
 
         self.twenty_four_hour = twenty_four_hour
         self.choices = [(self.NOW, 'Now')]
@@ -578,6 +578,9 @@ class HiddenTextInput(widgets.HiddenInput):
     def __init__(self, *args, **kwargs):
         super(HiddenTextInput, self).__init__(*args, **kwargs)
         self.attrs['class'] = 'orderfield'
+
+    def is_hidden(self):
+        return True
 
 
 class HTMLWidget(widgets.Textarea):

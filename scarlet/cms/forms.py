@@ -22,8 +22,8 @@ class BaseFilterForm(forms.Form):
         if exclude:
             exclude_set = exclude_set.union(set(exclude))
 
-        return [name for name in self.fields \
-                if not name in exclude_set ]
+        return [name for name in self.fields
+                if name not in exclude_set]
 
     def get_search_fields(self, exclude=None):
         """
@@ -82,7 +82,7 @@ class BaseFilterForm(forms.Form):
                 filter_kwargs.pop(k, None)
                 q = Q(**{k: search})
                 if search_args:
-                    q = search_args[0]|q
+                    q = search_args[0] | q
                     search_args[0] = q
                 else:
                     search_args.append(q)
@@ -130,6 +130,7 @@ class VersionFilterForm(BaseFilterForm):
             l.append(q)
         return l
 
+
 def search_form(*fields, **kwargs):
     """
     Construct a search form filter form using the fields
@@ -145,7 +146,7 @@ def search_form(*fields, **kwargs):
     """
 
     fdict = {
-        'search_fields' : set(fields)
+        'search_fields': set(fields)
     }
 
     if kwargs.get('search_only'):
@@ -177,11 +178,15 @@ class WhenForm(forms.Form):
 
     when = forms.DateTimeField(widget=widgets.RadioDateTimeWidget)
 
+
 class MassActionForm(forms.ModelForm):
-    selected = forms.BooleanField(required = False)
+    selected = forms.BooleanField(required=False)
+
+
 
 class ActionForm(forms.Form):
     action = forms.ChoiceField(label=('Action:'))
+
 
 
 class LazyFormSetFactory(object):
@@ -204,7 +209,7 @@ class LazyFormSetFactory(object):
         assert callable(args[0]), "The first argument must be a formset factory"
         self.args = args
         self.kwargs = kwargs
-        if not 'extra' in self.kwargs:
+        if 'extra' not in self.kwargs:
             self.kwargs['extra'] = 0
 
     def __call__(self, callback, form_processor):

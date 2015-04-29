@@ -8,6 +8,7 @@ except ImportError:
 
 from ...fields import AssetsFileField
 
+
 class Command(BaseCommand):
     args = None
     help = 'Make sure all uploaded files are denormalized'
@@ -26,7 +27,7 @@ class Command(BaseCommand):
                                 }).select_related(field.name)
 
                         m.objects.filter(**{'{0}__isnull'.format(field.name): True}
-                                        ).update(**{cache_name : ""})
+                                        ).update(**{cache_name: ""})
                         for ins in qs:
                             name = getattr(ins, field.name).file.name
-                            m.objects.filter(pk=ins.pk).update(**{cache_name : name})
+                            m.objects.filter(pk=ins.pk).update(**{cache_name: name})
