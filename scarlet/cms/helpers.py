@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django import forms
-from django.forms.util import flatatt, ErrorList
+from django.forms.utils import flatatt, ErrorList
 from django.utils.encoding import force_unicode
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe

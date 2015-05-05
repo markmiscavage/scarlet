@@ -27,7 +27,7 @@ class CMSLog(models.Model):
         (SCHEDULE, 'Scheduled')
     )
 
-    action = models.PositiveIntegerField(max_length=10, choices=ACTIONS)
+    action = models.PositiveIntegerField(choices=ACTIONS)
     action_date = models.DateTimeField(blank=True, null=True)
 
     model_repr = models.CharField(max_length=255)
