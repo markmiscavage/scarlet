@@ -169,7 +169,8 @@ class SplitDateTime(widgets.SplitDateTimeWidget):
             return ['', '']
         return d
 
-class DateRadioInput(widgets.RadioInput):
+
+class DateRadioInput(widgets.RadioChoiceInput):
     label_text = "At a specific date and time"
 
     def render(self, name=None, value=None, attrs=None, choices=()):
@@ -179,13 +180,20 @@ class DateRadioInput(widgets.RadioInput):
         else:
             label_for = ''
         date_widget = attrs['date_widget']
-        return mark_safe(u'<label%s>%s %s: %s</label>' % (label_for, self.tag(), self.label_text, date_widget))
+        return mark_safe(u'<label%s>%s %s: %s</label>' % (
+            label_for, self.tag(), self.label_text, date_widget))
 
     def tag(self):
-        final_attrs = dict(type='radio', name=self.name, value=self.choice_value)
+        final_attrs = {
+            'type': 'radio',
+            'name': self.name,
+            'value': self.choice_value,
+        }
+
         if self.is_checked():
             final_attrs['checked'] = 'checked'
         return mark_safe(u'<input%s />' % flatatt(final_attrs))
+
 
 class DateRenderer(widgets.RadioFieldRenderer):
     def __init__(self, *args, **kwargs):
@@ -193,7 +201,7 @@ class DateRenderer(widgets.RadioFieldRenderer):
         super(DateRenderer, self).__init__(*args, **kwargs)
 
     def return_choice(self, choice, idx):
-        cls = widgets.RadioInput
+        cls = widgets.RadioChoiceInput
         attrs = self.attrs.copy()
         if choice[0] == RadioDateTimeWidget.DATE:
             cls = DateRadioInput
