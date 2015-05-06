@@ -185,11 +185,10 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         custom form classes are prepared by the
         `customize_form_widgets` method.
         """
-
         if self.fieldsets:
             fields = flatten_fieldsets(self.get_fieldsets())
         else:
-            fields = None
+            fields = '__all__'
 
         exclude = None
         if self.parent_field:
@@ -240,7 +239,6 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
                 # Try to get a queryset and extract the model class
                 # from that
                 model = self.get_queryset().model
-
 
         return model_forms.modelform_factory(model, **params)
 
