@@ -25,6 +25,7 @@ class ContextState(object):
         else:
             return "%s", (current_state,)
 
+
 def activate(state):
     """
     Activate a state in this thread.
@@ -48,6 +49,7 @@ def deactivate():
         con = connections[k]
         if hasattr(con, 'reset_schema'):
             con.reset_schema()
+
 
 def get_schema():
     return getattr(_mode, 'schema', None)
@@ -85,6 +87,7 @@ class SwitchSchema(object):
 
     def __exit__(self, etype, value, traceback):
         _mode.schema = self.old_schema
+
 
 class SwitchSchemaManager(SwitchSchema):
     def __enter__(self):

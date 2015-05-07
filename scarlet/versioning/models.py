@@ -42,9 +42,9 @@ class Cloneable(models.Model):
     def _gather_m2ms(self):
         old_m2ms = {}
         for field in self._meta.local_many_to_many:
-            if field.rel.through and \
-                    field.rel.through._meta.auto_created and not \
-                    field.name in self.clone_related:
+            if (field.rel.through and
+                    field.rel.through._meta.auto_created and
+                    field.name not in self.clone_related):
                 man = getattr(self, field.name)
                 l = list(man.all())
                 old_m2ms[field.name] = l

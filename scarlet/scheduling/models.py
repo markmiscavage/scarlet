@@ -50,10 +50,13 @@ class Schedulable(models.Model):
             self.do_scheduled_update(action, **kwargs)
         else:
             ctype = ContentType.objects.get_for_model(self.__class__)
-            Schedule(content_type=ctype,
-                    object_args=self.get_scheduled_filter_args(),
-                     when=when, action=action,
-                     json_args=kwargs).save()
+            Schedule(
+                content_type=ctype,
+                object_args=self.get_scheduled_filter_args(),
+                when=when,
+                action=action,
+                json_args=kwargs
+            ).save()
 
     def do_scheduled_update(self, action, **kwargs):
         """
