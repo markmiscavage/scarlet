@@ -68,9 +68,12 @@ class VersionManager(models.Manager):
         return self.get_queryset()
 
     def get_queryset(self):
-        q = super(VersionManager, self).get_query_set()
-        q = q.filter(state=ContextState())
-        return q
+        try:
+            qs = super(VersionManager, self).get_query_set()
+        except AttributeError:
+            qs = super(VersionManager, self).get_queryset()
+        qs = qs.filter(state=ContextState())
+        return qs
 
 
 class SwitchSchema(object):
