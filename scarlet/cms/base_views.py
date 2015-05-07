@@ -621,8 +621,14 @@ class ModelCMSMixin(object):
 
         if self.parent_field:
             # Get the model we are querying on
-            cache = self.model._meta.init_name_map()
-            field, mod, direct, m2m = cache[self.parent_field]
+            if getattr(self.model._meta, 'init_name_map', None):
+                # pre-django-1.8
+                cache = self.model._meta.init_name_map()
+                field, mod, direct, m2m = cache[self.parent_field]
+            else:
+                # 1.8+
+                field, mod, direct, m2m = self.model._meta.get_field_by_name(
+                    self.parent_field)
             to = None
             field_name = None
             if self.parent_lookups is None:
