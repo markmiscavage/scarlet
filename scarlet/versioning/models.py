@@ -54,7 +54,14 @@ class Cloneable(models.Model):
         try:
             cache = self._meta._name_map
         except AttributeError:
-            cache = self._meta.init_name_map()
+            try:
+                cache = self._meta.init_name_map()
+            except AttributeError:
+                cache = {
+                    field.name: self._meta.get_field_by_name(field.name)
+                    for field
+                    in self._meta.get_fields()
+                }
         return cache
 
     def _gather_reverse(self, reverse):
