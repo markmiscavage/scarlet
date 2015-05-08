@@ -18,7 +18,7 @@ class ContextState(object):
     def _prepare(self):
         return self
 
-    def as_sql(self, compiler=None, connection=None):
+    def as_sql(self, qn=None, compiler=None, connection=None):
         current_state = getattr(_mode, "current_state", None)
         if not current_state:
             return '"state"', tuple()
