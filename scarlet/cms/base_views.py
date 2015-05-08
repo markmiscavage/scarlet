@@ -655,7 +655,15 @@ class ModelCMSMixin(object):
                     to = rel.field.rel.to
                     field_name = self.parent_field
                 else:
-                    to = rel.related.model
+                    try:
+                        from django.db.models.fields.related import (
+                            ForeignObjectRel)
+                        if isinstance(rel.related, ForeignObjectRel):
+                            to = rel.related.related_model
+                        else:
+                            to = rel.related.model
+                    except ImportError:
+                        to = rel.related.model
                     field_name = rel.related.field.name
             else:
                 to = field.rel.to
