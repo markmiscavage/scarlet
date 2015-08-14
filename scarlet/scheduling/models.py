@@ -101,3 +101,6 @@ class Schedule(models.Model):
             for obj in klass.objects.filter(**self.object_args):
                 obj.do_scheduled_update(self.action, **self.json_args)
         self.delete()
+
+    class Meta:
+        app_label = 'scarlet.scheduling'
