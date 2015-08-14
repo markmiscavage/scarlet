@@ -226,4 +226,8 @@ class LazyFormSetFactory(object):
         self.kwargs['formfield_callback'] = callback
         if 'form' in self.kwargs:
             self.kwargs['form'] = form_processor(self.kwargs['form'])
+        else:
+            # Avoiding: "Calling modelformset_factory without defining 'fields'
+            # or 'exclude' explicitly is prohibited"
+            self.kwargs['exclude'] = ()
         return self.args[0](*self.args[1:], **self.kwargs)
