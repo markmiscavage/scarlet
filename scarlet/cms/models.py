@@ -39,4 +39,4 @@ class CMSLog(models.Model):
     when = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        app_label = 'scarlet.cms'
+        app_label = 'cms'

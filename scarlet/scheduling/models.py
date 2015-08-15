@@ -103,4 +103,4 @@ class Schedule(models.Model):
         self.delete()
 
     class Meta:
-        app_label = 'scarlet.scheduling'
+        app_label = 'scheduling'
