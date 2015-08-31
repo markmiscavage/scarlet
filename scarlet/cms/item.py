@@ -188,7 +188,12 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         if self.fieldsets:
             fields = flatten_fieldsets(self.get_fieldsets())
         else:
-            fields = '__all__'
+            if (self.form_class and
+                    getattr(self.form_class, 'Meta', None) and
+                    getattr(self.form_class.Meta, 'fields')):
+                fields = self.form_class.Meta.fields
+            else:
+                fields = '__all__'
 
         exclude = None
         if self.parent_field:
