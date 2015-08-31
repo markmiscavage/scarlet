@@ -59,7 +59,8 @@ setup(
     author_email='geeks@ff0000.com',
     url='http://github.com/ff0000/scarlet/',
     license='MIT',
-    install_requires=['django-taggit==0.14.0', 'pillow==2.7.0', 'django==1.8.1'],
+    install_requires=['django-taggit==0.14.0', 'django==1.8.1'],
+    #install_requires=['django-taggit==0.14.0', 'pillow==2.7.0', 'django==1.8.1'],
     packages=packages,
     cmdclass={'build_py': my_build_py},
     classifiers=[

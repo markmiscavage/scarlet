@@ -37,3 +37,6 @@ class CMSLog(models.Model):
 
     user_name = models.CharField(max_length=255)
     when = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        app_label = 'cms'
