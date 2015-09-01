@@ -190,7 +190,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         else:
             if (self.form_class and
                     getattr(self.form_class, 'Meta', None) and
-                    getattr(self.form_class.Meta, 'fields')):
+                    getattr(self.form_class.Meta, 'fields', None)):
                 fields = self.form_class.Meta.fields
             else:
                 fields = '__all__'
