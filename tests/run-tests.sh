@@ -3,23 +3,15 @@
 set +e
 TESTDIR="$(dirname $0)"
 COVERAGE=$(which coverage)
-TEST_RUNNER=$( which django-admin.py )
-SETTINGS="settings"
+SETTINGS=""
+TEST_RUNNER="run_tests.py"
 
 PWD=$(pwd)
 if [ $TESTDIR = "." ]; then
-    PYPATH="$PWD"
+    echo "already in dir"
 else
-    PYPATH="$PWD:$PWD/$TESTDIR"
+    TEST_RUNNER="$TESTDIR/run_tests.py"
 fi
-PYPATH="$PYPATH:$PWD/$TESTDIR/../"
-if [ -z $PYTHONPATH ]; then
-    PYTHONPATH="$PYPATH"
-else
-    PYTHONPATH="$PYPATH:$PYTHONPATH"
-fi
-
-export PYTHONPATH
 
 if [ -z $TEST_RUNNER ]; then
     echo "django-admin command not found"
@@ -73,14 +65,9 @@ fi
 
 test_to_run=$1
 if [ -z $test_to_run ]; then
-    files=$(ls $TESTDIR)
-    for file in $files; do
-        if [ -d "$TESTDIR/$file" ]; then
-            $TEST_RUNNER test "$file" "--settings=$SETTINGS"
-        fi
-    done
+    $TEST_RUNNER "--settings" "$SETTINGS"
 else
-    $TEST_RUNNER test "$test_to_run" "--settings=$SETTINGS"
+    $TEST_RUNNER "--settings" "$SETTINGS" "$test_to_run"
 fi
 
 if [ $COVERAGE ]; then

@@ -4,6 +4,7 @@ import urlparse
 from django.db import models
 from django.db.models.signals import pre_save
 from django.db.models.fields.files import FieldFile
+from django.db.models.fields import FieldDoesNotExist
 from django.core.exceptions import ObjectDoesNotExist
 
 try:
@@ -41,7 +42,7 @@ class AssetFieldFile(FieldFile):
 
     def __init__(self, *args, **kwargs):
         super(AssetFieldFile, self).__init__(*args, **kwargs)
-        sizes = getattr(self.field, 'image_sizes', [])
+        sizes = list(getattr(self.field, 'image_sizes', []))
         sizes.extend(get_image_cropper().required_crops())
 
         for size in sizes:
@@ -82,14 +83,15 @@ class AssetRealFileField(models.FileField):
         self.image_sizes = kwargs.pop('image_sizes', [])
         super(AssetRealFileField, self).__init__(*args, **kwargs)
 
+
 class AssetsFileField(TaggedRelationField):
     default_form_class = AssetsFileFormField
     default_cache_field_class = AssetRealFileField
     def __init__(self, *args, **kwargs):
-        if not 'related_name' in kwargs:
+        if 'related_name' not in kwargs:
             kwargs['related_name'] = '+'
 
-        if not 'on_delete' in kwargs:
+        if 'on_delete' not in kwargs:
             kwargs['on_delete'] = models.PROTECT
 
         self.cache_field_class = kwargs.pop('cache_field_class',
@@ -112,8 +114,8 @@ class AssetsFileField(TaggedRelationField):
                 cropper.register(c)
                 self.image_sizes.append(c.name)
 
-        return super(AssetsFileField, self).__init__(
-            settings.ASSET_MODEL, **kwargs)
+        kwargs['to'] = settings.ASSET_MODEL
+        return super(AssetsFileField, self).__init__(**kwargs)
 
     def get_formfield_defaults(self):
         # This is a fairly standard way to set up some defaults
@@ -125,13 +127,17 @@ class AssetsFileField(TaggedRelationField):
 
     def contribute_to_class(self, cls, name):
         if self.denormalize and not cls._meta.abstract:
-            denormalize_field = self.cache_field_class(max_length=255,
+            cache_name = self.get_denormalized_field_name(name)
+            try:
+                cls._meta.get_field(cache_name)
+            except FieldDoesNotExist:
+                denormalize_field = self.cache_field_class(max_length=255,
                                                 editable=False,
                                                 blank=self.blank,
                                                 upload_to=utils.assets_dir,
                                                 image_sizes=self.image_sizes)
-            cache_name = self.get_denormalized_field_name(name)
-            cls.add_to_class(cache_name, denormalize_field)
+
+                cls.add_to_class(cache_name, denormalize_field)
             pre_save.connect(denormalize_assets, sender=cls)
 
         # add the field normally
@@ -140,16 +146,28 @@ class AssetsFileField(TaggedRelationField):
     def get_denormalized_field_name(self, name):
         return u"{0}_cache".format(name)
 
+    def deconstruct(self):
+        """
+        Denormalize is always false migrations
+        """
+        name, path, args, kwargs = super(AssetsFileField, self).deconstruct()
+        kwargs['denormalize'] = False
+        return name, path, args, kwargs
+
+
 def denormalize_assets(sender, instance, **kwargs):
     for field in instance._meta.fields:
         if isinstance(field, AssetsFileField):
             cache_name = field.get_denormalized_field_name(field.name)
             try:
                 asset_ins = getattr(instance, field.name)
-                if asset_ins and field.denormalize:
-                    cache_ins = getattr(instance, cache_name, None)
-                    if not cache_ins or cache_ins.name != asset_ins.file.name:
-                        setattr(instance, cache_name, asset_ins.file.name)
-                        asset_ins.ensure_crops(*field.image_sizes)
+                if field.denormalize:
+                    if asset_ins:
+                        cache_ins = getattr(instance, cache_name, None)
+                        if not cache_ins or cache_ins.name != asset_ins.file.name:
+                            setattr(instance, cache_name, asset_ins.file.name)
+                            asset_ins.ensure_crops(*field.image_sizes)
+                    else:
+                        setattr(instance, cache_name, "")
             except ObjectDoesNotExist:
                     setattr(instance, cache_name, "")

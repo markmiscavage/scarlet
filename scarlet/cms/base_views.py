@@ -621,8 +621,14 @@ class ModelCMSMixin(object):
 
         if self.parent_field:
             # Get the model we are querying on
-            cache = self.model._meta.init_name_map()
-            field, mod, direct, m2m = cache[self.parent_field]
+            if getattr(self.model._meta, 'init_name_map', None):
+                # pre-django-1.8
+                cache = self.model._meta.init_name_map()
+                field, mod, direct, m2m = cache[self.parent_field]
+            else:
+                # 1.8+
+                field, mod, direct, m2m = self.model._meta.get_field_by_name(
+                    self.parent_field)
             to = None
             field_name = None
             if self.parent_lookups is None:
@@ -649,7 +655,15 @@ class ModelCMSMixin(object):
                     to = rel.field.rel.to
                     field_name = self.parent_field
                 else:
-                    to = rel.related.model
+                    try:
+                        from django.db.models.fields.related import (
+                            ForeignObjectRel)
+                        if isinstance(rel.related, ForeignObjectRel):
+                            to = rel.related.related_model
+                        else:
+                            to = rel.related.model
+                    except ImportError:
+                        to = rel.related.model
                     field_name = rel.related.field.name
             else:
                 to = field.rel.to

@@ -14,6 +14,8 @@ define(
 			Tabs                 = require("./Tabs"),
 			InsertVideo          = require("./InsertVideo"),
 			InsertImage          = require("./InsertImage"),
+			InsertAudio          = require("./InsertAudio"),
+			InsertAnnotation     = require("./InsertAnnotation"),
 			Wysiwyg              = require("./wysiwyg/Wysiwyg"),
 			WidgetEvents         = require("./WidgetEvents"),
 			WindowPopup          = require("./WindowPopup"),
@@ -43,7 +45,9 @@ define(
 				this._renderTabs(dom);
 				this._renderInsertVideo(dom);
 				this._renderInsertImage(dom);
+				this._renderInsertAudio(dom);
 				this._renderInlineVideo(dom);
+				this._renderInsertAnnotation(dom);
 				this._renderFilterBar(dom);
 				this._renderjQueryCrop(dom);
 				this._renderDragWidth(dom);
@@ -172,9 +176,25 @@ define(
 				});
 			},
 
+			_renderInsertAudio : function (dom) {
+				dom.find(".widget-insert-audio").each(function (i, el) {
+					var insertAudio = new InsertAudio({
+						$dom : $(el)
+					});
+				});
+			},
+
 			_renderInlineVideo : function (dom) {
 				dom.find(".widget-inline-video").each(function (i, el) {
 					var vid = new InlineVideo({
+						$dom : $(el)
+					});
+				});
+			},
+
+			_renderInsertAnnotation : function (dom) {
+				dom.find(".widget-insert-annotation").each(function (i, el) {
+					var insertAnnotation = new InsertAnnotation({
 						$dom : $(el)
 					});
 				});

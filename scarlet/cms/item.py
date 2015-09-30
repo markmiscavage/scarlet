@@ -6,6 +6,7 @@ from django.forms import models as model_forms
 from django.contrib.admin.util import flatten_fieldsets
 from django.db.models.fields import FieldDoesNotExist
 from django.db import models
+from django.core.exceptions import ValidationError
 
 from . import helpers
 from . import renders
@@ -40,6 +41,8 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
     :param cancel_view: The name of a view the cancel links will point to.
     :param force_instance_values: A dictionary of keyword arguments that \
     will be set on every object before save. Defaults to empty dictionary.
+    :param combined_formset_defs: A dictionary of keyward arguments for
+    AdminFormset used to combine the display of formsets
     """
 
     default_template = 'cms/edit.html'
@@ -52,6 +55,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
     readonly_fields = None
     prepopulated_fields = None
     force_instance_values = {}
+    combined_formset_defs = None
 
     def __init__(self, *args, **kwargs):
         if args:
@@ -181,11 +185,15 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         custom form classes are prepared by the
         `customize_form_widgets` method.
         """
-
         if self.fieldsets:
             fields = flatten_fieldsets(self.get_fieldsets())
         else:
-            fields = None
+            if (self.form_class and
+                    getattr(self.form_class, 'Meta', None) and
+                    getattr(self.form_class.Meta, 'fields', None)):
+                fields = self.form_class.Meta.fields
+            else:
+                fields = '__all__'
 
         exclude = None
         if self.parent_field:
@@ -237,7 +245,6 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
                 # from that
                 model = self.get_queryset().model
 
-        
         return model_forms.modelform_factory(model, **params)
 
     def get_form_kwargs(self):
@@ -287,20 +294,42 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
                                              saving=saving)
 
         formsets = {}
-        for k, lazy_klass in fdict.items():
-            klass = lazy_klass(self.formfield_for_dbfield,
-                               self.customize_form_widgets)
-            prefix = klass.__name__.lower()
-            queryset = self.get_formset_queryset(k, klass)
-
-            if saving:
-                ins = klass(self.request.POST, files=self.request.FILES,
-                                    instance=obj, prefix=prefix,
-                                    queryset=queryset)
-            else:
-                ins = klass(instance=obj, prefix=prefix, queryset=queryset)
-            formsets[k] = ins
+        for k, v in fdict.items():
+            formsets[k] = self._init_formset(k, v,
+                                         obj, saving=saving)
         return formsets
+
+    def get_combined_formset_defs(self):
+        return self.combined_formset_defs
+
+    def get_admin_formsets(self, formsets):
+        """
+        Hook for specifying custom admin formsets
+        """
+        if formsets:
+            return helpers.AdminFormSets(formsets, self.get_combined_formset_defs())
+        return None
+
+    def get_admin_form(self, form):
+        """
+        Hook for specifying custom admin forms
+        """
+        return helpers.AdminForm(form, self.get_fieldsets())
+
+    def _init_formset(self, key, lazy_klass, obj, saving=False):
+        klass = lazy_klass(self.formfield_for_dbfield,
+                           self.customize_form_widgets)
+        prefix = klass.__name__.lower()
+        queryset = self.get_formset_queryset(key, klass)
+
+        if saving:
+            ins = klass(self.request.POST, files=self.request.FILES,
+                                instance=obj, prefix=prefix,
+                                queryset=queryset)
+        else:
+            ins = klass(instance=obj, prefix=prefix, queryset=queryset)
+
+        return ins
 
     def form_invalid(self, **context):
         """
@@ -436,14 +465,36 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         form = self.get_form(form_class)
         formsets = self.get_formsets(form)
 
-        adminForm = helpers.AdminForm(form, self.get_fieldsets())
-
+        adminForm = self.get_admin_form(form)
+        adminFormSets = self.get_admin_formsets(formsets)
         context = {
             'adminForm': adminForm,
             'obj': self.object,
-            'formsets': formsets,
+            'formsets': adminFormSets,
         }
         return self.render(request, **context)
+
+    def is_valid(self, form, formsets):
+        valid_formsets = True
+        for formset in formsets.values():
+            if not formset.is_valid():
+                valid_formsets = False
+                break
+
+        if form.is_valid() and valid_formsets:
+            # Add any force_instance_values
+            force = self.get_force_instance_values()
+            if force:
+                for k, v in force.items():
+                    setattr(form.instance, k, v)
+                try:
+                    form.instance.full_clean()
+                except ValidationError, e:
+                    form._update_errors(e)
+                    return False
+            return True
+
+        return False
 
     def post(self, request, *args, **kwargs):
         """
@@ -457,12 +508,6 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         formsets = self.get_formsets(form, saving=True)
-        adminForm = helpers.AdminForm(form, self.get_fieldsets())
-        context = {
-            'adminForm': adminForm,
-            'formsets': formsets,
-            'obj': self.object,
-        }
 
         valid_formsets = True
         for formset in formsets.values():
@@ -470,9 +515,16 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
                 valid_formsets = False
                 break
 
-        if form.is_valid() and valid_formsets:
+        if self.is_valid(form, formsets):
             return self.form_valid(form, formsets)
         else:
+            adminForm = self.get_admin_form(form)
+            adminFormSets = self.get_admin_formsets(formsets)
+            context = {
+                'adminForm': adminForm,
+                'formsets': adminFormSets,
+                'obj': self.object,
+            }
             return self.form_invalid(form=form, **context)
 
 class PreviewWrapper(ModelCMSMixin, SingleObjectMixin, ModelCMSView):

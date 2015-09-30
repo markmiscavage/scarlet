@@ -15,12 +15,16 @@ class ContextState(object):
     def prepare(self):
         return self
 
-    def as_sql(self, qn=None, connection=None):
+    def _prepare(self):
+        return self
+
+    def as_sql(self, qn=None, compiler=None, connection=None):
         current_state = getattr(_mode, "current_state", None)
         if not current_state:
             return '"state"', tuple()
         else:
             return "%s", (current_state,)
+
 
 def activate(state):
     """
@@ -46,6 +50,7 @@ def deactivate():
         if hasattr(con, 'reset_schema'):
             con.reset_schema()
 
+
 def get_schema():
     return getattr(_mode, 'schema', None)
 
@@ -60,9 +65,15 @@ class VersionManager(models.Manager):
     use_for_related_fields = True
 
     def get_query_set(self):
-        q = super(VersionManager, self).get_query_set()
-        q = q.filter(state=ContextState())
-        return q
+        return self.get_queryset()
+
+    def get_queryset(self):
+        try:
+            qs = super(VersionManager, self).get_query_set()
+        except AttributeError:
+            qs = super(VersionManager, self).get_queryset()
+        qs = qs.filter(state=ContextState())
+        return qs
 
 
 class SwitchSchema(object):
@@ -79,6 +90,7 @@ class SwitchSchema(object):
 
     def __exit__(self, etype, value, traceback):
         _mode.schema = self.old_schema
+
 
 class SwitchSchemaManager(SwitchSchema):
     def __enter__(self):

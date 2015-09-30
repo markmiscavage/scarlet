@@ -6,6 +6,7 @@
 <ul data-tabs-container=".media-container" class="widget-tabs tabs">
 	<li><a class="active" data-tabs-content="> .images" href="#">Images</a></li>
 	<li><a data-tabs-content="> .video" href="#">Video</a></li>
+	<li><a data-tabs-content="> .audio" href="#">Audio</a></li>
 </ul>
 {% endblock popup_header %}
 
@@ -47,6 +48,8 @@
 						</label>
 					</p>
 
+					<hr>
+
 					<div class="preview-container">Preview:
 						<div class="image-preview"></div>
 					</div>
@@ -67,6 +70,8 @@
 						</label>
 					</p>
 
+					<hr>
+
 					<p class="submit-row">
 						<a class="button cancel" href="#">Cancel</a>
 						<input class="big" type="submit" name="insert" value="Insert" />
@@ -79,7 +84,7 @@
 			<div class="widget-insert-image library" style="display: none;">
 				<form>
 
-						<div class="widget-asset" data-api="{{ api_link }}">
+						<div class="widget-asset" data-api="{{ api_link }}&ftype=image">
 							<div class="widget-asset-preview" style="background-image:url({{ object.url }})"></div>
 							<div class="widget-asset-actions">
 								<input data-respond="true" data-attribute="src" type="hidden" value="">
@@ -103,6 +108,8 @@
 						</label>
 					</p>
 
+					<hr>
+
 					<div class="preview-container">Preview:
 						<div class="image-preview"></div>
 					</div>
@@ -123,6 +130,8 @@
 						</label>
 					</p>
 
+					<hr>
+
 					<p><a class="button cancel" href="#">Cancel</a>
 					<input class="big" type="submit" name="insert" value="Insert" /></p>
 
@@ -136,10 +145,6 @@
 	</div>
 
 	<div class="video" style="display: none;">
-
-		<ul data-tabs-container=".video-container" class="widget-tabs sub-tabs">
-			<li><a class="button active" data-tabs-content="> .youtube" href="#">Embed URL</a></li>
-		</ul>
 
 		<div class="video-container">
 			<div class="widget-insert-video">
@@ -169,11 +174,53 @@
 						Constrain Proportions
 					</label>
 
+					<hr>
+
 					<p><a class="button cancel" href="#">Cancel</a>
 					<input class="big" type="submit" name="insert" value="Insert" /></p>
 
 				</form>
 			</div>
+		</div>
+
+	</div>
+
+	<div class="audio" style="display: none;">
+
+		<div class="audio-container">
+
+			{% if api_link %}
+			<div class="widget-insert-audio">
+				<form>
+
+					<div class="widget-asset" data-api="{{ api_link }}&ftype=audio">
+						<div class="widget-asset-preview" style="background-image:url({{ object.url }})"></div>
+						<div class="widget-asset-actions">
+							<input data-respond="true" data-attribute="src" type="hidden" value="">
+							{% if add_link %}
+								<a class="button" target="_blank" href="{{ add_link }}">Upload</a>
+							{% endif %}
+						</div>
+					</div>
+
+					<hr>
+
+					<div class="preview-container">
+						<div class="audio-preview">
+							<audio controls>Your browser does not support the <code>audio</code> element.</audio>
+						</div>
+					</div>
+
+					<hr>
+
+					<p><a class="button cancel" href="#">Cancel</a>
+					<input class="big" type="submit" name="insert" value="Insert" /></p>
+
+
+				</form>
+			</div>
+			{% endif %}
+
 		</div>
 
 	</div>

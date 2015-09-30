@@ -1,5 +1,7 @@
+from __future__ import unicode_literals
+
 from django import forms
-from django.forms.util import flatatt, ErrorList
+from django.forms.utils import flatatt, ErrorList
 from django.utils.encoding import force_unicode
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
@@ -18,6 +20,7 @@ FORMFIELD_FOR_DBFIELD_DEFAULTS = {
     models.DateTimeField:    {'widget': widgets.DateTimeWidget},
     models.DateField:        {'widget': widgets.DateWidget},
 }
+
 
 class AdminList(object):
     ASC = 'asc'
@@ -148,6 +151,76 @@ class AdminForm(object):
             return iter(self.form).next()
         except StopIteration:
             return None
+
+class AdminFormSets(object):
+
+    def __init__(self, formsets, combined_defs):
+        self.formsets = formsets
+        self.combined_sets = []
+        self.hidden_sets = set()
+
+        if combined_defs:
+            if type(combined_defs) == dict:
+                self._add_combined(combined_defs)
+
+            elif hasattr(combined_defs, '__iter__'):
+                for set_def in combined_defs:
+                    if not type(set_def) == dict:
+                        continue
+
+                    self._add_combined(set_def)
+
+    def _add_combined(self, set_def):
+        keys = set_def.get('keys')
+        self.hidden_sets = self.hidden_sets.union(set(keys))
+        self.combined_sets.append(
+            CombinedMultiFormSet(self, **set_def)
+        )
+
+    def visible_formsets(self):
+        for v in self.combined_sets:
+            yield v.title, v
+        for k, v in self.formsets.items():
+            if not k in self.hidden_sets:
+                yield k, v
+
+    def all_formsets(self):
+        for k, v in self.formsets.items():
+            yield k, v
+
+class CombinedMultiFormSet(object):
+
+    def __init__(self, admin_formset, keys=None, order_by=None, title=None):
+        if not order_by:
+            order_by = 'order'
+
+        self.title = title
+        self.keys = keys
+        self.order_by = order_by
+        self.admin_formset = admin_formset
+        self.combined = True
+
+    @property
+    def formsets(self):
+        return self.admin_formset.formsets
+
+    def management_form(self):
+        return mark_safe(''.join([unicode(x.management_form) for k, x in self.formsets.items() \
+                        if k in self.keys]))
+
+    def non_form_errors(self):
+        return mark_safe(''.join([unicode(x.non_form_errors()) for k, x in self.formsets.items() \
+                        if k in self.keys]))
+
+    def __iter__(self):
+        forms = []
+        for k, formset in self.formsets.items():
+            forms = forms + [(x, k) for x in formset ]
+
+        forms = sorted(forms, key=lambda f: getattr(f[0].instance, self.order_by))
+        for f in forms:
+            yield f[0], self.formsets[f[1]]
+
 
 
 class Fieldset(object):

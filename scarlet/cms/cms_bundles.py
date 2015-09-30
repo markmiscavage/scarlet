@@ -26,6 +26,7 @@ class EmbedView(views.CMSView):
 
 class WYSIWYG(bundles.BlankBundle):
     main = EmbedView(default_template='cms/insert_media.html')
+    annotate = EmbedView(default_template='cms/annotations.html')
 
 site.register('tags', TagBundle(name='tags'), 20)
 site.register('wysiwyg', WYSIWYG(name='wysiwyg'), 21)

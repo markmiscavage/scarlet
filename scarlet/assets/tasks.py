@@ -1,6 +1,7 @@
 from . import get_asset_model, get_image_cropper
 from . import settings
 
+
 def optional_celery(**kparms):
     name = kparms.pop('name', None)
 
@@ -34,7 +35,7 @@ def ensure_crops(asset_id, *required_crops, **kwargs):
     length = len(needed)
     detail_mod = asset.imagedetail_set.model
     for i, size in enumerate(needed):
-        last = i==(length-1)
+        last = i == (length-1)
         spec = get_image_cropper().create_crop(size, asset.file)
         detail_mod.save_crop_spec(asset, spec,
                                    update_version=last)
@@ -50,7 +51,7 @@ def reset_crops(asset_id, asset=None, **kwargs):
     length = len(crops)
     detail_mod = asset.imagedetail_set.model
     for i, size in enumerate(crops):
-        last = i==(length-1)
+        last = i == (length-1)
         spec = get_image_cropper().create_crop(size, asset.file)
         detail_mod.save_crop_spec(asset, spec,
                                    update_version=last)

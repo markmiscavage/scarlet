@@ -219,5 +219,5 @@ class BigAuthorBundle(bundles.DelegatedObjectBundle):
 
     author = AuthorBundle.as_subbundle(name='author', title='Author')
 
-site.register("blog", BlogBundle(name='blog'), order=10)
+site.register("dummy", BlogBundle(name='dummy'), order=10)
 site.register("authoronly", BigAuthorBundle(name='authoronly'), order=10)

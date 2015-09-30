@@ -16,6 +16,7 @@ from .base_views import ModelCMSMixin, ModelCMSView
 
 CHECKBOX_NAME = '_selected'
 
+
 class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     """
     Base class for defining actions that can be executed on one \
@@ -61,7 +62,7 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     action_name = None
 
     def render(self, *args, **kwargs):
-        if not 'action' in kwargs:
+        if 'action' not in kwargs:
             if not self.action_name:
                 kwargs['action'] = 'Yes'
             else:
@@ -69,7 +70,7 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         return super(ActionView, self).render(*args, **kwargs)
 
     def get_navigation(self):
-        if not self.object and not self.name in self.bundle._meta.action_views:
+        if not self.object and self.name not in self.bundle._meta.action_views:
             if self.bundle.parent:
                 return self.bundle.parent.get_navigation(self.request,
                                                          **self.kwargs)
@@ -108,7 +109,7 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         Hook for adding arguments to the context.
         """
 
-        context = { 'obj' : self.object }
+        context = {'obj': self.object }
         if 'queryset' in kwargs:
             context['conf_msg'] = self.get_confirmation_message(kwargs['queryset'])
         context.update(kwargs)
