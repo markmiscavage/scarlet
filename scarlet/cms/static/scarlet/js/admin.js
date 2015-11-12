@@ -6681,8 +6681,7 @@ the specific language governing permissions and limitations under the Apache Lic
 
             css = $.extend({
                 top: dropTop,
-                left: dropLeft,
-                width: width
+                left: dropLeft
             }, evaluate(this.opts.dropdownCss));
 
             this.dropdown.css(css);
@@ -7103,6 +7102,7 @@ the specific language governing permissions and limitations under the Apache Lic
         // abstract
         initContainerWidth: function () {
             function resolveContainerWidth() {
+
                 var style, attrs, matches, i, l;
 
                 if (this.opts.width === "off") {
@@ -7112,8 +7112,10 @@ the specific language governing permissions and limitations under the Apache Lic
                 } else if (this.opts.width === "copy" || this.opts.width === "resolve") {
                     // check if there is inline style on the element that contains width
                     style = this.opts.element.attr('style');
+
                     if (style !== undefined) {
                         attrs = style.split(';');
+
                         for (i = 0, l = attrs.length; i < l; i = i + 1) {
                             matches = attrs[i].replace(/\s/g, '')
                                 .match(/width:(([-+]?([0-9]*\.)?[0-9]+)(px|em|ex|%|in|cm|mm|pt|pc))/);
@@ -7141,6 +7143,7 @@ the specific language governing permissions and limitations under the Apache Lic
             };
 
             var width = resolveContainerWidth.call(this);
+
             if (width !== null) {
                 this.container.attr("style", "width: "+width);
             }
