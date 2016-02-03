@@ -1,13 +1,14 @@
 from .sites import site
 
+default_app_config = 'scarlet.cms.apps.AppConfig'
+
+
 try:
     from django.utils.module_loading import autodiscover_modules
 
     def autodiscover():
         autodiscover_modules('cms_bundles', register_to=site)
-
 except ImportError:
-
     def autodiscover():
         """
         Copied from django source
@@ -40,5 +41,3 @@ except ImportError:
                 # attempting to import it, otherwise we want it to bubble up.
                 if module_has_submodule(mod, 'cms_bundles'):
                     raise
-
-default_app_config = 'scarlet.cms.apps.ScarletCMSConfig'

@@ -5,6 +5,8 @@ from django.core.exceptions import ImproperlyConfigured
 
 from . import settings
 
+default_app_config = 'scarlet.assets.apps.AppConfig'
+
 
 def get_asset_model():
     try:
