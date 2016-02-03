@@ -8,6 +8,8 @@ import django
 from django.conf import settings
 from django import VERSION as DJANGO_VERSION
 
+django.setup()
+
 def setup_test_environment(settings_overide, with_scarlet_blog=False):
     """
     Specific settings for testing
@@ -102,20 +104,13 @@ def runtests(settings_overide, test_args):
 
     setup_test_environment(settings_dict, with_scarlet_blog=with_scarlet_blog)
 
-    try:
-        from django.test.simple import DjangoTestSuiteRunner
-        def run_tests(test_args, verbosity, interactive):
-            runner = DjangoTestSuiteRunner(
-                verbosity=verbosity, interactive=interactive,
-                failfast=False
-            )
-            return runner.run_tests(test_args)
-    except ImportError:
-        from django.test.simple import run_tests
-
-    # 1.7+ requires an explicit setup call
-    if DJANGO_VERSION >= (1, 7):
-        django.setup()
+    from django.test.runner import DiscoverRunner
+    def run_tests(test_args, verbosity, interactive):
+        runner = DiscoverRunner(
+            verbosity=verbosity, interactive=interactive,
+            failfast=False
+        )
+        return runner.run_tests(test_args)
 
     failures = run_tests(test_args, verbosity=1, interactive=True)
     sys.exit(failures)
