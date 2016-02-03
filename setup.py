@@ -59,16 +59,16 @@ setup(
     author_email='geeks@ff0000.com',
     url='http://github.com/ff0000/scarlet/',
     license='MIT',
-    install_requires=['django-taggit==0.14.0', 'django==1.8.1'],
+    install_requires=['django-taggit==0.18.0', 'django==1.9.1'],
     packages=packages,
     cmdclass={'build_py': my_build_py},
     classifiers=[
-          'Development Status :: 4 - Beta',
-          'Environment :: Web Environment',
-          'Framework :: Django',
-          'Intended Audience :: Developers',
-          'License :: OSI Approved :: MIT License',
-          'Operating System :: POSIX',
-          'Programming Language :: Python'
+        'Development Status :: 4 - Beta',
+        'Environment :: Web Environment',
+        'Framework :: Django',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: POSIX',
+        'Programming Language :: Python'
     ]
 )
