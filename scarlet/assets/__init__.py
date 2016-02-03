@@ -1,6 +1,6 @@
 import importlib
 
-from django.db.models.loading import get_model
+from django.apps import apps as djapps
 from django.core.exceptions import ImproperlyConfigured
 
 from . import settings
@@ -14,7 +14,7 @@ def get_asset_model():
     except ValueError:
         raise ImproperlyConfigured("ASSET_MODEL must be of the form 'app_label.model_name'")
 
-    return get_model(app_label, model_name)
+    return djapps.get_model(app_label, model_name)
 
 
 def get_image_cropper():
