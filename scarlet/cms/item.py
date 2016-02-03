@@ -439,7 +439,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         If the request get parameters contains 'popup' then
         the `render_type` is set to 'popup'.
         """
-        if request.REQUEST.get('popup'):
+        if request.GET.get('popup'):
             self.render_type = 'popup'
             kwargs['popup'] = 1
 
