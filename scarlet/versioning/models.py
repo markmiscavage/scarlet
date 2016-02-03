@@ -1,11 +1,12 @@
 import copy
 import sys
 
+from collections import OrderedDict
+
 from django.utils import timezone
 from django.db import models
 from django.db.models.fields import FieldDoesNotExist, related, Field
 from django import dispatch
-from django.utils.datastructures import SortedDict
 from django.utils import formats
 from django.core.exceptions import ValidationError
 
@@ -357,7 +358,7 @@ class VersionViewMeta(SharedMeta):
                 'Meta': get_meta(None, abstract=base_abstract)
             })
 
-        versioned_attrs = SortedDict()
+        versioned_attrs = OrderedDict()
         versioned_attrs['__module__'] = attrs.get('__module__')
         versioned_attrs['Meta'] = get_meta(meta, managed=True)
 

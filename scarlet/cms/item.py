@@ -3,7 +3,7 @@ from django.views.generic.edit import ModelFormMixin
 from django.views.generic.detail import SingleObjectMixin
 from django import forms
 from django.forms import models as model_forms
-from django.contrib.admin.util import flatten_fieldsets
+from django.contrib.admin.utils import flatten_fieldsets
 from django.db.models.fields import FieldDoesNotExist
 from django.db import models
 from django.core.exceptions import ValidationError
