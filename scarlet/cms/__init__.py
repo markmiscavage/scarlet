@@ -1,12 +1,10 @@
-from .sites import site
-
 default_app_config = 'scarlet.cms.apps.AppConfig'
 
-
 try:
-    from django.utils.module_loading import autodiscover_modules
-
     def autodiscover():
+        from django.utils.module_loading import autodiscover_modules
+        from .sites import site
+
         autodiscover_modules('cms_bundles', register_to=site)
 except ImportError:
     def autodiscover():
@@ -22,6 +20,7 @@ except ImportError:
         from django.conf import settings
         from django.utils.importlib import import_module
         from django.utils.module_loading import module_has_submodule
+        from .sites import site
 
         for app in settings.INSTALLED_APPS:
             mod = import_module(app)

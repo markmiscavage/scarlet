@@ -1,7 +1,8 @@
 from django.utils.safestring import mark_safe
 
 try:
-    from ..cms import site, bundles, views, cms_bundles
+    from ..cms import bundles, views, cms_bundles
+    from ..cms.sites import site
 except ValueError:
     from cms import site, bundles, views, cms_bundles
 
