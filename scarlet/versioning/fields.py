@@ -78,7 +78,6 @@ class M2MFromVersion(models.ManyToManyField):
         FKToVersion field to be used for the from field.
         """
 
-        self.remote_field
         self.update_rel_to(cls)
 
         # Called to get a name
@@ -101,8 +100,8 @@ def create_many_to_many_intermediary_model(field, klass):
     to avoid problems between version combined models.
     """
     managed = True
-    if isinstance(field.remote_field.to, basestring) and field.remote_field.to != \
-                related.RECURSIVE_RELATIONSHIP_CONSTANT:
+    if (isinstance(field.remote_field.to, basestring) and
+            field.remote_field.to != related.RECURSIVE_RELATIONSHIP_CONSTANT):
         to_model = field.remote_field.to
         to = to_model.split('.')[-1]
 
@@ -124,8 +123,8 @@ def create_many_to_many_intermediary_model(field, klass):
             managed = False
 
     name = '%s_%s' % (klass._meta.object_name, field.name)
-    if field.remote_field.to == related.RECURSIVE_RELATIONSHIP_CONSTANT or \
-                        to == klass._meta.object_name:
+    if (field.remote_field.to == related.RECURSIVE_RELATIONSHIP_CONSTANT or
+            to == klass._meta.object_name):
         from_ = 'from_%s' % to.lower()
         to = 'to_%s' % to.lower()
     else:
@@ -138,10 +137,10 @@ def create_many_to_many_intermediary_model(field, klass):
         'app_label': klass._meta.app_label,
         'db_tablespace': klass._meta.db_tablespace,
         'unique_together': ('from', 'to'),
-        'verbose_name': '%(from)s-%(to)s relationship' % {'from': from_,
-                                                          'to': to},
+        'verbose_name': '%(from)s-%(to)s relationship' % {
+            'from': from_, 'to': to},
         'verbose_name_plural': '%(from)s-%(to)s relationships' % {
-                                                      'from': from_, 'to': to},
+            'from': from_, 'to': to},
         'apps': field.model._meta.apps,
     })
 

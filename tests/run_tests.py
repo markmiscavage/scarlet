@@ -6,7 +6,7 @@ import imp
 
 import django
 from django.conf import settings
-from django import VERSION as DJANGO_VERSION
+
 
 
 
