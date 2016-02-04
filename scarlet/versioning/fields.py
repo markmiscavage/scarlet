@@ -23,6 +23,7 @@ class FKToVersion(models.ForeignKey):
             kwargs['to'] = '{0}_version'.format(kwargs['to'])
         return name, path, args, kwargs
 
+
 class M2MFromVersion(models.ManyToManyField):
     """
     Field that creates a many to many relation between a
@@ -46,8 +47,8 @@ class M2MFromVersion(models.ManyToManyField):
         the main M2M field contribute to class is called.
         """
 
-        if isinstance(self.rel.to, basestring):
-            relation = self.rel.to
+        if isinstance(self.remote_field.to, basestring):
+            relation = self.remote_field.to
             try:
                 app_label, model_name = relation.split(".")
             except ValueError:
@@ -60,13 +61,14 @@ class M2MFromVersion(models.ManyToManyField):
                 model = klass._meta.apps.get_registered_model(app_label, model_name)
             # For django < 1.6
             except AttributeError:
-                model = models.get_model(app_label, model_name,
-                            seed_cache=False, only_installed=False)
+                model = models.get_model(
+                    app_label, model_name,
+                    seed_cache=False, only_installed=False)
             except LookupError:
                 pass
 
             if model:
-                self.rel.to = model
+                self.remote_field.model = model
 
     def contribute_to_class(self, cls, name):
         """
@@ -76,6 +78,7 @@ class M2MFromVersion(models.ManyToManyField):
         FKToVersion field to be used for the from field.
         """
 
+        self.remote_field
         self.update_rel_to(cls)
 
         # Called to get a name
@@ -83,12 +86,13 @@ class M2MFromVersion(models.ManyToManyField):
         self.model = cls
 
         # Set the through field
-        if not self.rel.through and not cls._meta.abstract:
-            self.rel.through = create_many_to_many_intermediary_model(self,
-                                                                      cls)
+        if not self.remote_field.through and not cls._meta.abstract:
+            self.remote_field.through = create_many_to_many_intermediary_model(
+                self, cls)
 
         # Do the rest
         super(M2MFromVersion, self).contribute_to_class(cls, name)
+
 
 def create_many_to_many_intermediary_model(field, klass):
     """
@@ -97,30 +101,30 @@ def create_many_to_many_intermediary_model(field, klass):
     to avoid problems between version combined models.
     """
     managed = True
-    if isinstance(field.rel.to, basestring) and field.rel.to != \
+    if isinstance(field.remote_field.to, basestring) and field.remote_field.to != \
                 related.RECURSIVE_RELATIONSHIP_CONSTANT:
-        to_model = field.rel.to
+        to_model = field.remote_field.to
         to = to_model.split('.')[-1]
 
         def set_managed(field, model, cls):
             managed = model._meta.managed or cls._meta.managed
             if issubclass(cls, VersionView):
                 managed = False
-            field.rel.through._meta.managed = managed
+            field.remote_field.through._meta.managed = managed
         related.add_lazy_relation(klass, field, to_model, set_managed)
-    elif isinstance(field.rel.to, basestring):
+    elif isinstance(field.remote_field.to, basestring):
         to = klass._meta.object_name
         to_model = klass
         managed = klass._meta.managed
     else:
-        to = field.rel.to._meta.object_name
-        to_model = field.rel.to
+        to = field.remote_field.to._meta.object_name
+        to_model = field.remote_field.to
         managed = klass._meta.managed or to_model._meta.managed
         if issubclass(klass, VersionView):
             managed = False
 
     name = '%s_%s' % (klass._meta.object_name, field.name)
-    if field.rel.to == related.RECURSIVE_RELATIONSHIP_CONSTANT or \
+    if field.remote_field.to == related.RECURSIVE_RELATIONSHIP_CONSTANT or \
                         to == klass._meta.object_name:
         from_ = 'from_%s' % to.lower()
         to = 'to_%s' % to.lower()
@@ -147,8 +151,8 @@ def create_many_to_many_intermediary_model(field, klass):
         '__module__': klass.__module__,
         'from': FKToVersion(klass, related_name='%s+' % name,
                             db_tablespace=field.db_tablespace,
-                            db_constraint=field.rel.db_constraint),
+                            db_constraint=field.remote_field.db_constraint),
         'to': models.ForeignKey(to_model, related_name='%s+' % name,
                                 db_tablespace=field.db_tablespace,
-                                db_constraint=field.rel.db_constraint)
+                                db_constraint=field.remote_field.db_constraint)
     })

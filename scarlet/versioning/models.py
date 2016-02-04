@@ -284,14 +284,14 @@ class SharedMeta(models.base.ModelBase):
                             raise TypeError('The model %s cannot contain a ManyToManyField use M2MFromVersion instead' % name)
                         value.db_table = version_model._meta.get_field(name).m2m_db_table()
                 else:
-                    if value.rel.related_name and not \
-                                value.rel.related_name.endswith('+'):
-                        value.rel.related_name = "%s_version" % value.rel.related_name
+                    if value.remote_field.related_name and not \
+                                value.remote_field.related_name.endswith('+'):
+                        value.remote_field.related_name = "%s_version" % value.remote_field.related_name
 
                 # relationships to self should always point
                 # to the base model
-                if value.rel.to == related.RECURSIVE_RELATIONSHIP_CONSTANT:
-                    value.rel.to = base_model
+                if value.remote_field.model == related.RECURSIVE_RELATIONSHIP_CONSTANT:
+                    value.remote_field.model = base_model
 
         return super(SharedMeta, cls).add_to_class(name, value)
 
