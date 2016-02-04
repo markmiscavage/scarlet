@@ -1121,14 +1121,13 @@ class VersionModel(BaseVersionedModel):
                 lookup_kwargs = {field: getattr(self, field)}
                 qs = self.__class__._default_manager.filter(**lookup_kwargs)
 
-                # Exclude the current object from the query if we are editing an
-                # instance (as opposed to creating a new one)
+                # Exclude the current object from the query if we are editing
+                # an instance (as opposed to creating a new one)
                 if self.object_id:
                     qs = qs.exclude(object_id=self.object_id)
 
                 if qs.exists():
-                    msg = self.unique_error_message(self.__class__,
-                                                            (field,))
+                    msg = self.unique_error_message(self.__class__, (field,))
                     errors[field] = msg
 
             if errors:
