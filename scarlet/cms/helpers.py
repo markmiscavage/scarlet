@@ -227,7 +227,10 @@ class Fieldset(object):
     def __init__(self, form, name=None, fields=(),
                  classes=(), description=None):
         self.form = form
-        self.name, self.fields = name, fields
+        self.name= name
+        # Prevents to add form fields which have been deleted using pop() but
+        # exits on `fields` list of `Meta` on ModelForm class
+        self.fields = [field for field in fields if field in form.fields.keys()]
         self.classes = u' '.join(classes)
         self.description = description
 
