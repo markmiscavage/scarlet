@@ -1,5 +1,8 @@
 from .manager import cache_manager
 
+default_app_config = 'scarlet.cache.apps.AppConfig'
+
+
 def autodiscover():
     """
     Copied from django source

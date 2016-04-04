@@ -6,7 +6,9 @@ import imp
 
 import django
 from django.conf import settings
-from django import VERSION as DJANGO_VERSION
+
+
+
 
 def setup_test_environment(settings_overide, with_scarlet_blog=False):
     """
@@ -38,13 +40,13 @@ def setup_test_environment(settings_overide, with_scarlet_blog=False):
         apps.append('scarlet_blog.comments')
 
     settings_dict = {
-        'SECRET_KEY' : "Please do not spew DeprecationWarnings",
+        'SECRET_KEY': "Please do not spew DeprecationWarnings",
         'SITE_ID': 1,
         'INSTALLED_APPS': apps,
         'STATIC_URL': '/static/',
         'ROOT_URLCONF': urls,
         'USE_TZ': True,
-        'DATABASES' : {
+        'DATABASES': {
             'default': {
                 'ENGINE': 'scarlet.versioning.postgres_backend',
                 'NAME': 'cms',
@@ -54,7 +56,7 @@ def setup_test_environment(settings_overide, with_scarlet_blog=False):
                 'PORT': '',
             },
         },
-        'MIDDLEWARE_CLASSES' : (
+        'MIDDLEWARE_CLASSES': (
             'django.contrib.sessions.middleware.SessionMiddleware',
             'django.contrib.auth.middleware.AuthenticationMiddleware',
             'django.contrib.messages.middleware.MessageMiddleware'
@@ -101,21 +103,12 @@ def runtests(settings_overide, test_args):
         with_scarlet_blog = True
 
     setup_test_environment(settings_dict, with_scarlet_blog=with_scarlet_blog)
+    django.setup()
 
-    try:
-        from django.test.simple import DjangoTestSuiteRunner
-        def run_tests(test_args, verbosity, interactive):
-            runner = DjangoTestSuiteRunner(
-                verbosity=verbosity, interactive=interactive,
-                failfast=False
-            )
-            return runner.run_tests(test_args)
-    except ImportError:
-        from django.test.simple import run_tests
-
-    # 1.7+ requires an explicit setup call
-    if DJANGO_VERSION >= (1, 7):
-        django.setup()
+    from django.test.utils import get_runner
+    def run_tests(test_args, verbosity, interactive):
+        runner = get_runner(settings)()
+        return runner.run_tests(test_args)
 
     failures = run_tests(test_args, verbosity=1, interactive=True)
     sys.exit(failures)
