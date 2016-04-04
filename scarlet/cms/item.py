@@ -3,7 +3,7 @@ from django.views.generic.edit import ModelFormMixin
 from django.views.generic.detail import SingleObjectMixin
 from django import forms
 from django.forms import models as model_forms
-from django.contrib.admin.util import flatten_fieldsets
+from django.contrib.admin.utils import flatten_fieldsets
 from django.db.models.fields import FieldDoesNotExist
 from django.db import models
 from django.core.exceptions import ValidationError
@@ -439,7 +439,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         If the request get parameters contains 'popup' then
         the `render_type` is set to 'popup'.
         """
-        if request.REQUEST.get('popup'):
+        if request.GET.get('popup'):
             self.render_type = 'popup'
             kwargs['popup'] = 1
 

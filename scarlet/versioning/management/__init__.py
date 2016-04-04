@@ -1,7 +1,10 @@
 from django.conf import settings
-from django.db.models.signals import post_migrate, post_syncdb
 from django.db import connection, transaction, utils
 from django import VERSION as DJANGO_VERSION
+try:
+    from django.db.models.signals import post_migrate, post_syncdb
+except ImportError:
+    from django.db.models.signals import post_migrate
 
 VIEW_SQL = "CREATE OR REPLACE VIEW %(schema)s.%(model_table)s as select * from %(version_model)s inner join %(base_model)s on %(base_model)s.id = %(version_model)s.object_id"
 DROP_SQL = "DROP VIEW IF EXISTS %(schema)s.%(model_table)s;"

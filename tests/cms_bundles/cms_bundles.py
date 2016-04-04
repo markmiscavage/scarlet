@@ -1,6 +1,7 @@
 from django.forms.models import inlineformset_factory
 
-from scarlet.cms import bundles, site, forms, options, views, renders, actions
+from scarlet.cms import bundles, forms, options, views, renders, actions
+from scarlet.cms.sites import site
 
 from models import Post, PostImage, Comment, Category, Tag, Author, DummyModel
 from views import PostsListView

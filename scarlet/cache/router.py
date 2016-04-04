@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.core import cache
+from django.core.cache import caches
 try:
     from django.utils.module_loading import import_string
 except ImportError:
@@ -8,13 +8,14 @@ except ImportError:
     except ImportError:
         from django.utils.importlib import import_module as import_string
 
-class CacheRouter(object):
 
+class CacheRouter(object):
     def get_cache(self, **kwargs):
-        return cache.get_cache(self.get_cache_name(**kwargs))
+        return caches[self.get_cache_name(**kwargs)]
 
     def get_cache_name(self, **kwargs):
         return 'default'
+
 
 def _get_router():
     if getattr(settings, 'CACHE_ROUTER', None):
