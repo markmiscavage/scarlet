@@ -1,8 +1,9 @@
-from django.apps import AppConfig
+from django.apps import AppConfig as DjangoAppConfig
 
-class ScarletCMSConfig(AppConfig):
+
+class AppConfig(DjangoAppConfig):
     name = 'scarlet.cms'
 
     def ready(self):
-        super(ScarletCMSConfig, self).ready()
+        super(AppConfig, self).ready()
         self.module.autodiscover()

@@ -6,7 +6,7 @@ from django.utils.encoding import force_unicode
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 from django.db import models
-from django.contrib.admin.util import label_for_field
+from django.contrib.admin.utils import label_for_field
 from django.db.models.fields import FieldDoesNotExist
 from django.utils.text import capfirst
 from django.core.exceptions import ObjectDoesNotExist

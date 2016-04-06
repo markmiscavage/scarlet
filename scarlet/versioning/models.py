@@ -1,11 +1,12 @@
 import copy
 import sys
 
+from collections import OrderedDict
+
 from django.utils import timezone
 from django.db import models
 from django.db.models.fields import FieldDoesNotExist, related, Field
 from django import dispatch
-from django.utils.datastructures import SortedDict
 from django.utils import formats
 from django.core.exceptions import ValidationError
 
@@ -283,14 +284,14 @@ class SharedMeta(models.base.ModelBase):
                             raise TypeError('The model %s cannot contain a ManyToManyField use M2MFromVersion instead' % name)
                         value.db_table = version_model._meta.get_field(name).m2m_db_table()
                 else:
-                    if value.rel.related_name and not \
-                                value.rel.related_name.endswith('+'):
-                        value.rel.related_name = "%s_version" % value.rel.related_name
+                    if value.remote_field.related_name and not \
+                                value.remote_field.related_name.endswith('+'):
+                        value.remote_field.related_name = "%s_version" % value.remote_field.related_name
 
                 # relationships to self should always point
                 # to the base model
-                if value.rel.to == related.RECURSIVE_RELATIONSHIP_CONSTANT:
-                    value.rel.to = base_model
+                if value.remote_field.model == related.RECURSIVE_RELATIONSHIP_CONSTANT:
+                    value.remote_field.model = base_model
 
         return super(SharedMeta, cls).add_to_class(name, value)
 
@@ -357,7 +358,7 @@ class VersionViewMeta(SharedMeta):
                 'Meta': get_meta(None, abstract=base_abstract)
             })
 
-        versioned_attrs = SortedDict()
+        versioned_attrs = OrderedDict()
         versioned_attrs['__module__'] = attrs.get('__module__')
         versioned_attrs['Meta'] = get_meta(meta, managed=True)
 
@@ -1120,14 +1121,13 @@ class VersionModel(BaseVersionedModel):
                 lookup_kwargs = {field: getattr(self, field)}
                 qs = self.__class__._default_manager.filter(**lookup_kwargs)
 
-                # Exclude the current object from the query if we are editing an
-                # instance (as opposed to creating a new one)
+                # Exclude the current object from the query if we are editing
+                # an instance (as opposed to creating a new one)
                 if self.object_id:
                     qs = qs.exclude(object_id=self.object_id)
 
                 if qs.exists():
-                    msg = self.unique_error_message(self.__class__,
-                                                            (field,))
+                    msg = self.unique_error_message(self.__class__, (field,))
                     errors[field] = msg
 
             if errors:
