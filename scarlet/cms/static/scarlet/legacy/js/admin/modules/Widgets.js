@@ -39,7 +39,7 @@ define(
 				this._renderAssetSelect(dom);
 				this._renderFormset(dom);
 				this._renderApiSelect(dom);
-				this._renderDatePicker(dom);
+				// this._renderDatePicker(dom);
 				this._renderDateTimePicker(dom);
 				this._renderWysiwig(dom);
 				this._renderTabs(dom);

@@ -14,7 +14,7 @@ injectTapEventPlugin()
 // )
 
 // DATEPICKER INIT
-let postDate = document.querySelector('.postDate')
+let postDate = document.querySelector('.date')
 if (postDate) {	
 	let dateInput = postDate.querySelector('input')
 	let data = {

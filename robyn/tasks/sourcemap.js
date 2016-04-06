@@ -10,8 +10,8 @@ module.exports = function (grunt) {
 			path = require("path"),
 			cwd = process.cwd(),
 			colors = require("colors"),
-			output = path.join(cwd, "scarlet", "cms", "static", "scarlet"),
-			source = path.join(cwd, "scarlet", "cms", "static", "scarlet");
+			output = path.join(cwd, "scarlet", "cms", "static", "scarlet", "legacy"),
+			source = path.join(cwd, "scarlet", "cms", "static", "scarlet", "legacy");
 
 		var mapsPath = path.join(output, "**", "*.map");
 		var maps = grunt.file.expand(mapsPath);
