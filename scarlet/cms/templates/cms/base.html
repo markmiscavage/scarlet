@@ -115,6 +115,35 @@
 			</div>
 		</footer>
 		{% endblock popup_footer %}
+				<script src="{{STATIC_URL}}scarlet/legacy/js/libs/require.js"></script>
+		        <script src="{{STATIC_URL}}scarlet/legacy/js/config.js"></script>
+				{% if settings.TEMPLATE_DEBUG %}
+
+				<script>
+					require.config({
+						baseUrl : "{{STATIC_URL}}scarlet/legacy/js",
+						urlArgs : "cacheBust=" + (new Date()).getTime()
+					});
+				</script>
+				{% else %}
+				<script>
+					require.config({
+						baseUrl : "{{STATIC_URL}}scarlet/legacy/js",
+						paths : {
+							"admin/Site" : "admin"
+						}
+					});
+				</script>
+				{% endif %}
+				<script>
+					require(["$"], function ($) {
+						define("jquery", $)
+
+						require(["admin/Site"], function (Site) {
+							Site.initialize();
+						});
+					});
+				</script>
 
 		{% if settings.TEMPLATE_DEBUG %}
 			{% render_bundle 'main' %}

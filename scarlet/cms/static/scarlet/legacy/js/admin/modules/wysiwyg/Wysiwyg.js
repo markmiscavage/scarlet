@@ -43,7 +43,7 @@ define(
 					parserRules: wysihtml5ParserRules,
 					style: false,
 					toolbar: toolbarId,
-					stylesheets: '/static/scarlet/css/wysiwyg.css',
+					stylesheets: '/static/scarlet/legacy/css/wysiwyg.css',
 					id: id
 				});
 

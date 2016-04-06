@@ -32,7 +32,7 @@ const WEBPACK_ENV = {
 module.exports = {
 	debug: !ENV_IS_PRODUCTION,
 	devtool: defineWebpackDevtool(),
-
+	
 	entry: [
 			'babel-polyfill',
 			'eventsource-polyfill',
