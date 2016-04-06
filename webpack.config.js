@@ -37,7 +37,7 @@ module.exports = {
 			'babel-polyfill',
 			'eventsource-polyfill',
 			'webpack-hot-middleware/client?path=http://localhost:3000/__webpack_hmr',
-			'./scarlet/cms/static/scarlet/source/init'
+			'./scarlet/cms/static/scarlet/source/js/init'
 	],
 
 	output: {
@@ -64,7 +64,7 @@ function defineWebpackDevtool () {
 }
 
 function createWebpackLoaders () {
-	return [{
+	var loaders = [{
 		test: /\.js$/,
 		loaders: ['react-hot', 'babel'],
 		exclude: /node_modules|bower_components/,
@@ -76,25 +76,42 @@ function createWebpackLoaders () {
 		test: /\.(ogg|mp?4a|mp3)$/,
 		loader: 'file'
 	}, {
-		test: /\.scss$/,
-		loader: ExtractTextPlugin.extract('style',
-			'css?sourceMap!postcss!sass'),
-		include: CONFIG.src
-	}, {
 		test: /\.(jpg|png)$/,
 		loader: 'url?limit=8192'
 	}, {
 		test: /\.json$/,
 		loader: 'json'
-	}]
+	}];
+
+	if (ENV_IS_PRODUCTION) {
+		loaders.push({
+			test: /\.scss$/,
+			loader: ExtractTextPlugin.extract('style',
+				'css?sourceMap!postcss!sass'),
+			include: CONFIG.src
+		})
+	} else {
+		loaders.push({
+			test: /\.scss$/,
+			loaders :
+			[
+		    'style-loader',
+		    'css-loader?importLoaders=2&sourceMap',
+		    'postcss-loader',
+		    'sass-loader?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
+			],
+			include: path.join(CONFIG.src, 'stylesheets')
+		})
+	}
+	return loaders;
 }
 
 function createWebpackPlugins () {
 	const plugins = [
 		new DefinePlugin({
-				'process.env': {
-						NODE_ENV: JSON.stringify('development'),
-						BROWSER: JSON.stringify(true)
+			'process.env': {
+					NODE_ENV: JSON.stringify('development'),
+					BROWSER: JSON.stringify(true)
 				}
 		}),
 		new BundleTracker({ filename: './webpack-stats.json' })
