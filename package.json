@@ -47,14 +47,23 @@
   "dependencies": {
     "axios": "^0.9.1",
     "fastclick": "^1.0.6",
+    "material-ui": "^0.15.0-alpha.2",
+    "moment": "^2.12.0",
     "react": "^0.14.8",
-    "react-dom": "^0.14.8"
+    "react-dom": "^0.14.8",
+    "react-tap-event-plugin": "^0.2.2"
   },
   "babel": {
-    "presets": ["react", "es2015", "stage-0"],
+    "presets": [
+      "react",
+      "es2015",
+      "stage-0"
+    ],
     "env": {
       "development": {
-        "presets": ["react-hmre"]
+        "presets": [
+          "react-hmre"
+        ]
       }
     }
   },
