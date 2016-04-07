@@ -4,10 +4,11 @@ except ImportError:
     from django.conf.urls.defaults import include, patterns, url
 
 from scarlet import cms
+from scarlet.cms.sites import site
 
 cms.autodiscover()
 urlpatterns = patterns('',
-    (r'^admin/', include(cms.site.urls)),
+    (r'^admin/', include(site.urls)),
 )
 
 try:

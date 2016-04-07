@@ -175,7 +175,7 @@ class CMSView(BaseView):
             }
 
     def customized_return_url(self, default_url):
-        redirect_url = self.request.REQUEST.get(self.ORIGIN_ARGUMENT)
+        redirect_url = self.request.GET.get(self.ORIGIN_ARGUMENT)
         if redirect_url:
             base = self.request.path.split('/')
             if len(base) > 1 and redirect_url.startswith('/%s' % base[1]):

@@ -84,7 +84,7 @@ class CacheManager(object):
         groups.
         """
 
-        extra = kwargs.pop('extra', {})
+        extra = extra or kwargs.pop('extra', {})
         for group in self._registry.values():
             if klass in group.models:
                 e = extra.get(group.key)

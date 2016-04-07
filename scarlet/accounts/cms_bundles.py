@@ -2,9 +2,11 @@ from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.contrib.auth import get_user_model
 
 try:
-    from ..cms import site, bundles, views
+    from ..cms import bundles, views
+    from ..cms.sites import site
 except ValueError:
-    from cms import site, bundles, views
+    from cms import bundles, views
+    from cms.sites import site
 
 from . import forms
 from . import groups
