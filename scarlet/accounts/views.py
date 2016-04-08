@@ -256,7 +256,7 @@ def signin(request, auth_form=AuthenticationForm,
 
                 # Whereto now?
                 redirect_to = redirect_signin_function(
-                    request.REQUEST.get(redirect_field_name), user)
+                    request.GET.get(redirect_field_name), user)
                 return redirect(redirect_to)
             else:
                 return redirect(reverse('accounts_disabled',
@@ -266,7 +266,7 @@ def signin(request, auth_form=AuthenticationForm,
         extra_context = dict()
     extra_context.update({
         'form': form,
-        'next': request.REQUEST.get(redirect_field_name),
+        'next': request.GET.get(redirect_field_name),
     })
     return ExtraContextTemplateView.as_view(template_name=template_name,
                                         extra_context=extra_context)(request)

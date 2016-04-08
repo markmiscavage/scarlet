@@ -2,7 +2,7 @@ from .internal_tags.forms import TagFilterForm
 from .internal_tags import handler
 
 from . import views, bundles
-from . import site
+from .sites import site
 
 class TagListView(views.ListView):
     display_fields = ('name',)
