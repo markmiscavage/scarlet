@@ -60,7 +60,7 @@ module.exports = {
 // ..................................................
 
 function defineWebpackDevtool () {
-	return ENV_IS_PRODUCTION ? null : 'cheap-module-eval-source-map'
+	return ENV_IS_PRODUCTION ? null : 'cheap-module-source-map'
 }
 
 function createWebpackLoaders () {

@@ -8,7 +8,6 @@ define(
 	],
 
 	function (DOMClass, $, jQuerySelect2, WindowPopup) {
-
 		"use strict";
 
 		return DOMClass.extend({
@@ -183,7 +182,6 @@ define(
 
 				this.names = [];
 				this.params = [];
-
 				for (param in data.params) {
 					this.param = this.param || param;
 					this.params.push({
@@ -210,7 +208,6 @@ define(
 
 					result.text = text.join(' - ');
 				}));
-
 				return {
 					results : data.results,
 					more : !!data.next

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import { DatePicker } from 'material-ui/lib'
 import Moment from 'moment'
 import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider'
@@ -8,7 +8,6 @@ import '../../stylesheets/components/dateselector.scss'
 
 class DateSelector extends Component {
 	constructor(props) {
-		console.log(props)
 	  super(props)
 	  this.props = props
 	  let selectedDate = props.data.value ? new Date(props.data.value) : null
@@ -48,5 +47,10 @@ class DateSelector extends Component {
 		)
 	}
 }
+
+DateSelector.propTypes = { 
+  data: PropTypes.object.isRequired
+}
+
 
 export default DateSelector
