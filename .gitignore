@@ -89,3 +89,5 @@ docs/_build/*
 MANIFEST
 builder/*
 env
+
+webpack-stats.json
