@@ -4,15 +4,10 @@ import injectTapEventPlugin from 'react-tap-event-plugin'
 
 import DateSelector from './components/DateSelector'
 import App from './components/App'
-import AutoFill from './components/AutoFill'
+import AutoFill from './components/autoFill/AutoFill'
 
 injectTapEventPlugin()
 
-
-// render(
-// 	<App />,
-// 	document.getElementById('container')
-// )
 
 // DATEPICKER INIT
 let postDate = document.querySelector('.date')
