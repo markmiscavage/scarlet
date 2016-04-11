@@ -40,6 +40,7 @@ dwsync.xml
 intermediate
 publish
 .idea
+coverage
 
 # build script local files
 build/buildinfo.properties
