@@ -3,7 +3,7 @@ import { render } from 'react-dom'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 
 import DateSelector from './components/DateSelector'
-import AutoSlug from './components/AutoSlug'
+import AutoSlug from './components/autoSlug/AutoSlug'
 import AutoFill from './components/autoFill/AutoFill'
 
 injectTapEventPlugin()
