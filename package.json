@@ -11,7 +11,7 @@
   "devDependencies": {
     "autoprefixer": "^6.3.3",
     "babel-core": "^6.6.5",
-    "babel-eslint": "^5.0.0-beta4",
+    "babel-eslint": "^6.0.2",
     "babel-loader": "^6.2.4",
     "babel-plugin-transform-runtime": "^6.6.0",
     "babel-polyfill": "^6.6.1",
@@ -44,6 +44,17 @@
     "webpack-dev-middleware": "^1.5.1",
     "webpack-hot-middleware": "^2.10.0"
   },
+  "standard": {
+    "parser": "babel-eslint",
+    "ignore": [
+      "webpack.config.js",
+      "webpack-server.js",
+      "gruntfile.js",
+      "robyn/",
+      "scarlet/cms/static/scarlet/legacy/",
+      "scarlet/cms/static/scarlet/build/"
+    ]
+  },
   "dependencies": {
     "axios": "^0.9.1",
     "fastclick": "^1.0.6",
@@ -70,9 +81,10 @@
   },
   "scripts": {
     "start": "node ./webpack-server.js",
+    "prebuild": "npm run lint",
     "build": "npm run clean && npm run build:deploy",
     "build:deploy": "cross-env NODE_ENV=production webpack --config webpack.config.js",
     "clean": "rimraf ./scarlet/cms/static/scarlet/build",
-    "lint": "eslint source"
+    "lint": "standard"
   }
 }
