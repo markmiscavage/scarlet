@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { DatePicker } from 'material-ui/lib'
+import { DatePicker } from 'material-ui/lib/date-picker'
 import Moment from 'moment'
 import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider'
 import muiTheme from '../common/muiTheme'
