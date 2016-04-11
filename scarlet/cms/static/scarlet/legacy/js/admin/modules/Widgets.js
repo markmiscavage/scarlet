@@ -52,7 +52,7 @@ define(
 				this._renderjQueryCrop(dom);
 				this._renderDragWidth(dom);
 
-				this._autoSlug(dom);
+				//this._autoSlug(dom);
 				this._handlePopup(dom);
 				this._handleBatchActions(dom);
 			},
