@@ -46,7 +46,7 @@ if (apiSelects.length) {
 // AutoSlug
 // TODO: store sourceNode input value in app state (new field component)
 // TODO: eliminate sourceNode, use state property instead
-const autoSlugNodes = document.querySelectorAll('.autoslug')
+const autoSlugNodes = document.querySelectorAll('.auto-slug')
 if (autoSlugNodes) {
     for (var i = 0, l = autoSlugNodes.length; i < l; i++) {
       let dataNode = autoSlugNodes[i]
