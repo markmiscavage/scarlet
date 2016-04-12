@@ -48,6 +48,7 @@ build/config/buildinfo.properties
 # Unit test / coverage reports
 .coverage
 .tox
+coverage
 
 #Translations
 *.mo
@@ -89,3 +90,5 @@ docs/_build/*
 MANIFEST
 builder/*
 env
+
+webpack-stats.json
