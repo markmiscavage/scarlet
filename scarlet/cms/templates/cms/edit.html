@@ -32,12 +32,29 @@
 
 			{% for line in fieldset %}
 				{% for field in line %}
-					<div class="{% if field.is_date %}date{% endif %} {% if field.is_checkbox %}checkbox{% endif %} {% if field.errors %}error-field{% endif %}">
-						{{ field.label_tag }}
-						{% if field.field.help_text %}<em class="help">{{ field.field.help_text|safe }}</em>{% endif %}
-						{{ field.field }}
+					<div class='{% if field.is_autoslug %}autoslug{% endif %} {% if field.is_date %}date{% endif %} {% if field.is_checkbox %}checkbox{% endif %} {% if field.errors %}error-field{% endif %}'
+						{% for attr, value in field.label_attrs.items %}
+						data-label-{{attr}}="{{ value }}"
+						{% endfor %}
+						{% if field.field.id_for_label %}
+						data-label-for="{{ field.field.id_for_label }}"
+						{% endif %}
+						data-label-value="{{ field.label_contents }}"
+
+						{% if field.field_tag %}
+							{% for attr, value in field.field_attrs.items %}
+							data-{{field.field_tag}}-{{attr}}="{{ value }}"
+							{% endfor %}
+							{% if field.field.value %}
+								data-{{field.field_tag}}-value="{{field.field.value}}"
+							{% endif %}
+						{% endif %}
+					>
+							{{ field.label_tag }}
+							{% if field.field.help_text %}<em class="help">{{ field.field.help_text|safe }}</em>{% endif %}
+							{{ field.field }}
+						{{ field.errors }}
 					</div>
-					{{ field.errors }}
 				{% endfor %}
 			{% endfor %}
 		</fieldset>

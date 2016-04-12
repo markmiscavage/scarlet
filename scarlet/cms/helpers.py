@@ -269,22 +269,47 @@ class AdminField(object):
                        isinstance(self.field.field,
                                       forms.SplitDateTimeField)
 
-        self.is_order_field = isinstance(self.field.field,
-                                        fields.OrderFormField)
+        self.is_order_field = isinstance(self.field.field, fields.OrderFormField)
+        self.is_autoslug = (isinstance(self.field.field, forms.SlugField) and
+                            self.field.field.widget.attrs.get('data-source-fields', None))
 
+    def field_attrs(self):
+        widget = self.field.as_widget()
+        attrs = {}
+        for attr in widget.split(' '):
+            if attr.find('=') != -1:
+                key, value = attr.split('=', 1)
+                attrs[key] = value.strip('"')
+        return attrs
 
-    def label_tag(self):
+    def field_tag(self):
+        widget = self.field.field.widget
+        if (isinstance(widget, forms.widgets.Input) and
+                not isinstance(widget, widgets.APIChoiceWidget)):
+            return 'input'
+        else:
+            return None
+
+    def label_attrs(self):
         classes = []
-        contents = conditional_escape(force_unicode(self.field.label))
         if self.is_checkbox:
             classes.append(u'vCheckboxLabel')
-        else:
-            contents += u':'
         if self.field.field.required:
             classes.append(u'required')
         if not self.is_first:
             classes.append(u'inline')
         attrs = classes and {'class': u' '.join(classes)} or {}
+        return attrs
+
+    def label_contents(self):
+        contents = conditional_escape(force_unicode(self.field.label))
+        if not self.is_checkbox:
+            contents += u':'
+        return contents
+
+    def label_tag(self):
+        contents = self.label_contents()
+        attrs = self.label_attrs()
         return self.field.label_tag(contents=mark_safe(contents), attrs=attrs)
 
     def errors(self):
