@@ -40,7 +40,6 @@ dwsync.xml
 intermediate
 publish
 .idea
-coverage
 
 # build script local files
 build/buildinfo.properties
@@ -49,6 +48,7 @@ build/config/buildinfo.properties
 # Unit test / coverage reports
 .coverage
 .tox
+coverage
 
 #Translations
 *.mo
