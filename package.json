@@ -70,6 +70,7 @@
   },
   "dependencies": {
     "axios": "^0.9.1",
+    "bem-classnames": "^1.0.7",
     "fastclick": "^1.0.6",
     "immutable": "^3.7.6",
     "material-ui": "^0.15.0-alpha.2",

@@ -72,5 +72,6 @@ if (autoSlugNodes) {
         dataNode
       )
     }
+
 }
 
