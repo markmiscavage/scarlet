@@ -44,34 +44,32 @@ if (apiSelects.length) {
 }
 
 // AutoSlug
-// TODO: modify template html w/ className on container element
-// TODO: add data-attr (field identifier) to source field, render new component to store value in app state, consume value in AutoSlug
-const autoSlugNodes = document.querySelectorAll('[data-source-fields]')
+// TODO: store sourceNode input value in app state (new field component)
+// TODO: eliminate sourceNode, use state property instead
+const autoSlugNodes = document.querySelectorAll('.autoslug')
 if (autoSlugNodes) {
     for (var i = 0, l = autoSlugNodes.length; i < l; i++) {
       let dataNode = autoSlugNodes[i]
-      let labelNode = dataNode.previousSibling
-      let containerNode = dataNode.parentNode
 
       let props = {
-        sourceNode: document.querySelector('[name=' + dataNode.getAttribute('data-source-fields') + ']'),
-        slugNode: dataNode,
-        label: labelNode.textContent,
+        sourceNode: document.querySelector('[name=' + dataNode.dataset.inputDataSourceFields + ']'),
+        slugNode: dataNode.querySelector('input'),
+        label: dataNode.dataset.labelValue,
         fieldAttributes: {
-          id: dataNode.id,
-          name: dataNode.name,
-          maxLength: dataNode.maxlength,
-          type: dataNode.type,
-          className: dataNode.class
+          id: dataNode.dataset.inputId,
+          name: dataNode.dataset.inputName,
+          maxLength: dataNode.dataset.inputMaxlength,
+          type: dataNode.dataset.inputType,
+          className: dataNode.dataset.inputClass
         },
         labelAttributes: {
-          className: labelNode.class
+          className: dataNode.dataset.labelClass
         }
       }
 
       render(
         <AutoSlug {...props} />,
-        containerNode
+        dataNode
       )
     }
 }
