@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import { dasherize } from './autoSlugUtils'
 
-import '../../../stylesheets/components/AutoSlug.scss'
-
 class AutoSlug extends Component {
   constructor(props) {
     super(props)
