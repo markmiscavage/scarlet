@@ -9,23 +9,23 @@ class AutoSlug extends Component {
     super(props)
 
     this.state = {
-      slug: this.props.slugElem.value
+      slug: this.props.slugNode.value
     }
 
     this.setSlugFromSelf = this.setSlugFromSelf.bind(this)
 
-    // enable value matching from sourceElem only if initial values match
+    // enable value matching from sourceNode only if initial values match
     if (this.shouldEnableMatching()) {
-      this.props.sourceElem.onkeyup = this.setSlugFromSource.bind(this)
+      this.props.sourceNode.onkeyup = this.setSlugFromSource.bind(this)
     }
   }
 
   shouldEnableMatching() {
-    return dasherize(this.props.sourceElem.value) === this.props.slugElem.value
+    return dasherize(this.props.sourceNode.value) === this.props.slugNode.value
   }
 
   getSourceValue() {
-    return dasherize(this.props.sourceElem.value)
+    return dasherize(this.props.sourceNode.value)
   }
 
   setSlugFromSource() {
@@ -35,9 +35,9 @@ class AutoSlug extends Component {
   }
 
   setSlugFromSelf(e) {
-    // disable value matching from sourceElem
+    // disable value matching from sourceNode
     if (!this.shouldEnableMatching()) {
-      this.props.sourceElem.onkeyup = null
+      this.props.sourceNode.onkeyup = null
     }
 
     this.setState({
