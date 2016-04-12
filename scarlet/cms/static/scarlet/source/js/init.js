@@ -28,7 +28,6 @@ if (postDate) {
 }
 
 // AutoFills INIT
-
 let apiSelects = document.querySelectorAll('.api-select')
 
 if (apiSelects.length) {
@@ -40,7 +39,7 @@ if (apiSelects.length) {
 		}
 		
 		render(
-			<AutoFill data={data} />,
+			<AutoFill {...data} />,
 			sel
 		)
 	}
