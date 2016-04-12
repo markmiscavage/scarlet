@@ -20,9 +20,8 @@ describe('AutoFill Component', function() {
 		let autoFillNode = renderer.getRenderOutput()
 
 		expect(autoFillNode.type).toBe('div')
-		TestUtils.Simulate.change(autoFillNode)
-		TestUtils.Simulate.keyDown(autoFillNode, {key: "Enter", keyCode: 13, which: 13})
-		console.log(JSON.stringify(autoFillNode))
+		// TestUtils.Simulate.change(autoFillNode)
+		// TestUtils.Simulate.keyDown(autoFillNode, {key: "Enter", keyCode: 13, which: 13})
 	})
 })
 

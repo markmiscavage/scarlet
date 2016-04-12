@@ -24,6 +24,7 @@ nbproject
 *.sublime-workspace
 atlassian-ide-plugin.xml
 scarlet.iml
+webpack-stats.json
 
 # Dreamweaver added files
 _notes

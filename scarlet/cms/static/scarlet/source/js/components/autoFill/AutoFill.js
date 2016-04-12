@@ -1,33 +1,58 @@
 import React, { Component, PropTypes } from 'react'
-import AutoComplete from 'material-ui/lib/auto-complete'
 import axios from 'axios'
-import { formatResults } from './autoFillUtils'
+import { formatResults, findIndexById } from './autoFillUtils'
+import { MultiSelect } from 'react-selectize'
+import '../../../stylesheets/components/autofill.scss'
 
-const testData = [{text:"bbb","id":2},{text:"post","id":1}]
-const testData2 = ["bbb","post"]
+const Pill = (props) => {
+  return (
+    <div className="pill__wrapper">
+      <span className="pill__close" onClick = {props.removeSelectedItem.bind(this, props)}>x</span>
+        {props.value}
+    </div>
+  )
+}
 
 class AutoFill extends Component {
 
   constructor(props) {
     super(props)
-    this.dataApi = props.data.dataApi
-    this.name = props.data.name
-    this.fullWidth = props.fullWidth
+    this.dataApi = props.dataApi
+    this.dataAdd = props.dataAdd
+    this.name = props.name
     this.state = {
-      dataSource: []
+      sourceOptions: [],
+      selectedItems: []
     }
   }
 
   handleFocus = () => {
-    this.handleUpdateInput('')
+    this.onSearchChange('')
   } 
 
-  handleUpdateInput = (value) => { 
+  removeSelectedItem = (props, e) => {
+    e.stopPropagation()
+    let itemIndex = findIndexById(props.id, this.state.selectedItems)
+    let selectedItems = this.state.selectedItems.splice(itemIndex, 1)
+    this.render()
+  }
+
+  renderValue = (item) => {
+    return <Pill {...item} removeSelectedItem={this.removeSelectedItem}/>
+  }
+
+  onValuesChange = (selectedItems) => {
+    this.setState({
+      selectedItems: selectedItems
+    })
+  }
+
+  onSearchChange = (value) => { 
     let url = this.dataApi + '&page=1&search=' + value
     axios.get(url)
       .then( (response) => {
         this.setState({
-          dataSource: formatResults(response)
+          sourceOptions: formatResults(response)
         })
       })
       .catch( (response) => {
@@ -38,17 +63,18 @@ class AutoFill extends Component {
   render() {
     let ref = 'autofill-' + this.name
     return (
-      <div>
-        <AutoComplete
-          dataSource={this.state.dataSource}
-          onUpdateInput={this.handleUpdateInput}
-          filter={AutoComplete.noFilter}
-          onFocus={this.handleFocus}
-          floatingLabelText={this.name}
-          fullWidth={this.fullwidth}
-          ref={ref}
+        <MultiSelect
+            placeholder = 'Select it'
+            options = {this.state.sourceOptions}
+            onValuesChange = {this.onValuesChange}
+            onFocus={this.handleFocus}
+            onSearchChange={this.onSearchChange}
+            theme='material'
+            renderValue={this.renderValue}
+            createFromSearch={this.createFromSearch}
+            values={this.state.selectedItems}
+            ref={ref}
         />
-      </div>
     )
   }
 
@@ -56,12 +82,9 @@ class AutoFill extends Component {
 }
 
 AutoFill.propTypes = { 
-  data: PropTypes.object.isRequired,
-  fullWidth: PropTypes.bool 
-}
-
-AutoFill.defaultProps = { 
-  fullWidth: true
+  dataApi: PropTypes.string.isRequired,
+  dataAdd: PropTypes.string.isRequired,
+  name: PropTypes.string,
 }
 
 export default AutoFill

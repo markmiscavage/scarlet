@@ -35,8 +35,17 @@ const formatResults = (response) => {
   return response.data.results.map( (item) => {
     item['text'] = buildText(item, listFields)
     item['value'] = item['text']
+    item['label'] = item['text']
     return item
   })
 }
 
-export { formatResults }
+const findIndexById = (id, arr) => {
+  return arr.find( (item, key) => {
+    if(item.id === id) {
+      return key
+    }
+  })
+}
+
+export { formatResults, findIndexById }
