@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import axios from 'axios'
 import { formatResults, findIndexById } from './autoFillUtils'
 import { MultiSelect } from 'react-selectize'
+import DialogModal from '../DialogModal'
 import '../../../stylesheets/components/autofill.scss'
 
 const Pill = (props) => {
@@ -17,9 +18,6 @@ class AutoFill extends Component {
 
   constructor(props) {
     super(props)
-    this.dataApi = props.dataApi
-    this.dataAdd = props.dataAdd
-    this.name = props.name
     this.state = {
       sourceOptions: [],
       selectedItems: []
@@ -48,7 +46,7 @@ class AutoFill extends Component {
   }
 
   onSearchChange = (value) => { 
-    let url = this.dataApi + '&page=1&search=' + value
+    let url = this.props.dataApi + '&page=1&search=' + value
     axios.get(url)
       .then( (response) => {
         this.setState({
@@ -61,8 +59,9 @@ class AutoFill extends Component {
   }
 
   render() {
-    let ref = 'autofill-' + this.name
+    let ref = 'autofill-' + this.props.name
     return (
+      <div>
         <MultiSelect
             placeholder = 'Select it'
             options = {this.state.sourceOptions}
@@ -75,6 +74,8 @@ class AutoFill extends Component {
             values={this.state.selectedItems}
             ref={ref}
         />
+        <DialogModal url={this.props.dataAdd} name={this.props.name} />
+      </div>
     )
   }
 
