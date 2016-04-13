@@ -1,12 +1,11 @@
-import DateSelector from './components/date/DateSelector'
-import $ from 'jquery'
+import DatePicker from './components/date/DatePicker'
 import Select from './components/select/Select'
 
 
 
 // DATEPICKER
-const dateSelector = new DateSelector()
-dateSelector.render()
+const datePicker = new DatePicker()
+datePicker.render()
 
 // SELECT
 const select = new Select()

@@ -2,7 +2,7 @@ import Backbone, { View } from 'backbone'
 import $ from 'jquery'
 import datepicker from 'jquery-ui/datepicker'
 
-const DateSelector = View.extend({
+const DatePicker = View.extend({
 	el: $('input.date'),
 	
   render: function() {
@@ -13,4 +13,4 @@ const DateSelector = View.extend({
 
 })
 
-export default DateSelector
+export default DatePicker
