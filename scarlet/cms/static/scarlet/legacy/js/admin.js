@@ -10820,7 +10820,6 @@ define(
 	],
 
 	function (DOMClass, $, jQuerySelect2, WindowPopup) {
-
 		
 
 		return DOMClass.extend({
@@ -10995,7 +10994,6 @@ define(
 
 				this.names = [];
 				this.params = [];
-
 				for (param in data.params) {
 					this.param = this.param || param;
 					this.params.push({
@@ -11022,7 +11020,6 @@ define(
 
 					result.text = text.join(' - ');
 				}));
-
 				return {
 					results : data.results,
 					more : !!data.next
@@ -21576,7 +21573,7 @@ define(
 					parserRules: wysihtml5ParserRules,
 					style: false,
 					toolbar: toolbarId,
-					stylesheets: '/static/scarlet/css/wysiwyg.css',
+					stylesheets: '/static/scarlet/legacy/css/wysiwyg.css',
 					id: id
 				});
 
@@ -25133,11 +25130,11 @@ define(
 			_render : function (n) {
 				var dom = $(n.data.dom);
 
-				this._renderSelect(dom);
+				// this._renderSelect(dom);
 				this._renderAssetSelect(dom);
 				this._renderFormset(dom);
-				this._renderApiSelect(dom);
-				this._renderDatePicker(dom);
+				// this._renderApiSelect(dom);
+				// this._renderDatePicker(dom);
 				this._renderDateTimePicker(dom);
 				this._renderWysiwig(dom);
 				this._renderTabs(dom);
@@ -25150,7 +25147,7 @@ define(
 				this._renderjQueryCrop(dom);
 				this._renderDragWidth(dom);
 
-				this._autoSlug(dom);
+				//this._autoSlug(dom);
 				this._handlePopup(dom);
 				this._handleBatchActions(dom);
 			},
@@ -25199,6 +25196,7 @@ define(
 			},
 
 			_renderSelect : function (dom) {
+
 				dom.find("select").select2({
 					minimumResultsForSearch : 20
 				});
