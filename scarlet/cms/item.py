@@ -193,7 +193,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
                     getattr(self.form_class.Meta, 'fields', None)):
                 fields = self.form_class.Meta.fields
             else:
-                fields = '__all__'
+                fields = []
 
         exclude = None
         if self.parent_field:
@@ -220,7 +220,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
                 except ValueError:
                     pass
 
-        params = {'fields': fields,
+        params = {'fields': fields or '__all__',
                   'exclude': exclude,
                   'formfield_callback': self.formfield_for_dbfield}
 
