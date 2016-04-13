@@ -35,7 +35,7 @@ define(
 			_render : function (n) {
 				var dom = $(n.data.dom);
 
-				this._renderSelect(dom);
+				// this._renderSelect(dom);
 				this._renderAssetSelect(dom);
 				this._renderFormset(dom);
 				// this._renderApiSelect(dom);
@@ -101,6 +101,7 @@ define(
 			},
 
 			_renderSelect : function (dom) {
+
 				dom.find("select").select2({
 					minimumResultsForSearch : 20
 				});

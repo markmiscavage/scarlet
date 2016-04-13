@@ -66,7 +66,7 @@ function defineWebpackDevtool () {
 function createWebpackLoaders () {
 	var loaders = [{
 		test: /\.js$/,
-		loaders: ['react-hot', 'babel'],
+		loaders: ['babel'],
 		exclude: /node_modules|bower_components/,
 		include: CONFIG.src
 	}, {

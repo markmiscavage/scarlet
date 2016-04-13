@@ -29,7 +29,6 @@
       {% if fieldset.description %}
         <div class="description">{{ fieldset.description|safe }}</div>
       {% endif %}
-
       {% for line in fieldset %}
         {% for field in line %}
           <div class='{% if field.is_autoslug %}auto-slug{% endif %} {% if field.is_date %}date{% endif %} {% if field.is_checkbox %}checkbox{% endif %} {% if field.errors %}error-field{% endif %}'

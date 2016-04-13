@@ -1,8 +1,12 @@
-import DateSelector from './components/date/DateSelector'
+import DatePicker from './components/datePicker/DatePicker'
+import Select from './components/select/Select'
 
 
-// DATEPICKER INIT
 
-const dateSelector = new DateSelector()
-dateSelector.render()
+// DATEPICKER
+const datePicker = new DatePicker()
+datePicker.render()
 
+// SELECT
+const select = new Select()
+select.render()
