@@ -3341,7 +3341,6 @@ section#main article input.datetime {
 /* line 302, ../compass/scss/admin/views/_admin.scss */
 section#main article input.date.date,
 section#main article input.datetime.date {
-  visibility: hidden;
   background-image: url("../img/icon-date.png");
 }
 /* line 307, ../compass/scss/admin/views/_admin.scss */

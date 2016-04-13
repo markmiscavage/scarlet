@@ -70,9 +70,14 @@
   },
   "dependencies": {
     "axios": "^0.9.1",
+    "backbone": "^1.3.3",
     "bem-classnames": "^1.0.7",
+    "bootstrap": "^3.3.6",
+    "datepicker-moment": "^2.0.2",
     "fastclick": "^1.0.6",
     "immutable": "^3.7.6",
+    "jquery": "^2.2.3",
+    "jquery-ui": "^1.10.5",
     "material-ui": "^0.15.0-alpha.2",
     "moment": "^2.12.0",
     "react": "^0.14.8",
@@ -81,7 +86,8 @@
     "react-dom": "^0.14.8",
     "react-select": "^1.0.0-beta12",
     "react-selectize": "^0.9.0",
-    "react-tap-event-plugin": "^0.2.2"
+    "react-tap-event-plugin": "^0.2.2",
+    "select2": "^4.0.2"
   },
   "peerDependencies": {
     "react": "^0.14.0"
