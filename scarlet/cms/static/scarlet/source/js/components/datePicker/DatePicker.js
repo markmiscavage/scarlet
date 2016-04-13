@@ -7,10 +7,9 @@ const DatePicker = View.extend({
 	
   render: function() {
     this.$el.datepicker({
-      dateFormat: this.$el.data("date-format"),
+      dateFormat: this.$el.data('date-format'),
     })
   }
-
 })
 
 export default DatePicker

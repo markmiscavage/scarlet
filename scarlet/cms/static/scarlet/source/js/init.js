@@ -1,4 +1,4 @@
-import DatePicker from './components/date/DatePicker'
+import DatePicker from './components/datePicker/DatePicker'
 import Select from './components/select/Select'
 
 
