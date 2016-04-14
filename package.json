@@ -89,7 +89,7 @@
     "build": "npm run clean && npm run build:deploy",
     "build:deploy": "cross-env NODE_ENV=production webpack --config webpack.config.js",
     "clean": "rimraf ./scarlet/cms/static/scarlet/build",
-    "lint": "eslint source",
+    "lint": "standard",
     "test": "karma start karma.conf.js"
   }
 }
