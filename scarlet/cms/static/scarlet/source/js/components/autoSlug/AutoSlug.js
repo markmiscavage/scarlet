@@ -1,57 +1,43 @@
-import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
+import Backbone, { View } from 'backbone'
+import $ from 'jquery'
 import { dasherize } from './autoSlugUtils'
 
-class AutoSlug extends Component {
-  constructor(props) {
-    super(props)
+const AutoSlug = View.extend({
+  el: $('.auto-slug'),
 
-    this.state = {
-      slug: this.props.slugNode.value
-    }
+  render: function() {
+    this.slugNode = this.$('input')
+    this.sourceNode = this.$el.parents('fieldset').find('[name=' + this.$el.data('input-data-source-fields') + ']')
+    this.bindListeners()
+  },
 
-    this.setSlugFromSelf = this.setSlugFromSelf.bind(this)
+  bindListeners: function() {
+    this.slugNode.on('keyup', this.setSlugFromSelf.bind(this))
+    this.sourceNode.on('keyup', this.setSlugFromSource.bind(this))
+  },
 
-    // enable value matching from sourceNode only if initial values match
-    if (this.shouldEnableMatching()) {
-      this.props.sourceNode.onkeyup = this.setSlugFromSource.bind(this)
-    }
-  }
-
-  shouldEnableMatching() {
-    return dasherize(this.props.sourceNode.value) === this.props.slugNode.value
-  }
-
-  getSourceValue() {
-    return dasherize(this.props.sourceNode.value)
-  }
-
-  setSlugFromSource() {
-    this.setState({
-      slug: this.getSourceValue()
-    })
-  }
-
-  setSlugFromSelf(e) {
-    // disable value matching from sourceNode
+  setSlugFromSelf: function(e) {
+    // disable value matching from sourceNode if values diverge
     if (!this.shouldEnableMatching()) {
-      this.props.sourceNode.onkeyup = null
+      this.sourceNode.off('keyup', this.setSlugFromSource)
     }
+  },
 
-    this.setState({
-      slug: dasherize(e.target.value)
-    })
-  }
+  setSlugFromSource: function() {
+    this.slugNode.val(this.getSourceValue())
+  },
 
-  render() {
-    const {fieldAttributes, labelAttributes, label} = this.props
-    return (
-        <div>
-          <label {...labelAttributes}>{label}</label>
-          <input {...fieldAttributes} value={this.state.slug} onChange={this.setSlugFromSelf} />
-        </div>
-    )
+  shouldEnableMatching: function() {
+    return this.getSelfValue() === this.getSourceValue()
+  },
+
+  getSourceValue: function() {
+    return dasherize(this.sourceNode.val())
+  },
+
+  getSelfValue: function() {
+    return dasherize(this.slugNode.val())
   }
-}
+})
 
 export default AutoSlug

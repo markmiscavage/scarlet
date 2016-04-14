@@ -1,5 +1,5 @@
-import DatePicker from './components/datePicker/DatePicker'
-import Select from './components/select/Select'
+import DateSelector from './components/date/DateSelector'
+import AutoSlug from './components/autoSlug/AutoSlug'
 
 
 
@@ -10,3 +10,6 @@ datePicker.render()
 // SELECT
 const select = new Select()
 select.render()
+
+const autoSlug = new AutoSlug()
+autoSlug.render()
