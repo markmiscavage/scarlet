@@ -1,41 +1,39 @@
-import Backbone, { View } from 'backbone'
-import $ from 'jquery'
+import { View } from 'backbone'
 import { dasherize } from './autoSlugUtils'
 
 const AutoSlug = View.extend({
-  el: $('.auto-slug'),
 
-  render: function() {
+  render: function () {
     this.slugNode = this.$('input')
     this.sourceNode = this.$el.parents('fieldset').find('[name=' + this.$el.data('input-data-source-fields') + ']')
     this.bindListeners()
   },
 
-  bindListeners: function() {
+  bindListeners: function () {
     this.slugNode.on('keyup', this.setSlugFromSelf.bind(this))
     this.sourceNode.on('keyup', this.setSlugFromSource.bind(this))
   },
 
-  setSlugFromSelf: function(e) {
+  setSlugFromSelf: function (e) {
     // disable value matching from sourceNode if values diverge
     if (!this.shouldEnableMatching()) {
       this.sourceNode.off('keyup', this.setSlugFromSource)
     }
   },
 
-  setSlugFromSource: function() {
+  setSlugFromSource: function () {
     this.slugNode.val(this.getSourceValue())
   },
 
-  shouldEnableMatching: function() {
+  shouldEnableMatching: function () {
     return this.getSelfValue() === this.getSourceValue()
   },
 
-  getSourceValue: function() {
+  getSourceValue: function () {
     return dasherize(this.sourceNode.val())
   },
 
-  getSelfValue: function() {
+  getSelfValue: function () {
     return dasherize(this.slugNode.val())
   }
 })
