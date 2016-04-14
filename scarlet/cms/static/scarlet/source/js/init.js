@@ -1,3 +1,4 @@
+import $ from 'jquery'
 import DateSelector from './components/date/DateSelector'
 import AutoSlug from './components/autoSlug/AutoSlug'
 
@@ -11,5 +12,9 @@ datePicker.render()
 const select = new Select()
 select.render()
 
-const autoSlug = new AutoSlug()
-autoSlug.render()
+// AutoSlug
+$('.auto-slug').each((el, i) => {
+  new AutoSlug({ el: el }).render()
+})
+
+
