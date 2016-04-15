@@ -5,8 +5,8 @@ import DatePicker from './components/datePicker/DatePicker'
 import Select from './components/select/Select'
 
 // AutoSlug
-$('.auto-slug').each((el, i) => {
-  new AutoSlug({ el: el }).render()
+$('.auto-slug').each(function () {
+  new AutoSlug({ el: $(this) }).render()
 })
 
 // DATEPICKER
