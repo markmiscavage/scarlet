@@ -1,5 +1,4 @@
 import { View } from 'backbone'
-import { dasherize } from './autoSlugUtils'
 
 const AutoSlug = View.extend({
 
@@ -30,11 +29,15 @@ const AutoSlug = View.extend({
   },
 
   getSourceValue: function () {
-    return dasherize(this.sourceNode.val())
+    return this.dasherize(this.sourceNode.val())
   },
 
   getSelfValue: function () {
-    return dasherize(this.slugNode.val())
+    return this.dasherize(this.slugNode.val())
+  },
+
+  dasherize: function () {
+    return text.replace(/\s+/g, '-').toLowerCase()
   }
 })
 
