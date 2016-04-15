@@ -3,7 +3,7 @@ import { View } from 'backbone'
 const AutoSlug = View.extend({
 
   render: function () {
-    this.slugNode = this.$('input')
+    this.slugNode = this.$el.find('input')
     this.sourceNode = this.$el.parents('fieldset').find('[name=' + this.$el.data('input-data-source-fields') + ']')
     this.bindListeners()
   },
@@ -16,7 +16,7 @@ const AutoSlug = View.extend({
   setSlugFromSelf: function (e) {
     // disable value matching from sourceNode if values diverge
     if (!this.shouldEnableMatching()) {
-      this.sourceNode.off('keyup', this.setSlugFromSource)
+      this.sourceNode.off('keyup')
     }
   },
 
@@ -36,7 +36,7 @@ const AutoSlug = View.extend({
     return this.dasherize(this.slugNode.val())
   },
 
-  dasherize: function () {
+  dasherize: function (text) {
     return text.replace(/\s+/g, '-').toLowerCase()
   }
 })
