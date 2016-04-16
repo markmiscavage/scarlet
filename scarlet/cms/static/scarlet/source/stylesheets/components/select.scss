@@ -1,5 +1,6 @@
-@import '~select2/src/scss/core';
+@import '~selectize/dist/css/selectize.default.css';
 
-.select2-container {
+.select2-container,
+.selectize-control {
 	min-width: 200px;
 }
