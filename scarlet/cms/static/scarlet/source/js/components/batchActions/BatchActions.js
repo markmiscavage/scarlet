@@ -30,7 +30,7 @@ const BatchActions = View.extend({
     const idIndex = this.idList.indexOf(id)
 
     if (idIndex > -1) {
-      this.idList.slice(idIndex, 1)
+      this.idList.splice(idIndex, 1)
     } else {
       this.idList.push(id)
     }
