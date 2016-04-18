@@ -67,6 +67,8 @@
     "backbone": "^1.3.3",
     "bootstrap": "^4.0.0-alpha.2",
     "fastclick": "^1.0.6",
+    "imagesready": "^0.2.2",
+    "jcrop": "0.0.1",
     "jquery": "^2.2.3",
     "jquery-ui": "^1.10.5",
     "moment": "^2.12.0",
