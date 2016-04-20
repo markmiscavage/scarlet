@@ -54,6 +54,12 @@ module.exports = {
 
   postcss: function () {
     return [autoprefixer];
+  },
+
+  resolve: {
+    alias: {
+      'imagesready': 'imagesready/dist/jquery-imagesready'
+    }
   }
 }
 
@@ -69,9 +75,6 @@ function createWebpackLoaders () {
     loaders: ['babel'],
     exclude: /node_modules|bower_components/,
     include: CONFIG.src
-  }, {
-    test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
-    loader: 'file'
   }, {
     test: /\.(ogg|mp?4a|mp3)$/,
     loader: 'file'
@@ -113,6 +116,11 @@ function createWebpackPlugins () {
           NODE_ENV: JSON.stringify('development'),
           BROWSER: JSON.stringify(true)
         }
+    }),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery'
     }),
     new BundleTracker({ filename: './webpack-stats.json' })
   ]
