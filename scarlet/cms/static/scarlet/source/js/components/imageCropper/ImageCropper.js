@@ -61,7 +61,7 @@ const ImageCropper = View.extend({
     }
   },
 
-  // set initial croparea from ss field values
+  // set initial croparea from (x,y,x2,y2) field values
   setInitialCroparea : function () {
     this.cropCoords = this.cropCoords || {}
 
