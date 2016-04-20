@@ -8,11 +8,14 @@ import '../../../stylesheets/components/select.scss'
 const SelectApi = View.extend({
 
   initialize: function () {
-    this.input = this.$el.find('input')
-    this.label = $('label[for="' + this.input.attr('id') + '"]')
-    this.name = this.input.attr('name')
+    let input = this.$el.find('input')
+    this.label = $('label[for="' + input.attr('id') + '"]')
+    this.name = input.attr('name')
     this.url = this.$el.data('api')
     this.isLoading = false
+    this.isMultiple = input.is('[data-multiple]')
+    this.selectize = null
+    this.selected = this.gatherSelected()
   },
 
   render: function() {
@@ -25,14 +28,27 @@ const SelectApi = View.extend({
       render: this.renderOption(this.isLoading),
       load: this.load.bind(this),
       onItemAdd: this.addItem.bind(this),
-      onItemRemove: this.removeItem.bind(this)
+      onItemRemove: this.removeItem.bind(this),
+      onInitialize: this.initSelections.bind(this)
     })
+  },
+
+  initSelections: function () {
+    this.selectize = this.$el[0].selectize
+    for( let item of this.selected ) {
+      this.selectize.addOption(item)
+      this.selectize.addItem(item.value, false)
+      // this.selectize.$input.after($('<input />', {name: this.name, value: item.id, type: 'hidden' }))
+    }
   },
 
   renderOption: function (isLoading) {
     return {
+      item: (item, escape) => {
+        return '<div class="item" data-id="'+item['id']+'" >' + escape(item['text']) + '</div>'
+      },
       option: (item, escape) => {
-        return '<div>' + item['text'] + '</div>'
+        return '<div data-id='+item['id']+'>' + escape(item['text']) + '</div>'
       },
       option_create: (item, escape) => {
         return '<div class="create"><strong>ADD' + escape('+') + '</strong> ' + escape(item.input) + '</div>'
@@ -65,11 +81,13 @@ const SelectApi = View.extend({
   },
 
   addItem: function (value, $item) {
-    console.log('added it', value, $item)
+    this.selectize.$input.after($('<input />', { 'name': this.name, 'value': $item.attr('data-id'), 'data-title': $item.attr('data-value'), 'type': 'hidden' }))
   },
 
   removeItem: function (value) {
-    console.log('removed it', value)
+    console.log('removed it', value) 
+    this.selectize.$input.siblings('[data-title=' + value + ']').remove()
+    // console.log(this.selectize.$input.siblings('[data-title=' + value + ']'))
   },
 
   transformResults: function (response) {
@@ -102,7 +120,24 @@ const SelectApi = View.extend({
     }
 
     return text.join(' - ')
+  },
+  // <input type="hidden" data-multiple="" data-title="onetwothree" name="tags" value="5">
+
+  gatherSelected: function () {
+    var data = []
+
+    // add sibling hidden values as initial value
+    this.$el.find('input[name=' + this.name + ']').each( function () {
+      data.push({
+        id: $(this).val(),
+        text: $(this).data('title'),
+        value: $(this).data('title')
+      })
+    })
+
+    return data
   }
+
 
 })
 
