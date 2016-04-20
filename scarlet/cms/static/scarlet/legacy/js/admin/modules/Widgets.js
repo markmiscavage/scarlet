@@ -49,7 +49,7 @@ define(
 				this._renderInlineVideo(dom);
 				this._renderInsertAnnotation(dom);
 				this._renderFilterBar(dom);
-				this._renderjQueryCrop(dom);
+				//this._renderjQueryCrop(dom);
 				this._renderDragWidth(dom);
 
 				//this._autoSlug(dom);
