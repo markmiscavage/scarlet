@@ -54,7 +54,7 @@ define(
 
 				//this._autoSlug(dom);
 				this._handlePopup(dom);
-				this._handleBatchActions(dom);
+				//this._handleBatchActions(dom);
 			},
 
 			_handleBatchActions : function (dom) {
