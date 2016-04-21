@@ -658,7 +658,7 @@ section#main {
 			}
 		}
 
-		section.filters {
+		.filters {
 			position: absolute;
 			right: 0;
 			top: 0;
@@ -669,17 +669,17 @@ section#main {
 			}
 		}
 
-		details#filter {
+    .filter-clear {
+      margin-right: 20px;
+      color: $red;
+    }
+
+		.filter-control {
 			@include user-select(none);
 			text-align: right;
 			display: block;
 			position: relative;
 			z-index: 2;
-
-			.filter-clear {
-				margin-right: 20px;
-				color: $red;
-			}
 
 			summary {
 				color: $blue;
@@ -713,9 +713,6 @@ section#main {
 			}
 
 			&[open], &.open {
-				.filter-clear {
-					display: none;
-				}
 
 				summary {
 					background-color: $dark-blue;

@@ -6,8 +6,8 @@
 
 	{% block filter %}
 	{% if filter_form %}
-	<section class="filters">
-		<details id="filter" {% if filter_form.has_changed %}class="filtered"{% endif %}>
+	<div class="filters">
+		<details class="filter-control" {% if filter_form.has_changed %}class="filtered"{% endif %}>
 			<summary>
 				{% if filter_form.has_changed %}
 					<a class="filter-clear" href="{{ request.path }}">Clear</a>
@@ -20,7 +20,7 @@
 				<p><input type="submit" value="Filter" /></p>
 			</form>
 		</details>
-	</section>
+	</div>
 	{% endif %}
 	{% endblock %}
 
