@@ -3,14 +3,14 @@ import { View } from 'backbone'
 const Filters = View.extend({
 
   events: {
-    'click summary': 'toggleThing'
+    'click summary': 'closeSiblings'
   },
 
   render: function () {
     this.$dropDowns = this.$('summary')
   },
 
-  toggleThing: function (e) {
+  closeSiblings: function (e) {
     this.$dropDowns.not($(e.currentTarget)).each(function (i) {
       var details = $(this).parent()
       if (details.attr('open') !== undefined) {
