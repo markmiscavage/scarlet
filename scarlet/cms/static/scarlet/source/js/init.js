@@ -1,11 +1,10 @@
 import $ from 'jquery'
- import AutoSlug from './components/autoSlug/AutoSlug'
-import BatchActions from './components/batchActions/BatchActions'
-import DatePicker from './components/datePicker/DatePicker'
-import ImageCropper from './components/imageCropper/ImageCropper'
-import Select from './components/select/Select'
+import AutoSlug from './views/AutoSlug'
+import BatchActions from './views/BatchActions'
+import DatePicker from './views/DatePicker'
+import ImageCropper from './views/ImageCropper'
+import Select from './views/Select'
 import SelectApi from './components/select/SelectApi'
-
 
 // AutoSlug
 $('.auto-slug').each(function () {
