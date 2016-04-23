@@ -4,7 +4,7 @@ import BatchActions from './views/BatchActions'
 import DatePicker from './views/DatePicker'
 import ImageCropper from './views/ImageCropper'
 import Select from './views/Select'
-import SelectApi from './components/select/SelectApi'
+import SelectApi from './views/SelectApi'
 
 // AutoSlug
 $('.auto-slug').each(function () {

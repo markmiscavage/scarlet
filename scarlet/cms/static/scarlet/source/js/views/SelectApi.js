@@ -3,7 +3,8 @@
 import { View } from 'backbone'
 import $ from 'jquery'
 import selectize  from 'selectize'
-import '../../../stylesheets/components/select.scss'
+import WindowPopup from '../helpers/WindowPopup'
+import '../../stylesheets/views/select.scss'
 
 const SelectApi = View.extend({
 
@@ -12,10 +13,12 @@ const SelectApi = View.extend({
     this.label = $('label[for="' + input.attr('id') + '"]')
     this.name = input.attr('name')
     this.url = this.$el.data('api')
+    this.addUrl = this.$el.data('add')
     this.isLoading = false
     this.isMultiple = input.is('[data-multiple]')
     this.selectize = null
     this.selected = this.gatherSelected()
+    console.log(this.selected)
   },
 
   render: function() {
@@ -38,7 +41,6 @@ const SelectApi = View.extend({
     for( let item of this.selected ) {
       this.selectize.addOption(item)
       this.selectize.addItem(item.value, false)
-      // this.selectize.$input.after($('<input />', {name: this.name, value: item.id, type: 'hidden' }))
     }
   },
 
@@ -51,15 +53,14 @@ const SelectApi = View.extend({
         return '<div data-id='+item['id']+'>' + escape(item['text']) + '</div>'
       },
       option_create: (item, escape) => {
-        return '<div class="create"><strong>ADD' + escape('+') + '</strong> ' + escape(item.input) + '</div>'
+        return '<div class="create create--hide"><strong>Add' + escape('+') + '</strong> ' + escape(this.name) + '</div>'
       }
     }
   },
 
   create: function (input, callback) {
-    // add POST call
-    // post input and add on success
-    callback( { 'value': input, 'text': input} )
+    this.openPopup()
+    // callback( { 'value': input, 'text': input} )
   },
 
   load: function (query, callback) {
@@ -75,6 +76,9 @@ const SelectApi = View.extend({
       success: (response) => {
         this.isLoading = false
         let results = this.transformResults(response)
+        if(!results.length) {
+          $('.create.create--hide').removeClass('create--hide')
+        }
         callback(response.results)
       }
     })
@@ -84,10 +88,24 @@ const SelectApi = View.extend({
     this.selectize.$input.after($('<input />', { 'name': this.name, 'value': $item.attr('data-id'), 'data-title': $item.attr('data-value'), 'type': 'hidden' }))
   },
 
+  openPopup : function () {
+    let options = 'menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=500,width=800'
+    let windowPopup = new WindowPopup(this.addUrl, options, (data, one, two) => {
+      let item = {
+        id: data.id,
+        text: data.text,
+        value: data.text
+      }
+      this.selectize.addOption(item)
+      this.selectize.addItem(item.value, false)
+    })
+    windowPopup.request()
+
+    return false;
+  },
+
   removeItem: function (value) {
-    console.log('removed it', value) 
     this.selectize.$input.siblings('[data-title=' + value + ']').remove()
-    // console.log(this.selectize.$input.siblings('[data-title=' + value + ']'))
   },
 
   transformResults: function (response) {
@@ -121,13 +139,13 @@ const SelectApi = View.extend({
 
     return text.join(' - ')
   },
-  // <input type="hidden" data-multiple="" data-title="onetwothree" name="tags" value="5">
 
   gatherSelected: function () {
     var data = []
 
     // add sibling hidden values as initial value
-    this.$el.find('input[name=' + this.name + ']').each( function () {
+    this.$el.find('input[name=' + this.name + ']').each( function (one, two, three) {
+      console.log(this.name, $(this).val(), one, two, three)
       data.push({
         id: $(this).val(),
         text: $(this).data('title'),
