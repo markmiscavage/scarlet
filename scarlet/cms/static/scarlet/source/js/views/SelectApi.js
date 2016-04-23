@@ -18,7 +18,6 @@ const SelectApi = View.extend({
     this.isMultiple = input.is('[data-multiple]')
     this.selectize = null
     this.selected = this.gatherSelected()
-    console.log(this.selected)
   },
 
   render: function() {
@@ -145,7 +144,6 @@ const SelectApi = View.extend({
 
     // add sibling hidden values as initial value
     this.$el.find('input[name=' + this.name + ']').each( function (one, two, three) {
-      console.log(this.name, $(this).val(), one, two, three)
       data.push({
         id: $(this).val(),
         text: $(this).data('title'),
