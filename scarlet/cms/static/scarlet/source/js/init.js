@@ -3,6 +3,7 @@ import AutoSlug from './views/AutoSlug'
 import BatchActions from './views/BatchActions'
 import DatePicker from './views/DatePicker'
 import Filters from './views/Filters'
+import Formset from './views/Formset'
 import ImageCropper from './views/ImageCropper'
 import Select from './views/Select'
 import SelectApi from './views/SelectApi'
@@ -22,6 +23,9 @@ const datePicker = new DatePicker().render()
 $('.filters').each(function () {
   new Filters({ el: $(this) }).render()
 })
+
+// Formset
+new Formset().render()
 
 // ImageCropper
 $('.jcrop').each(function () {
