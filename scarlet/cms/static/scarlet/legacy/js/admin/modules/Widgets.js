@@ -36,7 +36,6 @@ define(
 				var dom = $(n.data.dom);
 
 				// this._renderSelect(dom);
-				this._renderAssetSelect(dom);
 				this._renderFormset(dom);
 				// this._renderApiSelect(dom);
 				// this._renderDatePicker(dom);

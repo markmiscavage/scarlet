@@ -3277,10 +3277,6 @@ section#main article .widget-formset-controls.show ul {
 section#main article .widget-wysiwyg {
   margin-left: 24px;
 }
-/* line 570, ../compass/scss/admin/views/_admin.scss */
-section#main article .api-select {
-  position: relative;
-}
 /* line 574, ../compass/scss/admin/views/_admin.scss */
 section#main article .api-select.has-add-button {
   padding-right: 40px;

@@ -1,8 +1,10 @@
+import $ from 'jquery'
 import AutoSlug from './views/AutoSlug'
 import BatchActions from './views/BatchActions'
 import DatePicker from './views/DatePicker'
 import ImageCropper from './views/ImageCropper'
 import Select from './views/Select'
+import SelectApi from './views/SelectApi'
 
 // AutoSlug
 $('.auto-slug').each(function () {
@@ -13,8 +15,7 @@ $('.auto-slug').each(function () {
 new BatchActions().render()
 
 // DATEPICKER
-const datePicker = new DatePicker()
-datePicker.render()
+const datePicker = new DatePicker().render()
 
 // ImageCropper
 $('.jcrop').each(function () {
@@ -22,5 +23,9 @@ $('.jcrop').each(function () {
 })
 
 // SELECT
-const select = new Select()
-select.render()
+const select = new Select().render()
+
+// SELECTAPI
+$('.api-select').each( (i, dom) => {
+	let selectApi = new SelectApi({el: dom}).render()
+})
