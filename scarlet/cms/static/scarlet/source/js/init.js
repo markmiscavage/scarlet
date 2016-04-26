@@ -6,6 +6,8 @@ import Filters from './views/Filters'
 import ImageCropper from './views/ImageCropper'
 import Select from './views/Select'
 import SelectApi from './views/SelectApi'
+import { handlePopup } from './helpers/WindowPopup'
+
 
 // AutoSlug
 $('.auto-slug').each(function () {
@@ -35,3 +37,5 @@ const select = new Select().render()
 $('.api-select').each( (i, dom) => {
 	let selectApi = new SelectApi({el: dom}).render()
 })
+// Handle Popup functionality
+handlePopup()

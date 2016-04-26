@@ -120,7 +120,6 @@ define(
 					// suffix this.input name so its comma-delimitted tags won't be submitted
 					this.input.attr('name', this.input.attr('name') + '_');
 				}
-
 				this.input.select2(opts);
 				this.select2 = this.input.data().select2;
 			},

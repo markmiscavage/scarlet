@@ -1,7 +1,6 @@
 'use strict'
 
 import { View } from 'backbone'
-import $ from 'jquery'
 import selectize  from 'selectize'
 import WindowPopup from '../helpers/WindowPopup'
 import '../../stylesheets/views/select.scss'
@@ -11,6 +10,7 @@ const SelectApi = View.extend({
   initialize: function () {
     let input = this.$el.find('input')
     this.label = $('label[for="' + input.attr('id') + '"]')
+    this.placeholder = this.label.text() || 'one'
     this.name = input.attr('name')
     this.url = this.$el.data('api')
     this.addUrl = this.$el.data('add')
@@ -18,28 +18,47 @@ const SelectApi = View.extend({
     this.isMultiple = input.is('[data-multiple]')
     this.selectize = null
     this.selected = this.gatherSelected()
+    if(!this.isMultiple) {
+      this.singleInput = $(input[0]).clone()
+    }
   },
 
   render: function() {
-    this.$el.selectize({
+    let opts
+    let baseOpts = {
+      placeholder: 'Select ' + this.placeholder,
       valueField: 'text',
       labelField: 'text',
       searchField: 'text',
-      plugins: ['restore_on_backspace', 'remove_button'],
       create: this.create.bind(this),
       render: this.renderOption(this.isLoading),
-      load: this.load.bind(this),
       onItemAdd: this.addItem.bind(this),
-      onItemRemove: this.removeItem.bind(this),
+      load: this.load.bind(this),
+      render: this.renderOption(this.isLoading),
       onInitialize: this.initSelections.bind(this)
-    })
+    }
+    if (this.isMultiple) {
+      opts = Object.assign(baseOpts,{
+        plugins: ['restore_on_backspace', 'remove_button'],
+        onItemRemove: this.removeItem.bind(this)
+      })
+    } else {
+      opts = Object.assign(baseOpts, {
+        preload: 'focus',
+        maxItems: 1
+      })
+    }
+    this.$el.selectize(opts)
   },
 
   initSelections: function () {
     this.selectize = this.$el[0].selectize
     for( let item of this.selected ) {
       this.selectize.addOption(item)
-      this.selectize.addItem(item.value, false)
+      this.selectize.addItem(item.value)
+    }
+    if(!this.isMultiple) {
+      this.selectize.$input.after(this.singleInput)
     }
   },
 
@@ -58,12 +77,11 @@ const SelectApi = View.extend({
   },
 
   create: function (input, callback) {
-    this.openPopup()
-    // callback( { 'value': input, 'text': input} )
+    this.openPopup(input)
   },
 
   load: function (query, callback) {
-    if (!query.length) return callback()
+    if (!query.length && this.isMultiple) return callback()
     this.isLoading = true
     $.ajax({
       url: this.url + '&page=1&search=' + encodeURIComponent(query),
@@ -84,12 +102,18 @@ const SelectApi = View.extend({
   },
 
   addItem: function (value, $item) {
-    this.selectize.$input.after($('<input />', { 'name': this.name, 'value': $item.attr('data-id'), 'data-title': $item.attr('data-value'), 'type': 'hidden' }))
+    if(this.isMultiple) {
+      this.selectize.$input.after($('<input />', { 'name': this.name, 'value': $item.attr('data-id'), 'data-title': $item.attr('data-value'), 'type': 'hidden' }))
+    } else {
+      if ($item.attr('data-id') !== this.singleInput.val()) this.singleInput.val($item.attr('data-id') )
+    }
   },
 
-  openPopup : function () {
+
+  openPopup : function (input) {
     let options = 'menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=500,width=800'
-    let windowPopup = new WindowPopup(this.addUrl, options, (data, one, two) => {
+    let url = this.addUrl + '&addInput=' + input
+    let windowPopup = new WindowPopup(url, this.name, input, options, (data) => {
       let item = {
         id: data.id,
         text: data.text,
@@ -100,7 +124,7 @@ const SelectApi = View.extend({
     })
     windowPopup.request()
 
-    return false;
+    return false
   },
 
   removeItem: function (value) {
@@ -141,16 +165,14 @@ const SelectApi = View.extend({
 
   gatherSelected: function () {
     var data = []
-
-    // add sibling hidden values as initial value
-    this.$el.find('input[name=' + this.name + ']').each( function (one, two, three) {
+    this.$el.find('input[name=' + this.name + ']').each( (key, item) => {
+      let title = this.isMultiple ? $(item).data('title') : this.$el.data('title')
       data.push({
-        id: $(this).val(),
-        text: $(this).data('title'),
-        value: $(this).data('title')
+        id: $(item).val(),
+        text: title,
+        value: title
       })
     })
-
     return data
   }
 
