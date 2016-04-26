@@ -52,7 +52,7 @@ define(
 				this._renderDragWidth(dom);
 
 				//this._autoSlug(dom);
-				this._handlePopup(dom);
+				// this._handlePopup(dom);
 				//this._handleBatchActions(dom);
 			},
 
@@ -150,6 +150,7 @@ define(
 				});
 
 				dom.find('.widget-popup-data').each(function (i, dom) {
+					alert('killing this');
 					WindowPopup.respond($(dom).data());
 				});
 			},

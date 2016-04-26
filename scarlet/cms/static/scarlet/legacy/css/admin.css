@@ -93,7 +93,7 @@ table {
 }
 
 /* line 1, ../compass/scss/admin/placeholders/_placeholders.scss */
-section#main article .widget-formset-controls {
+#main .select2-container .select2-choice, section#main article .widget-formset-controls {
   background-color: #fff;
   border-radius: 3px;
   border: 1px solid rgba(49, 75, 93, 0.5);
@@ -108,7 +108,7 @@ section#main article .widget-formset-controls {
 }
 
 /* line 15, ../compass/scss/admin/placeholders/_placeholders.scss */
-section#main article .widget-formset-controls .select-arrow {
+#main .select2-container .select2-choice div, section#main article .widget-formset-controls .select-arrow {
   border-radius: 0 2px 2px 0;
   background: #b6cad1;
   color: #314b5d;
@@ -120,7 +120,7 @@ section#main article .widget-formset-controls .select-arrow {
   width: 36px;
 }
 /* line 26, ../compass/scss/admin/placeholders/_placeholders.scss */
-section#main article .widget-formset-controls .select-arrow:after {
+#main .select2-container .select2-choice div:after, section#main article .widget-formset-controls .select-arrow:after {
   color: #314b5d;
   content: "s";
   font: 16px/34px CompassArrows;
@@ -1292,6 +1292,396 @@ section#object-info nav[role='object-tools'] form input[type='submit'] {
 /* line 105, ../compass/scss/admin/mixins/_mixins.scss */
 section#object-info nav[role='object-tools'] form input[type='submit']:hover {
   background: #314b5d;
+}
+
+/* line 1, ../compass/scss/admin/modules/_select2.scss */
+#main {
+  /* multiselect */
+}
+/* line 6, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container .select2-choice span {
+  display: block;
+  padding: 6px 33px 6px 9px;
+  white-space: nowrap;
+  -o-text-overflow: ellipsis;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+/* line 11, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container .select2-choice span:after {
+  content: "_";
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+}
+/* line 17, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container .select2-choice abbr {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  text-shadow: none;
+  border: 1px solid rgba(49, 75, 93, 0.5);
+  background: #b6cad1;
+  color: #314b5d;
+  cursor: pointer;
+  display: inline-block;
+  font: 16px/1 AvenirRoman;
+  outline: 0;
+  padding: 6px 9px;
+  width: auto;
+  -webkit-transform: scale(0.8, 0.8);
+  -moz-transform: scale(0.8, 0.8);
+  -ms-transform: scale(0.8, 0.8);
+  transform: scale(0.8, 0.8);
+  font: 16px/1 AvenirBlack;
+  text-transform: uppercase;
+  position: absolute;
+  top: 0;
+  right: 36px;
+}
+/* line 85, ../compass/scss/admin/mixins/_mixins.scss */
+#main .select2-container .select2-choice abbr:hover, #main .select2-container .select2-choice abbr.active {
+  background-color: #314b5d;
+  color: #b6cad1;
+}
+/* line 32, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container.select2-drop-above .select2-choice {
+  border-bottom-color: rgba(49, 75, 93, 0.5);
+  border-radius: 0px 0px 4px 4px;
+}
+/* line 38, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container.select2-container-disabled .select2-choice {
+  background: #b8b8b8;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: default;
+}
+/* line 43, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container.select2-container-disabled .select2-choice div {
+  display: none;
+}
+/* line 53, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container-multi .select2-choices {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid rgba(49, 75, 93, 0.5);
+  color: #314b5d;
+  font: 18px/1 AvenirRoman;
+  padding: 3px 3px 0;
+  outline: 0;
+  width: 100%;
+  background-color: #fff;
+  cursor: text;
+  overflow: hidden;
+  position: relative;
+  min-height: 24px;
+}
+/* line 68, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container-multi.select2-container-active .select2-choices {
+  border: 1px solid #314b5d;
+  outline: none;
+}
+/* line 74, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container-multi .select2-choices li {
+  float: left;
+  list-style: none;
+  margin-bottom: 3px;
+}
+/* line 80, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container-multi .select2-choices .select2-search-field {
+  white-space: nowrap;
+  margin: 0;
+  padding: 0;
+}
+/* line 85, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container-multi .select2-choices .select2-search-field input {
+  color: #314b5d;
+  background: transparent !important;
+  line-height: 18px;
+  padding: 3px;
+  outline: 0;
+  border: 0;
+  font: 18px/1 AvenirRoman;
+  margin: 0;
+}
+/* line 95, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container-multi .select2-choices .select2-search-field input.select2-active {
+  background: #000;
+}
+/* line 101, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container-multi .select2-choices .select2-search-choice {
+  border-radius: 3px;
+  border: 1px solid rgba(49, 75, 93, 0.5);
+  background: #b6cad1;
+  color: #314b5d;
+  display: inline-block;
+  outline: 0;
+  padding: 3px 24px 3px 6px;
+  width: auto;
+  margin-right: 3px;
+  position: relative;
+  cursor: default;
+  line-height: 18px;
+  height: 24px;
+}
+/* line 116, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container-multi .select2-choices .select2-search-choice span {
+  cursor: default;
+}
+/* line 121, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container-multi .select2-choices .select2-search-choice-focus {
+  background: #b8b8b8;
+}
+/* line 126, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container-multi.select2-container-disabled .select2-choices {
+  background: #b8b8b8;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: default;
+}
+/* line 131, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container-multi.select2-container-disabled .select2-choices .select2-search-choice {
+  background: #b8b8b8;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 3px 6px;
+}
+/* line 136, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container-multi.select2-container-disabled .select2-choices .select2-search-choice .select2-search-choice-close {
+  display: none;
+}
+/* line 145, ../compass/scss/admin/modules/_select2.scss */
+#main .select2-container-active .select2-choice,
+#main .select2-container-active .select2-choices {
+  border: 1px solid rgba(49, 75, 93, 0.7);
+  outline: none;
+}
+
+/* line 153, ../compass/scss/admin/modules/_select2.scss */
+.select2-drop {
+  background: #fff;
+  color: #314b5d;
+  border: 1px solid rgba(49, 75, 93, 0.5);
+  border-top: 0;
+  position: absolute;
+  top: 100%;
+  z-index: 10001;
+  width: 100%;
+  margin-top: -1px;
+  border-radius: 0 0 4px 4px;
+  -webkit-box-shadow: 1px 4px 5px rgba(49, 75, 93, 0.25);
+  -moz-box-shadow: 1px 4px 5px rgba(49, 75, 93, 0.25);
+  box-shadow: 1px 4px 5px rgba(49, 75, 93, 0.25);
+}
+/* line 166, ../compass/scss/admin/modules/_select2.scss */
+.select2-drop.select2-drop-above {
+  border-radius: 4px 4px 0px 0px;
+  margin-top: 1px;
+  border-top: 1px solid rgba(49, 75, 93, 0.5);
+  border-bottom: 0;
+  -webkit-box-shadow: 1px -4px 5px rgba(49, 75, 93, 0.25);
+  -moz-box-shadow: 1px -4px 5px rgba(49, 75, 93, 0.25);
+  box-shadow: 1px -4px 5px rgba(49, 75, 93, 0.25);
+}
+
+/* line 175, ../compass/scss/admin/modules/_select2.scss */
+.select2-search {
+  display: inline-block;
+  white-space: nowrap;
+  z-index: 10000;
+  min-height: 26px;
+  width: 100%;
+  margin: 0;
+  padding: 6px;
+}
+/* line 184, ../compass/scss/admin/modules/_select2.scss */
+.select2-search input {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid rgba(49, 75, 93, 0.5);
+  color: #314b5d;
+  font: 18px/1 AvenirRoman;
+  padding: 3px 6px;
+  outline: 0;
+  width: 100%;
+  margin: 0;
+  height: auto !important;
+  min-height: 1em;
+}
+
+/* line 203, ../compass/scss/admin/modules/_select2.scss */
+.select2-search-hidden {
+  display: block;
+  position: absolute;
+  left: -10000px;
+}
+
+/* line 209, ../compass/scss/admin/modules/_select2.scss */
+.select2-dropdown-open .select2-choice {
+  border-color: rgba(49, 75, 93, 0.5);
+  border-bottom-color: transparent;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+/* line 215, ../compass/scss/admin/modules/_select2.scss */
+.select2-dropdown-open .select2-choice div {
+  background: none;
+}
+/* line 218, ../compass/scss/admin/modules/_select2.scss */
+.select2-dropdown-open .select2-choice div:after {
+  content: "n";
+}
+
+/* results */
+/* line 226, ../compass/scss/admin/modules/_select2.scss */
+.select2-results {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 300px;
+  font: 18px/1 AvenirRoman;
+}
+/* line 235, ../compass/scss/admin/modules/_select2.scss */
+.select2-results ul.select2-result-sub {
+  margin: 0;
+}
+/* line 238, ../compass/scss/admin/modules/_select2.scss */
+.select2-results ul.select2-result-sub > li .select2-result-label {
+  padding-left: 20px;
+}
+/* line 243, ../compass/scss/admin/modules/_select2.scss */
+.select2-results li {
+  list-style: none;
+}
+/* line 246, ../compass/scss/admin/modules/_select2.scss */
+.select2-results li.select2-result-with-children > .select2-result-label {
+  font-weight: bold;
+}
+/* line 250, ../compass/scss/admin/modules/_select2.scss */
+.select2-results li em {
+  font-style: normal;
+}
+/* line 258, ../compass/scss/admin/modules/_select2.scss */
+.select2-results .select2-no-results,
+.select2-results .select2-searching,
+.select2-results .select2-selection-limit,
+.select2-results .select2-result-label {
+  padding: 6px 9px;
+  line-height: 15px;
+}
+/* line 263, ../compass/scss/admin/modules/_select2.scss */
+.select2-results .select2-result-image {
+  height: 60px;
+  line-height: 48px;
+  padding-left: 72px;
+  position: relative;
+}
+/* line 269, ../compass/scss/admin/modules/_select2.scss */
+.select2-results .select2-result-image .select2-result-image-thumbnail {
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  width: 54px;
+  height: 54px;
+  background-position: 50% 50%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  float: left;
+}
+/* line 286, ../compass/scss/admin/modules/_select2.scss */
+.select2-results .select2-searching {
+  padding: 12px 9px 12px 42px;
+  background: url("../img/loading.gif") 9px 50% no-repeat;
+}
+/* line 291, ../compass/scss/admin/modules/_select2.scss */
+.select2-results .select2-result-label {
+  cursor: pointer;
+  white-space: nowrap;
+  -o-text-overflow: ellipsis;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+/* line 296, ../compass/scss/admin/modules/_select2.scss */
+.select2-results .select2-highlighted {
+  background: #314b5d;
+  color: #b6cad1;
+}
+/* line 301, ../compass/scss/admin/modules/_select2.scss */
+.select2-results .select2-disabled {
+  display: none;
+}
+
+/* line 306, ../compass/scss/admin/modules/_select2.scss */
+.select2-more-results {
+  padding: 12px 9px 12px 42px;
+  background: url("../img/loading.gif") 9px 50% no-repeat;
+}
+
+/* line 311, ../compass/scss/admin/modules/_select2.scss */
+.select2-search-choice-close {
+  display: block;
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  line-height: 12px;
+  text-align: center;
+  color: #314b5d;
+  border-radius: 12px;
+  background: rgba(49, 75, 93, 0.2);
+  overflow: hidden;
+}
+/* line 325, ../compass/scss/admin/modules/_select2.scss */
+.select2-search-choice-close:after {
+  content: "x";
+}
+/* line 329, ../compass/scss/admin/modules/_select2.scss */
+.select2-search-choice-close:hover {
+  background: #314b5d;
+  color: #b6cad1;
+}
+
+/* line 335, ../compass/scss/admin/modules/_select2.scss */
+.select2-result-selectable .select2-match {
+  text-decoration: underline;
+}
+
+/* line 340, ../compass/scss/admin/modules/_select2.scss */
+.select2-result-unselectable .select2-result-selectable .select2-match {
+  text-decoration: underline;
+}
+/* line 343, ../compass/scss/admin/modules/_select2.scss */
+.select2-result-unselectable .select2-match {
+  text-decoration: none;
+}
+
+/* line 348, ../compass/scss/admin/modules/_select2.scss */
+.select2-offscreen {
+  position: absolute;
+  left: -10000px;
+}
+
+/* line 354, ../compass/scss/admin/modules/_select2.scss */
+html.js select {
+  visibility: hidden;
+  display: block;
+  height: 34px;
+}
+
+/* line 360, ../compass/scss/admin/modules/_select2.scss */
+.api-select {
+  min-height: 50px;
+  margin-left: 24px;
 }
 
 /* line 1, ../compass/scss/admin/modules/_tables.scss */
