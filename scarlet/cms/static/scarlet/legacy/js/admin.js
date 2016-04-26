@@ -10932,7 +10932,6 @@ define(
 					// suffix this.input name so its comma-delimitted tags won't be submitted
 					this.input.attr('name', this.input.attr('name') + '_');
 				}
-
 				this.input.select2(opts);
 				this.select2 = this.input.data().select2;
 			},
@@ -25131,8 +25130,8 @@ define(
 				var dom = $(n.data.dom);
 
 				// this._renderSelect(dom);
-				this._renderAssetSelect(dom);
 				this._renderFormset(dom);
+				// this._renderAssetSelect(dom);
 				// this._renderApiSelect(dom);
 				// this._renderDatePicker(dom);
 				this._renderDateTimePicker(dom);
@@ -25143,13 +25142,13 @@ define(
 				this._renderInsertAudio(dom);
 				this._renderInlineVideo(dom);
 				this._renderInsertAnnotation(dom);
-				this._renderFilterBar(dom);
-				this._renderjQueryCrop(dom);
+				//this._renderFilterBar(dom);
+				//this._renderjQueryCrop(dom);
 				this._renderDragWidth(dom);
 
 				//this._autoSlug(dom);
-				this._handlePopup(dom);
-				this._handleBatchActions(dom);
+				// this._handlePopup(dom);
+				//this._handleBatchActions(dom);
 			},
 
 			_handleBatchActions : function (dom) {

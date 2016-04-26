@@ -37,6 +37,7 @@ define(
 
 				// this._renderSelect(dom);
 				this._renderFormset(dom);
+				// this._renderAssetSelect(dom);
 				// this._renderApiSelect(dom);
 				// this._renderDatePicker(dom);
 				this._renderDateTimePicker(dom);
@@ -150,7 +151,6 @@ define(
 				});
 
 				dom.find('.widget-popup-data').each(function (i, dom) {
-					alert('killing this');
 					WindowPopup.respond($(dom).data());
 				});
 			},
