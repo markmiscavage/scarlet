@@ -153,7 +153,6 @@ const Formset = View.extend({
   ************************************/
 
   toggleOptions : function (e) {
-    console.log('herer', e)
     $(e.currentTarget).toggleClass('show')
   },
 
