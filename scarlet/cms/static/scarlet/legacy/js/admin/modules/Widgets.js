@@ -41,7 +41,7 @@ define(
 				// this._renderApiSelect(dom);
 				// this._renderDatePicker(dom);
 				this._renderDateTimePicker(dom);
-				this._renderWysiwig(dom);
+				//this._renderWysiwig(dom);
 				this._renderTabs(dom);
 				this._renderInsertVideo(dom);
 				this._renderInsertImage(dom);
@@ -83,11 +83,11 @@ define(
 				});
 			},
 
-			_renderWysiwig : function (dom) {
-				dom.find('.widget-wysiwyg').each(function (i, textarea) {
-					var wysiwyg = new Wysiwyg($(textarea));
-				});
-			},
+			// _renderWysiwig : function (dom) {
+			// 	dom.find('.widget-wysiwyg').each(function (i, textarea) {
+			// 		var wysiwyg = new Wysiwyg($(textarea));
+			// 	});
+			// },
 
 			_renderDatePicker : function (dom) {
 				dom.find(".date").each(function (i, el) {
