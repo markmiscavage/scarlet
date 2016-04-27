@@ -58,7 +58,8 @@ module.exports = {
 
   resolve: {
     alias: {
-      'imagesready': 'imagesready/dist/jquery-imagesready'
+      'imagesready': 'imagesready/dist/jquery-imagesready',
+      'wysihtml5': path.resolve(__dirname, './scarlet/cms/static/scarlet/source/js/views/wysiwyg/lib/wysihtml5')
     }
   }
 }
@@ -84,6 +85,10 @@ function createWebpackLoaders () {
   }, {
     test: /\.json$/,
     loader: 'json'
+  },
+  {
+    test: /wysihtml5/,
+    loader: 'exports?wysihtml5'
   }];
 
   if (ENV_IS_PRODUCTION) {
