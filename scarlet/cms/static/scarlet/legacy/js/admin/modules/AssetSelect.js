@@ -38,7 +38,6 @@ define(
 			_initSelect2 : function () {
 				this.input.select2({
 					placeholder : "Choose an asset",
-					//minimumInputLength : 2,
 					allowClear : true,
 					initSelection : this.initSelection,
 					formatSelection : this.formatSelection,

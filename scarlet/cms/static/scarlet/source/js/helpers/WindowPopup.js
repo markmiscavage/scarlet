@@ -1,7 +1,17 @@
 'use strict';
 
+/**
+ * Create Window object
+ */
 class WindowPopup {
-	constructor(url, name, input, options, cb) {
+
+	/**
+	 * @param  {string}
+	 * @param  {string}
+	 * @param  {object}
+	 * @param  {Function}
+	 */
+	constructor(url, name, options, cb) {
 	  this.url = url
 	  this.options = options
 	  this.cb = cb
@@ -9,6 +19,9 @@ class WindowPopup {
 	  this.newWin = null
 	}
 
+	/**
+	 * open window
+	 */
 	request () {
 		window[this.name] = (data) => {
 			this.cb(data)
@@ -17,13 +30,16 @@ class WindowPopup {
 			delete window[name]
 		}
 
-		this.newWin = window.open(this.url, this.name, this.options)
+		return this.newWin = window.open(this.url, this.name, this.options)
 
 	}
 
 }
 
-
+/**
+ * window response
+ * @param  {object}
+ */
 function respond (data) {
 	let name = window.name
 	if (window.opener && window.opener[name] && typeof window.opener[name] === 'function') {
@@ -31,6 +47,11 @@ function respond (data) {
 	}
 }
 
+/**
+ * get query param from window location
+ * @param  {string} query param
+ * @return {string}
+ */
 function getQueryString ( field ) {
   let href = window.location.href
   let reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' )
@@ -38,6 +59,9 @@ function getQueryString ( field ) {
   return string ? string[1] : null
 }
 
+/**
+ * attach handlers to dom
+ */
 const handlePopup = function () {
 	if (!window.opener) {
 		return

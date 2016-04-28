@@ -25133,6 +25133,7 @@ define(
 				// this._renderSelect(dom);
 				this._renderAssetSelect(dom);
 				this._renderFormset(dom);
+				this._renderAssetSelect(dom);
 				// this._renderApiSelect(dom);
 				// this._renderDatePicker(dom);
 				this._renderDateTimePicker(dom);

@@ -6,9 +6,12 @@ import Formset from './views/Formset'
 import ImageCropper from './views/ImageCropper'
 import Select from './views/Select'
 import SelectApi from './views/SelectApi'
+import SelectAsset from './views/SelectAsset'
 import { handlePopup } from './helpers/WindowPopup'
 import Wysiwyg from './views/wysiwyg/Wysiwyg'
 
+// HANDLE WINDOWPOPUP
+handlePopup()
 
 // AutoSlug
 $('.auto-slug').each(function () {
@@ -42,10 +45,13 @@ $('.api-select').each( (i, dom) => {
 	let selectApi = new SelectApi({el: dom}).render()
 })
 
-// Handle Popup functionality
-handlePopup()
+// SELECTASSET
+$(".widget-asset").each( (i, dom) => {
+	let selectAsset = new SelectAsset({el: dom}).render()
+})
 
 // Wysiwyg
 $('.widget-wysiwyg').each((i, dom) => {
   new Wysiwyg({ el: dom }).render()
 })
+
