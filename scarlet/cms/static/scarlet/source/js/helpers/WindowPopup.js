@@ -70,7 +70,7 @@ const handlePopup = function () {
 		$('#id_name').val(getQueryString('addInput'))
 	}
 
-	$('.close-popup').click(function (i, dom) {
+	$('.close-popup').click(function (e) {
 		window.close()
 	})	
 
@@ -79,5 +79,22 @@ const handlePopup = function () {
 	})	
 }
 
+/**
+ * For Click to open window 
+ * @param  {object} event
+ * @param  {Function} callback
+ */
+const clickOpenPopup = function (e, cb) {
+  e.preventDefault()
+  let url = $(e.currentTarget).attr('href')
+  let options = 'menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=500,width=800'
+  let windowPopup = new WindowPopup(url, 'media', options, function (data) {
+    cb(data)
+  })
+  windowPopup.request()
+
+  return false
+}
+
 export default WindowPopup
-export { handlePopup }
+export { handlePopup, clickOpenPopup }

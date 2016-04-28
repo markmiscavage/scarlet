@@ -2,13 +2,13 @@
 
 import { View } from 'backbone'
 import selectize  from 'selectize'
-import WindowPopup from '../helpers/WindowPopup'
+import { clickOpenPopup } from '../helpers/WindowPopup'
 import '../../stylesheets/views/select.scss'
 
 const SelectAsset = View.extend({
 
   /**
-   * Backbone Init Setter
+   * Backbone View Constructor
    */
   initialize: function () {
     this.input = this.$el.find('input')
@@ -26,11 +26,11 @@ const SelectAsset = View.extend({
    * Backbone Events Object
    */
   events: {
-    'click .button, .crop-link' : 'openPopup'
+    'click .button, .crop-link' : function(e){clickOpenPopup(e, this.setSelected.bind(this));}
   },
 
   /**
-   * Render Views  
+   * Render View
    */
   render: function() {
     let opts = {
@@ -143,23 +143,6 @@ const SelectAsset = View.extend({
     }
   },
 
-  /**
-   * Window open trigger
-   * @param  {object} event object  
-   */
-  openPopup : function (e) {
-    e.preventDefault()
-    let url = $(e.currentTarget).attr('href')
-    let options = 'menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=500,width=800'
-    let windowPopup = new WindowPopup(url, 'media', options, (data) => {
-      this.setSelected(data)
-      // this.input.val = data.id
-      // this.preview.css('background-image', 'url(' + data.thumbnail + ')')
-    })
-    windowPopup.request()
-
-    return false
-  },
 
   linkifyCrops : function () {
     let guidLink = this.baseLink + this.cropsList.parent().find('[type=hidden]').val()
@@ -173,6 +156,12 @@ const SelectAsset = View.extend({
     })
   },
 
+
+  /**
+   * constructs param for tagging
+   * @param  {obj}
+   * @return {string}
+   */
   paramConstruct : function (obj) {
     let op = []
     for (let i in obj) {
@@ -181,6 +170,11 @@ const SelectAsset = View.extend({
     return "?" + op.join('&')
   },
 
+  /**
+   * parsing query string
+   * @param  {string}
+   * @return {arra7}
+   */
   paramDestruct : function (path) {
     let ret = {}
     let seg = path.replace(/^\?/, '').split('&')
@@ -193,6 +187,7 @@ const SelectAsset = View.extend({
     }
     return ret
   },
+
 
   autoTag : function () {
     let tags = []

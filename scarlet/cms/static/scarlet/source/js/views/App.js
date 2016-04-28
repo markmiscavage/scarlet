@@ -22,6 +22,9 @@ const App = View.extend({
     // HANDLE WINDOWPOPUP
     handlePopup()
 
+    // Formset
+    new Formset().render()
+
     // SELECT
     const select = new Select().render()
 
