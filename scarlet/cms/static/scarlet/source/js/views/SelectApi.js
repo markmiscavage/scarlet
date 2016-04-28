@@ -11,6 +11,7 @@ const SelectApi = View.extend({
    * Backbone Init Setter
    */
   initialize: function () {
+    this.$el.removeClass('api-select')
     let input = this.$el.find('input')
     this.label = $('label[for="' + input.attr('id') + '"]')
     this.placeholder = this.label.text() || 'one'

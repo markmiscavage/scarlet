@@ -4,14 +4,10 @@ import DatePicker from './views/DatePicker'
 import Filters from './views/Filters'
 import Formset from './views/Formset'
 import ImageCropper from './views/ImageCropper'
-import Select from './views/Select'
-import SelectApi from './views/SelectApi'
-import SelectAsset from './views/SelectAsset'
-import { handlePopup } from './helpers/WindowPopup'
 import Wysiwyg from './views/wysiwyg/Wysiwyg'
+import App from './views/App'
 
-// HANDLE WINDOWPOPUP
-handlePopup()
+
 
 // AutoSlug
 $('.auto-slug').each(function () {
@@ -37,21 +33,10 @@ $('.jcrop').each(function () {
   new ImageCropper({ el: $(this) }).render()
 })
 
-// SELECT
-const select = new Select().render()
-
-// SELECTAPI
-$('.api-select').each( (i, dom) => {
-	let selectApi = new SelectApi({el: dom}).render()
-})
-
-// SELECTASSET
-$(".widget-asset").each( (i, dom) => {
-	let selectAsset = new SelectAsset({el: dom}).render()
-})
 
 // Wysiwyg
 $('.widget-wysiwyg').each((i, dom) => {
   new Wysiwyg({ el: dom }).render()
 })
 
+new App().render();
