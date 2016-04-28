@@ -2,12 +2,11 @@ import AutoSlug from './views/AutoSlug'
 import BatchActions from './views/BatchActions'
 import DatePicker from './views/DatePicker'
 import Filters from './views/Filters'
-import Formset from './views/Formset'
+// import Formset from './views/Formset'
 import ImageCropper from './views/ImageCropper'
-import Select from './views/Select'
-import SelectApi from './views/SelectApi'
-import { handlePopup } from './helpers/WindowPopup'
 import Wysiwyg from './views/wysiwyg/Wysiwyg'
+import App from './views/App'
+
 
 
 // AutoSlug
@@ -26,26 +25,18 @@ $('.filters').each(function () {
   new Filters({ el: $(this) }).render()
 })
 
-// Formset
-new Formset().render()
+// // Formset
+// new Formset().render()
 
 // ImageCropper
 $('.jcrop').each(function () {
   new ImageCropper({ el: $(this) }).render()
 })
 
-// SELECT
-const select = new Select().render()
-
-// SELECTAPI
-$('.api-select').each( (i, dom) => {
-	let selectApi = new SelectApi({el: dom}).render()
-})
-
-// Handle Popup functionality
-handlePopup()
 
 // Wysiwyg
 $('.widget-wysiwyg').each((i, dom) => {
   new Wysiwyg({ el: dom }).render()
 })
+
+new App().render();

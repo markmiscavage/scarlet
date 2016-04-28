@@ -7,7 +7,11 @@ import '../../stylesheets/views/select.scss'
 
 const SelectApi = View.extend({
 
+  /**
+   * Backbone Init Setter
+   */
   initialize: function () {
+    this.$el.removeClass('api-select')
     let input = this.$el.find('input')
     this.label = $('label[for="' + input.attr('id') + '"]')
     this.placeholder = this.label.text() || 'one'
@@ -23,6 +27,9 @@ const SelectApi = View.extend({
     }
   },
 
+  /**
+   * Render Views  
+   */
   render: function() {
     let opts
     let baseOpts = {
@@ -51,6 +58,9 @@ const SelectApi = View.extend({
     this.$el.selectize(opts)
   },
 
+  /**
+   * Set selections based on server rendered data
+   */
   initSelections: function () {
     this.selectize = this.$el[0].selectize
     for( let item of this.selected ) {
@@ -62,6 +72,10 @@ const SelectApi = View.extend({
     }
   },
 
+  /**
+   * Prepare Selectize options
+   * @return {object}
+   */
   renderOption: function (isLoading) {
     return {
       item: (item, escape) => {
@@ -76,10 +90,21 @@ const SelectApi = View.extend({
     }
   },
 
+  /**
+   * On create new select option
+   * @param  {string}
+   * @param  {function}
+   */
   create: function (input, callback) {
     this.openPopup(input)
   },
 
+  /**
+   * Load Data
+   * @param  {string}  input query
+   * @param  {Function}  callback function
+   * @return {function}  return callback
+   */
   load: function (query, callback) {
     if (!query.length && this.isMultiple) return callback()
     this.isLoading = true
@@ -101,6 +126,11 @@ const SelectApi = View.extend({
     })
   },
 
+  /**
+   * On Add New Item to multi select 
+   * @param {string}
+   * @param {object}
+   */
   addItem: function (value, $item) {
     if(this.isMultiple) {
       this.selectize.$input.after($('<input />', { 'name': this.name, 'value': $item.attr('data-id'), 'data-title': $item.attr('data-value'), 'type': 'hidden' }))
@@ -109,11 +139,14 @@ const SelectApi = View.extend({
     }
   },
 
-
+  /**
+   * Window open trigger
+   * @param  {object} event object  
+   */
   openPopup : function (input) {
     let options = 'menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=500,width=800'
     let url = this.addUrl + '&addInput=' + input
-    let windowPopup = new WindowPopup(url, this.name, input, options, (data) => {
+    let windowPopup = new WindowPopup(url, this.name, options, (data) => {
       let item = {
         id: data.id,
         text: data.text,
@@ -127,10 +160,19 @@ const SelectApi = View.extend({
     return false
   },
 
+  /**
+   * On Removing selected item in multi select
+   * @param  {string}
+   */
   removeItem: function (value) {
     this.selectize.$input.siblings('[data-title=' + value + ']').remove()
   },
 
+  /**
+   * Trasnform Response Data
+   * @param  {object}
+   * @return {object} 
+   */
   transformResults: function (response) {
     this.fields = []
     this.params = []
@@ -153,6 +195,12 @@ const SelectApi = View.extend({
     })
   },
 
+  /**
+   * Built text field from all fields
+   * @param  {object}
+   * @param  {array}
+   * @return {string}
+   */
   createText: function (item, fields) {
     let text = []
 
@@ -163,6 +211,10 @@ const SelectApi = View.extend({
     return text.join(' - ')
   },
 
+  /**
+   * Gather preselected from server rendered data
+   * @return {Array}
+   */
   gatherSelected: function () {
     var data = []
     this.$el.find('input[name=' + this.name + ']').each( (key, item) => {

@@ -1,11 +1,18 @@
 import { sortable } from 'jquery-ui/sortable'
 import { View } from 'backbone'
+import { clickOpenPopup } from '../helpers/WindowPopup'
+import pubsub from '../helpers/pubsub'
 
 const Formset = View.extend({
   el: '.widget-formset',
 
+  /**
+   * Backbone Events Object
+   */
   events: {
-    'click .widget-formset-delete': 'delete'
+    'click .widget-formset-delete': 'delete',
+    // 'click .button' : function(e){clickOpenPopup(e, (data) => console.log('thing', data));},
+    // 'clidk .crop-link' : function(e){clickOpenPopup(e, (data) => console.log('thing', data))}
   },
 
   initialize: function () {
@@ -66,6 +73,7 @@ const Formset = View.extend({
     }
 
     this.enableSort()
+    pubsub.trigger('scarlet:render')
   },
 
   count : function (typeOf) {
