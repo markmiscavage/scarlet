@@ -37,6 +37,7 @@ define(
 
 				// this._renderSelect(dom);
 				// this._renderFormset(dom);
+				// this._renderAssetSelect(dom);
 				// this._renderApiSelect(dom);
 				// this._renderDatePicker(dom);
 				this._renderDateTimePicker(dom);
@@ -52,7 +53,7 @@ define(
 				this._renderDragWidth(dom);
 
 				//this._autoSlug(dom);
-				this._handlePopup(dom);
+				// this._handlePopup(dom);
 				//this._handleBatchActions(dom);
 			},
 
