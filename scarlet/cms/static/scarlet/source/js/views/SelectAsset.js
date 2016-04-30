@@ -119,6 +119,9 @@ const SelectAsset = View.extend({
    */
   onSelect: function (value, $item) {
     this.preview.css('background-image', 'url(' + $item.attr('data-thumb') + ')')
+    if($item.attr('data-src')){
+      this.input.attr('data-src', $item.attr('data-src'))
+    }
   },
 
   /**
@@ -130,7 +133,9 @@ const SelectAsset = View.extend({
       item: (item, escape) => {
         return '<div class="item" data-thumb="' +  
           window.location.origin + escape(item.thumbnail) + 
-          '" data-id="'+item['id']+'" >' + escape(item['text']) + 
+          '" data-id="'+ item['id'] +
+          '" data-src="'+ item['url'] +'" >' + 
+          escape(item['text']) + 
         '</div>'
       },
       option: (item, escape) => {

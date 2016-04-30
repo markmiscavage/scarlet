@@ -7,8 +7,7 @@ export default {
   launchWindow : function (url, width, height, top, left, cb) {
     left = left || (screen.width) ? (screen.width - width) / 2 : 0;
     top = top || (screen.height) ? (screen.height - height) / 2 : 0;
-
-    WindowPopup.request(url, [
+    let pop = new WindowPopup(url, 'insertMedia', [
       'width=' + width,
       'height=' + height,
       'top=' + top,
@@ -20,7 +19,8 @@ export default {
       'menubar=no',
       'toolbar=no',
       'resizable=no'
-    ].join(','), cb);
+    ].join(','), cb)
+    pop.request()
   },
 
   // Base execute (executes when "insert media" is clicked)
@@ -35,7 +35,6 @@ export default {
 
     // Launches a popup, given a URL.
     this.launchWindow(value.mediaUrl, 1025, 600, null, null, function (data) {
-
       // Inserts the response form the popup as a DOM node
       composer.selection.insertNode($(data)[0]);
     });

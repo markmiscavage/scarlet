@@ -31,7 +31,6 @@ class WindowPopup {
 		}
 
 		return this.newWin = window.open(this.url, this.name, this.options)
-
 	}
 
 }
@@ -40,7 +39,7 @@ class WindowPopup {
  * window response
  * @param  {object}
  */
-function respond (data) {
+const respond = function (data) {
 	let name = window.name
 	if (window.opener && window.opener[name] && typeof window.opener[name] === 'function') {
 		window.opener[name](data)
@@ -76,7 +75,8 @@ const handlePopup = function () {
 
 	$('.widget-popup-data').each(function (i, dom) {
 		respond($(dom).data())
-	})	
+	})
+
 }
 
 /**
@@ -97,4 +97,4 @@ const clickOpenPopup = function (e, cb) {
 }
 
 export default WindowPopup
-export { handlePopup, clickOpenPopup }
+export { handlePopup, clickOpenPopup, respond }

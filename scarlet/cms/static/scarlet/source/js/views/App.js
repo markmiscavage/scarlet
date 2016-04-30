@@ -9,6 +9,7 @@ import ImageCropper from './ImageCropper'
 import Select from './Select'
 import SelectApi from './SelectApi'
 import SelectAsset from './SelectAsset'
+import InsertImage from './InsertImage'
 import { handlePopup } from '../helpers/WindowPopup'
 import Wysiwyg from './wysiwyg/Wysiwyg'
 
@@ -16,6 +17,11 @@ const App = View.extend({
 
   initialize: function () {
   	pubsub.on('scarlet:render', this.render)
+
+    // Insert Image
+    $('.widget-insert-image').each(function (i, dom) {
+      let insertImage = new InsertImage({el : dom})
+    })
   },
 
   render: function() {
@@ -34,7 +40,7 @@ const App = View.extend({
     })
 
     // SELECTASSET
-    $(".widget-asset").each( (i, dom) => {
+    $('.widget-asset').each( (i, dom) => {
       if(!$(dom).find('input').hasClass('selectized')){
        let selectAsset = new SelectAsset({el: dom}).render()
       }

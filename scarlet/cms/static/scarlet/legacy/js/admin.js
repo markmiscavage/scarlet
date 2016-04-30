@@ -14689,11 +14689,11 @@ define(
 				this._renderDateTimePicker(dom);
 				//this._renderWysiwig(dom);
 				this._renderTabs(dom);
-				this._renderInsertVideo(dom);
-				this._renderInsertImage(dom);
-				this._renderInsertAudio(dom);
-				this._renderInlineVideo(dom);
-				this._renderInsertAnnotation(dom);
+				// this._renderInsertVideo(dom);
+				// this._renderInsertImage(dom);
+				// this._renderInsertAudio(dom);
+				// this._renderInlineVideo(dom);
+				// this._renderInsertAnnotation(dom);
 				//this._renderFilterBar(dom);
 				//this._renderjQueryCrop(dom);
 				this._renderDragWidth(dom);
