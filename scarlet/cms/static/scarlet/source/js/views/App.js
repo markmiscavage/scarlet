@@ -11,6 +11,7 @@ import SelectApi from './SelectApi'
 import SelectAsset from './SelectAsset'
 import InsertImage from './InsertImage'
 import InsertVideo from './InsertVideo'
+import InsertAudio from './InsertAudio'
 import { handlePopup } from '../helpers/WindowPopup'
 import Wysiwyg from './wysiwyg/Wysiwyg'
 
@@ -27,6 +28,11 @@ const App = View.extend({
     // Insert Video
     $(".widget-insert-video").each(function (i, dom) {
       var insertVideo = new InsertVideo({el : dom})
+    })
+
+    // Insert Audio
+    $(".widget-insert-audio").each( (i, dom) => {
+      var insertAudio = new InsertAudio({el : dom})
     })
   },
 
@@ -51,6 +57,7 @@ const App = View.extend({
        let selectAsset = new SelectAsset({el: dom}).render()
       }
     })
+
 
   }
 })
