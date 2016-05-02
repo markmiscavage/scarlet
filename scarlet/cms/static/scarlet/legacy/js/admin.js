@@ -14688,7 +14688,7 @@ define(
 				// this._renderDatePicker(dom);
 				this._renderDateTimePicker(dom);
 				//this._renderWysiwig(dom);
-				this._renderTabs(dom);
+				// this._renderTabs(dom);
 				// this._renderInsertVideo(dom);
 				// this._renderInsertImage(dom);
 				// this._renderInsertAudio(dom);

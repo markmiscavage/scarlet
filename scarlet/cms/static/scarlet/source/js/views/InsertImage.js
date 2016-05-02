@@ -10,6 +10,7 @@ const InsertImage = Insert.extend({
 
   // Generates or updates the image with the latest input value.
   onInput : function (e) {
+    console.log('thing', e)
 		let $target = $(e.currentTarget)
 		let attribute = $target.data('attribute')
 		let value = $(e.currentTarget).val()

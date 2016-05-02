@@ -3,15 +3,13 @@ webpackConfig.devtool = 'inline-source-map';
 
 module.exports = function (config) {
   config.set({
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine-jquery', 'jasmine'],
     browsers: ['Chrome'],
     files: [
-      // 'scarlet/cms/static/scarlet/source/js/**/*.spec.js'
       'tests.webpack.js'
     ],
     reporters: ['coverage','progress'],
     preprocessors: {
-      // 'scarlet/cms/static/scarlet/source/js/**/*.spec.js' : ['webpack', 'sourcemap']
       'tests.webpack.js' : ['webpack', 'sourcemap']
     },
     coverageReporter: {

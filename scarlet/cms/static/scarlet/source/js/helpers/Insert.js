@@ -25,8 +25,8 @@ const Insert = View.extend({
 	bindInputs : function () {
 		this.vars.$inputs.on("keypress paste", this.onDelayInput.bind(this))
 		this.vars.$form.on("submit", this.onSubmit)
-		this.vars.$form.find(".cancel").on("click", this.onCancel)
-		this.$dom.find(".constrain").on("change", this.onConstrainChange)
+		this.vars.$form.find(".cancel").on("click", this.onCancel.bind(this))
+		this.$dom.find(".constrain").on("change", this.onConstrainChange.bind(this))
 	},
 
 	unbindInputs : function () {
