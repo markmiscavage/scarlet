@@ -17,7 +17,6 @@ define(
 
 			// Generates or updates the audio with the latest input value.
 			onInput : function (e) {
-				console.log(e.target)
 
 				var $target = $(e.currentTarget),
 					attribute = $target.data('attribute'),
