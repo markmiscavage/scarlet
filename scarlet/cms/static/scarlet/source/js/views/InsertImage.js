@@ -1,4 +1,4 @@
-import { View } from 'backbone'
+'use strict'
 import Insert from '../helpers/Insert'
 
 const InsertImage = Insert.extend({
@@ -15,7 +15,6 @@ const InsertImage = Insert.extend({
 		let value = $(e.currentTarget).val()
 		let $preview = this.$dom.find(".image-preview")
 		let $img = $preview.find('img')
-    console.log('img', $img)
 
   	// Adjusts the source to come from the data attribute.
   	if ($target.attr('data-src')) {

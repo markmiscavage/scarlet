@@ -10,6 +10,7 @@ import Select from './Select'
 import SelectApi from './SelectApi'
 import SelectAsset from './SelectAsset'
 import InsertImage from './InsertImage'
+import InsertVideo from './InsertVideo'
 import { handlePopup } from '../helpers/WindowPopup'
 import Wysiwyg from './wysiwyg/Wysiwyg'
 
@@ -21,6 +22,11 @@ const App = View.extend({
     // Insert Image
     $('.widget-insert-image').each(function (i, dom) {
       let insertImage = new InsertImage({el : dom})
+    })
+
+    // Insert Video
+    $(".widget-insert-video").each(function (i, dom) {
+      var insertVideo = new InsertVideo({el : dom})
     })
   },
 
