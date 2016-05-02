@@ -12,6 +12,7 @@ import SelectAsset from './SelectAsset'
 import InsertImage from './InsertImage'
 import InsertVideo from './InsertVideo'
 import InsertAudio from './InsertAudio'
+import Tabs from './Tabs'
 import { handlePopup } from '../helpers/WindowPopup'
 import Wysiwyg from './wysiwyg/Wysiwyg'
 
@@ -26,13 +27,18 @@ const App = View.extend({
     })
 
     // Insert Video
-    $(".widget-insert-video").each(function (i, dom) {
-      var insertVideo = new InsertVideo({el : dom})
+    $('.widget-insert-video').each(function (i, dom) {
+      let insertVideo = new InsertVideo({el : dom})
     })
 
     // Insert Audio
-    $(".widget-insert-audio").each( (i, dom) => {
-      var insertAudio = new InsertAudio({el : dom})
+    $('.widget-insert-audio').each( (i, dom) => {
+      let insertAudio = new InsertAudio({el : dom})
+    })
+
+    // Tabs
+    $('.widget-tabs').each( (i, dom) => {
+      let tabs = new Tabs({el: dom})
     })
   },
 
