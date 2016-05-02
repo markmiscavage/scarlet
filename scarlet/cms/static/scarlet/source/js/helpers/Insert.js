@@ -23,7 +23,7 @@ const Insert = View.extend({
 	},
 
 	bindInputs : function () {
-		this.vars.$inputs.on("keypress paste", this.onDelayInput)
+		this.vars.$inputs.on("keypress paste", this.onDelayInput.bind(this))
 		this.vars.$form.on("submit", this.onSubmit)
 		this.vars.$form.find(".cancel").on("click", this.onCancel)
 		this.$dom.find(".constrain").on("change", this.onConstrainChange)
@@ -39,7 +39,7 @@ const Insert = View.extend({
 	// Helper to delay onInput call on paste
 	// http://stackoverflow.com/a/1503425
 	onDelayInput : function (e) {
-		this.setTimeout(function () {
+		setTimeout(() => {
 			this.onInput(e)
 		})
 	},
