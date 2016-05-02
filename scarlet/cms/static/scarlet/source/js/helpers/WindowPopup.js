@@ -88,7 +88,7 @@ const clickOpenPopup = function (e, cb) {
   e.preventDefault()
   let url = $(e.currentTarget).attr('href')
   let options = 'menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=500,width=800'
-  let windowPopup = new WindowPopup(url, 'media', options, function (data) {
+  let windowPopup = new WindowPopup(url, 'assetWindow', options, function (data) {
     cb(data)
   })
   windowPopup.request()

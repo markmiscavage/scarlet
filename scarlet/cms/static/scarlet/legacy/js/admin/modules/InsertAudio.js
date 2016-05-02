@@ -12,11 +12,12 @@ define(
 			// Extending to bind to a special data-respond attribute for Select2.
 			bindInputs : function () {
 				this.sup();
-				this.$dom.find('[data-respond=\"true\"]').on("change", this.onInput);
+				this.$dom.find('[data-respond=\"true\"]').on("change", this.onInput.bind(this));
 			},
 
 			// Generates or updates the audio with the latest input value.
 			onInput : function (e) {
+				console.log(e.target)
 
 				var $target = $(e.currentTarget),
 					attribute = $target.data('attribute'),
