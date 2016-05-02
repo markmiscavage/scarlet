@@ -35,7 +35,6 @@ export default {
 
     // Launches a popup, given a URL.
     this.launchWindow(value.mediaUrl, 1025, 600, null, null, function (data) {
-      console.log('this here is the data', data)
       // Inserts the response form the popup as a DOM node
       composer.selection.insertNode($(data)[0]);
     });
