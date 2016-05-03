@@ -3,6 +3,7 @@ import pubsub from '../helpers/pubsub'
 import AutoSlug from './AutoSlug'
 import BatchActions from './BatchActions'
 import DatePicker from './DatePicker'
+import DateTimePicker from './DateTimePicker'
 import Filters from './Filters'
 import Formset from './Formset'
 import ImageCropper from './ImageCropper'
@@ -20,6 +21,29 @@ const App = View.extend({
 
   initialize: function () {
   	pubsub.on('scarlet:render', this.render)
+
+    // AutoSlug
+    $('.auto-slug').each(function () {
+      new AutoSlug({ el: $(this) }).render()
+    })
+
+    // BatchActions
+    new BatchActions().render()
+
+    // Filters
+    $('.filters').each(function () {
+      new Filters({ el: $(this) }).render()
+    })
+
+    // ImageCropper
+    $('.jcrop').each(function () {
+      new ImageCropper({ el: $(this) }).render()
+    })
+
+    // Wysiwyg
+    $('.widget-wysiwyg').each((i, dom) => {
+      new Wysiwyg({ el: dom }).render()
+    })
 
     // Insert Image
     $('.widget-insert-image').each(function (i, dom) {
@@ -40,6 +64,18 @@ const App = View.extend({
     $('.widget-tabs').each( (i, dom) => {
       let tabs = new Tabs({el: dom})
     })
+
+    // DATEPICKER
+    $('input.date').each(function (i, dom) {
+      let datePicker = new DatePicker({el: dom}).render()
+    })
+
+    // DATETIMEPICKER
+    $('input.datetime').each(function (i, dom) {
+      let dateTimePicker = new DateTimePicker({el: dom}).render()
+    })
+
+
   },
 
   render: function() {
