@@ -22,6 +22,29 @@ const App = View.extend({
   initialize: function () {
   	pubsub.on('scarlet:render', this.render)
 
+    // AutoSlug
+    $('.auto-slug').each(function () {
+      new AutoSlug({ el: $(this) }).render()
+    })
+
+    // BatchActions
+    new BatchActions().render()
+
+    // Filters
+    $('.filters').each(function () {
+      new Filters({ el: $(this) }).render()
+    })
+
+    // ImageCropper
+    $('.jcrop').each(function () {
+      new ImageCropper({ el: $(this) }).render()
+    })
+
+    // Wysiwyg
+    $('.widget-wysiwyg').each((i, dom) => {
+      new Wysiwyg({ el: dom }).render()
+    })
+
     // Insert Image
     $('.widget-insert-image').each(function (i, dom) {
       let insertImage = new InsertImage({el : dom})
