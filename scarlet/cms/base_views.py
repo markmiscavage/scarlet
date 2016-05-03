@@ -658,13 +658,13 @@ class ModelCMSMixin(object):
                     try:
                         from django.db.models.fields.related import (
                             ForeignObjectRel)
-                        if isinstance(rel.related, ForeignObjectRel):
-                            to = rel.related.related_model
+                        if isinstance(rel.rel, ForeignObjectRel):
+                            to = rel.rel.related_model
                         else:
-                            to = rel.related.model
+                            to = rel.rel.model
                     except ImportError:
-                        to = rel.related.model
-                    field_name = rel.related.field.name
+                        to = rel.rel.model
+                    field_name = rel.rel.field.name
             else:
                 to = field.rel.to
                 if main_key == 'pk':
