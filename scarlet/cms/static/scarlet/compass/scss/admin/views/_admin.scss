@@ -336,33 +336,43 @@ section#main {
 			}
 
 			.widget-asset-actions {
-				margin-left: $gridlet*22;
-				max-width: $gridlet*100;
+				$marginOffset: $gridlet*22;
+				margin-left: $marginOffset;
+				width: calc(100% - #{$marginOffset});
 			}
 
 			.select2-container {
 				margin-bottom: $gridlet*2;
+				display: inline-block;
+			    min-width: $gridlet*100;
 			}
 
 			.crops-list {
-				padding-left: 0;
+				display: table;
+				padding: 10px;
+				margin-top: $gridlet*2;
 
 				li {
+					display: inline-block;
 					margin-bottom: 10px;
+					&:last-child{
+						margin-bottom: 0px;
+					}
 				}
 
 				.name,
 				.size {
 					display: inline-block;
-					width: 105px;
-				}
-
-				.size {
-					width: 115px;
+					vertical-align: middle;
+					&:after{
+						content: "";
+						margin-right: $gridlet*3;
+					}
 				}
 
 				.crop-link {
 					position: static;
+				    vertical-align: middle;
 					font-size: 12px;
 					margin-left: 6px;
 
@@ -374,9 +384,10 @@ section#main {
 
 			.button {
 				@include button;
-				position: absolute;
-				left: 410px;
-				top: 2px;
+				position: relative;
+			    vertical-align: top;
+				top: 1px;
+				margin-left: 46px;
 
 				&:before {
 					content: "";
