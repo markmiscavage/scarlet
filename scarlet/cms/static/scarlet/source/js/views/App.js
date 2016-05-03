@@ -2,7 +2,8 @@ import Backbone, { View } from 'backbone'
 import pubsub from '../helpers/pubsub'
 import AutoSlug from './AutoSlug'
 import BatchActions from './BatchActions'
-import { DatePicker, DateTimePicker } from './DatePicker'
+import DatePicker from './DatePicker'
+import DateTimePicker from './DateTimePicker'
 import Filters from './Filters'
 import Formset from './Formset'
 import ImageCropper from './ImageCropper'
@@ -15,7 +16,6 @@ import InsertAudio from './InsertAudio'
 import Tabs from './Tabs'
 import { handlePopup } from '../helpers/WindowPopup'
 import Wysiwyg from './wysiwyg/Wysiwyg'
-import 'jquery-ui-timepicker-addon/dist/jquery-ui-timepicker-addon'
 
 const App = View.extend({
 
