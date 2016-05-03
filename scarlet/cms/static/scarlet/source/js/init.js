@@ -1,6 +1,6 @@
 import AutoSlug from './views/AutoSlug'
 import BatchActions from './views/BatchActions'
-import DatePicker from './views/DatePicker'
+// import { DatePicker }from './views/DatePicker'
 import Filters from './views/Filters'
 // import Formset from './views/Formset'
 import ImageCropper from './views/ImageCropper'
@@ -17,8 +17,16 @@ $('.auto-slug').each(function () {
 // BatchActions
 new BatchActions().render()
 
-// DATEPICKER
-const datePicker = new DatePicker().render()
+// // DATEPICKER
+// $('.date').each(function () {
+// 	let datePicker = new DatePicker().render()
+// })
+
+// $('input.datetime').each(function () {
+// 	let dateTimePicker = new DatePicker().render()
+// })
+
+
 
 // Filters
 $('.filters').each(function () {

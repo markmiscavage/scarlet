@@ -72,6 +72,7 @@
     "jcrop": "0.0.1",
     "jquery": "^2.2.3",
     "jquery-ui": "^1.10.5",
+    "jquery-ui-timepicker-addon": "^1.5.5",
     "moment": "^2.12.0",
     "select2": "^4.0.2",
     "selectize": "^0.12.1"

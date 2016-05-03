@@ -7,7 +7,6 @@ define(
 			$                    = require("$"),
 			jQuerySelect2        = require("$plugin!select2"),
 			jQueryDetails        = require("$plugin!details"),
-			jQueryTimePicker     = require("$plugin-ui!timepicker"),
 			AssetSelect          = require("./AssetSelect"),
 			ApiSelect            = require("./ApiSelect"),
 			Formset              = require("./Formset"),
@@ -40,7 +39,7 @@ define(
 				// this._renderAssetSelect(dom);
 				// this._renderApiSelect(dom);
 				// this._renderDatePicker(dom);
-				this._renderDateTimePicker(dom);
+				// this._renderDateTimePicker(dom);
 				//this._renderWysiwig(dom);
 				// this._renderTabs(dom);
 				// this._renderInsertVideo(dom);
