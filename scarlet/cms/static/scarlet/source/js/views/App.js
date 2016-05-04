@@ -1,12 +1,14 @@
-import Backbone, { View } from 'backbone'
+import { View } from 'backbone'
 import pubsub from '../helpers/pubsub'
 import AutoSlug from './AutoSlug'
 import BatchActions from './BatchActions'
 import DatePicker from './DatePicker'
 import DateTimePicker from './DateTimePicker'
+import Draggable from './Draggable'
 import Filters from './Filters'
 import Formset from './Formset'
 import ImageCropper from './ImageCropper'
+import RenderDragWidth from '../helpers/RenderDragWidth'
 import Select from './Select'
 import SelectApi from './SelectApi'
 import SelectAsset from './SelectAsset'
@@ -16,7 +18,6 @@ import InsertAudio from './InsertAudio'
 import Tabs from './Tabs'
 import Wysiwyg from './wysiwyg/Wysiwyg'
 import { handlePopup } from '../helpers/WindowPopup'
-import RenderDragWidth from '../helpers/RenderDragWidth'
 
 const App = View.extend({
 
@@ -76,6 +77,12 @@ const App = View.extend({
       let dateTimePicker = new DateTimePicker({el: dom}).render()
     })
 
+    // DRAGGABLE
+    $("table").each(function (i, dom) {
+      let draggable = new Draggable(dom)
+    })
+
+    // DRAGGABLE WIDTH FIX
     $('[draggable]').each(function (i, dom) {
       let renderDragWidth = new RenderDragWidth({el: dom})
     })

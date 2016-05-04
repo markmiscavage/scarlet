@@ -1,5 +1,4 @@
-import Backbone, { View } from 'backbone'
-import select2 from 'select2'
+import { View } from 'backbone'
 import selectize  from 'selectize'
 import '../../stylesheets/views/select.scss'
 
