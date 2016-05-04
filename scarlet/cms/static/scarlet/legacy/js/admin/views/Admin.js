@@ -19,49 +19,49 @@ define(
 			widgets : null,
 
 			init : function () {
-				this.sup();
+				// this.sup();
 
-				this.tableDnD();
+				// this.tableDnD();
 
 				// widgets
-				this.widgets = new Widgets();
-				this.publish(WidgetEvents.RENDER, {
-					dom : document
-				});
+				// this.widgets = new Widgets();
+				// this.publish(WidgetEvents.RENDER, {
+				// 	dom : document
+				// });
 
-				this.transitionIn();
+				// this.transitionIn();
 			},
 
-			tableDnD : function () {
-				$("table").each(function () {
-					var draggable = $(this).find("tr[draggable]").parents("tbody");
+			// tableDnD : function () {
+			// 	$("table").each(function () {
+			// 		var draggable = $(this).find("tr[draggable]").parents("tbody");
 
-					draggable.sortable({
-						stop: function (e, ui) {
-							var inputs = $(ui.item.context.offsetParent).find(":text");
+			// 		draggable.sortable({
+			// 			stop: function (e, ui) {
+			// 				var inputs = $(ui.item.context.offsetParent).find(":text");
 
-							for (var i = 0; i < inputs.length; i++) {
-								inputs[i].value = i + 1;
-							}
-						}
-					});
-				});
-			},
+			// 				for (var i = 0; i < inputs.length; i++) {
+			// 					inputs[i].value = i + 1;
+			// 				}
+			// 			}
+			// 		});
+			// 	});
+			// },
 
 			update : function () {
 
 			},
 
 			transitionIn : function () {
-				this.sup();
+				// this.sup();
 			},
 
 			transitionOut : function () {
-				this.sup();
+				// this.sup();
 			},
 
 			destroy : function () {
-				this.sup();
+				// this.sup();
 			}
 		});
 	}

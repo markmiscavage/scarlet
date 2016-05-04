@@ -4,6 +4,7 @@ import AutoSlug from './AutoSlug'
 import BatchActions from './BatchActions'
 import DatePicker from './DatePicker'
 import DateTimePicker from './DateTimePicker'
+import Draggable from './Draggable'
 import Filters from './Filters'
 import Formset from './Formset'
 import ImageCropper from './ImageCropper'
@@ -73,6 +74,11 @@ const App = View.extend({
     // DATETIMEPICKER
     $('input.datetime').each(function (i, dom) {
       let dateTimePicker = new DateTimePicker({el: dom}).render()
+    })
+
+    // DRAGGABLE
+    $("table").each(function (i, dom) {
+      let draggable = new Draggable(dom)
     })
 
 
