@@ -12487,7 +12487,7 @@ define(
 				// this._renderInsertAnnotation(dom);
 				//this._renderFilterBar(dom);
 				//this._renderjQueryCrop(dom);
-				this._renderDragWidth(dom);
+				// this._renderDragWidth(dom);
 
 				//this._autoSlug(dom);
 				// this._handlePopup(dom);
