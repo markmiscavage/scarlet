@@ -1,5 +1,8 @@
 import { View } from 'backbone'
+
 import pubsub from '../helpers/pubsub'
+import { handlePopup } from '../helpers/WindowPopup'
+
 import AutoSlug from './AutoSlug'
 import BatchActions from './BatchActions'
 import DatePicker from './DatePicker'
@@ -17,7 +20,6 @@ import InsertVideo from './InsertVideo'
 import InsertAudio from './InsertAudio'
 import Tabs from './Tabs'
 import Wysiwyg from './wysiwyg/Wysiwyg'
-import { handlePopup } from '../helpers/WindowPopup'
 
 const App = View.extend({
 
@@ -40,11 +42,6 @@ const App = View.extend({
     // ImageCropper
     $('.jcrop').each(function () {
       new ImageCropper({ el: $(this) }).render()
-    })
-
-    // Wysiwyg
-    $('.widget-wysiwyg').each((i, dom) => {
-      new Wysiwyg({ el: dom }).render()
     })
 
     // Insert Image
@@ -86,8 +83,6 @@ const App = View.extend({
     $('[draggable]').each(function (i, dom) {
       let renderDragWidth = new RenderDragWidth({el: dom})
     })
-
-
   },
 
   render: function() {
@@ -112,6 +107,10 @@ const App = View.extend({
       }
     })
 
+    // Wysiwyg
+    $('.widget-wysiwyg').each((i, dom) => {
+      new Wysiwyg({ el: dom }).render()
+    })
 
   }
 })
