@@ -14,8 +14,9 @@ import InsertImage from './InsertImage'
 import InsertVideo from './InsertVideo'
 import InsertAudio from './InsertAudio'
 import Tabs from './Tabs'
-import { handlePopup } from '../helpers/WindowPopup'
 import Wysiwyg from './wysiwyg/Wysiwyg'
+import { handlePopup } from '../helpers/WindowPopup'
+import RenderDragWidth from '../helpers/RenderDragWidth'
 
 const App = View.extend({
 
@@ -73,6 +74,10 @@ const App = View.extend({
     // DATETIMEPICKER
     $('input.datetime').each(function (i, dom) {
       let dateTimePicker = new DateTimePicker({el: dom}).render()
+    })
+
+    $('[draggable]').each(function (i, dom) {
+      let renderDragWidth = new RenderDragWidth({el: dom})
     })
 
 
