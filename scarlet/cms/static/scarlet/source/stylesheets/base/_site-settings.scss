@@ -1,0 +1,24 @@
+// Not targeting Opera or KHTML
+$experimental-support-for-opera: false;
+$experimental-support-for-khtml: false;
+
+// OR IE 6
+$legacy-support-for-ie6: false;
+
+// OR IE 7
+$legacy-support-for-ie7: false;
+
+// Defaults
+$background-color: #eee !default;
+$text-color: #333 !default;
+$link-color: #f00 !default;
+$blue: #314b5d;
+$dark-blue: #11232e;
+$medium-blue: #8197a3;
+$light-blue: #b6cad1;
+$gray: #b8b8b8;
+$red: #f00;
+$width: 1280px;
+$gridlet: 3px;
+$spacer: $gridlet*4;
+$DEBUG: true;

@@ -1,0 +1,44 @@
+// Use n, e, s, w for cardinal direction arrows
+
+@font-face {
+	font-family: 'CompassArrows';
+	src: url('../fonts/CompassArrows.eot');
+	src: url('../fonts/CompassArrows.eot?#iefix') format('embedded-opentype'),
+		 url('../fonts/CompassArrows.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+// Icons from http://icomoon.io/app/
+// You don't need svg? Well in this case you do.
+// icomoon needs the svg file if you want to add
+// another icon to the font.
+
+@font-face {
+	font-family: 'icomoon';
+	src:url('../fonts/icomoon.eot');
+	src:url('../fonts/icomoon.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/icomoon.ttf') format('truetype'),
+		url('../fonts/icomoon.woff') format('woff'),
+		url('../fonts/icomoon.svg#icomoon') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class*="icon-"] {
+	font-family: 'icomoon';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-calendar:before {
+	content: "\e600";
+}

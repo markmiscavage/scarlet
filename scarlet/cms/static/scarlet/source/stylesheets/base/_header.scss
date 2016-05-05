@@ -1,0 +1,103 @@
+header {
+	@include clearfix;
+	padding: $spacer;
+
+	div {
+		h1 {
+			display: inline-block;
+			float: left;
+			font: 40px/1 AvenirBlack;
+			text-transform: uppercase;
+
+			a {
+				display: inline-block;
+				&, &:visited {
+					color: #fff;
+				}
+
+				&:hover {
+					color: $light-blue;
+				}
+			}
+
+			span.actions {
+				cursor: pointer;
+				display: inline;
+				font: 16px/1 AvenirMedium;
+				position: absolute;
+				text-transform: none;
+				z-index: 11;
+
+				&:before {
+					color: $light-blue;
+					content: "s";
+					font: 12px/24px CompassArrows;
+					padding-left: $gridlet*2;
+				}
+
+				> a {
+					display: none;
+
+					@include single-text-shadow(none);
+					background-color: $light-blue;
+					border: 1px solid rgba($blue, 0.5);
+					border-top-color: #fff;
+					color: $blue;
+					padding: $gridlet*2 $spacer;
+
+					&:hover {
+						color: $dark-blue;
+					}
+				}
+
+				&:hover a {
+					display: block;
+				}
+
+				&:empty:before {
+					content: "";
+				}
+			}
+
+		}
+
+		nav[role="user-tools"] {
+			float: right;
+			text-align: right;
+
+			p {
+				color: $light-blue;
+				font: 20px/1 AvenirLight;
+
+				strong {
+					font: 20px/1 AvenirMedium;
+				}
+			}
+
+			a {
+				border-left: 1px dotted $light-blue;
+				display: inline-block;
+				font: 14px/17px AvenirBlack;
+				margin: 0;
+				padding: 0 $spacer;
+
+				&, &:visited {
+					color: #fff;
+				}
+
+				&:hover {
+					color: $light-blue;
+				}
+
+				&:first-of-type {
+					border: 0;
+					padding-left: 0;
+				}
+
+				&:last-of-type {
+					padding-right: 0;
+				}
+			}
+		}
+	}
+}
