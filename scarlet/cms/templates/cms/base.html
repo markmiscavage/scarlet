@@ -33,8 +33,9 @@
 		{# CSS: implied media="all" #}
 		<!-- <link rel="stylesheet" id="caboose" href="{{ STATIC_URL }}scarlet/legacy/css/bundle.css" /> -->
 		{% if not settings.TEMPLATE_DEBUG %}
-			<link rel="stylesheet" id="caboose" href="{{ STATIC_URL }}css/bundle.css" />
+			<link rel="stylesheet"  href="{{ STATIC_URL }}css/bundle.css" />
 		{% endif %}
+		<link rel="stylesheet" href="http://localhost:3000/build/css/bundle.css" />
 
 
 		{# All JavaScript at the bottom, except for Modernizr. #}

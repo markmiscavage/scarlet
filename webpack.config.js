@@ -93,22 +93,24 @@ function createWebpackLoaders () {
   }];
 
   if (ENV_IS_PRODUCTION) {
-    loaders.push({
-      test: /\.scss$/,
-      loader: ExtractTextPlugin.extract('style',
-        'css?sourceMap!postcss!sass'),
-      include: CONFIG.src
-    })
+  loaders.push({
+    test: /\.scss$/,
+    loader: ExtractTextPlugin.extract('style',
+      'css?sourceMap!postcss!sass'),
+    include: CONFIG.src
+  })
   } else {
     loaders.push({
       test: /\.scss$/,
-      loaders :
-      [
-        'style-loader',
-        'css-loader?importLoaders=2&sourceMap',
-        'postcss-loader',
-        'sass-loader?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
-      ],
+      // loaders :
+      // [
+      //   'style-loader',
+      //   'css-loader?importLoaders=2&sourceMap',
+      //   'postcss-loader',
+      //   'sass-loader?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
+      // ],
+      loader: ExtractTextPlugin.extract('style',
+        'css?sourceMap!postcss!sass'),
       include: path.join(CONFIG.src, 'stylesheets')
     })
   }
@@ -138,6 +140,7 @@ function createWebpackPlugins () {
       new UglifyJsPlugin(UGLIFY_CONFIG))
   } else {
     plugins.push(
+      new ExtractTextPlugin('css/bundle.css'),
       new webpack.HotModuleReplacementPlugin(),
       new NoErrorsPlugin())
   }
