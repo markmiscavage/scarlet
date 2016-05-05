@@ -4,6 +4,8 @@ import wysiwygRules from './rules'
 import insertAnnotation from './commands/insertAnnotation'
 import insertLink from './commands/insertLink'
 import insertMedia from './commands/insertMedia'
+import '../../../stylesheets/views/wysiwyg.scss'
+
 
 
 

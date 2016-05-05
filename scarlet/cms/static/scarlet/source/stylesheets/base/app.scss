@@ -1,37 +1,25 @@
 // COMPASS MIXINS
 @import '~compass-mixins/lib/compass/utilities';
-@import '~compass-mixins/lib/compass/css3/text-shadow';
 @import '~compass-mixins/lib/compass/css3/border-radius';
-@import '~compass-mixins/lib/compass/css3/opacity';
 @import '~compass-mixins/lib/compass/css3/box-sizing';
-@import '~compass-mixins/lib/compass/css3/box-shadow';
 @import '~compass-mixins/lib/compass/css3/text-shadow';
 @import '~compass-mixins/lib/compass/css3/transition';
-@import '~compass-mixins/lib/compass/typography/text/replacement';
 
+// SETTINGS & MIXINS
 @import './site-settings';
 @import '../mixins/mixins';
-@import '../caboose/mixins/index';
-@import '../placeholders/placeholders';
-
-@import '../caboose/caboose/reset';
-@import '../caboose/caboose/easings';
-@import '../caboose/caboose/exports';
 
 // Import project base files
+@import '../modules/normalize';
 @import './header';
 @import './body';
 @import './footer';
 @import './layout';
-@import '../modules/normalize';
 @import '../modules/navigation';
 @import '../modules/object-info';
 @import '../modules/tables';
 @import '../modules/insert-media';
-@import '../modules/ui-datetime-picker';
-@import '../modules/wysiwyg';
 
-@import '../views/wysiwyg';
 
 
 
