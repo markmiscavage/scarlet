@@ -68,7 +68,7 @@ class CropVersionView(views.FormView):
                                       form.cleaned_data['x2'],
                                       form.cleaned_data['y'],
                                       form.cleaned_data['y2'])
-        return self.success_response()
+        return self.success_response(message='Crop saved')
 
 
 class CropView(views.ModelCMSMixin, views.ModelFormMixin,
