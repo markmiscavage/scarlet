@@ -1,5 +1,5 @@
 'use strict'
-import Insert from '../helpers/Insert'
+import Insert from './Insert'
 
 const InsertImage = Insert.extend({
 
@@ -12,14 +12,14 @@ const InsertImage = Insert.extend({
       },
       providers : [
         {
-          name : "youtube",
+          name : 'youtube',
           regex : /(?:youtube(?:-nocookie)?\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/,
-          embed : "http://www.youtube.com/embed/"
+          embed : 'http://www.youtube.com/embed/'
         },
         {
-          name : "vimeo",
+          name : 'vimeo',
           regex : /(?:vimeo.com\/(.*))/,
-          embed : "http://player.vimeo.com/video/"
+          embed : 'http://player.vimeo.com/video/'
         }
       ],
     })
@@ -30,35 +30,35 @@ const InsertImage = Insert.extend({
     let $target = $(e.currentTarget)
     let attribute = $target.data('attribute')
     let value = $(e.currentTarget).val()
-    let $preview = this.$dom.find(".image-preview")
-    let $video = $preview.find("iframe")
+    let $preview = this.$dom.find('.image-preview')
+    let $video = $preview.find('iframe')
 
-    if (attribute === "src") {
+    if (attribute === 'src') {
       value = this.validateVideo(value)
     }
 
     if (!$video.length) {
 
-      $video = $("<iframe />")
+      $video = $('<iframe />')
       $video.attr({
-        "frameborder" : "0",
-        "allowfullscreen" : ""
+        'frameborder' : '0',
+        'allowfullscreen' : ''
       })
 
       $preview.append($video)
 
       this.vars.$node = $video
 
-      this.setAttribute("width", this.vars.size.width)
-      this.setAttribute("height", this.vars.size.height)
+      this.setAttribute('width', this.vars.size.width)
+      this.setAttribute('height', this.vars.size.height)
 
     } else {
       this.vars.$node = $video
     }
 
-    if (attribute === "width" || attribute === "height") {
+    if (attribute === 'width' || attribute === 'height') {
 
-      value = value.replace("px", "")
+      value = value.replace('px', '')
 
       if (this.vars.constrain) {
         this.constrainProportion(attribute, value)

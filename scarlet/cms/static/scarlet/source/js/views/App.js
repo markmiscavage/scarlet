@@ -8,7 +8,6 @@ import Draggable from './Draggable'
 import Filters from './Filters'
 import Formset from './Formset'
 import ImageCropper from './ImageCropper'
-import RenderDragWidth from '../helpers/RenderDragWidth'
 import Select from './Select'
 import SelectApi from './SelectApi'
 import SelectAsset from './SelectAsset'
@@ -80,15 +79,9 @@ const App = View.extend({
     })
 
     // DRAGGABLE
-    $("table").each(function (i, dom) {
-      let draggable = new Draggable(dom)
+    $('table').each(function (i, dom) {
+      let draggable = new Draggable({el: dom}).render()
     })
-
-    // DRAGGABLE WIDTH FIX
-    $('[draggable]').each(function (i, dom) {
-      let renderDragWidth = new RenderDragWidth({el: dom})
-    })
-
 
   },
 
@@ -113,7 +106,6 @@ const App = View.extend({
        let selectAsset = new SelectAsset({el: dom}).render()
       }
     })
-
 
   }
 })

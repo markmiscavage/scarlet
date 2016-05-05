@@ -228,8 +228,6 @@ const SelectApi = View.extend({
     return data
   }
 
-
 })
-
 
 export default SelectApi

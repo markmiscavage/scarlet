@@ -26,7 +26,7 @@ const SelectAsset = View.extend({
    * Backbone Events Object
    */
   events: {
-    'click .button, .crop-link' : function(e){clickOpenPopup(e, this.setSelected.bind(this));}
+    'click .button, .crop-link' : function(e){clickOpenPopup(e, this.setSelected.bind(this))}
   },
 
   /**
@@ -155,7 +155,7 @@ const SelectAsset = View.extend({
     this.cropsList.find('li').each(function (i, el) {
       el = $(el);
 
-      let editLink = guidLink + "/" + el.data("crop-link") + '?popup=1';
+      let editLink = guidLink + '/' + el.data('crop-link') + '?popup=1';
 
       el.find('a').attr('href', editLink);
     })
@@ -237,8 +237,6 @@ const SelectAsset = View.extend({
     node[0].search = this.paramConstruct(params)
   },
 
-
 })
-
 
 export default SelectAsset
