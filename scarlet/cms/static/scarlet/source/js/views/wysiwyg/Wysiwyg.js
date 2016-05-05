@@ -5,6 +5,8 @@ import insertAnnotation from './commands/insertAnnotation'
 import insertLink from './commands/insertLink'
 import insertMedia from './commands/insertMedia'
 
+
+
 let guid = 0
 
 const Wysiwyg = View.extend({

@@ -18,6 +18,8 @@ import InsertAudio from './InsertAudio'
 import Tabs from './Tabs'
 import Wysiwyg from './wysiwyg/Wysiwyg'
 import { handlePopup } from '../helpers/WindowPopup'
+import '../../stylesheets/base/app.scss'
+
 
 const App = View.extend({
 

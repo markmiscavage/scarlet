@@ -1,0 +1,189 @@
+table {
+	position: relative;
+	margin: 0 0 $spacer 0;
+	width: 100%;
+
+	&#recent-history {
+		// border: solid $gray;
+		// border-width: 1px 2px 2px;
+		// margin: 0 $gridlet*8;
+		// width: $width - $gridlet*16;
+
+		thead tr td form {
+			position: absolute;
+			top: 0;
+			right: 0;
+
+			p {
+				display: inline-block;
+				margin-right: $gridlet*2;
+				padding: 0;
+
+				label {
+					display: none;
+				}
+			}
+		}
+	}
+
+	caption {
+		color: $dark-blue;
+		border-bottom: 1px dotted $dark-blue;
+		font: 26px/1 AvenirLight;
+		margin-bottom: $gridlet*5;
+		padding-bottom: $spacer;
+		text-align: left;
+	}
+
+	thead {
+		tr {
+			th {
+				background-color: $blue;
+				border: solid $gray;
+				border-width: 1px;
+				color: #fff;
+				font: 18px/1 AvenirLight;
+				padding: $gridlet*3 $gridlet*5;
+				text-align: left;
+				text-transform: uppercase;
+
+				&:empty {
+					background: none;
+					border: 0;
+				}
+
+				a {
+					&, &:visited {
+						color: #fff;
+					}
+
+					&:hover {
+						color: $light-blue;
+					}
+
+					&.sort {
+						position: relative;
+
+						&:before,
+						&:after {
+							color: $dark-blue;
+							display: block;
+							font: 10px/1 CompassArrows;
+							text-transform: none;
+							position: absolute;
+							right: -$gridlet*6;
+						}
+
+						&:before {
+							content: "n";
+							top: $gridlet/2;
+						}
+						&:after {
+							content: "s";
+							bottom: $gridlet/2;
+						}
+
+						&.asc:after,
+						&.desc:before {
+							color: #fff;
+						}
+					}
+
+				}
+			}
+		}
+	}
+
+	tbody {
+		tr {
+			&:nth-child(odd) td {
+				background-color: rgba($gray, 0.5);
+			}
+
+			&:hover td {
+				background-color: rgba($light-blue, 0.5);
+			}
+
+			&[draggable] td {
+				cursor: move;
+
+				&:first-of-type {
+					&:before {
+						content: "";
+						background-color: $light-blue;
+						@include border-left-radius($gridlet);
+						border: 1px solid rgba($blue, 0.5);
+						display: block;
+						width: 13px; //$gridlet*2;
+						height: 100%;
+						position: absolute;
+						top: -1px;
+						left: -15px; //-1px - $gridlet*2;
+					}
+					&:after {
+						@include single-text-shadow(rgba($blue, 0.8), 0px, 1px, 1px);
+						content: "┋";
+						color: rgba(#fff, 0.8);
+						font-size: 24px;
+						position: absolute;
+						top: -1px + $gridlet*3;
+						left: -19px; //-$gridlet*5;
+					}
+
+
+				}
+			}
+
+			td {
+				background-color: #fff;
+				border: solid $gray;
+				border-width: 1px;
+				color: $blue;
+				cursor: default;
+				font: 16px/1 AvenirRoman;
+				padding: $gridlet*3 $gridlet*5;
+				position: relative;
+				vertical-align: middle;
+
+				strong {
+					font: 16px/1 AvenirBlack;
+				}
+
+				input.orderfield {
+					display: none;
+				}
+
+				&.actions {
+					text-align: center;
+					white-space: nowrap;
+					width: $spacer;
+
+					a {
+						color: $blue;
+						font: 16px/1 AdminActions;
+						margin: 0 $gridlet*2;
+
+						&:hover {
+							color: $dark-blue;
+						}
+					}
+
+					div.help {
+						font: 11px/1 AvenirLight;
+						position: absolute;
+						bottom: 0;
+					}
+				}
+
+				&.checkbox {
+					width: 50px;
+
+					input[type='checkbox'] {
+						// width: 20px;
+						// height: 20px;
+					}
+				}
+			}
+		}
+	}
+}

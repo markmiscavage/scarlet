@@ -1,0 +1,363 @@
+#main {
+	.select2-container {
+		.select2-choice {
+			@extend %select-box;
+
+			span {
+				display: block;
+				padding: $gridlet*2 $gridlet*11 $gridlet*2 $gridlet*3;
+				@include ellipsis;
+
+				&:after {
+					content: "_";
+					@include opacity(0);
+				}
+			}
+
+			abbr {
+				@include button;
+				@include scale(0.8);
+				font: 16px/1 AvenirBlack;
+				text-transform: uppercase;
+				position: absolute;
+				top: 0;
+				right: $spacer*3;
+			}
+
+			div {
+				@extend %select-arrow;
+			}
+		}
+		&.select2-drop-above {
+			.select2-choice {
+				border-bottom-color: rgba($blue, 0.5);
+				border-radius: 0px 0px 4px 4px;
+			}
+		}
+
+		&.select2-container-disabled .select2-choice {
+			background: $gray;
+			border: 1px solid rgba(#000, 0.1);
+			cursor: default;
+
+			div {
+				display: none;
+			}
+		}
+	}
+
+	/* multiselect */
+
+	.select2-container-multi {
+
+		.select2-choices {
+			@include border-radius($gridlet);
+			border: 1px solid rgba($blue, 0.5);
+			color: $blue;
+			font: 18px/1 AvenirRoman;
+			padding: $gridlet $gridlet 0;
+			outline: 0;
+			width: 100%;
+			background-color: #fff;
+			cursor: text;
+			overflow: hidden;
+			position: relative;
+			min-height: $gridlet*8;
+		}
+
+		&.select2-container-active .select2-choices {
+			border: 1px solid $blue;
+			outline: none;
+		}
+
+		.select2-choices {
+			li {
+				float: left;
+				list-style: none;
+				margin-bottom: $gridlet;
+			}
+
+			.select2-search-field {
+				white-space: nowrap;
+				margin: 0;
+				padding: 0;
+
+				input {
+					color: $blue;
+					background: transparent !important;
+					line-height: $gridlet*6;
+					padding: $gridlet;
+					outline: 0;
+					border: 0;
+					font: 18px/1 AvenirRoman;
+					margin: 0;
+
+					&.select2-active {
+						background: #000;
+					}
+				}
+			}
+
+			.select2-search-choice {
+				border-radius: $gridlet;
+				border: 1px solid rgba($blue, 0.5);
+				background: $light-blue;
+				color: $blue;
+				display: inline-block;
+				outline: 0;
+				padding: $gridlet $gridlet*8 $gridlet $gridlet*2;
+				width: auto;
+				margin-right: $gridlet;
+				position: relative;
+				cursor: default;
+				line-height: $gridlet*6;
+				height: $gridlet*8;
+
+				span {
+					cursor: default;
+				}
+			}
+
+			.select2-search-choice-focus {
+				background: $gray;
+			}
+		}
+
+		&.select2-container-disabled .select2-choices {
+			background: $gray;
+			border: 1px solid rgba(#000, 0.1);
+			cursor: default;
+
+			.select2-search-choice {
+				background: $gray;
+				border: 1px solid rgba(#000, 0.1);
+				padding: $gridlet $gridlet*2;
+
+				.select2-search-choice-close {
+					display: none;
+				}
+			}
+		}
+	}
+
+	.select2-container-active {
+		.select2-choice,
+		.select2-choices {
+			border: 1px solid rgba($blue, 0.7);
+			outline: none;
+		}
+	}
+}
+
+
+.select2-drop {
+	background: #fff;
+	color: $blue;
+	border: 1px solid rgba($blue, 0.5);
+	border-top: 0;
+	position: absolute;
+	top: 100%;
+	z-index: 10001;
+	width: 100%;
+	margin-top: -1px;
+	border-radius: 0 0 4px 4px;
+	@include box-shadow(1px 4px 5px rgba($blue, 0.25));
+
+	&.select2-drop-above {
+		border-radius: 4px 4px 0px 0px;
+		margin-top: 1px;
+		border-top: 1px solid rgba($blue, 0.5);
+		border-bottom: 0;
+		@include box-shadow(1px -4px 5px rgba($blue, 0.25));
+	}
+}
+
+.select2-search {
+	display: inline-block;
+	white-space: nowrap;
+	z-index: 10000;
+	min-height: 26px;
+	width: 100%;
+	margin: 0;
+	padding: $gridlet*2;
+
+	input {
+		@include border-radius($gridlet);
+		border: 1px solid rgba($blue, 0.5);
+		color: $blue;
+		font: 18px/1 AvenirRoman;
+		padding: $gridlet $gridlet*2;
+		outline: 0;
+		width: 100%;
+		margin: 0;
+		height: auto !important;
+		min-height: 1em;
+
+		// TODO: Add spinner
+		&.select2-active {
+			// background: url('spinner.gif') no-repeat 100%;
+		}
+	}
+}
+
+.select2-search-hidden {
+	display: block;
+	position: absolute;
+	left: -10000px;
+}
+
+.select2-dropdown-open .select2-choice {
+	border-color: rgba($blue, 0.5);
+	border-bottom-color: transparent;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+
+	div {
+		background: none;
+
+		&:after {
+			content: "n";
+		}
+	}
+}
+
+/* results */
+
+.select2-results {
+	margin: 0;
+	padding: 0;
+	position: relative;
+	overflow-x: hidden;
+	overflow-y: auto;
+	max-height: $gridlet*100; // each row = gridlet * 9
+	font: 18px/1 AvenirRoman;
+
+	ul.select2-result-sub {
+		margin: 0;
+
+		> li .select2-result-label {
+			padding-left: 20px;
+		}
+	}
+
+	li {
+		list-style: none;
+
+		&.select2-result-with-children > .select2-result-label {
+			font-weight: bold;
+		}
+
+		em {
+			font-style: normal;
+		}
+	}
+
+	.select2-no-results,
+	.select2-searching,
+	.select2-selection-limit,
+	.select2-result-label {
+		padding: $gridlet*2 $gridlet*3;
+		line-height: $gridlet*5;
+	}
+
+	.select2-result-image {
+		height: $gridlet*20;
+		line-height: $gridlet*16;
+		padding-left: $gridlet*24;
+		position: relative;
+
+		.select2-result-image-thumbnail {
+			position: absolute;
+			top: $gridlet;
+			left: $gridlet*2;
+			width: $gridlet*18;
+			height: $gridlet*18;
+			//background-color: #f5f5f5;
+			background-position: 50% 50%;
+			background-size: contain;
+			background-repeat: no-repeat;
+			//border: 1px solid $light-blue;
+			//border-radius: $gridlet;
+			//box-shadow: inset 0 0 10px rgba(#000, 0.1);
+			float: left;
+		}
+	}
+
+	.select2-searching {
+		padding: $spacer $gridlet*3 $spacer $gridlet*14;
+		background: url('../img/loading.gif') $gridlet*3 50% no-repeat;
+	}
+
+	.select2-result-label {
+		cursor: pointer;
+		@include ellipsis;
+	}
+
+	.select2-highlighted {
+		background: $blue;
+		color: $light-blue;
+	}
+
+	.select2-disabled {
+		display: none;
+	}
+}
+
+.select2-more-results {
+	padding: $spacer $gridlet*3 $spacer $gridlet*14;
+	background: url('../img/loading.gif') $gridlet*3 50% no-repeat;
+}
+
+.select2-search-choice-close {
+	display: block;
+	position: absolute;
+	top: $gridlet;
+	right: $gridlet;
+	// width: $spacer;
+	// height: $spacer;
+	line-height: $gridlet*4;
+	text-align: center;
+	color: $blue;
+	border-radius: $spacer;
+	background: rgba($blue, 0.2);
+	overflow: hidden;
+
+	&:after {
+		content: "x";
+	}
+
+	&:hover {
+		background: $blue;
+		color: $light-blue;
+	}
+}
+
+.select2-result-selectable .select2-match {
+	text-decoration: underline;
+}
+
+.select2-result-unselectable {
+	.select2-result-selectable .select2-match {
+		text-decoration: underline;
+	}
+	.select2-match {
+		text-decoration: none;
+	}
+}
+
+.select2-offscreen {
+	position: absolute;
+	left: -10000px;
+}
+
+// don't display a flash of unstyled select elements
+html.js select {
+	visibility: hidden;
+	display: block;
+	height: 34px;
+}
+
+.api-select {
+	min-height: 50px;
+	margin-left: $spacer*2;
+}
