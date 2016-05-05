@@ -31,7 +31,11 @@
 		{# Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons #}
 
 		{# CSS: implied media="all" #}
-		<!-- <link rel="stylesheet" id="caboose" href="{{ STATIC_URL }}scarlet/legacy/css/admin.css" /> -->
+		<!-- <link rel="stylesheet" id="caboose" href="{{ STATIC_URL }}scarlet/legacy/css/bundle.css" /> -->
+		{% if not settings.TEMPLATE_DEBUG %}
+			<link rel="stylesheet" id="caboose" href="{{ STATIC_URL }}scarlet/legacy/css/bundle.css" />
+		{% endif %}
+
 
 		{# All JavaScript at the bottom, except for Modernizr. #}
 		{# Modernizr enables HTML5 elements & feature detects; For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ #}
