@@ -9,7 +9,6 @@ const Draggable = View.extend({
 
 	render: function () {
 
-	
 		let draggable = this.$el.find('tr[draggable]').parents('tbody')
 
 		draggable.sortable({
@@ -24,15 +23,13 @@ const Draggable = View.extend({
 	},
 
 	getRowWidth: function () {
-		let $last = this.$el.find("td:last-child")
+		let $last = this.$el.find('td:last-child')
 		$last.css('width', $last.outerWidth())
 	},
 
 	setRowWidth: function () {
-		this.$el.find("td:last-child").css('width', 'auto')
+		this.$el.find('td:last-child').css('width', 'auto')
 	}
-
-
 
 })
 

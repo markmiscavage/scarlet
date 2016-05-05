@@ -2,7 +2,7 @@
 import { respond } from '../helpers/WindowPopup'
 import { View } from 'backbone'
 
-const InsertBase = View.extend({
+const Insert = View.extend({
 
 	initialize: function () {
 		this.$dom = this.$el
@@ -16,24 +16,24 @@ const InsertBase = View.extend({
 				height : null
 			}
 		}
-		this.vars.$inputs = this.$dom.find("[data-attribute]")
-		this.vars.$form = this.$dom.find("form")
+		this.vars.$inputs = this.$dom.find('[data-attribute]')
+		this.vars.$form = this.$dom.find('form')
 		this.onSubmit = this.onSubmit.bind(this)
 		this.bindInputs()
 	},
 
 	bindInputs : function () {
-		this.vars.$inputs.on("keypress paste", this.onDelayInput.bind(this))
-		this.vars.$form.on("submit", this.onSubmit)
-		this.vars.$form.find(".cancel").on("click", this.onCancel)
-		this.$dom.find(".constrain").on("change", this.onConstrainChange)
+		this.vars.$inputs.on('keypress paste', this.onDelayInput.bind(this))
+		this.vars.$form.on('submit', this.onSubmit)
+		this.vars.$form.find('.cancel').on('click', this.onCancel)
+		this.$dom.find('.constrain').on('change', this.onConstrainChange)
 	},
 
 	unbindInputs : function () {
 		this.vars.$inputs.off()
 		this.vars.$form.off()
-		this.vars.$form.find(".cancel").off()
-		this.$dom.find(".constrain").off()
+		this.vars.$form.find('.cancel').off()
+		this.$dom.find('.constrain').off()
 	},
 
 	// Helper to delay onInput call on paste
@@ -46,11 +46,11 @@ const InsertBase = View.extend({
 
 	// NOTE: this method must be overwritten by the extending class.
 	onInput : function (e) {
-		throw "You must override the `onInput` method."
+		throw 'You must override the `onInput` method.'
 	},
 
 	// Helper to constrain proportions
-	// given a dimension("width" || "height") and integer value.
+	// given a dimension('width' || 'height') and integer value.
 	constrainProportion : function (dimension, value) {
 
 		value = parseInt(value, 10)
@@ -59,7 +59,7 @@ const InsertBase = View.extend({
 			return
 		}
 
-		let opposite = (dimension === "width") ? "height" : "width"
+		let opposite = (dimension === 'width') ? 'height' : 'width'
 		let oppositeValue = this.vars.size[opposite]
 		let ratio = ((value - this.vars.size[dimension]) / this.vars.size[dimension]) + 1
 
@@ -73,13 +73,13 @@ const InsertBase = View.extend({
 
 	// Helper to set a given attribute
 	setAttribute : function (attr, val) {
-		this.vars.$inputs.filter("[data-attribute=\"" + attr + "\"]").val(val)
+		this.vars.$inputs.filter('[data-attribute=\"' + attr + '\"]').val(val)
 		this.vars.$node.attr(attr, val)
 	},
 
 	// Sets the constrain value to the state of the check-box
 	onConstrainChange : function (e) {
-		this.vars.constrain = !!($(e.currentTarget).is(":checked"))
+		this.vars.constrain = !!($(e.currentTarget).is(':checked'))
 	},
 
 	// Sends data back to the parent window.
@@ -98,4 +98,4 @@ const InsertBase = View.extend({
 })
 
 
-export default InsertBase
+export default Insert

@@ -79,10 +79,9 @@ const App = View.extend({
     })
 
     // DRAGGABLE
-    $("table").each(function (i, dom) {
+    $('table').each(function (i, dom) {
       let draggable = new Draggable({el: dom}).render()
     })
-
 
   },
 
@@ -107,7 +106,6 @@ const App = View.extend({
        let selectAsset = new SelectAsset({el: dom}).render()
       }
     })
-
 
   }
 })

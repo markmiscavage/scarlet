@@ -1,11 +1,11 @@
 'use strict'
-import InsertBase from './InsertBase'
+import Insert from './Insert'
 
-const InsertAudio = InsertBase.extend({
+const InsertAudio = Insert.extend({
 
   bindInputs : function () {
-    InsertBase.prototype.bindInputs.apply(this)
-    this.$dom.find('[data-respond=\"true\"]').on("change", this.onInput.bind(this));
+    Insert.prototype.bindInputs.apply(this)
+    this.$dom.find('[data-respond=\"true\"]').on('change', this.onInput.bind(this))
   },
 
   onInput : function (e) {
@@ -22,10 +22,8 @@ const InsertAudio = InsertBase.extend({
 
   $audio[0].src = value
   $audio[0].load()
-
   this.vars.$node = $audio
   }
-
 
 })
 
