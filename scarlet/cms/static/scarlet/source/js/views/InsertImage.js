@@ -1,10 +1,10 @@
 'use strict'
-import Insert from '../helpers/Insert'
+import InsertBase from './InsertBase'
 
-const InsertImage = Insert.extend({
+const InsertImage = InsertBase.extend({
 
   bindInputs : function () {
-    Insert.prototype.bindInputs.apply(this)
+    InsertBase.prototype.bindInputs.apply(this)
     this.$dom.find('[data-respond=\"true\"]').on("change", this.onInput.bind(this));
   },
 

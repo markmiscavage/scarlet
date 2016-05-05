@@ -1,8 +1,8 @@
 'use strict'
-import { respond } from './WindowPopup'
+import { respond } from '../helpers/WindowPopup'
 import { View } from 'backbone'
 
-const Insert = View.extend({
+const InsertBase = View.extend({
 
 	initialize: function () {
 		this.$dom = this.$el
@@ -98,4 +98,4 @@ const Insert = View.extend({
 })
 
 
-export default Insert
+export default InsertBase

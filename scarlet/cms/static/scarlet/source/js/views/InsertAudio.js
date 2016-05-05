@@ -1,10 +1,10 @@
 'use strict'
-import Insert from '../helpers/Insert'
+import InsertBase from './InsertBase'
 
-const InsertAudio = Insert.extend({
+const InsertAudio = InsertBase.extend({
 
   bindInputs : function () {
-    Insert.prototype.bindInputs.apply(this)
+    InsertBase.prototype.bindInputs.apply(this)
     this.$dom.find('[data-respond=\"true\"]').on("change", this.onInput.bind(this));
   },
 

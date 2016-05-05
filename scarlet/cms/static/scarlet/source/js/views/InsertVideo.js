@@ -1,10 +1,10 @@
 'use strict'
-import Insert from '../helpers/Insert'
+import InsertBase from './InsertBase'
 
-const InsertImage = Insert.extend({
+const InsertImage = InsertBase.extend({
 
   initialize: function () {
-    Insert.prototype.initialize.apply(this)
+    InsertBase.prototype.initialize.apply(this)
     this.vars = Object.assign(this.vars, {
       size : {
         width : 560,

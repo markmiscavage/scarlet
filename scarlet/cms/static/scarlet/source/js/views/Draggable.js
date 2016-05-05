@@ -1,10 +1,15 @@
-class Draggable {
-	constructor(el) {
-		this.$el = $(el)
-		this.init()
-	}
+import { View } from 'backbone'
 
-	init () {
+const Draggable = View.extend({
+
+	events: {
+	  'mousedown td:last-child' : 'getRowWidth',
+	  'mouseup td:last-child'		: 'setRowWidth'
+	},
+
+	render: function () {
+
+	
 		let draggable = this.$el.find('tr[draggable]').parents('tbody')
 
 		draggable.sortable({
@@ -16,7 +21,19 @@ class Draggable {
 				}
 			}
 		})
+	},
+
+	getRowWidth: function () {
+		let $last = this.$el.find("td:last-child")
+		$last.css('width', $last.outerWidth())
+	},
+
+	setRowWidth: function () {
+		this.$el.find("td:last-child").css('width', 'auto')
 	}
-}
+
+
+
+})
 
 export default Draggable
