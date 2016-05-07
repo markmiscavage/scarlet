@@ -1,3 +1,5 @@
+  @import '~jquery-ui/themes/ui-darkness/jquery-ui.css';
+
 .frame__wrapper {
   position: relative;
   padding-bottom: 52%;
@@ -24,4 +26,8 @@
     height: 0;
     overflow: hidden;
   }
+}
+
+.dialog__no-title >  .ui-dialog-titlebar {
+  display: none;
 }

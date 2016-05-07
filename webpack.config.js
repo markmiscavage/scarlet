@@ -81,7 +81,7 @@ function createWebpackLoaders () {
     test: /\.(ogg|mp?4a|mp3)$/,
     loader: 'file'
   }, {
-    test: /\.(jpg|png)$/,
+    test: /\.(woff|png|jpg|gif)$/,
     loader: 'url?limit=8192'
   }, {
     test: /\.json$/,

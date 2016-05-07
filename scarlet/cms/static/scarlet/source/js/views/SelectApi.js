@@ -3,6 +3,7 @@
 import { View } from 'backbone'
 import selectize  from 'selectize'
 import WindowPopup from '../helpers/WindowPopup'
+import ModalDialog from '../helpers/ModalDialog'
 import '../../stylesheets/views/select.scss'
 
 const SelectApi = View.extend({
@@ -155,7 +156,19 @@ const SelectApi = View.extend({
       this.selectize.addOption(item)
       this.selectize.addItem(item.value, false)
     })
-    windowPopup.request()
+    // windowPopup.request()
+
+    let modal = new ModalDialog(url, 'modal-add-'+this.name, false, (data) => {
+      let item = {
+        id: data.id,
+        text: data.text,
+        value: data.text
+      }
+      this.selectize.addOption(item)
+      this.selectize.addItem(item.value, false)
+    })
+    
+    modal.open()
 
     return false
   },
