@@ -3,7 +3,7 @@
 import { View } from 'backbone'
 import selectize  from 'selectize'
 import { clickOpenPopup } from '../helpers/WindowPopup'
-import { clickOpenModal } from '../helpers/ModalDialog'
+import { clickOpenModal } from '../helpers/Modal'
 import '../../stylesheets/views/select.scss'
 
 const SelectAsset = View.extend({

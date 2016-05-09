@@ -1,8 +1,8 @@
 'use strict'
 
-import '../../stylesheets/views/modalDialog.scss'
+import '../../stylesheets/views/modal.scss'
 
-class ModalDialog {
+class Modal {
 
 	/**
 	 * @param  {string} url - url to load
@@ -81,8 +81,9 @@ class ModalDialog {
 	 */
 	resizeDialog (frameBody) {
 		let $content = $(frameBody).find('#content')
-		this.$dialog.dialog( "option", 'height', $content.height() + 100)
-		this.$dialog.dialog( "option", 'width', $content.width() )
+		// this.$dialog.dialog( "option", 'height', $content.height() + 100)
+		// this.$dialog.dialog( "option", 'width', $content.width() )
+		this.$dialog.dialog({height: $content.height() + 100, width: $content.width()})
 	}
 
 }
@@ -121,7 +122,7 @@ function getQueryString ( field ) {
 const clickOpenModal = function (e, cb) {
   e.preventDefault()
   let url = $(e.currentTarget).attr('href')
-  let modal = new ModalDialog(url, 'assetModal', false, function (data) {
+  let modal = new Modal(url, 'assetModal', false, function (data) {
     cb(data)
   })
   modal.open()
@@ -130,5 +131,5 @@ const clickOpenModal = function (e, cb) {
 }
 
 
-export default ModalDialog
+export default Modal
 export { clickOpenModal }
