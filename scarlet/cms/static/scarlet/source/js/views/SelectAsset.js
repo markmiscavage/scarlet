@@ -27,8 +27,8 @@ const SelectAsset = View.extend({
    * Backbone Events Object
    */
   events: {
-    // 'click .button, .crop-link' : function(e){clickOpenPopup(e, this.setSelected.bind(this))}
-    'click .button, .crop-link' : function(e){clickOpenModal(e, this.setSelected.bind(this))}
+    'click .button, .crop-link' : function(e){clickOpenPopup(e, this.setSelected.bind(this))}
+    // 'click .button, .crop-link' : function(e){clickOpenModal(e, this.setSelected.bind(this))}
   },
 
   /**
