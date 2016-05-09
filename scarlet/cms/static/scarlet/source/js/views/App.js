@@ -4,7 +4,7 @@ import AutoSlug from './AutoSlug'
 import BatchActions from './BatchActions'
 import DatePicker from './DatePicker'
 import DateTimePicker from './DateTimePicker'
-import Draggable from './Draggable'
+import Sortable from './Sortable'
 import Filters from './Filters'
 import Formset from './Formset'
 import ImageCropper from './ImageCropper'
@@ -78,9 +78,9 @@ const App = View.extend({
       let dateTimePicker = new DateTimePicker({el: dom}).render()
     })
 
-    // DRAGGABLE
+    // SORTABLE
     $('table').each(function (i, dom) {
-      let draggable = new Draggable({el: dom}).render()
+      let sortable = new Sortable({el: dom}).render()
     })
 
   },

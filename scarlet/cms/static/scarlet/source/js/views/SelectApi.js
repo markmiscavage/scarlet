@@ -147,15 +147,15 @@ const SelectApi = View.extend({
   openPopup : function (input) {
     let options = 'menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=500,width=800'
     let url = this.addUrl + '&addInput=' + input
-    let windowPopup = new WindowPopup(url, this.name, options, (data) => {
-      let item = {
-        id: data.id,
-        text: data.text,
-        value: data.text
-      }
-      this.selectize.addOption(item)
-      this.selectize.addItem(item.value, false)
-    })
+    // let windowPopup = new WindowPopup(url, this.name, options, (data) => {
+    //   let item = {
+    //     id: data.id,
+    //     text: data.text,
+    //     value: data.text
+    //   }
+    //   this.selectize.addOption(item)
+    //   this.selectize.addItem(item.value, false)
+    // })
     // windowPopup.request()
 
     let modal = new ModalDialog(url, 'modal-add-'+this.name, false, (data) => {
@@ -166,9 +166,12 @@ const SelectApi = View.extend({
       }
       this.selectize.addOption(item)
       this.selectize.addItem(item.value, false)
+    },(data) => {
+      this.selectize.unlock()
     })
-    
-    modal.open()
+    console.log('new modal', modal)
+
+    modal.open(input)
 
     return false
   },

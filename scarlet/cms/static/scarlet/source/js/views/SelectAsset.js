@@ -3,6 +3,7 @@
 import { View } from 'backbone'
 import selectize  from 'selectize'
 import { clickOpenPopup } from '../helpers/WindowPopup'
+import { clickOpenModal } from '../helpers/ModalDialog'
 import '../../stylesheets/views/select.scss'
 
 const SelectAsset = View.extend({
@@ -26,7 +27,8 @@ const SelectAsset = View.extend({
    * Backbone Events Object
    */
   events: {
-    'click .button, .crop-link' : function(e){clickOpenPopup(e, this.setSelected.bind(this))}
+    // 'click .button, .crop-link' : function(e){clickOpenPopup(e, this.setSelected.bind(this))}
+    'click .button, .crop-link' : function(e){clickOpenModal(e, this.setSelected.bind(this))}
   },
 
   /**
