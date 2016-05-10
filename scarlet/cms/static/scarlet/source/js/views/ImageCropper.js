@@ -7,6 +7,7 @@ import '../../stylesheets/views/crops.scss'
 const ImageCropper = View.extend({
 
   initialize: function () {
+    this.cropCoords = {}
     this.options = {
       aspectRatio: 0
     }
@@ -33,8 +34,8 @@ const ImageCropper = View.extend({
   setupJcrop: function () {
     var self = this
     var options = $.extend({}, this.options, {
-      onSelect : this.updatePreview.bind(this),
-      onChange : this.updatePreview.bind(this),
+      onSelect : this.updateCropArea.bind(this),
+      onChange : this.updateCropArea.bind(this),
       aspectRatio : (this.constrainRatio ? (this.cropScale.w / this.cropScale.h) : 0),
       allowSelect : (this.constrainRatio ? true : false),
       boxWidth : (this.$el.width() * 0.75),
@@ -65,8 +66,6 @@ const ImageCropper = View.extend({
 
   // set initial croparea from (x,y,x2,y2) field values
   setInitialCroparea : function () {
-    this.cropCoords = this.cropCoords || {}
-
     this.loopCoordProps(function (prop) {
       var $coord = $('input[data-property="' + prop + '"]')
 
@@ -84,9 +83,10 @@ const ImageCropper = View.extend({
     this.loopCoordProps(function (prop) {
       var $coord = $('input[data-property="' + prop + '"]')
 
+      console.log('updateCoords', prop)
       if ($coord.length) {
-        console.log('updateCoords', prop, this.cropCoords[prop])
-        $coord.attr('value', this.cropCoords[prop]) // sync field val
+        // sync field val
+        $coord.attr('value', this.cropCoords[prop])
       }
     })
   },
@@ -118,14 +118,12 @@ const ImageCropper = View.extend({
     }
   },
 
-  updatePreview : function (coords) {
+  updateCropArea : function (coords) {
     clearTimeout(this.refreshTimeout)
 
     if (parseInt(coords.w, 10) < 0) {
       return
     }
-
-    this.cropCoords = coords
 
     var scale = this.getScale(),
       width,
@@ -169,8 +167,19 @@ const ImageCropper = View.extend({
       marginTop: '-' + Math.round(scale.scaleY * coords.y) + 'px'
     })
 
+    this.setCropCoords(coords)
+
     // debounce update of coord values (form fields) after interaction
     this.refreshTimeout = setTimeout(this.updateCoords.bind(this), 250)
+  },
+
+  setCropCoords: function (coords) {
+    this.cropCoords = Object.assign({}, coords, {
+      x: Math.round(coords.x),
+      y: Math.round(coords.y),
+      x2: Math.round(coords.x2),
+      y2: Math.round(coords.y2)
+    })
   },
 
   setConstraints: function () {
