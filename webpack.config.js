@@ -57,6 +57,7 @@ module.exports = {
   },
 
   resolve: {
+    modulesDirectories: ['scarlet/cms/static/scarlet/source/js', 'node_modules'],
     alias: {
       'jquery.ui': 'jquery-ui/jquery-ui',
       'imagesready': 'imagesready/dist/jquery-imagesready',

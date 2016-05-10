@@ -1,7 +1,7 @@
 import { sortable } from 'jquery-ui/sortable'
 import { View } from 'backbone'
-import { clickOpenPopup } from '../helpers/WindowPopup'
-import pubsub from '../helpers/pubsub'
+import { clickOpenPopup } from 'helpers/WindowPopup'
+import pubsub from 'helpers/pubsub'
 
 const Formset = View.extend({
   el: '.widget-formset',

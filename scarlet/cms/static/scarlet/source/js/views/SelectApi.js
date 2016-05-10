@@ -2,7 +2,7 @@
 
 import { View } from 'backbone'
 import selectize  from 'selectize'
-import WindowPopup from '../helpers/WindowPopup'
+import WindowPopup from 'helpers/WindowPopup'
 import '../../stylesheets/views/select.scss'
 
 const SelectApi = View.extend({
