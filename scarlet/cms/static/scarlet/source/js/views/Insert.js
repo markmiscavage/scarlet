@@ -1,5 +1,5 @@
 'use strict'
-import { respond } from '../helpers/WindowPopup'
+import { respond } from 'helpers/WindowPopup'
 import { View } from 'backbone'
 
 const Insert = View.extend({

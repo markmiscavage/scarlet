@@ -2,7 +2,7 @@
 
 import { View } from 'backbone'
 import selectize  from 'selectize'
-import { clickOpenPopup } from '../helpers/WindowPopup'
+import { clickOpenPopup } from 'helpers/WindowPopup'
 import '../../stylesheets/views/select.scss'
 
 const SelectAsset = View.extend({
