@@ -87,9 +87,10 @@
 			{% for action_link in action_links %}
 				{% bundle_url bundle action_link.0 object=row.instance follow_parent=False as url %}
 				{% if url %}
-					<a href="{{ url }}{% if action_link.3 %}?{{ origin_var }}={{ origin_qs|urlencode }}{% endif %}" class="{{ action_link.1|lower }}"  title="{{ action_link.1 }}">{{ action_link.2 }}</a>
+					<a href="{{ url }}{% if action_link.3 %}?{{ origin_var }}={{ origin_qs|urlencode }}{% endif %}" class="{{ action_link.1|lower }} icon-{{ action_link.1|lower }}-{{ action_link.2|lower }}"  title="{{ action_link.1 }}"></a>
 				{% elif action_link.0 == "preview" and row.instance.get_absolute_url %}
-					<a href="{{ row.instance.get_absolute_url }}" class="prewview" title="Preview" target="_blank">p</a>
+					<a href="{{ row.instance.get_absolute_url }}" class="preview icon-preview-p" title="Preview" target="_blank">
+					</a>
 				{% endif %}
 			{% endfor %}
 
