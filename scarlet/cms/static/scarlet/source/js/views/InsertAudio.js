@@ -1,5 +1,5 @@
 'use strict'
-import Insert from './Insert'
+import Insert from 'views/Insert'
 
 const InsertAudio = Insert.extend({
 
