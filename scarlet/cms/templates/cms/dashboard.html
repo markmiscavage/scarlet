@@ -26,7 +26,9 @@
 	<tbody>
 	{% for obj in page.object_list %}
 	<tr>
-		<td class="actions">{% if obj.url %}<a href="{{ obj.url }}" title="Edit">e</a>{% endif %}</td>
+		<td class="actions">{% if obj.url %}<a href="{{ obj.url }}" title="Edit">
+			<i class="fa fa-pencil" aria-hidden="true"></i>
+		</a>{% endif %}</td>
 		<td>{{ obj.when|date:"m/d/Y P" }}</td>
 		<td>{{ obj.model_repr }}</td>
 		<td>{{ obj.object_repr }} ({{ obj.get_action_display }})</td>
@@ -40,13 +42,17 @@
 	<div class="pagination">
 		<span class="page-links">
 			{% if page.has_previous %}
-				<a href="?page={{ page.previous_page_number }}#main" title="Previous">w</a>
+				<a href="?page={{ page.previous_page_number }}#main" title="Previous">
+					<i class="fa fa-chevron-left" aria-hidden="true"></i>
+				</a>
 			{% endif %}
 			<span class="page-current">
 				Page {{ page.number }} of {{ page.paginator.num_pages }}
 			</span>
 			{% if page.has_next %}
-				<a href="?page={{ page.next_page_number }}#main" title="Next">e</a>
+				<a href="?page={{ page.next_page_number }}#main" title="Next">
+					<i class="fa fa-chevron-right" aria-hidden="true"></i>
+				</a>
 			{% endif %}
 		</span>
 	</div>

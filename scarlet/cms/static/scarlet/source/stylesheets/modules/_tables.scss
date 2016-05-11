@@ -68,20 +68,20 @@ table {
 						&:after {
 							color: $dark-blue;
 							display: block;
-							font: 10px/1 CompassArrows;
+							font: normal 16px/18px FontAwesome;							
 							text-transform: none;
 							position: absolute;
 							right: -$gridlet*6;
 						}
 
 						&:before {
-							content: "n";
+							content: "\f0dc";
 							top: $gridlet/2;
 						}
-						&:after {
-							content: "s";
-							bottom: $gridlet/2;
-						}
+						// &:after {
+						// 	content: "s";
+						// 	bottom: $gridlet/2;
+						// }
 
 						&.asc:after,
 						&.desc:before {
@@ -157,14 +157,33 @@ table {
 					text-align: center;
 					white-space: nowrap;
 					width: $spacer;
-
-					a {
+					a {	
 						color: $blue;
-						font: 16px/1 AdminActions;
+						font: 14px/1 FontAwesome;
+						margin-bottom: 2px;
 						margin: 0 $gridlet*2;
-
 						&:hover {
 							color: $dark-blue;
+						}
+						&.icon-edit-e:before {
+							visibility: visible;
+							content: "\f040";
+						}
+						&.icon-delete-d:before {
+							visibility: visible;
+							content: "\f1f8";
+						}
+						&.icon-publish-p:before {
+							visibility: visible;
+							content: "\f073";
+						}
+						&.icon-preview-p:before {
+							visibility: visible;
+							content: "\F017";
+						}
+						&.icon-password-k:before {
+							visibility: visible;
+
 						}
 					}
 

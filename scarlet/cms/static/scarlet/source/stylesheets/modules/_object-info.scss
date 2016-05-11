@@ -21,8 +21,8 @@ section#object-info {
 		padding-bottom: $gridlet*2;
 
 		&:before {
-			content: "w";
-			font: 14px/1 CompassArrows;
+			content: "\f053";
+			font: normal 12px/24px FontAwesome;
 			padding-right: $gridlet*2;
 		}
 
@@ -49,8 +49,8 @@ section#object-info {
 
 			&:before {
 				color: $light-blue;
-				content: "s";
-				font: 12px/24px CompassArrows;
+				content: "\f078";
+				font: normal 12px/24px FontAwesome;
 				padding-left: $gridlet*2;
 			}
 

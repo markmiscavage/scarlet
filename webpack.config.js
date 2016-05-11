@@ -32,8 +32,8 @@ const WEBPACK_ENV = {
 module.exports = {
   debug: !ENV_IS_PRODUCTION,
   devtool: defineWebpackDevtool(),
-
   entry: [
+      'font-awesome-sass!./webpack-font-awesome-sass.config.js',
       'babel-polyfill',
       'eventsource-polyfill',
       'webpack-hot-middleware/client?path=http://localhost:3000/__webpack_hmr',
@@ -79,12 +79,15 @@ function createWebpackLoaders () {
     exclude: /node_modules|bower_components/,
     include: CONFIG.src
   }, {
-    test: /\.(ogg|mp?4a|mp3)$/,
+    test: /\.(ogg|mp?4a|mp3|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
     loader: 'file'
   }, {
     test: /\.(woff|png|jpg|gif)$/,
     loader: 'url?limit=8192'
-  }, {
+  }, { 
+    test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, 
+    loader: 'url?limit=10000&mimetype=application/font-woff' 
+  }, { 
     test: /\.json$/,
     loader: 'json'
   },
