@@ -93,8 +93,8 @@ nav[role='navbar'] {
 
 			&:after {
 				color: $blue;
-				content: "s";
-				font: 12px/1 CompassArrows;
+				content: "\f078";
+				font: normal 12px/24px FontAwesome;
 				padding-left: $gridlet*2;
 			}
 

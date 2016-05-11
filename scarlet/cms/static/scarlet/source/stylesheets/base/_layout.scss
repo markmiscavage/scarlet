@@ -703,8 +703,8 @@ section#main {
 
 				i:after {
 					color: $blue;
-					content: "s";
-					font: 12px/1 CompassArrows;
+					content: "\f078";
+					font: normal 12px/24px FontAwesome;
 					padding-left: $gridlet*2;
 				}
 			}
@@ -741,8 +741,7 @@ section#main {
 			text-align: right;
 
 			a {
-				font: 14px/1 CompassArrows;
-			}
+				font: normal 12px/24px FontAwesome;			}
 		}
 	}
 }
