@@ -2,21 +2,12 @@
 
 import { View } from 'backbone'
 import selectize  from 'selectize'
+import { clickOpenModal } from 'helpers/Modal'
 import { clickOpenPopup } from 'helpers/WindowPopup'
 import '../../stylesheets/views/select.scss'
 
 const SelectAsset = View.extend({
 
-  /**
-   * Backbone Events Object
-   */
-  events: {
-    'click .button, .crop-link' : 'handlePopup'
-  },
-
-  /**
-   * Backbone View Constructor
-   */
   initialize: function () {
     this.$input = this.$('input')
     this.$preview = this.$('.widget-asset-preview')
@@ -24,6 +15,13 @@ const SelectAsset = View.extend({
     this.$selectizeInput = this.$input.after('<input />')
     this.baseLink = this.$cropsList.data('base-link')
     this.url = this.$el.data('api')
+  },
+  
+  /**
+   * Backbone Events Object
+   */
+  events: {
+    'click .button, .crop-link' : 'handlePopup'
   },
 
   /**
@@ -244,7 +242,8 @@ const SelectAsset = View.extend({
   },
 
   handlePopup: function (e) {
-    clickOpenPopup(e, this.setSelected.bind(this))
+    // clickOpenPopup(e, this.setSelected.bind(this))
+    clickOpenModal(e, this.setSelected.bind(this))
   }
 })
 

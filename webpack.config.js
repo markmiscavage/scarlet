@@ -82,7 +82,7 @@ function createWebpackLoaders () {
     test: /\.(ogg|mp?4a|mp3|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
     loader: 'file'
   }, {
-    test: /\.(jpg|png)$/,
+    test: /\.(woff|png|jpg|gif)$/,
     loader: 'url?limit=8192'
   }, { 
     test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, 

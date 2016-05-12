@@ -2,6 +2,7 @@
 
 import { View } from 'backbone'
 import selectize  from 'selectize'
+import Modal from 'helpers/Modal'
 import WindowPopup from 'helpers/WindowPopup'
 import '../../stylesheets/views/select.scss'
 
@@ -144,9 +145,21 @@ const SelectApi = View.extend({
    * @param  {object} event object  
    */
   openPopup : function (input) {
-    let options = 'menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=500,width=800'
+    // let options = 'menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=500,width=800'
     let url = this.addUrl + '&addInput=' + input
-    let windowPopup = new WindowPopup(url, this.name, options, (data) => {
+    // let windowPopup = new WindowPopup(url, this.name, options, (data) => {
+    //   let item = {
+    //     id: data.id,
+    //     text: data.text,
+    //     value: data.text
+    //   }
+    //   this.selectize.addOption(item)
+    //   this.selectize.addItem(item.value, false)
+    // })
+    // windowPopup.request()
+
+    // TODO(JM) use case for Modal
+    let modal = new Modal(url, 'modal-add-'+this.name, false, (data) => {
       let item = {
         id: data.id,
         text: data.text,
@@ -154,8 +167,11 @@ const SelectApi = View.extend({
       }
       this.selectize.addOption(item)
       this.selectize.addItem(item.value, false)
+    },(data) => {
+      this.selectize.unlock()
     })
-    windowPopup.request()
+
+    modal.open(input)
 
     return false
   },

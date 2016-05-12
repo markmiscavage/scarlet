@@ -1,6 +1,6 @@
 import { View } from 'backbone'
 
-const Draggable = View.extend({
+const Sortable = View.extend({
 
 	events: {
 	  'mousedown td:last-child' : 'getRowWidth',
@@ -33,4 +33,4 @@ const Draggable = View.extend({
 
 })
 
-export default Draggable
+export default Sortable
