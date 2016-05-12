@@ -1,7 +1,7 @@
 'use strict'
 import { respond } from 'helpers/WindowPopup'
 import { View } from 'backbone'
-
+ 
 const Insert = View.extend({
 
 	initialize: function () {
@@ -10,7 +10,7 @@ const Insert = View.extend({
 			$inputs : null,
 			$form : null,
 			$node : false,
-			constrain : false,
+			constrain : true,
 			size : {
 				width : null,
 				height : null
@@ -19,6 +19,7 @@ const Insert = View.extend({
 		this.vars.$inputs = this.$dom.find('[data-attribute]')
 		this.vars.$form = this.$dom.find('form')
 		this.onSubmit = this.onSubmit.bind(this)
+		this.$dom.find('.constrain').attr('checked', true)
 		this.bindInputs()
 	},
 
@@ -26,7 +27,7 @@ const Insert = View.extend({
 		this.vars.$inputs.on('keypress paste', this.onDelayInput.bind(this))
 		this.vars.$form.on('submit', this.onSubmit)
 		this.vars.$form.find('.cancel').on('click', this.onCancel)
-		this.$dom.find('.constrain').on('change', this.onConstrainChange)
+		this.$dom.find('.constrain').on('change', this.onConstrainChange.bind(this))
 	},
 
 	unbindInputs : function () {
@@ -68,7 +69,7 @@ const Insert = View.extend({
 
 		// Updates the proportion attribute.
 		this.setAttribute(opposite, this.vars.size[opposite])
-		console.log(this.setAttribute(opposite, this.vars.size[opposite]))
+		this.setAttribute(opposite, this.vars.size[opposite])
 
 	},
 
