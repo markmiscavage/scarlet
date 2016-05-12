@@ -1,0 +1,756 @@
+/*
+File: admin.scss
+Outputs: admin.css
+
+Project: RED
+
+Description:
+	Admin page styles
+
+Requires:
+	- Sass
+	- Compass
+
+*/
+@import '../placeholders/placeholders';
+
+section#main {
+	clear: both;
+
+	nav[role='sidebar'] + article {
+		margin-left: 340px;
+	}
+
+	.messagelist {
+		padding: 0 0 0 5px;
+		font-weight: bold;
+
+		.info,
+		.success {
+			color: #008000;
+		}
+
+		.warning {
+			color: #BD8F00;
+		}
+
+		.error {
+			color: #ff0000;
+		}
+	}
+
+	.object-name {
+		font-weight: bold;
+		margin-bottom: 5px;
+
+		em {
+			font-style: italic;
+		}
+	}
+
+	a.button {
+		@include button;
+
+		& + &,
+		& + input[type='submit'] {
+			margin-left: $spacer;
+		}
+	}
+
+	.link-cell {
+		cursor: pointer;
+	}
+
+	.actions-toolbar {
+		background: #C9C9C9;
+		background: rgba(184, 184, 184, 0.5);
+		padding: 5px;
+		margin-bottom: 10px;
+
+		.button {
+			@include transition(background-color 100ms);
+			background: #ebebeb;
+		}
+
+		.batch-action {
+			margin-right: 7px;
+
+			&.disabled {
+				cursor: default;
+				color: #b1b1b1;
+				background: #d5d5d5;
+				border-color: #b1b1b1;
+			}
+		}
+
+		.add {
+			display: inline-block;
+			margin-right: 30px;
+			padding-right: 5px;
+			position: relative;
+
+			&:after {
+				content: "";
+				right: -17px;
+				width: 1px;
+				height: 29px;
+				position: absolute;
+				top: 0px;
+				background: #858585;
+			}
+		}
+
+		.submit-row {
+			display: inline-block;
+			border-left: 1px solid #858585;
+			margin: 0 0 0 12px;
+			padding: 0 0 0 12px;
+
+			a,
+			input,
+			.button {
+				margin: 0 10px 0 0
+			}
+
+			input {
+				font-weight: bold;
+			}
+		}
+
+		&.hidden {
+
+			.add:after {
+				display: none;
+			}
+		}
+	}
+
+	article {
+		// @include border-radius($gridlet*2);
+		border: 1px solid $light-blue;
+		background-color: #fff;
+		padding: $spacer $spacer*2;
+		position: relative;
+
+		&#modal,
+		&.list {
+			border: none;
+			background: transparent;
+			margin-left: 0;
+			padding: 0;
+		}
+
+		h3 {
+			border-bottom: 1px dotted $dark-blue;
+			color: $dark-blue;
+			display: block;
+			font: 21px/36px AvenirLight;
+			text-transform: uppercase;
+			margin-bottom: $spacer;
+		}
+
+		h3 + h3,
+		h4 {
+			border-bottom: 1px dotted $dark-blue;
+			color: $dark-blue;
+			display: block;
+			font: 21px/36px AvenirLight;
+			text-transform: uppercase;
+			margin-bottom: $spacer;
+			// margin-left: $spacer*2;
+		}
+
+		hr {
+			border-bottom: 1px solid $red;
+		}
+
+		p {
+			display: inline-block;
+			margin: 0 $spacer $spacer 0;
+
+			a {
+				&.button {
+					margin-left: 10px;
+				}
+			}
+
+			a:first-child {
+				&.button {
+					margin-left: 0;
+				}
+			}
+		}
+
+		ol {
+			li {
+				list-style: decimal;
+			}
+		}
+
+		dl {
+			margin: 8px 0;
+
+			dd {
+				margin-top: 8px;
+			}
+		}
+
+		form {
+			color: $blue;
+			font: 18px/1 AvenirRoman;
+
+			fieldset {
+				border: 0;
+				margin: 0;
+				padding: 0;
+				margin-bottom: $spacer;
+				// padding: 0 0 $gridlet*5 $gridlet*8;
+
+				& + fieldset {
+					margin-top: -$spacer;
+				}
+
+				legend {
+					margin-bottom: $gridlet*5;
+					border-bottom: 1px dotted $dark-blue;
+					color: $dark-blue;
+					display: block;
+					font: 21px/36px AvenirLight;
+					text-transform: uppercase;
+					width: 100%;
+				}
+
+				p {
+					text-align: left;
+					margin-left: $spacer*2;
+					clear: both;
+				}
+			}
+
+			p {
+				display: block;
+				position: relative;
+			}
+
+			em {
+				font: 14px/1 AvenirLight;
+			}
+
+			label,
+			input,
+			textarea,
+			.widget-asset,
+			.select2-container,
+			.select2-container-multi {
+				margin-bottom: $spacer;
+			}
+
+			input,
+			textarea {
+				// @include border-radius($gridlet);
+				border: 1px solid rgba($blue, 0.5);
+				color: $blue;
+				font: 16px/1 AvenirRoman;
+				padding: $gridlet*2 $gridlet*3;
+				outline: 0;
+				width: 100%;
+				background: #fff;
+			}
+
+			label {
+				color: $dark-blue;
+				display: inline-block;
+				font: 18px/1 AvenirRoman;
+				margin-right: $gridlet*2;
+
+				&.required {
+					padding-left: 15px;
+					position: relative;
+
+					&:before {
+						content: "*";
+						position: absolute;
+						left: 0;
+						top: 2px;
+						font-weight: bold;
+					}
+				}
+			}
+
+			input[type='checkbox'],
+			input[type='radio'] {
+				margin-bottom: 0;
+				width: auto;
+			}
+
+			input[type='submit'] {
+				@include button;
+
+				vertical-align: top;
+
+				&.big {
+					@include big-button;
+				}
+			}
+		}
+
+		input.date,
+		input.datetime {
+			background-repeat: no-repeat;
+			background-position: 95% 6px;
+			width: auto;
+
+			&.date {
+				// visibility: hidden;
+				background-image: url('../../img/icon-date.png');
+			}
+
+			&.datetime {
+				background-image: url('../../img/icon-datetime.png');
+				padding-right: 40px;
+			}
+		}
+
+		.datetime {
+
+			label:last-of-type {
+				margin-left: 20px;
+			}
+		}
+
+		.widget-asset {
+			@include clearfix;
+			// height: $gridlet*20;
+			margin-left: $spacer*2;
+			position: relative;
+
+			.widget-asset-preview {
+				width: $gridlet*20;
+				height: $gridlet*20;
+				background-color: #eee;
+				background-position: 50% 50%;
+				background-size: contain;
+				background-repeat: no-repeat;
+				border: 1px solid $light-blue;
+				border-radius: $gridlet;
+				box-shadow: inset 0 0 10px rgba(#000, 0.1);
+				float: left;
+			}
+
+			.widget-asset-actions {
+				margin-left: $gridlet*22;
+				max-width: $gridlet*100;
+			}
+
+			.select2-container {
+				margin-bottom: $gridlet*2;
+			}
+
+			.crops-list {
+				padding-left: 0;
+
+				li {
+					margin-bottom: 10px;
+				}
+
+				.name,
+				.size {
+					display: inline-block;
+					width: 105px;
+				}
+
+				.size {
+					width: 115px;
+				}
+
+				.crop-link {
+					position: static;
+					font-size: 12px;
+					margin-left: 6px;
+
+					&:before {
+						display: none;
+					}
+				}
+			}
+
+			.button {
+				@include button;
+				position: absolute;
+				left: 410px;
+				top: 2px;
+
+				&:before {
+					content: "";
+					border-left: 2px solid #747474;
+					position: absolute;
+					height: 100%;
+					left: -25px;
+					top: 0;
+				}
+			}
+
+			input {
+				display: none;
+			}
+		}
+
+		.widget-asset-simple {
+			@include clearfix;
+
+			input {
+				margin-top: 5px;
+				width: auto;
+			}
+		}
+
+		.widget-asset-simple-preview {
+			width: $gridlet*22;
+			height: $gridlet*22;
+			background-color: #eee;
+			background-position: 50% 50%;
+			background-size: contain;
+			background-repeat: no-repeat;
+			border: 1px solid $light-blue;
+			border-radius: $gridlet;
+			box-shadow: inset 0 0 10px rgba(#000, 0.1);
+			float: left;
+			margin-right: 10px;
+		}
+
+		.widget-formset {
+			margin: 0 12px 0 24px;
+
+			.button {
+				@include button;
+
+				&.add-button {
+					font: 18px/1 AvenirBlack;
+				}
+			}
+
+			.draggable {
+				cursor: move;
+			}
+		}
+
+		.widget-formset-forms {
+			margin-bottom: $spacer;
+		}
+
+		.widget-formset-form {
+			padding: $spacer $spacer*8 $spacer $spacer*2;
+			margin: 0;
+			position: relative;
+			background: rgba(#fff, 0.5);
+			border: 1px solid $gray;
+
+			+ .widget-formset-form {
+				margin-top: -1px;
+			}
+
+			&.odd {
+				background-color: rgba($gray, 0.5);
+			}
+
+			&.was-deleted {
+				display: none;
+			}
+
+			.api-select {
+				margin-left: 0;
+			}
+
+			.widget-formset-delete {
+				@include button;
+				position: absolute;
+				top: $spacer;
+				right: $spacer;
+				font: 18px/1 AvenirBlack;
+
+				b {
+					font-weight: normal;
+				}
+
+				input {
+					display: none;
+				}
+			}
+
+			.widget-formset-order {
+				display: none;
+			}
+		}
+
+		.widget-formset-title {
+			color: #11232E;
+			margin: 0 12px 12px 24px;
+		}
+
+		.widget-formset-controls {
+			@extend %select-box;
+			margin: 0 12px 12px 24px;
+
+			.select-arrow {
+				@extend %select-arrow;
+			}
+
+			.select-label {
+				display: none;
+				position: relative;
+				padding: 7px;
+			}
+
+			ul {
+				background: #fff;
+				box-sizing: content-box;
+				width: 100%;
+				margin: 0;
+				padding: 0;
+			}
+
+			li {
+				cursor: pointer;
+				padding: 10px;
+
+				&:only-child  {
+					background: #B6CAD1;
+				}
+
+				&:before {
+					content: '+ Add ';
+				}
+
+				&:hover {
+					background: #314B5D;
+					color: #B6CAD1;
+				}
+
+			}
+
+			&.dropdown {
+
+				.select-label {
+					display: block;
+				}
+
+				ul {
+					position: absolute;
+					top: 10px;
+					left: -1px;
+					margin: 1em 0;
+					padding: 4px 0 0;
+				}
+
+				li {
+
+					&:before {
+						display: none;
+					}
+				}
+			}
+
+			&.show {
+				overflow: visible;
+				border-bottom: none;
+				z-index: 1;
+
+				ul {
+					border: 1px solid rgba(49, 75, 93, 0.5);
+					border-width: 0 1px 1px 1px;
+					border-radius: 3px;
+					box-shadow: 1px 4px 5px rgba(49, 75, 93, 0.25);
+				}
+			}
+		}
+
+		.widget-wysiwyg {
+			margin-left: 24px;
+		}
+
+		.api-select {
+			// position: relative;
+			// margin-left: $spacer*2;
+
+			&.has-add-button {
+				padding-right: 40px;
+			}
+
+			.add-button {
+				position: absolute;
+				top: 0;
+				right: 0;
+			}
+
+			.toggle {
+				position: absolute;
+				top: -35px;
+				height: 30px;
+				right: 0;
+
+				.toggle-button {
+					float: right;
+					line-height: 28px;
+					padding: 0 10px;
+					background: #fff;
+					border: 1px solid $gray;
+					color: $gray;
+					cursor: pointer;
+
+					+ .toggle-button {
+						border-right: 0;
+					}
+
+					&.active {
+						border-color: rgba($blue, 0.5);
+						background: $light-blue;
+						color: $blue;
+					}
+
+					&.last {
+						border-radius: $gridlet 0 0 $gridlet;
+					}
+
+					&.first {
+						border-radius: 0 $gridlet $gridlet 0;
+					}
+				}
+			}
+		}
+
+		.error-field {
+			margin: 0 0 0 24px;
+		}
+
+		.errorlist {
+			color: #ff0000;
+			margin: -7px 0 1em 24px;
+			padding: 0;
+			position: relative;
+		}
+
+		.submit-row {
+			text-align: right;
+
+			.button {
+				margin-top: 8px;
+			}
+		}
+
+		.checkbox {
+			margin-bottom: $spacer * 3;
+
+			label {
+				position: absolute;
+				left: $gridlet*7;
+			}
+
+			.help {
+				position: absolute;
+				top: 25px;
+				left: 21px;
+			}
+		}
+
+		.date {
+
+			label {
+				display: block;
+			}
+		}
+
+		.filters {
+			position: absolute;
+			right: 0;
+			top: 0;
+			summary {
+				&[open], &.open {
+					z-index: 1;
+				}
+			}
+		}
+
+    .filter-clear {
+      margin-right: 20px;
+      color: $red;
+    }
+
+		.filter-control {
+			@include user-select(none);
+			text-align: right;
+			display: block;
+			position: relative;
+			z-index: 2;
+
+			summary {
+				color: $blue;
+				cursor: pointer;
+				display: inline-block;
+				font: 16px/1 AvenirRoman;
+				outline: none;
+				padding: $spacer;
+
+				&:hover {
+					background-color: $dark-blue;
+					color: #fff;
+				}
+
+
+				&:after,
+				&::-webkit-details-marker {
+					display: none;
+				}
+
+				i:after {
+					color: $blue;
+					content: "\f078";
+					font: normal 12px/24px FontAwesome;
+					padding-left: $gridlet*2;
+				}
+			}
+
+			form {
+				display: none;
+			}
+
+			&[open], &.open {
+
+				summary {
+					background-color: $dark-blue;
+					color: #fff;
+				}
+
+				form {
+					border: 1px solid $light-blue;
+					background-color: #fff;
+					display: block;
+					padding: $spacer $spacer*2;
+					position: absolute;
+					right: 0;
+					text-align: left;
+
+					[type='submiinputt'] {
+						margin-bottom: 0;
+					}
+				}
+			}
+		}
+
+		div.pagination {
+			font: 14px/1 AvenirMedium;
+			text-align: right;
+
+			a {
+				font: normal 12px/24px FontAwesome;			}
+		}
+	}
+}
+
+
+// details/summary shiv
+details, summary {display: block;}
+details.closed > * {display: none;}
+details.closed > summary {display: block;}
+details.open   > summary {display: block;}
+//details.closed > summary:before {display: inline-block; content: "\25b6"; padding: 0 0.1em; margin-right: 0.4em; font-size: 0.9em;}
+//details.open   > summary:before {display: inline-block; content: "\25bc"; padding: 0; margin-right: 0.35em;}

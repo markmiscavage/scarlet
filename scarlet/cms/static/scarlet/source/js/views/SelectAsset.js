@@ -2,38 +2,35 @@
 
 import { View } from 'backbone'
 import selectize  from 'selectize'
-import { clickOpenPopup } from '../helpers/WindowPopup'
+import { clickOpenPopup } from 'helpers/WindowPopup'
 import '../../stylesheets/views/select.scss'
 
 const SelectAsset = View.extend({
 
   /**
-   * Backbone View Constructor
-   */
-  initialize: function () {
-    this.input = this.$el.find('input')
-    this.preview = this.$el.find('.widget-asset-preview')
-    this.url = this.$el.data('api')
-    this.addUrl = this.$el
-    this.cropsList = this.$el.find('.crops-list')
-    this.baseLink = this.cropsList.data('base-link')
-    this.selectizeInput = this.input.after('<input />')
-    this.autoTag()
-    this.linkifyCrops()
-  },
-
-  /**
    * Backbone Events Object
    */
   events: {
-    'click .button, .crop-link' : function(e){clickOpenPopup(e, this.setSelected.bind(this));}
+    'click .button, .crop-link' : 'handlePopup'
+  },
+
+  /**
+   * Backbone View Constructor
+   */
+  initialize: function () {
+    this.$input = this.$('input')
+    this.$preview = this.$('.widget-asset-preview')
+    this.$cropsList = this.$('.crops-list')
+    this.$selectizeInput = this.$input.after('<input />')
+    this.baseLink = this.$cropsList.data('base-link')
+    this.url = this.$el.data('api')
   },
 
   /**
    * Render View
    */
   render: function() {
-    let opts = {
+    let options = {
       placeholder: 'Choose an asset',
       valueField: 'id',
       labelField: 'text',
@@ -44,10 +41,13 @@ const SelectAsset = View.extend({
       maxItems: 1,
       render: this.renderOption(),
       onItemAdd: this.onSelect.bind(this),
-      onInitialize: this.initSelections.bind(this)
+      onInitialize: this.initSelections.bind(this),
+      onChange: this.onChange.bind(this)
     }
-    this.selectizeInput.selectize(opts).setValue
+    this.$selectizeInput.selectize(options).setValue
     this.tag()
+    this.autoTag()
+    this.linkifyCrops()
   },
 
   /**
@@ -75,28 +75,23 @@ const SelectAsset = View.extend({
    * Set selections based on server rendered data
    */
   initSelections: function () {
-    this.selectize = this.selectizeInput[0].selectize
-    let thumb = window.location.origin + this.preview.css('background-image')
-    let opt = {
+    this.selectize = this.$selectizeInput[0].selectize
+    let thumb = this.$preview.data('src')
+    let options = this.options = {
       id: this.selectize.$input.val(),
       user_filename: this.$el.attr('data-title'),
       thumbnail: thumb,
       text: this.$el.attr('data-title')
     }
-    this.selectize.removeOption(opt.id)
-    this.setSelected(opt)
-  },
 
-  // Set Selected Image
-  setSelected: function (item) {
-    this.selectize.addOption(item)
-    this.selectize.setValue(item.id)
+    this.selectize.removeOption(options.id)
+    this.setSelected(options)
   },
 
   /**
    * Trasnform Response Data
    * @param  {object}
-   * @return {object} 
+   * @return {object}
    */
   transformResults: function (response) {
     this.fields = []
@@ -118,9 +113,18 @@ const SelectAsset = View.extend({
    * @param  {object}
    */
   onSelect: function (value, $item) {
-    this.preview.css('background-image', 'url(' + $item.attr('data-thumb') + ')')
+    this.linkifyCrops()
+    this.$preview.css('background-image', 'url(' + $item.attr('data-thumb') + ')')
     if($item.attr('data-src')){
-      this.input.attr('data-src', $item.attr('data-src'))
+      this.$input.attr('data-src', $item.attr('data-src'))
+    }
+  },
+
+  onChange: function () {
+    this.linkifyCrops()
+
+    if (!this.$input.val()) {
+      this.$preview.css('background-image', 'none')
     }
   },
 
@@ -131,48 +135,43 @@ const SelectAsset = View.extend({
   renderOption: function () {
     return {
       item: (item, escape) => {
-        return '<div class="item" data-thumb="' +  
-          window.location.origin + escape(item.thumbnail) + 
-          '" data-id="'+ item['id'] +
-          '" data-src="'+ item['url'] +'" >' + 
-          escape(item['text']) + 
-        '</div>'
+        return '<div class="item" data-thumb="' +
+                window.location.origin + escape(item.thumbnail) +
+                '" data-id="'+ item['id'] +
+                '" data-src="'+ item['url'] +'" >' +
+                escape(item['text']) +
+                '</div>'
       },
       option: (item, escape) => {
-        let opt =  '<div data-id="' + item['id']+'">' +
-                '<div style="background-image: url(' + window.location.origin + escape(item.thumbnail) + ')" class="selectAsset__image--thumb"></div>' +
-                escape(item['text']) + 
-              '</div>'
-        return opt
+        let option =  '<div data-id="' + item['id']+'">' +
+                      '<div style="background-image: url(' + window.location.origin + escape(item.thumbnail) + ')" class="selectAsset__image--thumb"></div>' +
+                      escape(item['text']) +
+                      '</div>'
+        return option
       }
     }
   },
 
-
   linkifyCrops : function () {
-    let guidLink = this.baseLink + this.cropsList.parent().find('[type=hidden]').val()
-
-    this.cropsList.find('li').each(function (i, el) {
-      el = $(el);
-
-      let editLink = guidLink + "/" + el.data("crop-link") + '?popup=1';
-
-      el.find('a').attr('href', editLink);
+    let guidLink = this.baseLink + this.$cropsList.parent().find('[type=hidden]').val()
+    this.$cropsList.find('li').each(function (i, el) {
+      let $el = $(el)
+      let editLink = guidLink + '/' + $el.data('crop-link') + '?popup=1'
+      $el.find('a').attr('href', editLink)
     })
   },
-
 
   /**
    * constructs param for tagging
    * @param  {obj}
    * @return {string}
    */
-  paramConstruct : function (obj) {
-    let op = []
+  constructParams : function (obj) {
+    let params = []
     for (let i in obj) {
-      op.push(i + '=' + obj[i])
+      params.push(i + '=' + obj[i])
     }
-    return "?" + op.join('&')
+    return '?' + params.join('&')
   },
 
   /**
@@ -180,7 +179,7 @@ const SelectAsset = View.extend({
    * @param  {string}
    * @return {arra7}
    */
-  paramDestruct : function (path) {
+  destructParams : function (path) {
     let ret = {}
     let seg = path.replace(/^\?/, '').split('&')
     for (let i = 0, len = seg.length; i < len; i++) {
@@ -193,16 +192,16 @@ const SelectAsset = View.extend({
     return ret
   },
 
-
   autoTag : function () {
     let tags = []
     $('[data-auto-tag]').each(function (i, dom) {
-      let data_auto_tag = $(dom).data('auto-tag')
-      if (data_auto_tag) {
-        let allTags = data_auto_tag.toLowerCase().split(',')
+      let dataAutoTag = $(dom).data('auto-tag')
+      if (dataAutoTag) {
+        let allTags = dataAutoTag.toLowerCase().split(',')
+
         while (allTags.length) {
           let tag = allTags.shift()
-          let splitTag = tag.split(" ")
+          let splitTag = tag.split(' ')
           tags.push(tag)
 
           // if splitTag length > 3, push individual values
@@ -218,27 +217,35 @@ const SelectAsset = View.extend({
         tags = tags.concat(allTags)
       }
     })
-    $('#auto_tags').val(tags.join(','));
-    this.autoTags = tags;
+    $('#auto_tags').val(tags.join(','))
+    this.autoTags = tags
   },
 
   tag : function () {
-
-    if (!this.$el.find('a.button').length) {
+    if (!this.$('a.button').length) {
       return
     }
 
-    let node = this.$el.find('a.button')
-    let params = this.paramDestruct(node[0].search)
+    let node = this.$('a.button')
+    let params = this.destructParams(node[0].search)
     let tags = ($(this.$el).data('tags') || '').toLowerCase().split(',')
 
     tags = tags.concat(this.autoTags)
     params.tags = encodeURIComponent(tags.join(','))
-    node[0].search = this.paramConstruct(params)
+    node[0].search = this.constructParams(params)
   },
 
+  // Set Selected Image
+  setSelected: function (options) {
+    if (options.thumbnail) {
+      this.selectize.addOption(options)
+      this.selectize.setValue(options.id)
+    }
+  },
 
+  handlePopup: function (e) {
+    clickOpenPopup(e, this.setSelected.bind(this))
+  }
 })
-
 
 export default SelectAsset

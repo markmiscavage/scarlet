@@ -32,8 +32,8 @@ const WEBPACK_ENV = {
 module.exports = {
   debug: !ENV_IS_PRODUCTION,
   devtool: defineWebpackDevtool(),
-
   entry: [
+      'font-awesome-sass!./webpack-font-awesome-sass.config.js',
       'babel-polyfill',
       'eventsource-polyfill',
       'webpack-hot-middleware/client?path=http://localhost:3000/__webpack_hmr',
@@ -57,7 +57,9 @@ module.exports = {
   },
 
   resolve: {
+    modulesDirectories: ['scarlet/cms/static/scarlet/source/js', 'node_modules'],
     alias: {
+      'jquery.ui': 'jquery-ui/jquery-ui',
       'imagesready': 'imagesready/dist/jquery-imagesready',
       'wysihtml5': path.resolve(__dirname, './scarlet/cms/static/scarlet/source/js/views/wysiwyg/lib/wysihtml5')
     }
@@ -77,12 +79,15 @@ function createWebpackLoaders () {
     exclude: /node_modules|bower_components/,
     include: CONFIG.src
   }, {
-    test: /\.(ogg|mp?4a|mp3)$/,
+    test: /\.(ogg|mp?4a|mp3|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
     loader: 'file'
   }, {
     test: /\.(jpg|png)$/,
     loader: 'url?limit=8192'
-  }, {
+  }, { 
+    test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, 
+    loader: 'url?limit=10000&mimetype=application/font-woff' 
+  }, { 
     test: /\.json$/,
     loader: 'json'
   },
@@ -92,22 +97,24 @@ function createWebpackLoaders () {
   }];
 
   if (ENV_IS_PRODUCTION) {
-    loaders.push({
-      test: /\.scss$/,
-      loader: ExtractTextPlugin.extract('style',
-        'css?sourceMap!postcss!sass'),
-      include: CONFIG.src
-    })
+  loaders.push({
+    test: /\.scss$/,
+    loader: ExtractTextPlugin.extract('style',
+      'css?sourceMap!postcss!sass'),
+    include: CONFIG.src
+  })
   } else {
     loaders.push({
       test: /\.scss$/,
-      loaders :
-      [
-        'style-loader',
-        'css-loader?importLoaders=2&sourceMap',
-        'postcss-loader',
-        'sass-loader?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
-      ],
+      // loaders :
+      // [
+      //   'style-loader',
+      //   'css-loader?importLoaders=2&sourceMap',
+      //   'postcss-loader',
+      //   'sass-loader?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
+      // ],
+      loader: ExtractTextPlugin.extract('style',
+        'css?sourceMap!postcss!sass'),
       include: path.join(CONFIG.src, 'stylesheets')
     })
   }
@@ -137,6 +144,7 @@ function createWebpackPlugins () {
       new UglifyJsPlugin(UGLIFY_CONFIG))
   } else {
     plugins.push(
+      new ExtractTextPlugin('css/bundle.css'),
       new webpack.HotModuleReplacementPlugin(),
       new NoErrorsPlugin())
   }

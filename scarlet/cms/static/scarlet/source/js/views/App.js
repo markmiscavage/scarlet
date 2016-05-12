@@ -1,25 +1,52 @@
-import Backbone, { View } from 'backbone'
-import pubsub from '../helpers/pubsub'
-import AutoSlug from './AutoSlug'
-import BatchActions from './BatchActions'
-import DatePicker from './DatePicker'
-import Filters from './Filters'
-import Formset from './Formset'
-import ImageCropper from './ImageCropper'
-import Select from './Select'
-import SelectApi from './SelectApi'
-import SelectAsset from './SelectAsset'
-import InsertImage from './InsertImage'
-import InsertVideo from './InsertVideo'
-import InsertAudio from './InsertAudio'
-import Tabs from './Tabs'
-import { handlePopup } from '../helpers/WindowPopup'
-import Wysiwyg from './wysiwyg/Wysiwyg'
+import { View } from 'backbone'
+import pubsub from 'helpers/pubsub'
+import AutoSlug from 'views/AutoSlug'
+import BatchActions from 'views/BatchActions'
+import DatePicker from 'views/DatePicker'
+import DateTimePicker from 'views/DateTimePicker'
+import Draggable from 'views/Draggable'
+import Filters from 'views/Filters'
+import Formset from 'views/Formset'
+import ImageCropper from 'views/ImageCropper'
+import Select from 'views/Select'
+import SelectApi from 'views/SelectApi'
+import SelectAsset from 'views/SelectAsset'
+import InsertImage from 'views/InsertImage'
+import InsertVideo from 'views/InsertVideo'
+import InsertAudio from 'views/InsertAudio'
+import Tabs from 'views/Tabs'
+import Wysiwyg from 'views/wysiwyg/Wysiwyg'
+import { handlePopup } from 'helpers/WindowPopup'
+import '../../stylesheets/base/app.scss'
+
 
 const App = View.extend({
 
   initialize: function () {
   	pubsub.on('scarlet:render', this.render)
+
+    // AutoSlug
+    $('.auto-slug').each(function () {
+      new AutoSlug({ el: $(this) }).render()
+    })
+
+    // BatchActions
+    new BatchActions().render()
+
+    // Filters
+    $('.filters').each(function () {
+      new Filters({ el: $(this) }).render()
+    })
+
+    // ImageCropper
+    $('.jcrop').each(function () {
+      new ImageCropper({ el: $(this) }).render()
+    })
+
+    // Wysiwyg
+    $('.widget-wysiwyg').each((i, dom) => {
+      new Wysiwyg({ el: dom }).render()
+    })
 
     // Insert Image
     $('.widget-insert-image').each(function (i, dom) {
@@ -40,6 +67,22 @@ const App = View.extend({
     $('.widget-tabs').each( (i, dom) => {
       let tabs = new Tabs({el: dom})
     })
+
+    // DATEPICKER
+    $('input.date').each(function (i, dom) {
+      let datePicker = new DatePicker({el: dom}).render()
+    })
+
+    // DATETIMEPICKER
+    $('input.datetime').each(function (i, dom) {
+      let dateTimePicker = new DateTimePicker({el: dom}).render()
+    })
+
+    // DRAGGABLE
+    $('table').each(function (i, dom) {
+      let draggable = new Draggable({el: dom}).render()
+    })
+
   },
 
   render: function() {
@@ -63,7 +106,6 @@ const App = View.extend({
        let selectAsset = new SelectAsset({el: dom}).render()
       }
     })
-
 
   }
 })

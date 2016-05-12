@@ -1,11 +1,11 @@
 'use strict'
-import Insert from '../helpers/Insert'
+import Insert from 'views/Insert'
 
 const InsertAudio = Insert.extend({
 
   bindInputs : function () {
     Insert.prototype.bindInputs.apply(this)
-    this.$dom.find('[data-respond=\"true\"]').on("change", this.onInput.bind(this));
+    this.$dom.find('[data-respond=\"true\"]').on('change', this.onInput.bind(this))
   },
 
   onInput : function (e) {
@@ -22,10 +22,8 @@ const InsertAudio = Insert.extend({
 
   $audio[0].src = value
   $audio[0].load()
-
   this.vars.$node = $audio
   }
-
 
 })
 
