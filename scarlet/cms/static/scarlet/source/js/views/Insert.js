@@ -68,6 +68,7 @@ const Insert = View.extend({
 
 		// Updates the proportion attribute.
 		this.setAttribute(opposite, this.vars.size[opposite])
+		console.log(this.setAttribute(opposite, this.vars.size[opposite]))
 
 	},
 

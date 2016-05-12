@@ -1,4 +1,4 @@
-import InsertImage from '../../js/views/InsertImage'
+import InsertImage from 'views/InsertImage'
 
 describe('InsertImage View', function () {
 	var view, model
