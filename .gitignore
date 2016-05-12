@@ -59,7 +59,6 @@ coverage
 
 # Robin
 node_modules
-robyn-local.json
 
 # Caboose
 .bundle
