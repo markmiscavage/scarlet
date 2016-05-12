@@ -144,7 +144,7 @@ function createWebpackPlugins () {
       new UglifyJsPlugin(UGLIFY_CONFIG))
   } else {
     plugins.push(
-      new ExtractTextPlugin('css/bundle.css'),
+      new ExtractTextPlugin('css/bundle.css'),      
       new webpack.HotModuleReplacementPlugin(),
       new NoErrorsPlugin())
   }

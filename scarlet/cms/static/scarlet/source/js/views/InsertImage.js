@@ -48,7 +48,6 @@ const InsertImage = Insert.extend({
   	}
 
   	if (attribute === 'width' || attribute === 'height') {
-
   		value = value.replace('px', '')
 
   		if (this.vars.constrain) {
