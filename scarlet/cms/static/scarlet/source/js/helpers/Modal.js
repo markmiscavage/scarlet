@@ -18,7 +18,7 @@ class Modal {
 		this.options = {
 			autoOpen: false,
 			closeOnEscape: true,
-			modal: false,
+			modal: true,
 			height: 500,
 			width: 600,
 			draggable: false,
@@ -27,7 +27,9 @@ class Modal {
 		}
 		if(options) this.options = Object.assign(this.options, options)
 		this.$dialog = buildDialog(url, name, this.options)
-		this.$dialog.parent().draggable().css('cursor', 'move')
+
+		// TODO(JM) remove if we decide to keep modals in place
+		// this.$dialog.parent().draggable().css('cursor', 'move')
 	}
 
 	/**

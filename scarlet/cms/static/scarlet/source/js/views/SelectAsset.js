@@ -242,8 +242,8 @@ const SelectAsset = View.extend({
   },
 
   handlePopup: function (e) {
-    clickOpenPopup(e, this.setSelected.bind(this))
-    // clickOpenModal(e, this.setSelected.bind(this))
+    // clickOpenPopup(e, this.setSelected.bind(this))
+    clickOpenModal(e, this.setSelected.bind(this))
   }
 })
 
