@@ -1,6 +1,6 @@
   @import '~jquery-ui/themes/ui-darkness/jquery-ui.css';
 
-.ui-dialog-content {
+.frame-wrapper {
   position: relative;
   padding-bottom: 52%;
   padding-top: 30px;
@@ -19,7 +19,7 @@
 
 
 @media screen and (max-width: 700px){
-	.ui-dialog-content {
+	.frame-wrapper {
     position: relative;
     padding-bottom: 47%;
     padding-top: 30px;
@@ -48,6 +48,9 @@ body.modalDialog__body{
     &:before {
       display: none;
     } 
+  }
+  #container{
+    padding-bottom: 0;
   }
 }
 
