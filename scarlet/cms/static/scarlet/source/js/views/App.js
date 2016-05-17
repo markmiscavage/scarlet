@@ -49,8 +49,8 @@ const App = View.extend({
     })
 
     // Insert Image
-    $('.widget-insert-image').each(function (i, dom) {
-      let insertImage = new InsertImage({el : dom})
+    $('.widget-insert-image').each(function () {
+      let insertImage = new InsertImage({el : $(this)})
     })
 
     // Insert Video

@@ -39,9 +39,8 @@
     padding: 0;
   }
 }
-.ui-widget-content {  
-  // @include transition(height 150ms ease-in-out);
-  // @include transition(width 15ms ease-in-out);
+.dialog__no-title {  
+  @include transition(height 350ms ease-in-out);
 }
 
 .modal__frameWrap{

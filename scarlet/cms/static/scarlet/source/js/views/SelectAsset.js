@@ -220,7 +220,7 @@ const SelectAsset = View.extend({
     this.autoTags = tags
   },
 
-  tag : function () {
+  tag: function () {
     if (!this.$('a.button').length) {
       return
     }
@@ -244,12 +244,15 @@ const SelectAsset = View.extend({
   },
 
   handlePopup: function (e) {
-    if(this.addOpen){
-      e.preventDefault()
-    } else {
-      this.addOpen = true
-      clickOpenModal(e, 'modal-add-asset', this.setSelected.bind(this))
-    }
+    clickOpenModal(e, 'modal-add-asset', this.setSelected.bind(this), this.autoTags)
+    
+    // LIST APPROACH
+    // if(this.addOpen){
+    //   e.preventDefault()
+    // } else {
+    //   this.addOpen = true
+    //   clickOpenModal(e, 'modal-add-asset', this.setSelected.bind(this), this.autoTags)
+    // }
   }
 })
 

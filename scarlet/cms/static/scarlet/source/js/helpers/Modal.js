@@ -1,5 +1,6 @@
 'use strict'
 import ModalInline from 'views/ModalInline'
+import { dasherize } from 'helpers/utils'
 import '../../stylesheets/views/modal.scss'
 
 class Modal {
@@ -34,7 +35,7 @@ class Modal {
 	 * Open method triggers modal open
 	 * @param  {string}
 	 */
-	open (qry) {	
+	open (qry, tags) {	
 		let frame
 		if (isModalOpen()) {
 			frame = this.$dialog.find('iframe#' + this.name)[0]
@@ -46,7 +47,7 @@ class Modal {
 		}
 		this.initLoad = false
 		$(frame).load( () => {
-			this.onLoad(qry, frame)
+			this.onLoad(qry, frame, tags)
 		})
 
 	}
@@ -55,10 +56,14 @@ class Modal {
 	 * fires on iFrame Load
 	 * @param  {object}
 	 */
-	onLoad (qry, frame) {
+	onLoad (qry, frame, tags) {
 		let frameBody = frame.contentDocument.body
+		if(tags) $(frameBody).find('#auto_tags, #id_tags').val(tags.join(','))
 		$(frameBody).addClass('modal__body')
-		if(qry) $(frameBody).find('#id_name').val(qry)
+		if(qry) {
+			$(frameBody).find('#id_name').val(qry)
+			$(frameBody).find('#id_slug').val(dasherize(qry))
+		}
 		this.addListeners(frameBody)
 		if(!this.initLoad) this.resizeDialog(frameBody)
 		this.initLoad = true
@@ -74,8 +79,8 @@ class Modal {
 			this.$dialog.dialog('destroy').remove()
 		} else {
 			this.$dialog.remove()
+			this.resizeDialog()
 		}
-		this.resizeDialog()
 	}
 
 	/**
@@ -103,7 +108,7 @@ class Modal {
 			// LIST
 			// let children = this.$parentModal.children()
 			// this.$parentModal.dialog({height: getChildrenHeight(children) + 100, width: getLargestWidth(children) + 50})
-			// STACKED
+			// STACKED 
 			let last = this.$parentModal.children().last()
 			this.$parentModal.dialog({height: getModalContent(last).outerHeight() + 25, width: getModalContent(last).outerWidth() + 20})
 		} else if(this.$dialog){
@@ -161,21 +166,16 @@ function getLargestWidth (children) {
 		}, 0)
 }
 
-function getModalContent (wrap) {
-	let childBody = $(wrap).find('iframe')[0].contentDocument.body
-	return $(childBody).find('#content')
-}
-
 /**
- * get query param from window location
- * @param  {string} query param
- * @return {string}
+ * helper to find doc body content for modal
+ * @param  Object - iframe wrapper
+ * @return Object - #content node inside iframe
  */
-function getQueryString ( field ) {
-  let href = window.location.href
-  let reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' )
-  let string = reg.exec(href)
-  return string ? string[1] : null
+function getModalContent (wrap) {
+	if(wrap && $(wrap).find('iframe')[0].contentDocument){
+		let childBody = $(wrap).find('iframe')[0].contentDocument.body
+		return $(childBody).find('#content')
+	}
 }
 
 /**
@@ -183,13 +183,13 @@ function getQueryString ( field ) {
  * @param  {object} event
  * @param  {Function} callback
  */
-const clickOpenModal = function (e, name, cb) {
+const clickOpenModal = function (e, name, cb, tags) {
   e.preventDefault()
   let url = $(e.currentTarget).attr('href')
   let modal = new Modal(url, name, false, function (data) {
     cb(data)
   })
-  modal.open()
+  modal.open(false, tags)
 
   return false
 }
