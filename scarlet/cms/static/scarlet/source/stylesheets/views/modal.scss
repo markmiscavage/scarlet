@@ -1,4 +1,5 @@
   @import '~jquery-ui/themes/ui-darkness/jquery-ui.css';
+  @import '../mixins/mixins';
 
 .frame-wrapper {
   position: relative;
@@ -38,8 +39,20 @@
     padding: 0;
   }
 }
+.ui-widget-content {  
+  // @include transition(height 150ms ease-in-out);
+  // @include transition(width 15ms ease-in-out);
+}
 
-body.modalDialog__body{
+.modal__frameWrap{
+  height: 100%;
+  width: 100%;
+  // STACKED
+  position: absolute;
+  top: 0;
+}
+
+body.modal__body, {
   background: none;
   border: none;
   section#main {

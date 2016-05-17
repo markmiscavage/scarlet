@@ -8,10 +8,14 @@ class ModalChild {
 		this.closeCb = closeCb
 		this.$inlineModal = buildInlineModal(url)
 		this.$parentModal = window.scarlet_form_modal
+		this.frame = document.getElementById(this.name)
 	}
 
   addChild () {
   	this.$parentModal.find('iframe').parent().after($(this.$inlineModal))
+  	$(this.frame).load( () => {
+  		
+  	})
   	resizeDialog($('body'), this.$parentModal)
   }
 

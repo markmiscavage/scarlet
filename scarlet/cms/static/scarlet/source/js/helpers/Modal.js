@@ -19,7 +19,7 @@ class Modal {
 			autoOpen: false,
 			closeOnEscape: true,
 			modal: true,
-			height: 500,
+			height: 600,
 			width: 600,
 			draggable: false,
 			show: { effect: 'fadeIn', duration: 300 },
@@ -28,9 +28,6 @@ class Modal {
 		if (options) this.options = Object.assign(this.options, options)
 		if (isModalOpen()) this.$parentModal = window.scarlet_form_modal
 		this.$dialog = buildDialog(url, name, this.options)
-
-		// TODO(JM) remove if we decide to keep modals in place
-		// this.$dialog.parent().draggable().css('cursor', 'move')
 	}
 
 	/**
@@ -60,7 +57,7 @@ class Modal {
 	 */
 	onLoad (qry, frame) {
 		let frameBody = frame.contentDocument.body
-		$(frameBody).addClass('modalDialog__body')
+		$(frameBody).addClass('modal__body')
 		if(qry) $(frameBody).find('#id_name').val(qry)
 		this.addListeners(frameBody)
 		if(!this.initLoad) this.resizeDialog(frameBody)
@@ -73,7 +70,12 @@ class Modal {
 	 */
 	close () {
 		if(this.closeCb) this.closeCb()
-		this.$dialog.dialog('destroy').remove()
+		if(this.$dialog.hasClass('ui-dialog-content')) {
+			this.$dialog.dialog('destroy').remove()
+		} else {
+			this.$dialog.remove()
+		}
+		this.resizeDialog()
 	}
 
 	/**
@@ -96,14 +98,21 @@ class Modal {
 	 * resizeDialog updates size based on form content
 	 * @param  {object} iframe document body
 	 */
-	resizeDialog (frameBody) {
-		let $content = $(frameBody).find('#content')
-		if(isModalOpen()){
-			let width = Math.max(this.$parentModal.width(), $content.width())
-			let height = this.$parentModal.height() + $content.height()
-			this.$parentModal.dialog({height: height, width: width})
-		} else {
-			this.$dialog.dialog({height: $content.height() + 100, width: $content.width()})
+	resizeDialog () {
+		if(this.$parentModal){
+			// LIST
+			// let children = this.$parentModal.children()
+			// this.$parentModal.dialog({height: getChildrenHeight(children) + 100, width: getLargestWidth(children) + 50})
+			// STACKED
+			let last = this.$parentModal.children().last()
+			this.$parentModal.dialog({height: getModalContent(last).outerHeight() + 25, width: getModalContent(last).outerWidth() + 20})
+		} else if(this.$dialog){
+			// LIST
+			// let children = this.$dialog.children()
+			// this.$dialog.dialog({height: getChildrenHeight(children) + 100, width: getLargestWidth(children) + 50})
+			// STACKED
+			let last = this.$dialog.children().last()
+			this.$dialog.dialog({height: getModalContent(last).outerHeight() + 25, width: getModalContent(last).outerWidth() + 20})
 		}
 	}
 
@@ -117,14 +126,44 @@ class Modal {
  */
 function buildDialog (url, name, options) {
 	if(isModalOpen()) {
-		return $('<div class="dialog__frame--wrap"></div>')
+		return $('<div class="modal__frameWrap modal__inline"></div>')
 	 		.html('<iframe id="'+name+'" src="'+url+'" style="border: 0px; " src="' + url + '" width="100%" height="100%"></iframe>')
 	} else {
 
-		return $('<div class="dialog__frame--wrap"></div>')
-			.html('<iframe id="'+name+'" style="border: 0px; " src="' + url + '" width="100%" height="100%"></iframe>')
+		return $('<div class="modal__framesContainer"></div>')
+			.html('<div class="modal__frameWrap"><iframe id="'+name+'" style="border: 0px; " src="' + url + '" width="100%" height="100%"></iframe></div>')
 			.dialog(options)
 	}
+}
+
+
+/**
+ * calculate height of children
+ * updates height to child explicitly based on content
+ * @param  {array} children [jquery children object]
+ * @return {number}   combined height
+ */
+function getChildrenHeight (children) {
+	return children.toArray().reduce( (a, b) => {
+			$(b).css('height', getModalContent(b).height() + 50)
+			return a + $childContent.height()
+		}, 0)
+}
+
+/**
+ * find largest width of children
+ * @param  {array} children [jquery children object]
+ * @return {number}   compares widths
+ */
+function getLargestWidth (children) {
+	return children.toArray().reduce( (a, b) => {
+			return Math.max(a, getModalContent(b).width())
+		}, 0)
+}
+
+function getModalContent (wrap) {
+	let childBody = $(wrap).find('iframe')[0].contentDocument.body
+	return $(childBody).find('#content')
 }
 
 /**

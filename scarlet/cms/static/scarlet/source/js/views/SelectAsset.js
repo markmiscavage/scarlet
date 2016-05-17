@@ -15,6 +15,7 @@ const SelectAsset = View.extend({
     this.$selectizeInput = this.$input.after('<input />')
     this.baseLink = this.$cropsList.data('base-link')
     this.url = this.$el.data('api')
+    this.addOpen = false
   },
   
   /**
@@ -238,11 +239,17 @@ const SelectAsset = View.extend({
     if (options.thumbnail) {
       this.selectize.addOption(options)
       this.selectize.setValue(options.id)
+      this.addOpen = false
     }
   },
 
   handlePopup: function (e) {
-    clickOpenModal(e, 'modal-add-asset', this.setSelected.bind(this))
+    if(this.addOpen){
+      e.preventDefault()
+    } else {
+      this.addOpen = true
+      clickOpenModal(e, 'modal-add-asset', this.setSelected.bind(this))
+    }
   }
 })
 
