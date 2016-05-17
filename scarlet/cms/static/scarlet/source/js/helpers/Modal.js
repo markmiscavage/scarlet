@@ -1,5 +1,4 @@
 'use strict'
-import ModalInline from 'views/ModalInline'
 import { dasherize } from 'helpers/utils'
 import '../../stylesheets/views/modal.scss'
 
