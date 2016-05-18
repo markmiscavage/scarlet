@@ -4,6 +4,14 @@
 	font-family: "Helvetica Neue", Arial, sans-serif;
 }
 
+@mixin transition($args...) {
+  -webkit-transition: $args;
+  -moz-transition: $args;
+  -ms-transition: $args;
+  -o-transition: $args;
+  transition: $args;
+}
+
 // Global transition
 @mixin global-transition {
 	@include transition(all, 150ms, ease-in-out);

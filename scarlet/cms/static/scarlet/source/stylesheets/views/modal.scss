@@ -1,6 +1,7 @@
   @import '~jquery-ui/themes/ui-darkness/jquery-ui.css';
+  @import '../mixins/mixins';
 
-.ui-dialog-content {
+.frame-wrapper {
   position: relative;
   padding-bottom: 52%;
   padding-top: 30px;
@@ -19,7 +20,7 @@
 
 
 @media screen and (max-width: 700px){
-	.ui-dialog-content {
+	.frame-wrapper {
     position: relative;
     padding-bottom: 47%;
     padding-top: 30px;
@@ -38,8 +39,19 @@
     padding: 0;
   }
 }
+.dialog__no-title {  
+  @include transition(height 350ms ease-in-out);
+}
 
-body.modalDialog__body{
+.modal__frameWrap{
+  height: 100%;
+  width: 100%;
+  // STACKED
+  position: absolute;
+  top: 0;
+}
+
+body.modal__body, {
   background: none;
   border: none;
   section#main {
@@ -48,6 +60,9 @@ body.modalDialog__body{
     &:before {
       display: none;
     } 
+  }
+  #container{
+    padding-bottom: 0;
   }
 }
 
