@@ -1,6 +1,9 @@
 'use strict'
 import { dasherize } from 'helpers/utils'
 import '../../stylesheets/views/modal.scss'
+import crumbs from 'helpers/modalBreadCrumb'
+
+window.top.scarlet_modal_crumbs = window.top.scarlet_modal_crumbs || []
 
 class Modal {
 
@@ -12,7 +15,9 @@ class Modal {
 	 * @param  {function} cb - close modal callback 
 	 */
 	constructor (url, name, options, cb, closeCb){
+		this.crumbs = window.top.scarlet_modal_crumbs
 		this.name = name
+		this.displayName = this.name.split('modal-add-')[1]
 		this.cb = cb
 		this.closeCb = closeCb
 		this.options = {
@@ -26,8 +31,13 @@ class Modal {
 			dialogClass: 'dialog__no-title'
 		}
 		if (options) this.options = Object.assign(this.options, options)
-		if (isModalOpen()) this.$parentModal = window.scarlet_form_modal
+		if (isModalOpen()) {
+			this.$parentModal = window.scarlet_form_modal
+		}
 		this.$dialog = buildDialog(url, name, this.options)
+		this.crumbs.push(this.displayName)
+		crumbs.addCrumb(this.displayName)
+		console.log('singletone trial', crumbs.getCrumbs())
 	}
 
 	/**
@@ -47,6 +57,7 @@ class Modal {
 		this.initLoad = false
 		$(frame).load( () => {
 			this.onLoad(qry, frame, tags)
+			console.log('loaded with breadCrumbs', this.crumbs)
 		})
 
 	}
@@ -80,6 +91,7 @@ class Modal {
 			this.$dialog.remove()
 			this.resizeDialog()
 		}
+		if (this.crumbs.indexOf(this.displayName) !== -1) this.crumbs.splice(this.crumbs.idexOf(this.displayName, 1))
 	}
 
 	/**
