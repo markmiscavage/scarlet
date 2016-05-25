@@ -30,22 +30,17 @@ const WEBPACK_ENV = {
 }
 
 module.exports = {
-  debug: !ENV_IS_PRODUCTION,
-  devtool: defineWebpackDevtool(),
+  debug: false,
   entry: [
       'font-awesome-sass!./webpack-font-awesome-sass.config.js',
       'babel-polyfill',
-      'eventsource-polyfill',
-      'webpack-hot-middleware/client?path=http://localhost:3000/__webpack_hmr',
       './scarlet/cms/static/scarlet/source/js/init'
   ],
-
   output: {
-    path: CONFIG.static,
-    filename: 'js/[name]-[hash].js',
-    publicPath: 'http://localhost:3000/build/'
+  	path: CONFIG.static,
+  	filename: 'js/bundle.js',
+  	publicPath: '/static/'
   },
-
   module: {
     loaders: createWebpackLoaders()
   },
@@ -91,33 +86,17 @@ function createWebpackLoaders () {
     test: /\.json$/,
     loader: 'json'
   },
+ 	{
+		test: /\.scss$/,
+		loader: ExtractTextPlugin.extract('style',
+		 'css?sourceMap!postcss!sass'),
+		include: path.join(CONFIG.src, 'stylesheets')
+	},
   {
     test: /wysihtml5/,
     loader: 'exports?wysihtml5'
   }];
 
-  if (ENV_IS_PRODUCTION) {
-  loaders.push({
-    test: /\.scss$/,
-    loader: ExtractTextPlugin.extract('style',
-      'css?sourceMap!postcss!sass'),
-    include: CONFIG.src
-  })
-  } else {
-    loaders.push({
-      test: /\.scss$/,
-      // loaders :
-      // [
-      //   'style-loader',
-      //   'css-loader?importLoaders=2&sourceMap',
-      //   'postcss-loader',
-      //   'sass-loader?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
-      // ],
-      loader: ExtractTextPlugin.extract('style',
-        'css?sourceMap!postcss!sass'),
-      include: path.join(CONFIG.src, 'stylesheets')
-    })
-  }
   return loaders;
 }
 
@@ -137,16 +116,10 @@ function createWebpackPlugins () {
     new BundleTracker({ filename: './webpack-stats.json' })
   ]
 
-  if (ENV_IS_PRODUCTION) {
-    plugins.push(
-      new ExtractTextPlugin('css/[name]-[hash].css', { allChunks: true }),
-      new ProgressBarPlugin({ width: 60 }),
-      new UglifyJsPlugin(UGLIFY_CONFIG))
-  } else {
-    plugins.push(
-      new ExtractTextPlugin('css/bundle.css'),      
-      new webpack.HotModuleReplacementPlugin(),
-      new NoErrorsPlugin())
-  }
+  plugins.push(
+    new ExtractTextPlugin('css/bundle.css'),      
+    new webpack.HotModuleReplacementPlugin(),
+    new NoErrorsPlugin())
+  
   return plugins
 }

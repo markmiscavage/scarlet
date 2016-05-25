@@ -65,7 +65,11 @@
       "gruntfile.js",
       "robyn/",
       "scarlet/cms/static/scarlet/legacy/",
-      "scarlet/cms/static/scarlet/build/"
+      "scarlet/cms/static/scarlet/build/",
+      "scarlet/cms/static/scarlet/source/js/views/wysiwyg/lib",
+      "scarlet/cms/static/scarlet/source/js/views/wysiwyg/commands",
+      "scarlet/cms/static/scarlet/source/js/views/wysiwyg/rules.js",
+      "scarlet/cms/static/scarlet/source/test"
     ]
   },
   "dependencies": {
@@ -95,9 +99,9 @@
   },
   "scripts": {
     "start": "node ./webpack-server.js",
-    "prebuild": "npm run lint",
+    "save-prebuild": "npm run lint",
     "build": "npm run clean && npm run build:deploy",
-    "build:deploy": "cross-env NODE_ENV=production webpack --config webpack.config.js",
+    "build:deploy": "cross-env NODE_ENV=production webpack --config webpack.config.prod.js",
     "clean": "rimraf ./scarlet/cms/static/scarlet/build",
     "lint": "standard",
     "test": "karma start karma.conf.js"
