@@ -1,9 +1,6 @@
 'use strict'
 import { dasherize } from 'helpers/utils'
 import '../../stylesheets/views/modal.scss'
-import crumbs from 'helpers/modalBreadCrumb'
-
-window.top.scarlet_modal_crumbs = window.top.scarlet_modal_crumbs || []
 
 class Modal {
 
@@ -15,7 +12,6 @@ class Modal {
 	 * @param  {function} cb - close modal callback 
 	 */
 	constructor (url, name, options, cb, closeCb){
-		this.crumbs = window.top.scarlet_modal_crumbs
 		this.name = name
 		this.displayName = this.name.split('modal-add-')[1]
 		this.cb = cb
@@ -33,11 +29,9 @@ class Modal {
 		if (options) this.options = Object.assign(this.options, options)
 		if (isModalOpen()) {
 			this.$parentModal = window.scarlet_form_modal
+			this.breadCrumbs = window.breadcrumbs
 		}
 		this.$dialog = buildDialog(url, name, this.options)
-		this.crumbs.push(this.displayName)
-		crumbs.addCrumb(this.displayName)
-		console.log('singletone trial', crumbs.getCrumbs())
 	}
 
 	/**
@@ -49,15 +43,16 @@ class Modal {
 		if (isModalOpen()) {
 			frame = this.$dialog.find('iframe#' + this.name)[0]
 			this.$parentModal.find('iframe').parent().after(this.$dialog)
+			this.breadCrumbs.push(this.displayName)
 		} else {
 			this.$dialog.dialog('open')
 			frame = document.getElementById(this.name)
 			frame.contentWindow.scarlet_form_modal = this.$dialog
+			frame.contentWindow.breadcrumbs = this.breadCrumbs = [this.displayName]
 		}
 		this.initLoad = false
 		$(frame).load( () => {
 			this.onLoad(qry, frame, tags)
-			console.log('loaded with breadCrumbs', this.crumbs)
 		})
 
 	}
@@ -77,6 +72,10 @@ class Modal {
 		this.addListeners(frameBody)
 		if(!this.initLoad) this.resizeDialog(frameBody)
 		this.initLoad = true
+		let crumb = $('<div></div>')
+		crumb.css({'position':'absolute','bottom':'10px','left': '10px'})
+		crumb.append(this.breadCrumbs.join(' > '))
+		$(frameBody).find('#container').append(crumb)
 	}
 
 	/**
@@ -91,7 +90,7 @@ class Modal {
 			this.$dialog.remove()
 			this.resizeDialog()
 		}
-		if (this.crumbs.indexOf(this.displayName) !== -1) this.crumbs.splice(this.crumbs.idexOf(this.displayName, 1))
+		if(this.breadCrumbs.indexOf(this.displayName) !== -1) this.breadCrumbs.splice(this.breadCrumbs.indexOf(this.displayName), 1)
 	}
 
 	/**
