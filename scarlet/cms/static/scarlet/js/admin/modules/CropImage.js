@@ -199,7 +199,7 @@ define(
 					y2: Math.round(coords.y2),
 					w: coords.w,
 					h: coords.h
-				}
+				};
 
 				this.updatePreview();
 
