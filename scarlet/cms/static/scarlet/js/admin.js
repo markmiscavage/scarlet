@@ -24765,8 +24765,8 @@ define(
 			setupJcrop : function () {
 				var self = this,
 					options = $.extend({}, this.options, {
-						onSelect : $.proxy(this.updatePreview, this),
-						onChange : $.proxy(this.updatePreview, this),
+						onSelect : $.proxy(this.updateCropCoords, this),
+						onChange : $.proxy(this.updateCropCoords, this),
 						aspectRatio : (this.constrainRatio ? (this.cropScale.w / this.cropScale.h) : 0),
 						allowSelect : (this.constrainRatio ? true : false),
 						boxWidth : (this.$.width() * 0.75),
@@ -24813,16 +24813,9 @@ define(
 				}
 			},
 
-			updatePreview : function (coords) {
-				clearTimeout(this.refreshTimeout);
-
-				if (parseInt(coords.w, 10) < 0) {
-					return;
-				}
-
-				this.cropCoords = coords;
-
+			updatePreview : function () {
 				var scale = this.getScale(),
+					coords = this.cropCoords,
 					width,
 					height;
 
@@ -24866,9 +24859,6 @@ define(
 					marginLeft: "-" + Math.round(scale.scaleX * coords.x) + "px",
 					marginTop: "-" + Math.round(scale.scaleY * coords.y) + "px"
 				});
-
-				// debounce update of coord values (form fields) after interaction
-				this.refreshTimeout = setTimeout(this.updateCoords, 250);
 			},
 
 			getScale : function () {
@@ -24898,9 +24888,31 @@ define(
 				};
 			},
 
-			// store current crop coordinates as field values
-			updateCoords : function () {
+			// update cropCoord values onChange or onSelect of jcrop
+			updateCropCoords : function (coords) {
+				clearTimeout(this.refreshTimeout);
 
+				if (parseInt(coords.w, 10) < 0) {
+					return;
+				}
+
+				this.cropCoords = {
+					x: Math.round(coords.x),
+					y: Math.round(coords.y),
+					x2: Math.round(coords.x2),
+					y2: Math.round(coords.y2),
+					w: coords.w,
+					h: coords.h
+				};
+
+				this.updatePreview();
+
+				// debounce update of coord values (form fields) after interaction
+				this.refreshTimeout = setTimeout(this.updateCoordFields, 250);
+			},
+
+			// store current crop coordinates as field values
+			updateCoordFields : function () {
 				this.loopCoordProps(function (prop) {
 					var $coord = $("input[data-property='" + prop + "']");
 
