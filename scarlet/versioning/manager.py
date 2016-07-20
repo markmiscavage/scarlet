@@ -12,10 +12,10 @@ class ContextState(object):
     time the query is evaluated.
     """
 
-    def prepare(self, val):
+    def prepare(self):
         return self
 
-    def _prepare(self):
+    def _prepare(self, val):
         return self
 
     def as_sql(self, qn=None, compiler=None, connection=None):
