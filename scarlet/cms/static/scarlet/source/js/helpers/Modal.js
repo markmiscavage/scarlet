@@ -13,6 +13,7 @@ class Modal {
 	 */
 	constructor (url, name, options, cb, closeCb){
 		this.name = name
+		this.displayName = this.name.split('modal-add-')[1]
 		this.cb = cb
 		this.closeCb = closeCb
 		this.options = {
@@ -26,7 +27,10 @@ class Modal {
 			dialogClass: 'dialog__no-title'
 		}
 		if (options) this.options = Object.assign(this.options, options)
-		if (isModalOpen()) this.$parentModal = window.scarlet_form_modal
+		if (isModalOpen()) {
+			this.$parentModal = window.scarlet_form_modal
+			this.breadCrumbs = window.breadcrumbs
+		}
 		this.$dialog = buildDialog(url, name, this.options)
 	}
 
@@ -39,10 +43,12 @@ class Modal {
 		if (isModalOpen()) {
 			frame = this.$dialog.find('iframe#' + this.name)[0]
 			this.$parentModal.find('iframe').parent().after(this.$dialog)
+			this.breadCrumbs.push(this.displayName)
 		} else {
 			this.$dialog.dialog('open')
 			frame = document.getElementById(this.name)
 			frame.contentWindow.scarlet_form_modal = this.$dialog
+			frame.contentWindow.breadcrumbs = this.breadCrumbs = [this.displayName]
 		}
 		this.initLoad = false
 		$(frame).load( () => {
@@ -66,6 +72,10 @@ class Modal {
 		this.addListeners(frameBody)
 		if(!this.initLoad) this.resizeDialog(frameBody)
 		this.initLoad = true
+		let crumb = $('<div></div>')
+		crumb.css({'position':'absolute','bottom':'10px','left': '10px'})
+		crumb.append(this.breadCrumbs.join(' > '))
+		$(frameBody).find('#container').append(crumb)
 	}
 
 	/**
@@ -80,6 +90,7 @@ class Modal {
 			this.$dialog.remove()
 			this.resizeDialog()
 		}
+		if(this.breadCrumbs.indexOf(this.displayName) !== -1) this.breadCrumbs.splice(this.breadCrumbs.indexOf(this.displayName), 1)
 	}
 
 	/**
