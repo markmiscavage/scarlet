@@ -7,6 +7,7 @@ from . fields import TaggedRelationFormField
 
 from taggit.models import Tag, TaggedItem
 from taggit.managers import TaggableManager
+from taggit.utils import parse_tags
 
 
 def get_model():
