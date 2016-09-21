@@ -169,7 +169,7 @@ define(
 			_ajaxData : function (term, page, context) {
 				var output = {
 					page : page,
-					q : term
+					query : term
 				};
 
 				if (this.param) {
