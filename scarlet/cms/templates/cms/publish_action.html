@@ -12,7 +12,7 @@
             <ul>
             {% for obj in queryset %}
                 <li class="object-name">{{ obj }}
-                    <em>{% if item.is_published %}Currently live, {% else %}Currently not live,{% endif %}
+                    <em>{% if obj.is_published %}Currently live, {% else %}Currently not live,{% endif %}
                         {{ obj.status_line }}</em>
                 </li>
             {% endfor %}
