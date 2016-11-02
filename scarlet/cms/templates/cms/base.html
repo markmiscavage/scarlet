@@ -7,123 +7,116 @@
 <!--[if IE 7]><html class="no-js lt-ie9 lt-ie8" lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}><![endif]-->
 <!--[if IE 8]><html class="no-js lt-ie9" lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}><![endif]-->
 <!--[if gt IE 8]><!--><html class="no-js" lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}><!--<![endif]-->
-	<head>
-		<meta charset="utf-8" />
+  <head>
+    <meta charset="utf-8" />
 
-		{# Use the .htaccess and remove these lines to avoid edge case issues. More info: h5bp.com/b/378 #}
-  		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    {# Use the .htaccess and remove these lines to avoid edge case issues. More info: h5bp.com/b/378 #}
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-		{# Prefetch your CDN URL: http://j.mp/bplatednsfetch #}
-		<!-- <link rel="dns-prefetch" href="{{ STATIC_URL }}scarlet/legacy/" /> -->
+    <title>{% block title %}{{ title }}{% endblock title %}</title>
 
-		{# Set STATIC_URL parameter #}
-		<!-- <link rel="static-url" href="{{ STATIC_URL }}scarlet/legacy/" /> -->
+    <meta name="description" content="{% block meta_description %}{{ page.description }}{% endblock %}" />
+    <meta name="keywords" content="{% block meta_keywords %}{{ page.keywords }}{% endblock %}" />
+    <meta name="author" content="RED Interactive Agency" />
 
-		<title>{% block title %}{{ title }}{% endblock title %}</title>
+    {# Mobile viewport optimized: j.mp/bplateviewport #}
+    <meta name="viewport" content="width=1024" />
 
-		<meta name="description" content="{% block meta_description %}{{ page.description }}{% endblock %}" />
-		<meta name="keywords" content="{% block meta_keywords %}{{ page.keywords }}{% endblock %}" />
-		<meta name="author" content="RED Interactive Agency" />
+    {# Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons #}
 
-		{# Mobile viewport optimized: j.mp/bplateviewport #}
-		<meta name="viewport" content="width=1024" />
+    {# CSS: implied media="all" #}
+    {% if not settings.TEMPLATE_DEBUG %}
+      <link rel="stylesheet"  href="{{ STATIC_URL }}css/bundle.css" />
+    {% else %}
+      {% render_bundle 'main' 'css' %}
+    {% endif %}
 
-		{# Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons #}
+    {# All JavaScript at the bottom, except for Modernizr. #}
+    {# Modernizr enables HTML5 elements & feature detects; For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ #}
+    <!-- <script src="{{ STATIC_URL }}scarlet/legacy/js/libs/modernizr.js"></script> -->
+    {% block extrastyle %}{% endblock %}
+    {% block extrahead %}{% endblock %}
+  </head>
+  <body class="{% block page_class %}page{% endblock page_class %}">
+    <div id="container">
+      {% block popup_header %}
+      <header class="app-header">
+        <div class="width-wrapper">
+          <h1 class="app-header__logo"><a href="{% url 'admin:cms_index' %}">{% block branding %}{% endblock %}</a></h1>
+          <nav role="account-nav" class="account-nav">
+            {% if user.is_active and user.is_staff %}
+              <p>{% trans 'Welcome back' %} <strong>{% filter force_escape %}{% firstof user.first_name user.username|title %}{% endfilter %}</strong></p>
+              {% block userlinks %}
+              <a href="{% url 'admin:cms_password_change' %}">{% trans 'Change password' %}</a>
+              {% user_url request.user bundle as user_url %}
+              {% if user_url %}<a href="{{ user_url }}">{% trans 'Administration' %}</a>{% endif %}
+              <a href="{% url 'admin:cms_logout' %}">{% trans 'Logout' %}</a>
+              {% endblock %}
+            {% endif %}
+            {% block nav-global %}{% endblock %}
+          </nav>
+        </div>
+      </header>
+      <nav role="{% block nav-role %}navbar{% endblock %}" class="{% block nav_class %}nav-main{% endblock %}">
+        {% block nav %}
+        <ul class="nav-main__list">
+        {% for navs in dashboard %}
+          <li class="nav-main__item icon-NAVS-0">
+            <strong  class="nav-main__item-title">{{ navs.0 }}</strong>
+            <ul class="nav-main__sublist">
+          {% for nav in navs.1 %}
+            <li class="nav-main__sublist-item"><a href="{{ nav.0 }}">{{ nav.1 }}</a></li>
+          {% endfor %}
+          </ul></li>
+        {% endfor %}
+        </ul>
+        {% endblock %}
+      </nav>
+      {% block object_header %}{% endblock %}
+      {% endblock popup_header %}
+      <section id="main" role="main" class="main">
+        {% block messages %}
+          {% if messages %}
+          <ul class="messagelist">
+          {% for message in messages %}
+            <li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
+          {% endfor %}
+          </ul>
+          {% endif %}
+        {% endblock messages %}
 
-		{# CSS: implied media="all" #}
-		{% if not settings.TEMPLATE_DEBUG %}
-			<link rel="stylesheet"  href="{{ STATIC_URL }}css/bundle.css" />
-		{% endif %}
-		<link rel="stylesheet" href="http://localhost:3000/build/css/bundle.css" />
+        {% block aside %}
+          {% if navigation %}
+          <nav role="sidebar" class="sidebar-nav">
+            {% for nav in navigation %}
+              <a href="{{ nav.0 }}" class="sidebar-nav__link">{{ nav.1 }}</a>
+            {% endfor %}
+          </nav>
+          {% endif %}
+        {% endblock %}
 
+        <article id="content" class="content {% block content_class %}{% endblock %}">
+        {% block content %}
+        {% endblock %}
+        </article>
+        <div id="modal"></div>
+      </section>
+    </div>
+    {% block popup_footer %}
+    <footer class="app-footer">
+      <div class="well">
+        {% block footer %}
+        Developed by <a href="//ff0000.com" target="_blank">RED Interactive Agency</a>
+        {% endblock %}
+      </div>
+    </footer>
+    {% endblock popup_footer %}
 
-		{# All JavaScript at the bottom, except for Modernizr. #}
-		{# Modernizr enables HTML5 elements & feature detects; For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ #}
-		<!-- <script src="{{ STATIC_URL }}scarlet/legacy/js/libs/modernizr.js"></script> -->
-		{% block extrastyle %}{% endblock %}
-		{% block extrahead %}{% endblock %}
-	</head>
-	<body class="{% block page_class %}page{% endblock page_class %}">
-		<div id="container">
-			{% block popup_header %}
-			<header>
-				<div>
-					<h1><a href="{% url 'admin:cms_index' %}">{% block branding %}{% endblock %}</a></h1>
-					<nav role="user-tools">
-						{% if user.is_active and user.is_staff %}
-							<p>{% trans 'Welcome back' %} <strong>{% filter force_escape %}{% firstof user.first_name user.username|title %}{% endfilter %}</strong></p>
-							{% block userlinks %}
-							<a href="{% url 'admin:cms_password_change' %}">{% trans 'Change password' %}</a>
-	                        {% user_url request.user bundle as user_url %}
-							{% if user_url %}<a href="{{ user_url }}">{% trans 'Administration' %}</a>{% endif %}
-							<a href="{% url 'admin:cms_logout' %}">{% trans 'Logout' %}</a>
-							{% endblock %}
-						{% endif %}
-						{% block nav-global %}{% endblock %}
-					</nav>
-				</div>
-			</header>
-			<nav role="{% block nav-role %}navbar{% endblock %}">
-				{% block dashboard %}
-				<ul>
-				{% for navs in dashboard %}
-					<li>{{ navs.0 }}<ul>
-					{% for nav in navs.1 %}
-						<li><a href="{{ nav.0 }}">{{ nav.1 }}</a></li>
-					{% endfor %}
-					</ul></li>
-				{% endfor %}
-				</ul>
-				{% endblock %}
-			</nav>
-			{% block object_header %}{% endblock %}
-			{% endblock popup_header %}
-			<section id="main" role="main">
-				<div>
-				{% block messages %}
-					{% if messages %}
-					<ul class="messagelist">
-					{% for message in messages %}
-						<li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
-					{% endfor %}
-					</ul>
-					{% endif %}
-				{% endblock messages %}
-
-				{% block aside %}
-					{% if navigation %}
-					<nav role="sidebar">
-						{% for nav in navigation %}
-							<a href="{{ nav.0 }}">{{ nav.1 }}</a>
-						{% endfor %}
-					</nav>
-					{% endif %}
-				{% endblock %}
-
-				<article id="content" class="{% block content_class %}{% endblock %}">
-				{% block content %}
-				{% endblock %}
-				</article>
-
-				</div>
-				<article id="modal"></article>
-			</section>
-		</div>
-		{% block popup_footer %}
-		<footer>
-			<div>
-				{% block footer %}
-				Developed by <a href="//ff0000.com" target="_blank">RED Interactive Agency</a>
-				{% endblock %}
-			</div>
-		</footer>
-		{% endblock popup_footer %}
-
-		{% if settings.TEMPLATE_DEBUG %}
-			{% render_bundle 'main' %}
-		{% else %}
-			<script src="{{ STATIC_URL }}js/bundle.js"></script>
-		{% endif %}
-	</body>
+    {% if settings.TEMPLATE_DEBUG %}
+      {% render_bundle 'main' 'js' %}
+    {% else %}
+      <script src="{{ STATIC_URL }}js/bundle.js"></script>
+    {% endif %}
+  </body>
 </html>
 {% endspaceless %}
