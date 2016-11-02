@@ -5,8 +5,8 @@ import '../../stylesheets/views/select.scss'
 const Select = View.extend({
   el: $('select'),
 
-  render: function() {
-    this.$el.selectize({
+  render: function () {
+    this.selectize = this.$el.selectize({
     	selectOnTab: true
     })
   }
