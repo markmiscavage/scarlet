@@ -1,6 +1,6 @@
 import { View } from 'backbone'
 import 'jquery-ui-timepicker-addon/dist/jquery-ui-timepicker-addon'
-import '../../stylesheets/views/datetimepicker.scss'
+import '../../stylesheets/views/date-time-picker.scss'
 
 const DateTimePicker = View.extend({
 
