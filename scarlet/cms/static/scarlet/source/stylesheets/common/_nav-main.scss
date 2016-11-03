@@ -1,0 +1,35 @@
+.nav-main {
+  justify-content: center;
+  flex-direction: row;
+  max-width: $max-width;
+  margin: auto;
+}
+
+.nav-main__list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.nav-main__item {
+  margin: 0 20px 20px 0;
+  min-width: 25%;
+}
+
+.nav-main__sublist {
+  background-color: $white;
+}
+
+.nav-main__sublist-item {
+  border-top: 1px solid $bg-primary;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.nav-main__item-title {
+  background-color: $white;
+  display: block;
+  padding: 20px 0;
+  text-align: center;
+}
