@@ -1,6 +1,6 @@
 import { View } from 'backbone'
-import datepicker from 'jquery-ui/datepicker'
-import '../../stylesheets/views/datetimepicker.scss'
+import datepicker from 'jquery-ui/ui/widgets/datepicker'
+import '../../stylesheets/views/date-picker.scss'
 
 const DatePicker = View.extend({
   render: function() {
