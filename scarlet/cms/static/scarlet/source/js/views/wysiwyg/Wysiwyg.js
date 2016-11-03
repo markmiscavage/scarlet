@@ -7,8 +7,6 @@ import insertMedia from './commands/insertMedia'
 import '../../../stylesheets/views/wysiwyg.scss'
 
 
-
-
 let guid = 0
 
 const Wysiwyg = View.extend({
