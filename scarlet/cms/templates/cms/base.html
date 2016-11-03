@@ -40,9 +40,9 @@
   <body class="{% block page_class %}page{% endblock page_class %}">
     <div id="container">
       {% block popup_header %}
-      <header class="app-header">
+      <header class="header-main">
         <div class="width-wrapper">
-          <h1 class="app-header__logo"><a href="{% url 'admin:cms_index' %}">{% block branding %}{% endblock %}</a></h1>
+          <h1 class="header-main__logo"><a href="{% url 'admin:cms_index' %}">{% block branding %}{% endblock %}</a></h1>
           <nav role="account-nav" class="account-nav">
             {% if user.is_active and user.is_staff %}
               <p>{% trans 'Welcome back' %} <strong>{% filter force_escape %}{% firstof user.first_name user.username|title %}{% endfilter %}</strong></p>
