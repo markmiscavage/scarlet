@@ -1,60 +1,79 @@
 {% extends "cms/base_site.html" %}
 
 {% block nav-role %}dashboard{% endblock %}
-
+{% block nav_class %}nav-dashboard{% endblock %}
+{% block page_class %}dashboard{% endblock %}
 {% block content_class %}list{% endblock %}
+{% block nav %}
+  <ul class="nav-dashboard__list">
+  {% for navs in dashboard %}
+    <li class="nav-dashboard__item">
+      <strong class="nav-dashboard__item-title">
+        <i class="fa fa-{{ navs.0|lower }}"></i>
+        {{ navs.0 }}
+      </strong>
+      <ul class="nav-dashboard__sublist">
+    {% for nav in navs.1 %}
+      <li class="nav-dashboard__sublist-item"><a href="{{ nav.0 }}">{{ nav.1 }}</a></li>
+    {% endfor %}
+    </ul></li>
+  {% endfor %}
+  </ul>
+{% endblock %}
 {% block content %}
-<table id="recent-history">
-	<caption>Recent History</caption>
-	<thead>
-		<tr>
-			<td>
-				<form action="" method="get">
-					{{ form.as_p }}
-					<input type="submit" value="Filter" />
-				</form>
-			</td>
-		</tr>
-		<tr>
-			<th></th>
-			<th>Date</th>
-			<th>Type</th>
-			<th>Name</th>
-			<th>User</th>
-		</tr>
-	</thead>
-	<tbody>
-	{% for obj in page.object_list %}
-	<tr>
-		<td class="actions">{% if obj.url %}<a href="{{ obj.url }}" title="Edit">
-			<i class="fa fa-pencil" aria-hidden="true"></i>
-		</a>{% endif %}</td>
-		<td>{{ obj.when|date:"m/d/Y P" }}</td>
-		<td>{{ obj.model_repr }}</td>
-		<td>{{ obj.object_repr }} ({{ obj.get_action_display }})</td>
-		<td>{{ obj.user_name|title }}</td>
-	</tr>
-	{% endfor %}
-	</tbody>
+<table id="recent-history" class="dashboard-history">
+  <caption>Recent History</caption>
+  <thead>
+    <tr>
+      <td>
+        <form action="" method="get">
+          {{ form.as_p }}
+          <input type="submit" value="Filter" />
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <th>Edit</th>
+      <th>Date</th>
+      <th>Type</th>
+      <th>Name</th>
+      <th>User</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for obj in page.object_list %}
+  <tr>
+    <td class="actions">{% if obj.url %}
+      <a href="{{ obj.url }}" class="action action-edit" title="Edit">
+        <i class="fa fa-pencil" aria-hidden="true"></i>
+      </a>{% endif %}
+    </td>
+    <td>{{ obj.when|date:"m/d/Y P" }}</td>
+    <td>{{ obj.model_repr }}</td>
+    <td>{{ obj.object_repr }} ({{ obj.get_action_display }})</td>
+    <td>{{ obj.user_name|title }}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
 </table>
 
 {% if page.paginator.num_pages > 1 %}
-	<div class="pagination">
-		<span class="page-links">
-			{% if page.has_previous %}
-				<a href="?page={{ page.previous_page_number }}#main" title="Previous">
-					<i class="fa fa-chevron-left" aria-hidden="true"></i>
-				</a>
-			{% endif %}
-			<span class="page-current">
-				Page {{ page.number }} of {{ page.paginator.num_pages }}
-			</span>
-			{% if page.has_next %}
-				<a href="?page={{ page.next_page_number }}#main" title="Next">
-					<i class="fa fa-chevron-right" aria-hidden="true"></i>
-				</a>
-			{% endif %}
-		</span>
-	</div>
+  <div class="pagination">
+    <span class="pagination__links">
+      {% if page.has_previous %}
+        <a href="?page={{ page.previous_page_number }}#main" class="pagination__previous" title="Previous">
+          <i class="fa fa-chevron-left" aria-hidden="true"></i>
+        </a>
+      {% endif %}
+      <span class="pagination__current-page">
+        Page {{ page.number }} of {{ page.paginator.num_pages }}
+      </span>
+      {% if page.has_next %}
+        <a href="?page={{ page.next_page_number }}#main" class="pagination__next" title="Next">
+          <i class="fa fa-chevron-right" aria-hidden="true"></i>
+        </a>
+      {% endif %}
+    </span>
+  </div>
 {% endif %}
 {% endblock %}
