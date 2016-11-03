@@ -83,10 +83,7 @@ function createWebpackLoaders () {
     test: /\.js$/,
     loader: 'babel-loader',
     exclude: /node_modules/,
-    include: PATHS.src,
-    query: {
-      plugins: ['transform-runtime']
-    }
+    include: PATHS.src
   },
   {
     test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
