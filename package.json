@@ -107,8 +107,7 @@
   "scripts": {
     "start": "node ./webpack-server.js",
     "save-prebuild": "npm run lint",
-    "build": "npm run clean && npm run build:deploy",
-    "build:deploy": "cross-env NODE_ENV=production webpack",
+    "build": "npm run clean && webpack --config webpack.prod.config.js",
     "clean": "rimraf ./scarlet/cms/static/scarlet/build",
     "lint": "standard",
     "test": "karma start karma.conf.js"
