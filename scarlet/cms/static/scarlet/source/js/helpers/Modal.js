@@ -1,4 +1,5 @@
 'use strict'
+import { dialog } from 'jquery-ui/ui/widgets/dialog'
 import { dasherize } from 'helpers/utils'
 import '../../stylesheets/views/modal.scss'
 
@@ -9,7 +10,7 @@ class Modal {
 	 * @param  {string} name - name to pass to modal
 	 * @param  {object} options - dialog overrides
 	 * @param  {function} cb - successful submit callback
-	 * @param  {function} cb - close modal callback 
+	 * @param  {function} cb - close modal callback
 	 */
 	constructor (url, name, options, cb, closeCb){
 		this.name = name
@@ -38,7 +39,7 @@ class Modal {
 	 * Open method triggers modal open
 	 * @param  {string}
 	 */
-	open (qry, tags) {	
+	open (qry, tags) {
 		let frame
 		if (isModalOpen()) {
 			frame = this.$dialog.find('iframe#' + this.name)[0]
@@ -118,7 +119,7 @@ class Modal {
 			// LIST
 			// let children = this.$parentModal.children()
 			// this.$parentModal.dialog({height: getChildrenHeight(children) + 100, width: getLargestWidth(children) + 50})
-			// STACKED 
+			// STACKED
 			let last = this.$parentModal.children().last()
 			this.$parentModal.dialog({height: getModalContent(last).outerHeight() + 25, width: getModalContent(last).outerWidth() + 20})
 		} else if(this.$dialog){
@@ -189,7 +190,7 @@ function getModalContent (wrap) {
 }
 
 /**
- * For Click to open window 
+ * For Click to open window
  * @param  {object} event
  * @param  {Function} callback
  */
