@@ -9,16 +9,7 @@ const NoErrorsPlugin = webpack.NoErrorsPlugin
 const ProvidePlugin = webpack.ProvidePlugin
 
 function createWebpackLoaders () {
-  const loaders = [{
-    test: /\.scss$/,
-    loaders: [
-      'style-loader',
-      'css-loader?importLoaders=2&sourceMap',
-      'postcss-loader',
-      'sass-loader?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
-    ],
-    include: path.join(config.context, 'stylesheets')
-  }]
+  const loaders = []
 
   return loaders
 }

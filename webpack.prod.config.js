@@ -18,12 +18,7 @@ const UGLIFY_CONFIG = {
 }
 
 function createWebpackLoaders () {
-  const loaders = [{
-    test: /\.scss$/,
-    loader: ExtractTextPlugin.extract('style',
-      'css?sourceMap!postcss!sass'),
-    include: path.join(config.context, 'stylesheets')
-  }]
+  const loaders = []
 
   return loaders
 }

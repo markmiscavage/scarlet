@@ -83,7 +83,13 @@ function createWebpackLoaders () {
     test: /\.js$/,
     loader: 'babel-loader',
     exclude: /node_modules/,
-    include: PATHS.src
+    include: path.join(PATHS.src, 'js')
+  },
+  {
+    test: /\.scss$/,
+    loader: ExtractTextPlugin.extract('style',
+      'css?sourceMap!postcss!sass'),
+    include: path.join(PATHS.src, 'stylesheets')
   },
   {
     test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
