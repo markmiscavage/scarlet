@@ -1,5 +1,5 @@
-import { sortable } from 'jquery-ui/sortable'
 import { View } from 'backbone'
+import { sortable } from 'jquery-ui/ui/widgets/sortable'
 import { clickOpenPopup } from 'helpers/WindowPopup'
 import pubsub from 'helpers/pubsub'
 
