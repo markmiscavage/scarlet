@@ -1,35 +1,51 @@
 .nav-main {
-  justify-content: center;
-  flex-direction: row;
-  max-width: $max-width;
-  margin: auto;
+
 }
 
 .nav-main__list {
   display: flex;
+  margin: auto;
+  max-width: $max-width;
+  justify-content: space-around;
   flex-direction: row;
-  flex-wrap: wrap;
-  flex: 1;
 }
 
 .nav-main__item {
-  margin: 0 20px 20px 0;
-  min-width: 25%;
+  display: inline-block;
+  flex-grow: 1;
+  position: relative;
 }
 
 .nav-main__sublist {
-  background-color: $white;
+  padding-top: 10px;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  opacity: 0;
+
+  // transition out effect
+  transition: top 200ms, opacity 200ms;
+
+  .nav-main__item:hover & {
+    top: 100%;
+    opacity: 1;
+
+    // transition in effect
+    transition: top 200ms, opacity 200ms 50ms;
+  }
 }
 
 .nav-main__sublist-item {
-  border-top: 1px solid $bg-primary;
-  padding: 20px 0;
+  background-color: $white;
+  padding: 10px;
   text-align: center;
 }
 
 .nav-main__item-title {
   background-color: $white;
   display: block;
-  padding: 20px 0;
+  height: 60px;
+  line-height: 60px;
   text-align: center;
+  text-transform: uppercase;
 }
