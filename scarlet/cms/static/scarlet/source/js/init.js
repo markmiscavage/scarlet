@@ -1,6 +1,3 @@
-
 import App from 'views/App'
 
-
-
-new App().render();
+new App().render()
