@@ -115,7 +115,7 @@
     {% if settings.TEMPLATE_DEBUG %}
       {% render_bundle 'main' 'js' %}
     {% else %}
-      <script src="{{ STATIC_URL }}js/bundle.js"></script>
+      <script src="{{ STATIC_URL }}js/main.js"></script>
     {% endif %}
   </body>
 </html>
