@@ -145,3 +145,7 @@ $spacer: 1;
     border-left-color: $color;
   }
 }
+
+@mixin box-shadow ($horizontal: 0px, $vertical: 10px, $blur: 40px, $spread: -10px, $color: #c4c4c4) {
+  box-shadow: $horizontal $vertical $blur $spread $color;
+}
