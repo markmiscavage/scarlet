@@ -6,8 +6,9 @@ $capped-width: ($max-width * 0.8);
 // COLORS
 $bg-primary: #eee;
 $white: #fff;
-$red: #e81b00;
-$black: #000;
+$red: #ff0000;
+$black: #191919;
+$gray: #7f7f7f;
 
 // LEGACY
 $background-color: #eee !default;
@@ -19,6 +20,7 @@ $medium-blue: #8197a3;
 $light-blue: #b6cad1;
 $gray: #b8b8b8;
 $red: #f00;
+
 $width: 1280px;
 $gridlet: 3px;
 $spacer: $gridlet*4;
