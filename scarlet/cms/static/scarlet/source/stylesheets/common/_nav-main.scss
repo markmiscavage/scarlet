@@ -2,7 +2,20 @@
   @include box-shadow;
   background-color: $white;
   position: relative;
-  z-index: 1;
+  z-index: 0;
+
+  // transition-out
+  transition: z-index 0ms 250ms;
+
+  &:hover {
+
+    // switch z-index to prevent invoking sublist outside of nav
+    z-index: 1;
+
+    // transition-in
+    transition: z-index 0ms 0ms;
+
+  }
 }
 
 .nav-main__list {
@@ -17,7 +30,6 @@
   display: inline-block;
   flex-grow: 1;
   position: relative;
-  z-index: auto;
 
   .fa-angle-down {
     color: $gray;
@@ -79,7 +91,7 @@
   z-index: -1;
 
   // transition-out effect
-  transition: top 200ms, opacity 200ms;
+  transition: top 150ms, opacity 150ms;
 
   .nav-main__item:hover & {
     top: 100%;
