@@ -61,13 +61,19 @@
         {% block nav %}
         <ul class="nav-main__list">
         {% for navs in dashboard %}
-          <li class="nav-main__item icon-NAVS-0">
-            <strong  class="nav-main__item-title">{{ navs.0 }}</strong>
-            <ul class="nav-main__sublist">
+          <li class="nav-main__item">
+            <strong class="nav-main__item-title">
+              <span>{{ navs.0 }}</span>
+              <i class="fa fa-angle-down" aria-hidden="true"></i>
+            </strong>
+            <ul class="nav-main__sublist fa fa-caret-up">
           {% for nav in navs.1 %}
-            <li class="nav-main__sublist-item"><a href="{{ nav.0 }}">{{ nav.1 }}</a></li>
+            <li class="nav-main__sublist-item">
+              <a class="nav-main__sublist-link" href="{{ nav.0 }}">{{ nav.1 }}</a>
+            </li>
           {% endfor %}
-          </ul></li>
+          </ul>
+        </li>
         {% endfor %}
         </ul>
         {% endblock %}
