@@ -1,6 +1,7 @@
 .nav-main {
   @include box-shadow;
   background-color: $white;
+  margin-bottom: 25px;
   position: relative;
   z-index: 0;
 
@@ -8,13 +9,11 @@
   transition: z-index 0ms 250ms;
 
   &:hover {
-
     // switch z-index to prevent invoking sublist outside of nav
-    z-index: 1;
+    z-index: $z-high;
 
     // transition-in
     transition: z-index 0ms 0ms;
-
   }
 }
 
@@ -82,24 +81,7 @@
 }
 
 .nav-main__sublist {
-  @include box-shadow;
-  padding-top: 5px;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  opacity: 0;
-  z-index: -1;
-
-  // transition-out effect
-  transition: top 150ms, opacity 150ms;
-
-  .nav-main__item:hover & {
-    top: 100%;
-    opacity: 1;
-
-    // transition-in effect
-    transition: top 200ms, opacity 200ms 50ms;
-  }
+  @include flyout($hover-selector: '.nav-main__item:hover');
 
   // .fa-caret-up
   &:before {
@@ -131,7 +113,7 @@
   cursor: pointer;
 
   // TODO: add class to active page (backend)
-  &.active,
+  &:active,
   &:hover {
     color: $red;
   }
