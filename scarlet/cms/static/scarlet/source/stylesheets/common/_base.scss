@@ -5,7 +5,6 @@ body {
 }
 
 a {
-  text-transform: uppercase;
   text-decoration: none;
 }
 
@@ -64,18 +63,13 @@ table {
 }
 
 .main {
+  @include microfix;
   background-color: #fff;
   padding: 20px;
   margin: 0 auto;
   position: relative;
   max-width: $max-width;
-}
-
-.sidebar-nav + .content {
-  float: right;
-  width: 79%;
-  border-left: 1px solid $bg-primary;
-  padding-left: 20px;
+  z-index: $z-low;
 }
 
 .width-wrapper {
