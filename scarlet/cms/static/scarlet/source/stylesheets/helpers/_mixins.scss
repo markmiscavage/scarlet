@@ -149,3 +149,37 @@ $spacer: 1;
 @mixin box-shadow ($horizontal: 0px, $vertical: 10px, $blur: 40px, $spread: -10px, $color: #c4c4c4) {
   box-shadow: $horizontal $vertical $blur $spread $color;
 }
+
+@mixin divider ($color: $black, $size: 9px) {
+
+  &:after {
+    content: '';
+    display: inline-block;
+    background-color: $color;
+    width: 1px;
+    height: $size;
+    margin: 0 10px;
+  }
+}
+
+@mixin flyout ($hover-selector) {
+  @include box-shadow;
+  padding-top: 5px;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  opacity: 0;
+  z-index: -1;
+
+  // transition-out effect
+  transition: top 150ms, opacity 150ms;
+
+  #{$hover-selector} & {
+    top: 100%;
+    opacity: 1;
+
+    // transition-in effect
+    transition: top 200ms, opacity 200ms 50ms;
+  }
+
+}
