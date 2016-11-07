@@ -3,6 +3,22 @@
   width: 20%;
 }
 
+.nav-sidebar + .content {
+  float: right;
+  width: 79%;
+  border-left: 1px solid $bg-primary;
+  padding-left: 20px;
+}
+
 .nav-sidebar__link {
+  color: $black;
   display: block;
+  padding: 12px 0 12px 15px;
+  text-transform: uppercase;
+
+  // TODO: add class to active page (backend)
+  &:active {
+    color: $white;
+    background-color: $red;
+  }
 }
