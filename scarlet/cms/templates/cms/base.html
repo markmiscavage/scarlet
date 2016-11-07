@@ -93,9 +93,9 @@
 
         {% block aside %}
           {% if navigation %}
-          <nav role="sidebar" class="sidebar-nav">
+          <nav role="sidebar" class="nav-sidebar">
             {% for nav in navigation %}
-              <a href="{{ nav.0 }}" class="sidebar-nav__link">{{ nav.1 }}</a>
+              <a href="{{ nav.0 }}" class="nav-sidebar__link">{{ nav.1 }}</a>
             {% endfor %}
           </nav>
           {% endif %}
