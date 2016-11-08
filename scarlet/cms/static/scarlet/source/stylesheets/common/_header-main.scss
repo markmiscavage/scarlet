@@ -4,11 +4,11 @@
 }
 
 .header-main__logo {
-  background: url('../images/logo-scarlet.png') no-repeat;
-  text-indent: -9999px;
+  //text-indent: -9999px;
   width: 190px;
   height: 40px;
   float: left;
+  //background: url(../images/logo-scarlet.svg#icon-scarlet) no-repeat;
 
   a {
     cursor: pointer;
@@ -17,20 +17,25 @@
   }
 }
 
-.account-nav {
+.nav-account {
   float: right;
+  text-transform: uppercase;
+  text-align: right;
+
+  p {
+    margin-bottom: 10px;
+  }
+
+  strong {
+    font-weight: bold;
+  }
 
   a {
+    @include divider($size: 10px);
     color: #000;
-    margin: 0 10px 0 0;
-
-    &:after {
-      content: '|';
-      display: inline-block;
-      margin: 0 0 0 10px;
-    }
 
     &:last-of-type {
+
       &:after {
         display: none;
       }
@@ -41,4 +46,18 @@
 .user-nav {
   display: flex;
   flex-direction: row;
+}
+
+
+// svg
+svg {
+  width: 100%;
+
+  .bar {
+    fill: $red;
+  }
+
+  .type {
+    fill: #000;
+  }
 }
