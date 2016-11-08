@@ -4,11 +4,9 @@
 }
 
 .header-main__logo {
-  //text-indent: -9999px;
   width: 190px;
   height: 40px;
   float: left;
-  //background: url(../images/logo-scarlet.svg#icon-scarlet) no-repeat;
 
   a {
     cursor: pointer;
@@ -46,18 +44,4 @@
 .user-nav {
   display: flex;
   flex-direction: row;
-}
-
-
-// svg
-svg {
-  width: 100%;
-
-  .bar {
-    fill: $red;
-  }
-
-  .type {
-    fill: #000;
-  }
 }
