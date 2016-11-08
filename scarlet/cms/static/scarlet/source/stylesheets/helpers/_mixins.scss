@@ -3,16 +3,10 @@ $light-blue: lightblue;
 $gridlet: 1;
 $spacer: 1;
 
-@mixin microfix {
-
-    &:before, &:after {
-        content: '';
-        display: table;
-    }
-
-    &:after {
-        clear: both;
-    }
+// center and constrain element to max-width
+@mixin width-wrapper {
+  max-width: $max-width;
+  margin: 0 auto;
 }
 
 // Default font
@@ -172,14 +166,14 @@ $spacer: 1;
   z-index: -1;
 
   // transition-out effect
-  transition: top 150ms, opacity 150ms;
+  transition: top 250ms, opacity 200ms 50ms;
 
   #{$hover-selector} & {
     top: 100%;
     opacity: 1;
 
     // transition-in effect
-    transition: top 200ms, opacity 200ms 50ms;
+    transition: top 250ms, opacity 200ms 50ms;
   }
 
 }
