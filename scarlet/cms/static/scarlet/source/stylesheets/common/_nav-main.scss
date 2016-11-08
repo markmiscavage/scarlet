@@ -39,13 +39,16 @@
 
   &:hover {
 
+    .nav-main__item-title {
+      color: $red;
+    }
+
     .fa-angle-down {
       color: $red;
       transform: scaleY(-1);
     }
   }
 }
-
 
 .nav-main__item-title {
   background-color: $white;
