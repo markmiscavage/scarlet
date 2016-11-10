@@ -1,5 +1,5 @@
 {% load cms %}
-<header {% if obj %}class="header-object"{% endif %}>
+<header class="header-object">
   {% block header %}
     {% if back_bundle %}
       {% bundle_url back_bundle "main_list" as back_url %}
@@ -20,12 +20,14 @@
         {% endif %}
       {% endif %}
     </h2>
-    <div class="header-object__actions">
-      <i class="fa fa-chevron-down"></i>
-      <div class="header-object__actions-list">
-        {% block object_links %}{% endblock %}
+    {% if obj %}
+      <div class="header-object__actions">
+        <i class="fa fa-chevron-down"></i>
+        <div class="header-object__actions-list">
+          {% block object_links %}{% endblock %}
+        </div>
       </div>
-    </div>
+    {% endif %}
   {% endblock %}
 
   {% block tools %}
