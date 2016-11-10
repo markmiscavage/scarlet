@@ -48,7 +48,6 @@
                 data-{{field.field_tag}}-value="{{field.field.value}}"
               {% endif %}
             {% endif %}
-          >
               {{ field.label_tag }}
               {% if field.field.help_text %}<em class="help">{{ field.field.help_text|safe }}</em>{% endif %}
               {{ field.field }}
@@ -107,10 +106,10 @@
   {% endblock formsets %}
 
   {% block submit %}
-    <p class="submit-row">
-      <a class="button close-popup" href="{{ cancel_url }}">Cancel</a>
-      <input class="big" type="submit" value="Save" />
-    </p>
+    <div class="button-group button-group--submit">
+      <a class="button button--secondary close-popup" href="{{ cancel_url }}">Cancel</a>
+      <input class="button button--primary" type="submit" value="Save" />
+    </div>
   </form>
   {% endblock submit %}
 {% endblock %}
