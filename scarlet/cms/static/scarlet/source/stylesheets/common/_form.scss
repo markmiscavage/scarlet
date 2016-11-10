@@ -1,0 +1,28 @@
+input[type=text],
+textarea {
+  background-color: $bg-primary;
+  display: block;
+  width: 100%;
+
+  td & {
+    display: inline-block;
+    width: auto;
+  }
+}
+
+input[type=text] {
+  line-height: 38px;
+  text-indent: 10px;
+}
+
+fieldset {
+
+  legend {
+    display: none;
+  }
+
+  &:not(:last-of-type),
+  & > div:not(:last-of-type) {
+    margin-bottom: 40px;
+  }
+}
