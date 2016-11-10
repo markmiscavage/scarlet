@@ -4,11 +4,16 @@ $max-width: 1400px;
 $capped-width: ($max-width * 0.8);
 
 // COLORS
-$bg-primary: #eee;
 $white: #fff;
 $red: #ff0000;
 $black: #191919;
 $gray: #7f7f7f;
+$gray-light: #eee;
+$gray-dark: #666;
+$blue: #0084ff;
+$blue-dark: #006bcd;
+
+$bg-primary: $gray-light;
 
 // STACKING
 $z-high: 3;
@@ -19,7 +24,6 @@ $z-low: 1;
 $background-color: #eee !default;
 $text-color: #333 !default;
 $link-color: #f00 !default;
-$blue: #0084ff;
 $dark-blue: #11232e;
 $medium-blue: #8197a3;
 $light-blue: #b6cad1;
