@@ -4,9 +4,9 @@ const BatchActions = View.extend({
   el: '.list',
 
   events: {
-    'click .select-all': 'selectAll',
-    'click .batch-check': 'selectRow',
-    'click .link-cell': 'goToRowUrl'
+    'click [data-type=batch-check-all]': 'selectAll',
+    'click [data-type=batch-check-row]': 'selectRow',
+    'click [data-edit-url]': 'goToRowUrl'
   },
 
   initialize: function () {
@@ -14,9 +14,9 @@ const BatchActions = View.extend({
   },
 
   render: function () {
-    this.$actions = this.$el.find('.batch-action')
-    this.$batchCheck = this.$el.find('.batch-check')
-    this.$selectAll = this.$el.find('.select-all')
+    this.$actions = this.$el.find('[data-type=batch-action]')
+    this.$batchCheck = this.$el.find('[data-type=batch-check-row]')
+    this.$selectAll = this.$el.find('[data-type=batch-check-all]')
   },
 
   selectAll: function (e) {
@@ -48,11 +48,11 @@ const BatchActions = View.extend({
   },
 
   enableActions : function () {
-    this.$actions.removeClass('disabled')
+    this.$actions.removeClass('button--disabled').addClass('button--primary')
   },
 
   disableActions : function () {
-    this.$actions.addClass('disabled')
+    this.$actions.addClass('button--disabled').removeClass('button--primary')
     this.$selectAll.prop('checked', false)
   },
 
@@ -64,6 +64,10 @@ const BatchActions = View.extend({
       const href = $this.attr('href').replace(/(_selected=)[^\&]+/, '$1')
       $this.attr('href',  href + self.idList.join(','))
     });
+  },
+
+  goToRowUrl : function () {
+   window.location.href = this.$el.find('[data-edit-url]').data('edit-url')
   }
 })
 
