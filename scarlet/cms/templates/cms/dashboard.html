@@ -44,8 +44,8 @@
   {% for obj in page.object_list %}
   <tr>
     <td class="actions">{% if obj.url %}
-      <a href="{{ obj.url }}" class="action action-edit" title="Edit">
-        <i class="fa fa-pencil" aria-hidden="true"></i>
+      <a href="{{ obj.url }}" class="actions__action" title="Edit">
+        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
       </a>{% endif %}
     </td>
     <td>{{ obj.when|date:"m/d/Y P" }}</td>
