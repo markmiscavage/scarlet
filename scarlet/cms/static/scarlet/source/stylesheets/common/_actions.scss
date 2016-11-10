@@ -1,26 +1,30 @@
-.actions {}
+.actions {
 
-.action {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
+  &__action {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 20px;
 
-  .fa {
-    line-height: 0;
+    .fa {
+      line-height: 0;
+      color: $black;
+    }
 
-    &:before {
-      font-size: 12px;
+    &:last-of-type {
+      margin-right: 0;
+    }
+
+    &:hover {
+
+      .fa {
+        color: $red;
+      }
     }
   }
-}
 
-.action-edit {
-  border: 1px solid $black;
-  border-radius: 3px;
-
-  .fa {
-    position: relative;
-    left: 4px;
-    top: -5px;
+  &__help {
+    font-size: 12px;
+    margin-top: 8px;
   }
 }
