@@ -144,7 +144,10 @@ $spacer: 1;
   box-shadow: $horizontal $vertical $blur $spread $color;
 }
 
-@mixin divider ($color: $black, $size: 9px) {
+@mixin divider ($color: $black, $size: 9px, $space: 10px) {
+  position: relative;
+  padding-right: $space;
+  margin-right: $space;
 
   &:after {
     content: '';
@@ -152,7 +155,10 @@ $spacer: 1;
     background-color: $color;
     width: 1px;
     height: $size;
-    margin: 0 10px;
+    top: 50%;
+    right: 0;
+    position: absolute;
+    transform: translateY(-50%);
   }
 }
 
