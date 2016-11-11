@@ -9,21 +9,24 @@ import '../../../stylesheets/views/editor.scss'
 
 let guid = 0
 
-const editor = View.extend({
+const Editor = View.extend({
 
   render: function (dom) {
     this.$toolbar = this.$('.editor-toolbar')
     this.$textarea = this.$('.editor-textarea')
 
-    this.setupeditor()
+    this.setupEditor()
     this.attachCommands()
   },
 
   setupEditor: function () {
+    var editor
     var id = 'wysihtml5-' + (++guid)
     var textareaId = id + '-textarea'
     var toolbarId = id + '-toolbar'
-    var editor
+
+    // TODO: improve -> access publicPath from webpack process.env
+    var envPath = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/' : '/'
 
     this.$toolbar.attr('id', toolbarId)
     this.$textarea.attr('id', textareaId)
@@ -32,7 +35,7 @@ const editor = View.extend({
         parserRules: editorRules,
         style: false,
         toolbar: toolbarId,
-        stylesheets: '/static/scarlet/legacy/css/wysiwyg.css',
+        stylesheets: envPath + 'build/css/main.css',
         id: id
     })
 
@@ -148,4 +151,4 @@ const editor = View.extend({
   }
 })
 
-export default editor
+export default Editor
