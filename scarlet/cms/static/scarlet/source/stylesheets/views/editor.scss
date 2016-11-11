@@ -1,0 +1,196 @@
+@import '../helpers/vars';
+@import '../helpers/mixins';
+@import '../helpers/placeholders';
+@import '../helpers/fonts';
+
+.editor-textarea {
+  background-color: $gray-light;
+  padding: 10px;
+
+  body {
+    font: 18px/1 AvenirRoman;
+    color: $blue;
+  }
+
+  h1 {
+    font-size: 48px;
+  }
+
+  h2 {
+    font-size: 39px;
+  }
+
+  h3 {
+    font-size: 31px;
+  }
+
+  h4 {
+    font-size: 25px;
+  }
+
+  h1, h2, h3, h4 {
+    line-height: 1.2em;
+    margin-bottom: 1.1em;
+  }
+
+  p, li {
+    line-height: 1.4em;
+    margin-bottom: 1.4em;
+  }
+
+  ul {
+    padding-left: 40px;
+    list-style: disc;
+
+    ul {
+      list-style: circle;
+    }
+  }
+
+  ol {
+    padding-left: 40px;
+    list-style: decimal;
+
+    ol {
+      list-style: lower-alpha;
+    }
+  }
+
+  ol, ul {
+    ol, ul {
+      padding-bottom: 0;
+    }
+  }
+
+  b, strong {
+    font-weight: bold;
+  }
+
+  i, em {
+    font-style: italic;
+  }
+
+  a,
+  a:visited {
+    color: $medium-blue;
+  }
+}
+
+.editor-toolbar {
+  position: relative;
+  padding-bottom: $gridlet*2;
+
+  + textarea {
+    height: 400px;
+    display: block;
+    font: 14px/1 Consolas, "Lucida Console", Monaco, monospace;
+  }
+}
+
+.wysihtml5-sandbox {
+  border: 1px solid $gray;
+  color: $blue;
+  font: 18px/1 AvenirRoman;
+  padding: $gridlet*2 $gridlet*3;
+  outline: 0;
+  width: 100%;
+  background: #fff;
+  height: 400px;
+  margin-bottom: $spacer;
+  display: block;
+}
+
+.editor-buttons {
+  @include microfix;
+
+  a {
+    background-color: $blue;
+    color: $white;
+    display: block;
+    float: left;
+    text-align: center;
+    padding: 5px 10px;
+    margin-right: 5px;
+
+    &:hover {
+      background-color: $blue-dark;
+    }
+
+    &.wysihtml5-action-active,
+    &.wysihtml5-command-active {
+      background-color: $blue;
+      color: #fff;
+    }
+
+    + a {
+      border-left-width: 0;
+    }
+  }
+
+  .spacer {
+    margin-right: $gridlet*2;
+    border-top-right-radius:$gridlet;
+    border-bottom-right-radius:$gridlet;
+
+    + a {
+      border-left-width: 1px;
+      border-top-left-radius:$gridlet;
+      border-bottom-left-radius:$gridlet;
+    }
+  }
+
+  .disabled,
+  .disabled:hover {
+    cursor: default;
+    color: #B8B8B8;
+    border-color: #B8B8B8;
+    background-color: #E5E5E5;
+  }
+}
+
+.editor-modals .modal {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-top: $spacer;
+  background: #fff;
+  border: 1px solid $light-blue;
+  padding: 20px;
+  width: 400px;
+  margin-left: -200px;
+  z-index: 1;
+  @include box-shadow(1px 4px 5px rgba($blue, 0.25));
+
+  a {
+    @include button;
+    cursor: pointer;
+  }
+}
+
+[data-wysihtml5-command=bold] {
+  font-weight: bold;
+}
+
+[data-wysihtml5-command=italic] {
+  font-style: italic;
+}
+
+.editor-annotations {
+  visibility: hidden;
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.editor-text-annotated,
+a.editor-text-annotated {
+  background: #B6CAD1;
+  color: #fff;
+  text-decoration: none;
+  padding: 1px 3px;
+
+  &:after {
+    content: ' *';
+    font-weight: normal;
+  }
+}
