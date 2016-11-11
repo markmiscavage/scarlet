@@ -17,12 +17,6 @@ function createWebpackLoaders () {
 function createWebpackPlugins () {
   const plugins = [
     new NoErrorsPlugin(),
-    new DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('development'),
-        BROWSER: JSON.stringify(true)
-      }
-    }),
     new BundleTracker({
       filename: './webpack-stats.json'
     })
@@ -31,8 +25,8 @@ function createWebpackPlugins () {
   return plugins
 }
 
+config.output.publicPath = 'http://localhost:3000/build/'
 config.devtool = 'cheap-source-map'
 config.module.loaders.push(...createWebpackLoaders())
 config.plugins.push(...createWebpackPlugins())
-
 module.exports = config

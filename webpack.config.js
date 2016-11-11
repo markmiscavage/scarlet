@@ -42,13 +42,12 @@ module.exports = {
       'font-awesome-sass!'+ path.resolve('./webpack-font-awesome-sass.config.js'),
       'eventsource-polyfill',
       './js/init'
-    ],
+    ]
   },
 
   output: {
     path: PATHS.static,
-    filename: 'js/[name].js',
-    publicPath: 'http://localhost:3000/build/'
+    filename: 'js/[name].js'
   },
 
   module: {
@@ -82,7 +81,10 @@ function createWebpackLoaders () {
   var loaders = [{
     test: /\.js$/,
     loader: 'babel-loader',
-    exclude: /node_modules/,
+    exclude: [
+      /node_modules/,
+      /wysihtml5/
+    ],
     include: path.join(PATHS.src, 'js')
   },
   {
@@ -104,7 +106,7 @@ function createWebpackLoaders () {
     loader: 'file?name=media/[name].[ext]'
   },
   {
-    test: /\.(png|jpg|gif)$/,
+    test: /\.(png|jpg|gif|svg)$/,
     loader: 'file?context=/source/images&name=images/[name].[ext]'
   },
   {
@@ -121,7 +123,9 @@ function createWebpackLoaders () {
 
 function createWebpackPlugins () {
   const plugins = [
-    new DefinePlugin({ 'process.env': WEBPACK_ENV }),
+    new DefinePlugin({
+      'process.env': WEBPACK_ENV
+    }),
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',

@@ -35,6 +35,7 @@ function createWebpackPlugins () {
   return plugins
 }
 
+config.output.publicPath = '/build/'
 config.module.loaders.push(...createWebpackLoaders())
 config.plugins.push(...createWebpackPlugins())
 module.exports = config
