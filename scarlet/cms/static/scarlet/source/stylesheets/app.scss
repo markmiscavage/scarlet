@@ -10,6 +10,7 @@
 // COMMON
 @import './common/base';
 @import './common/actions';
+@import './common/table';
 @import './common/form';
 @import './common/button';
 @import './common/header-main';
@@ -22,4 +23,5 @@
 
 // VIEWS
 @import './views/select';
+@import './views/editor';
 

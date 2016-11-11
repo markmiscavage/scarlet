@@ -66,7 +66,7 @@ module.exports = {
     alias: {
       'jquery.ui': 'jquery-ui',
       'imagesready': 'imagesready/dist/jquery-imagesready',
-      'wysihtml5': path.resolve(__dirname, './scarlet/cms/static/scarlet/source/js/views/wysiwyg/lib/wysihtml5')
+      'wysihtml5': path.resolve(__dirname, './scarlet/cms/static/scarlet/source/js/views/editor/lib/wysihtml5')
     }
   }
 }

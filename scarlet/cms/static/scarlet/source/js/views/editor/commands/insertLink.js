@@ -85,7 +85,7 @@ export default {
   },
 
   state: function (composer, command) {
-    var className = "wysiwyg-link";
+    var className = "editor-link";
     return wysihtml5.commands.formatInline.state(composer, command, "A", className, new RegExp(className, "g"));
   }
 }

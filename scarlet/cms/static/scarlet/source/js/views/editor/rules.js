@@ -10,7 +10,7 @@
  *
  *    <img align="left" src="http://foobar.com/image.png">
  *    ... becomes ...
- *    <img class="wysiwyg-float-left" src="http://foobar.com/image.png" alt="">
+ *    <img class="editor-float-left" src="http://foobar.com/image.png" alt="">
  *
  *    <div>foo<script>alert(document.cookie)</script></div>
  *    ... becomes ...
@@ -22,7 +22,7 @@
  *
  *    foo <br clear="both"> bar
  *    ... becomes ...
- *    foo <br class="wysiwyg-clear-both"> bar
+ *    foo <br class="editor-clear-both"> bar
  *
  *    <div>hello <iframe src="http://google.com"></iframe></div>
  *    ... becomes ...
@@ -30,25 +30,25 @@
  *
  *    <center>hello</center>
  *    ... becomes ...
- *    <div class="wysiwyg-text-align-center">hello</div>
+ *    <div class="editor-text-align-center">hello</div>
  */
-const WysiwygRules = {
+const EditorRules = {
   /**
    * CSS Class white-list
    * Following CSS classes won't be removed when parsed by the wysihtml5 HTML parser
    */
   "classes": {
-    "wysiwyg-clear-both": 1,
-    "wysiwyg-clear-left": 1,
-    "wysiwyg-clear-right": 1,
-    "wysiwyg-float-left": 1,
-    "wysiwyg-float-right": 1,
-    "wysiwyg-text-align-center": 1,
-    "wysiwyg-text-align-justify": 1,
-    "wysiwyg-text-align-left": 1,
-    "wysiwyg-text-align-right": 1,
-    "wysiwyg-text-annotated": 1,
-    "wysiwyg-link": 1,
+    "editor-clear-both": 1,
+    "editor-clear-left": 1,
+    "editor-clear-right": 1,
+    "editor-float-left": 1,
+    "editor-float-right": 1,
+    "editor-text-align-center": 1,
+    "editor-text-align-justify": 1,
+    "editor-text-align-left": 1,
+    "editor-text-align-right": 1,
+    "editor-text-annotated": 1,
+    "editor-link": 1,
     "arrow": 1
   },
   /**
@@ -58,11 +58,11 @@ const WysiwygRules = {
    *
    *    - add_class:        converts and deletes the given HTML4 attribute (align, clear, ...) via the given method to a css class
    *                        The following methods are implemented in wysihtml5.dom.parse:
-   *                          - align_text:  converts align attribute values (right/left/center/justify) to their corresponding css class "wysiwyg-text-align-*")
-   *                            <p align="center">foo</p> ... becomes ... <p> class="wysiwyg-text-align-center">foo</p>
-   *                          - clear_br:    converts clear attribute values left/right/all/both to their corresponding css class "wysiwyg-clear-*"
-   *                            <br clear="all"> ... becomes ... <br class="wysiwyg-clear-both">
-   *                          - align_img:    converts align attribute values (right/left) on <img> to their corresponding css class "wysiwyg-float-*"
+   *                          - align_text:  converts align attribute values (right/left/center/justify) to their corresponding css class "editor-text-align-*")
+   *                            <p align="center">foo</p> ... becomes ... <p> class="editor-text-align-center">foo</p>
+   *                          - clear_br:    converts clear attribute values left/right/all/both to their corresponding css class "editor-clear-*"
+   *                            <br clear="all"> ... becomes ... <br class="editor-clear-both">
+   *                          - align_img:    converts align attribute values (right/left) on <img> to their corresponding css class "editor-float-*"
    *
    *    - remove:             removes the element and its content
    *
@@ -126,7 +126,7 @@ const WysiwygRules = {
     },
     "small": {
       "rename_tag": "span",
-      "set_class": "wysiwyg-font-size-smaller"
+      "set_class": "editor-font-size-smaller"
     },
     "area": {
       "remove": 1
@@ -270,7 +270,7 @@ const WysiwygRules = {
     },
     "big": {
       "rename_tag": "span",
-      "set_class": "wysiwyg-font-size-larger"
+      "set_class": "editor-font-size-larger"
     },
     "button": {
       "rename_tag": "span"
@@ -474,7 +474,7 @@ const WysiwygRules = {
     "pre": {},
     "center": {
       "rename_tag": "div",
-      "set_class": "wysiwyg-text-align-center"
+      "set_class": "editor-text-align-center"
     },
     "audio": {
       "remove": 0,
@@ -546,4 +546,4 @@ const WysiwygRules = {
     }
   }
 }
-export default WysiwygRules
+export default EditorRules

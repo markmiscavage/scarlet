@@ -4,6 +4,7 @@ import AutoSlug from 'views/AutoSlug'
 import BatchActions from 'views/BatchActions'
 import DatePicker from 'views/DatePicker'
 import DateTimePicker from 'views/DateTimePicker'
+import Editor from 'views/editor/Editor'
 import Sortable from 'views/Sortable'
 import Filters from 'views/Filters'
 import Formset from 'views/Formset'
@@ -15,7 +16,6 @@ import InsertImage from 'views/InsertImage'
 import InsertVideo from 'views/InsertVideo'
 import InsertAudio from 'views/InsertAudio'
 import Tabs from 'views/Tabs'
-import Wysiwyg from 'views/wysiwyg/Wysiwyg'
 import { handlePopup } from 'helpers/WindowPopup'
 
 import '../../stylesheets/app.scss'
@@ -43,9 +43,9 @@ const App = View.extend({
       new ImageCropper({ el: $(this) }).render()
     })
 
-    // Wysiwyg
-    $('.widget-wysiwyg').each((i, dom) => {
-      new Wysiwyg({ el: dom }).render()
+    // Editor
+    $('.widget-editor').each((i, dom) => {
+      new Editor({ el: dom }).render()
     })
 
     // Insert Image

@@ -3,7 +3,7 @@ import wysihtml5 from 'wysihtml5'
 var undef
 var NODE_NAME = 'A'
 var dom       = wysihtml5.dom
-var className = 'wysiwyg-text-annotated'
+var className = 'editor-text-annotated'
 
 function _removeFormat(composer, anchors) {
   var length  = anchors.length,

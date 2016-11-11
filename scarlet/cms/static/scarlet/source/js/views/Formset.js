@@ -89,7 +89,7 @@ const Formset = View.extend({
       this.$forms.sortable({
         update : this.resort.bind(this),
         //change : this._resort,
-        stop   : this.repairWysiwyg.bind(this)
+        stop   : this.repairEditor.bind(this)
       })
       this.$('.widget-formset-form').addClass('draggable')
       this.isDraggable = true
@@ -126,7 +126,7 @@ const Formset = View.extend({
     this.updateMetadata()
   },
 
-  repairWysiwyg: function () {
+  repairEditor: function () {
 
   },
 
