@@ -97,7 +97,7 @@
     {% endif %}
 
     <tr{% if list.auto_sort %} draggable="true"{% endif %}>
-      <td class="actions {% if list.auto_sort %}drag{% endif %}">
+      <td class="actions {% if list.auto_sort %}draggable{% endif %}">
       {% for action_link in action_links %}
         {% bundle_url bundle action_link.0 object=row.instance follow_parent=False as url %}
         {% if url %}
