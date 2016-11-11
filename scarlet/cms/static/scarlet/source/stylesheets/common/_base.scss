@@ -13,71 +13,6 @@ a {
   }
 }
 
-table {
-  background-color: #fff;
-  border-bottom: 1px solid $bg-primary;
-  width: 100%;
-
-  th,
-  td {
-    padding: 10px;
-
-    &:first-of-type:not(:only-child) {
-      padding-left: $padding-width;
-    }
-
-    &:last-of-type:not(:only-child) {
-      padding-right: $padding-width;
-    }
-  }
-
-  caption {
-    background-color: #fff;
-    text-align: left;
-    text-transform: capitalize;
-    font-size: 32px;
-    padding-left: ($padding-width - ($padding-width/2));
-  }
-
-  thead {
-    border-bottom: 1px solid $bg-primary;
-  }
-
-  th {
-    text-transform: uppercase;
-    text-align: left;
-
-    a {
-      color: $black;
-    }
-
-    &.sortable {
-
-      .fa {
-        margin-left: 10px;
-      }
-    }
-  }
-
-  tr {
-
-  }
-
-  td {
-
-  }
-
-  tbody {
-
-    tr {
-
-      &:hover {
-        background-color: $bg-primary;
-      }
-    }
-  }
-}
-
 .main {
   @include microfix;
   @include box-shadow;
@@ -86,6 +21,7 @@ table {
   margin: 0 auto;
   position: relative;
   max-width: $max-width;
+  min-height: 250px;
   z-index: $z-low;
 }
 
