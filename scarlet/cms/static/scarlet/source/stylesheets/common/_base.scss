@@ -32,6 +32,9 @@ a {
 
 .draggable {
   position: relative;
+  background-color: $white;
+  padding-left: 10px;
+  transition: box-shadow 200ms;
 
   &:before {
     cursor: move;
@@ -55,6 +58,10 @@ a {
     top: 50%;
     left: -18px;
     transform: translateY(-50%);
+  }
+
+  &:active {
+    @include box-shadow;
   }
 }
 
