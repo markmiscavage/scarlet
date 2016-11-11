@@ -30,6 +30,34 @@ a {
   @include width-wrapper;
 }
 
+.draggable {
+  position: relative;
+
+  &:before {
+    cursor: move;
+    content: "";
+    background-color: $gray-light;
+    display: block;
+    width: 13px;
+    height: calc(100% + 2px);
+    position: absolute;
+    top: -1px;
+    left: -12px;
+  }
+
+  &:after {
+    cursor: move;
+    text-shadow: $black 0px 1px 1px;
+    content: "┋";
+    color: $gray-light;
+    font-size: 24px;
+    position: absolute;
+    top: 50%;
+    left: -18px;
+    transform: translateY(-50%);
+  }
+}
+
 
 svg {
   width: 100%;
