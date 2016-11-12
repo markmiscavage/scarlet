@@ -1,21 +1,78 @@
 @import '~selectize/dist/css/selectize.default.css';
+@import '../helpers/vars';
+@import '../helpers/mixins';
+@import '../helpers/placeholders';
+@import '../helpers/fonts';
+
+.select2-container,
+.selectize-input,
+.selectize-control.single .selectize-input,
+.selectize-dropdown.single,
+.selectize-control.single .selectize-input.input-active {
+  background-color: $gray-light;
+}
 
 .select2-container,
 .selectize-control {
-	min-width: 200px;
+  min-width: 200px;
+}
+
+.selectize-control,
+.selectize-input {
+  height: 40px;
+}
+
+.selectize-control.single .selectize-input,
+.selectize-dropdown.single,
+.selectize-dropdown,
+.selectize-input {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.selectize-dropdown.single {
+  @include box-shadow;
+  margin-top: 10px;
+  border: 1px solid $gray-light;
+}
+
+.selectize-dropdown-content {
+
+  & > div {
+    background-color: $white;
+  }
+}
+
+.selectize-control.single .selectize-input,
+.selectize-dropdown.single {
+  background-image: none;
 }
 
 .create--hide {
-	display: none;
+  display: none;
 }
 
-.selectAsset__image--thumb {
-	width: 50px;
-	height: 50px;
-	background-size: cover;
-	display: inline-block;
+.select-asset__item {
+  position: relative;
 }
 
-.widget-asset{
-	overflow: initial;
+.select-asset__caption {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
+
+.select-asset__image--thumb {
+  width: 50px;
+  height: 50px;
+  background-size: cover;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.widget-asset {
+  overflow: initial;
+}
+
+
