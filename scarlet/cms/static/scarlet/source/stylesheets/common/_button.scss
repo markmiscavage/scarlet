@@ -2,8 +2,7 @@ button,
 .button {
   display: inline-block;
   cursor: pointer;
-  color: $white;
-  min-width: 150px;
+  min-width: $button-width;
   line-height: 40px;
   text-align: center;
   font-size: 14px;
@@ -13,11 +12,8 @@ button,
     margin-right: 4px;
   }
 
-  &:hover {
-    color: $white;
-  }
-
   &--primary {
+    color: $white;
     background-color: $blue;
 
     &:hover {
@@ -27,6 +23,7 @@ button,
   }
 
   &--secondary {
+    color: $white;
     background-color: $gray;
 
     &:hover {
@@ -36,6 +33,7 @@ button,
   }
 
   &--disabled {
+    color: $white;
     cursor: default;
     background-color: $gray-light;
 
