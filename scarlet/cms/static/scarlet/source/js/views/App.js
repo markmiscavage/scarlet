@@ -101,7 +101,7 @@ const App = View.extend({
     })
 
     // SELECTASSET
-    $('.widget-asset').each( (i, dom) => {
+    $('.asset').each( (i, dom) => {
       if(!$(dom).find('input').hasClass('selectized')){
        let selectAsset = new SelectAsset({el: dom}).render()
       }

@@ -10,19 +10,19 @@ const SelectAsset = View.extend({
 
   initialize: function () {
     this.$input = this.$('input')
-    this.$preview = this.$('.widget-asset-preview')
-    this.$cropsList = this.$('.crops-list')
+    this.$preview = this.$('.asset__preview')
+    this.$cropsList = this.$('.asset__crop-list')
     this.$selectizeInput = this.$input.after('<input />')
     this.baseLink = this.$cropsList.data('base-link')
     this.url = this.$el.data('api')
     this.addOpen = false
   },
-  
+
   /**
    * Backbone Events Object
    */
   events: {
-    'click .button, .crop-link' : 'handlePopup'
+    'click .button, .asset__crop-link' : 'handlePopup'
   },
 
   /**
@@ -134,7 +134,7 @@ const SelectAsset = View.extend({
   renderOption: function () {
     return {
       item: (item, escape) => {
-        return '<div class="item" data-thumb="' +
+        return '<div data-thumb="' +
                 window.location.origin + escape(item.thumbnail) +
                 '" data-id="'+ item['id'] +
                 '" data-src="'+ item['url'] +'" >' +
@@ -142,10 +142,10 @@ const SelectAsset = View.extend({
                 '</div>'
       },
       option: (item, escape) => {
-        let option =  '<div data-id="' + item['id']+'">' +
-                      '<div style="background-image: url(' + window.location.origin + escape(item.thumbnail) + ')" class="selectAsset__image--thumb"></div>' +
+        let option =  '<div class="select-asset__item" data-id="' + item['id']+'">' +
+                      '<div style="background-image: url(' + window.location.origin + escape(item.thumbnail) + ')" class="select-asset__image--thumb"></div><span class="select-asset__caption">' +
                       escape(item['text']) +
-                      '</div>'
+                      '</span></div>'
         return option
       }
     }
@@ -245,7 +245,7 @@ const SelectAsset = View.extend({
 
   handlePopup: function (e) {
     clickOpenModal(e, 'modal-add-asset', this.setSelected.bind(this), this.autoTags)
-    
+
     // LIST APPROACH
     // if(this.addOpen){
     //   e.preventDefault()
