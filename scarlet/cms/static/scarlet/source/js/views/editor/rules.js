@@ -546,4 +546,5 @@ const EditorRules = {
     }
   }
 }
+
 export default EditorRules

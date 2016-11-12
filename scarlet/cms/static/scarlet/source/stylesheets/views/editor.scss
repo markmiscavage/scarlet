@@ -3,7 +3,21 @@
 @import '../helpers/placeholders';
 @import '../helpers/fonts';
 
-.editor-textarea {
+
+.wysihtml5-sandbox {
+  border: 1px solid $gray;
+  color: $blue;
+  font: 18px/1 AvenirRoman;
+  padding: $gridlet*2 $gridlet*3;
+  outline: 0;
+  width: 100%;
+  background: #fff;
+  height: 400px;
+  margin-bottom: $spacer;
+  display: block;
+}
+
+.editor__textarea {
   background-color: $gray-light;
   padding: 10px;
 
@@ -76,7 +90,7 @@
   }
 }
 
-.editor-toolbar {
+.editor__toolbar {
   position: relative;
   padding-bottom: $gridlet*2;
 
@@ -87,20 +101,7 @@
   }
 }
 
-.wysihtml5-sandbox {
-  border: 1px solid $gray;
-  color: $blue;
-  font: 18px/1 AvenirRoman;
-  padding: $gridlet*2 $gridlet*3;
-  outline: 0;
-  width: 100%;
-  background: #fff;
-  height: 400px;
-  margin-bottom: $spacer;
-  display: block;
-}
-
-.editor-buttons {
+.editor__buttons {
   @include microfix;
 
   a {
@@ -148,7 +149,7 @@
   }
 }
 
-.editor-modals .modal {
+.editor__modals .modal {
   position: absolute;
   top: 100%;
   left: 50%;
@@ -175,15 +176,15 @@
   font-style: italic;
 }
 
-.editor-annotations {
+.editor__annotations {
   visibility: hidden;
   position: absolute;
   width: 0;
   height: 0;
 }
 
-.editor-text-annotated,
-a.editor-text-annotated {
+.editor__text--annotated,
+a.editor__text--annotated {
   background: #B6CAD1;
   color: #fff;
   text-decoration: none;

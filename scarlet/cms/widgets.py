@@ -600,14 +600,14 @@ class HTMLWidget(widgets.Textarea):
 
     def __init__(self, *args, **kwargs):
         super(HTMLWidget, self).__init__(*args, **kwargs)
-        classes = ["editor-textarea"]
+        classes = ["editor__textarea"]
         if self.attrs.get('class'):
             classes.append(self.attrs.get('class'))
         self.attrs['class'] = " ".join(classes)
 
     def render(self, *args, **kwargs):
         text = super(HTMLWidget, self).render(*args, **kwargs)
-        return mark_safe(u"<div class=\"widget-editor\">{1} {0}</div>".format(text, render_to_string(self.template)))
+        return mark_safe(u"<div class=\"editor\">{1} {0}</div>".format(text, render_to_string(self.template)))
 
 
 class AnnotatedHTMLWidget(widgets.MultiWidget):
@@ -622,8 +622,8 @@ class AnnotatedHTMLWidget(widgets.MultiWidget):
 
     def __init__(self, attrs=None):
         _widgets = (
-            widgets.Textarea(attrs={'class': "editor-textarea"}),
-            widgets.Textarea(attrs={'class': "editor-annotations"}),
+            widgets.Textarea(attrs={'class': "editor__textarea"}),
+            widgets.Textarea(attrs={'class': "editor__annotations"}),
         )
         super(AnnotatedHTMLWidget, self).__init__(_widgets, attrs=attrs)
 
@@ -639,7 +639,7 @@ class AnnotatedHTMLWidget(widgets.MultiWidget):
         return ["", ""]
 
     def format_output(self, rendered_widgets):
-        return mark_safe(u"<div class=\"widget-editor annotation\">{0} {1} {2}</div>".format(
+        return mark_safe(u"<div class=\"editor editor--annotations\">{0} {1} {2}</div>".format(
                     render_to_string(self.template),
                     *rendered_widgets))
 

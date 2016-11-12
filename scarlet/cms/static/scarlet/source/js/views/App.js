@@ -44,7 +44,7 @@ const App = View.extend({
     })
 
     // Editor
-    $('.widget-editor').each((i, dom) => {
+    $('.editor').each((i, dom) => {
       new Editor({ el: dom }).render()
     })
 

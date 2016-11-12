@@ -12,8 +12,8 @@ let guid = 0
 const Editor = View.extend({
 
   render: function (dom) {
-    this.$toolbar = this.$('.editor-toolbar')
-    this.$textarea = this.$('.editor-textarea')
+    this.$toolbar = this.$('.editor__toolbar')
+    this.$textarea = this.$('.editor__textarea')
 
     this.setupEditor()
     this.attachCommands()
@@ -47,11 +47,10 @@ const Editor = View.extend({
             $(this)[0].load()
         })
 
-        if (this.$el.hasClass('annotation')) {
+        if (this.$el.hasClass('editor--annotations')) {
             this.addListeners()
         }
     }.bind(this))
-
     this.editor = editor
   },
 
@@ -82,7 +81,7 @@ const Editor = View.extend({
 
   onSubmit: function () {
     var $editor = $(document.createElement('div')).html(this.editor.composer.getValue())
-    var $annotations = $(document.createElement('div')).html(this.$('.editor-annotations').val())
+    var $annotations = $(document.createElement('div')).html(this.$('.editor__annotations').val())
     var $this
 
     $annotations.find('span').each(function () {
@@ -93,13 +92,13 @@ const Editor = View.extend({
       }
     })
 
-    this.$('.editor-annotations').val($annotations.html())
+    this.$('.editor__annotations').val($annotations.html())
     this.enableEditor()
   },
 
   onShowDialog: function (data) {
     var command = data.command
-    var $button = this.$toolbar.find('.editor-buttons a[data-wysihtml5-command=' + data.command + ']')
+    var $button = this.$toolbar.find('.editor__buttons a[data-wysihtml5-command=' + data.command + ']')
 
     // force dialog to close if command is disabled
     if ($button.hasClass('disabled')) {
@@ -109,7 +108,7 @@ const Editor = View.extend({
     }
 
     var annotationId = $(this.editor.composer.selection.getSelection().nativeSelection.anchorNode.parentNode).attr('data-annotation-id')
-    var annotationsHtml = this.$('.editor-annotations').val()
+    var annotationsHtml = this.$('.editor__annotations').val()
     var $annotationTextarea = $(data.dialogContainer).find('textarea')
     var $annotation = $(document.createElement('div')).html(annotationsHtml).find('#' + annotationId)
 
@@ -124,7 +123,7 @@ const Editor = View.extend({
 
   onSaveDialog: function (data) {
     var annotationId = $(this.editor.composer.selection.getSelection().nativeSelection.anchorNode.parentNode).attr('data-annotation-id')
-    var annotationsEl = this.$('.editor-annotations')
+    var annotationsEl = this.$('.editor__annotations')
     var annotationHtml = '<span id="' + annotationId + '">' + $(data.dialogContainer).find('textarea').val() + '</span>'
 
     annotationsEl.val(annotationsEl.val() + annotationHtml)
@@ -133,12 +132,12 @@ const Editor = View.extend({
 
   onUpdateDialog: function (data) {
     var annotationId = $(this.editor.composer.selection.getSelection().nativeSelection.anchorNode.parentNode).attr('data-annotation-id')
-    var annotationsHtml = this.$('.editor-annotations').val()
+    var annotationsHtml = this.$('.editor__annotations').val()
     var annotationHtml = $(data.dialogContainer).find('textarea').val()
     var tempEl = $(document.createElement('div'))
 
     $(tempEl).html(annotationsHtml).find('#' + annotationId).html(annotationHtml)
-    this.$('.editor-annotations').val($(tempEl).html())
+    this.$('.editor__annotations').val($(tempEl).html())
     this.enableEditor()
   },
 
