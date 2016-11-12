@@ -3,6 +3,14 @@ $light-blue: lightblue;
 $gridlet: 1;
 $spacer: 1;
 
+// apply to flex container
+@mixin flex-container ($flex: 1, $flex-direction: row, $flex-wrap: wrap) {
+  display: flex;
+  flex-direction: $flex-direction;
+  flex-wrap: $flex-wrap;
+  flex: $flex;
+}
+
 // center and constrain element to max-width
 @mixin width-wrapper {
   max-width: $max-width;
@@ -182,4 +190,9 @@ $spacer: 1;
     transition: top 250ms, opacity 200ms 50ms;
   }
 
+}
+
+@mixin gradient ($top, $btm) {
+  background-color: mix($top, $btm);
+  @include background-image(linear-gradient($top, $btm));
 }
