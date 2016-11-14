@@ -6,10 +6,7 @@
 }
 
 .nav-dashboard__list {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  flex: 1;
+  @include flex-container;
 }
 
 .nav-dashboard__item {
