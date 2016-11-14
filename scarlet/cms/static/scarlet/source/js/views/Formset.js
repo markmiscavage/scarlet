@@ -2,6 +2,7 @@ import { View } from 'backbone'
 import { sortable } from 'jquery-ui/ui/widgets/sortable'
 import { clickOpenPopup } from 'helpers/WindowPopup'
 import pubsub from 'helpers/pubsub'
+import Editor from './editor/Editor'
 
 const Formset = View.extend({
   el: '.widget-formset',
@@ -126,8 +127,13 @@ const Formset = View.extend({
     this.updateMetadata()
   },
 
-  repairEditor: function () {
+  repairEditor: function (e, elem) {
+    var $editor = $(elem.item[0]).find('.editor');
 
+    if ($editor.length) {
+      $('.wysihtml5-sandbox', $editor).remove();
+      var editor = new Editor({ el: $editor }).render();
+    }
   },
 
   /************************************
