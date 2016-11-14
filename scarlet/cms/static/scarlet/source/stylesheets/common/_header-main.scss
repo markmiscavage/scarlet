@@ -29,14 +29,14 @@
   }
 
   a {
-    @include divider($size: 10px);
     color: #000;
 
-    &:last-of-type {
+    &:hover{
+      color: $red;
+    }
 
-      &:after {
-        display: none;
-      }
+    &:not(:last-of-type) {
+      @include divider($size: 10px);
     }
   }
 }
