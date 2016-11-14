@@ -84,9 +84,17 @@
     font-style: italic;
   }
 
-  a,
-  a:visited {
-    color: $medium-blue;
+  a {
+    cursor: pointer;
+    color: $blue;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:visited {
+      color: $medium-blue;
+    }
   }
 }
 
@@ -183,8 +191,8 @@
   height: 0;
 }
 
-.editor__text--annotated,
-a.editor__text--annotated {
+.text--annotated,
+a.text--annotated {
   background: #B6CAD1;
   color: #fff;
   text-decoration: none;
