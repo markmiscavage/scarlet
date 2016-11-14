@@ -66,7 +66,7 @@ const Editor = View.extend({
     this.editor.on('update:dialog', this.onUpdateDialog.bind(this))
     this.editor.on('cancel:dialog', this.onCancelDialog.bind(this))
 
-    $('form[data-form-id=edit]').on('submit', this.onSubmit)
+    $('form[data-form-id=edit]').on('submit', this.onSubmit.bind(this))
   },
 
   enableEditor: function () {
