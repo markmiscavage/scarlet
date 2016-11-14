@@ -1,17 +1,19 @@
 {% extends "cms/toolbar.html" %}
 
 {% block annotation_command %}
-  <a class="spacer disabled" data-wysihtml5-command="insertAnnotation">annotate</a>
+  <a class="disabled" data-wysihtml5-command="insertAnnotation">annotate</a>
 {% endblock %}
 
 {% block annotation_modal %}
-  <div class="modal" data-wysihtml5-dialog="insertAnnotation" style="display: none;">
+  <div class="editor__modal" data-wysihtml5-dialog="insertAnnotation" style="display: none;">
     <label>Enter annotation</label>
     <input type="hidden" data-wysihtml5-dialog-field="href">
     <input type="hidden" data-wysihtml5-dialog-field="class" value="text--annotated">
     <textarea class="text"></textarea>
-    <a data-wysihtml5-dialog-action="save">OK</a>
-    <a data-wysihtml5-dialog-action="cancel">Cancel</a>
+    <div class="button-group button-group--submit">
+      <a data-wysihtml5-dialog-action="cancel" class="button button--secondary">Cancel</a>
+      <a data-wysihtml5-dialog-action="save" class="button button--primary">OK</a>
+    </div>
   </div>
 {% endblock %}
 

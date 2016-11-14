@@ -5,15 +5,13 @@
 
 
 .wysihtml5-sandbox {
-  border: 1px solid $gray;
   color: $blue;
-  font: 18px/1 AvenirRoman;
-  padding: $gridlet*2 $gridlet*3;
+  font-size: 18px;
   outline: 0;
   width: 100%;
   background: #fff;
   height: 400px;
-  margin-bottom: $spacer;
+  margin-bottom: 20px;
   display: block;
 }
 
@@ -96,11 +94,26 @@
       color: $medium-blue;
     }
   }
+
+  .text--annotated,
+  a.text--annotated {
+    background: #B6CAD1;
+    color: #fff;
+    text-decoration: none;
+    padding: 1px 3px;
+
+    &:after {
+      content: ' *';
+      font-weight: normal;
+    }
+  }
 }
 
 .editor__toolbar {
+  border: 1px solid $gray-light;
   position: relative;
-  padding-bottom: $gridlet*2;
+  border-bottom: none;
+  padding: 10px;
 
   + textarea {
     height: 400px;
@@ -113,16 +126,20 @@
   @include microfix;
 
   a {
-    background-color: $blue;
-    color: $white;
+    color: $black;
     display: block;
     float: left;
     text-align: center;
-    padding: 5px 10px;
-    margin-right: 5px;
+    padding: 7px 10px;
+    text-transform: uppercase;
+    min-width: 20px;
+
+    sup {
+      font-size: 13px;
+    }
 
     &:hover {
-      background-color: $blue-dark;
+      background-color: $gray-light;
     }
 
     &.wysihtml5-action-active,
@@ -137,51 +154,45 @@
   }
 
   .spacer {
-    margin-right: $gridlet*2;
-    border-top-right-radius:$gridlet;
-    border-bottom-right-radius:$gridlet;
-
-    + a {
-      border-left-width: 1px;
-      border-top-left-radius:$gridlet;
-      border-bottom-left-radius:$gridlet;
-    }
+    margin-right: 20px;
   }
 
   .disabled,
   .disabled:hover {
+    background-color: $white;
     cursor: default;
-    color: #B8B8B8;
-    border-color: #B8B8B8;
-    background-color: #E5E5E5;
+    color: $gray-light;
   }
 }
 
-.editor__modals .modal {
+.editor__modal {
+  @include box-shadow;
   position: absolute;
   top: 100%;
   left: 50%;
   margin-top: $spacer;
-  background: #fff;
-  border: 1px solid $light-blue;
+  background: $white;
+  border: 1px solid $gray-light;
   padding: 20px;
   width: 400px;
   margin-left: -200px;
   z-index: 1;
-  @include box-shadow(1px 4px 5px rgba($blue, 0.25));
 
-  a {
-    @include button;
-    cursor: pointer;
+  label {
+    display: block;
+    margin-bottom: 10px;
   }
-}
 
-[data-wysihtml5-command=bold] {
-  font-weight: bold;
-}
+  textarea {
+    padding: 10px;
+    height: 70px;
+  }
 
-[data-wysihtml5-command=italic] {
-  font-style: italic;
+  .button-group {
+    padding-top: 20px;
+    margin-top: 30px;
+  }
+
 }
 
 .editor__annotations {
@@ -189,17 +200,4 @@
   position: absolute;
   width: 0;
   height: 0;
-}
-
-.text--annotated,
-a.text--annotated {
-  background: #B6CAD1;
-  color: #fff;
-  text-decoration: none;
-  padding: 1px 3px;
-
-  &:after {
-    content: ' *';
-    font-weight: normal;
-  }
 }
