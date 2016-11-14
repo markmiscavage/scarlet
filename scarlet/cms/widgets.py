@@ -617,7 +617,7 @@ class AnnotatedHTMLWidget(widgets.MultiWidget):
     """
     template = "cms/toolbar_annotation.html"
 
-    START_HTML = '<div class="editor-annotation-data">'
+    START_HTML = '<div class="editor__annotation-data">'
     END_HTML = '</div>'
 
     def __init__(self, attrs=None):
