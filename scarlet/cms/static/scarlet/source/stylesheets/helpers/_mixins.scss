@@ -107,11 +107,27 @@ $spacer: 1;
   #{$hover-selector} & {
     top: 100%;
     opacity: 1;
+    z-index: 1;
 
     // transition-in effect
     transition: top 250ms, opacity 200ms 50ms;
   }
+}
 
+@mixin hover-flip ($selector: '.fa-angle-down') {
+
+  #{$selector} {
+    color: $gray;
+    transition: transform 150ms;
+  }
+
+  &:hover {
+
+    #{$selector} {
+      color: $red;
+      transform: scaleY(-1);
+    }
+  }
 }
 
 @mixin gradient ($top, $btm) {
