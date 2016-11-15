@@ -7,6 +7,9 @@
 @import './helpers/placeholders';
 @import './helpers/fonts';
 
+// VENDOR
+@import './vendor/selectize';
+
 // COMMON
 @import './common/base';
 @import './common/actions';
@@ -23,6 +26,5 @@
 @import './common/footer-main';
 
 // VIEWS
-@import './views/select';
 @import './views/editor';
 
