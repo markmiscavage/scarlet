@@ -6,20 +6,19 @@
 
   {% block filter %}
   {% if filter_form %}
-  <div class="filters">
-    <details class="filter-control" {% if filter_form.has_changed %}class="filtered"{% endif %}>
-      <summary>
-        {% if filter_form.has_changed %}
-          <a class="filter-clear" href="{{ request.path }}">Clear</a>
+
+  <div class="filters {% if filter_form.has_changed %}filters--filtered{% endif %}">
+    <span class="filters__label">Filter</span>
+    <i class="fa fa-angle-down"></i>
+    <form class="filters__form" action="" method="get">
+      {{ filter_form }}
+      <div class="button-group button-group--submit">
+         {% if filter_form.has_changed %}
+          <a class="button button--secondary" href="{{ request.path }}">Clear</a>
         {% endif %}
-        Filter
-        <i></i>
-      </summary>
-      <form action="" method="get">
-        {{ filter_form }}
-        <p><input type="submit" value="Filter" /></p>
-      </form>
-    </details>
+        <input type="submit" value="Filter" class="button button--primary" />
+      </div>
+    </form>
   </div>
   {% endif %}
   {% endblock %}
