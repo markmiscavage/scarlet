@@ -1,6 +1,5 @@
 import { View } from 'backbone'
 import selectize  from 'selectize'
-import '../../stylesheets/views/select.scss'
 
 const Select = View.extend({
   el: $('select'),

@@ -4,7 +4,7 @@ import { View } from 'backbone'
 import selectize  from 'selectize'
 import Modal from 'helpers/Modal'
 import WindowPopup from 'helpers/WindowPopup'
-import '../../stylesheets/views/select.scss'
+
 
 const SelectApi = View.extend({
 
@@ -29,7 +29,7 @@ const SelectApi = View.extend({
   },
 
   /**
-   * Render Views  
+   * Render Views
    */
   render: function() {
     let opts
@@ -128,7 +128,7 @@ const SelectApi = View.extend({
   },
 
   /**
-   * On Add New Item to multi select 
+   * On Add New Item to multi select
    * @param {string}
    * @param {object}
    */
@@ -142,7 +142,7 @@ const SelectApi = View.extend({
 
   /**
    * Window open trigger
-   * @param  {object} event object  
+   * @param  {object} event object
    */
   openPopup : function (input) {
     // let options = 'menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=500,width=800'
@@ -187,7 +187,7 @@ const SelectApi = View.extend({
   /**
    * Trasnform Response Data
    * @param  {object}
-   * @return {object} 
+   * @return {object}
    */
   transformResults: function (response) {
     this.fields = []
