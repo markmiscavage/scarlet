@@ -52,6 +52,7 @@
 }
 
 .header-object__actions {
+  @include hover-flip($selector: '.fa-chevron-down');
   float: left;
   position: relative;
 
