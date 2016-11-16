@@ -26,26 +26,20 @@
 }
 
 .nav-main__item {
+  @include hover-flip;
   display: inline-block;
   flex-grow: 1;
   position: relative;
 
   .fa-angle-down {
-    color: $gray;
     font-weight: bold;
     margin-left: 5px;
-    transition: transform 150ms;
   }
 
   &:hover {
 
     .nav-main__item-title {
       color: $red;
-    }
-
-    .fa-angle-down {
-      color: $red;
-      transform: scaleY(-1);
     }
   }
 }
