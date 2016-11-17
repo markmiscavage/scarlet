@@ -49,7 +49,10 @@ const Editor = View.extend({
         if (this.$el.hasClass('editor--annotations')) {
             this.addListeners()
         }
+
+        this.$el.addClass('editor--rendered')
     }.bind(this))
+
     this.editor = editor
   },
 
