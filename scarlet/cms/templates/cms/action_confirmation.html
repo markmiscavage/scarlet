@@ -17,17 +17,17 @@
             {% endfor %}
             </ul>
         {% endifequal %}
-        <p class="submit-row confirm">
-            <a class="button" href="{{ cancel_url }} ">Cancel</a>
-            <input class="big" type="submit" name='modify' value="{{ action }}" />
-        </p>
+        <div class="button-group button-group--submit">
+            <a class="button button--secondary" href="{{ cancel_url }} ">Cancel</a>
+            <input class="button button--primary" type="submit" name='modify' value="{{ action }}" />
+        </div>
     {% else %}
         <p>{{ error_msg }}</p>
 
         {% for e in errors %}
         <p>{{ e }}</p>
         {% endfor %}
-        <p><a class="button" href="{{ cancel_url }} ">OK</a></p>
+        <a class="button button--primary" href="{{ cancel_url }} ">OK</a>
     {% endif %}
     </form>
 {% endblock %}
