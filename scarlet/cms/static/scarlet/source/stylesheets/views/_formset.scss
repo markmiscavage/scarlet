@@ -1,0 +1,34 @@
+.formset__form {
+  padding-top: 40px;
+  margin-bottom: 40px;
+  opacity: 1;
+  transition: opacity 200ms, transform 300ms, position 300ms 350ms;
+}
+
+.formset__form--is-deleted {
+  opacity: 0;
+  transform: translateY(-100px);
+  position: absolute;
+}
+
+.formset__order {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.formset__button--delete {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  .fa {
+    font-size: 26px;
+  }
+
+  input {
+    display: none;
+  }
+}

@@ -1,66 +1,71 @@
 import { View } from 'backbone'
 import { sortable } from 'jquery-ui/ui/widgets/sortable'
+import selectize  from 'selectize'
 import { clickOpenPopup } from 'helpers/WindowPopup'
 import pubsub from 'helpers/pubsub'
 import Editor from './editor/Editor'
 
 const Formset = View.extend({
-  el: '.widget-formset',
+  el: '.formset',
 
-  /**
-   * Backbone Events Object
-   */
   events: {
-    'click .widget-formset-delete': 'delete',
+    'click .formset__button--delete': 'delete',
     // 'click .button' : function(e){clickOpenPopup(e, (data) => console.log('thing', data));},
     // 'clidk .crop-link' : function(e){clickOpenPopup(e, (data) => console.log('thing', data))}
   },
 
   initialize: function () {
-    this.types = []
     this.prefix = ''
+    this.formsetTypes = []
     this.isDraggable = false
+    this.didInitialize = true
   },
 
   render: function () {
-    this.$forms = this.$('.widget-formset-forms')
-    this.$controls = this.$el.next('.widget-formset-controls')
+    this.$forms = this.$('.formset__forms')
+    this.$controls = this.$el.next('.formset__controls')
     this.prefix = this.$el.data('prefix')
 
-    this.setTypes()
+    this.setFormsetTypes()
     this.enableSort()
     this.bindControls()
   },
 
   bindControls: function () {
-    var attrDataPrefix = this.prefix ? '[data-prefix=' + this.prefix + ']' : '[data-prefix]'
+    this.setupSelect()
+    this.$controls.on('click', '.formset__button--add', () => this.add(this.formsetTypes[0].value))
+  },
 
-    $('.widget-formset-add' + attrDataPrefix).on('click', this.add.bind(this))
-
-    this.$controls.filter('.dropdown')
-        .on('click', this.toggleOptions)
-        .on('mouseout', this.closeOptions)
+  setupSelect: function () {
+    this.selectize = $('.formset__select').selectize({
+      selectOnTab: true,
+      maxItems: 1,
+      placeholder: 'Add a Module',
+      options: this.formsetTypes,
+      onChange: function (value) {
+        this.selectize[0].selectize.clear(true)
+        this.add(value)
+      }.bind(this)
+    })
   },
 
   delete: function (e) {
     var $dom = $(e.currentTarget)
-    var $form = $dom.closest('.widget-formset-form')
+    var $form = $dom.closest('.formset__form')
 
     $dom.find('input').attr('checked', true)
 
-    $form.addClass('was-deleted')
-    $form.find('.widget-formset-order input').val(0)
+    $form.addClass('formset__form--is-deleted')
+    $form.find('.formset__order input').val(0)
 
     this.resort()
   },
 
-  add: function (e) {
-    var $scope = $(e.currentTarget)
-    var typeOf = $scope.data('prefix')
-    var clone = $('<div>').addClass('widget-formset-form added-with-js').attr('data-prefix', typeOf)
-    var html = $scope.find('.widget-formset-form-template').html()
+  add: function (formsetType) {
+    var clone = $('<div>').addClass('formset__form added-with-js').attr('data-prefix', formsetType)
+    var html = $('.formset__form-template[data-prefix="' + formsetType + '"]').html()
 
-    html = html.replace(/(__prefix__)/g, this.count(typeOf))
+    html = html.replace(/(__prefix__)/g, this.count(formsetType))
     clone.html(html)
 
     this.$forms.append(clone)
@@ -69,16 +74,18 @@ const Formset = View.extend({
       clone.addClass('draggable')
     }
 
-    if (this.types.indexOf(typeOf) === -1) {
-      this.types.push(typeOf)
+    if (this.formsetTypes.indexOf(formsetType) === -1) {
+      this.formsetTypes.push({
+        value: formsetType
+      })
     }
 
     this.enableSort()
     pubsub.trigger('scarlet:render')
   },
 
-  count : function (typeOf) {
-    return this.$('.widget-formset-form[data-prefix=' + typeOf + ']').length;
+  count : function (formsetType) {
+    return this.$('.formset__form[data-prefix="' + formsetType + '"]').length;
   },
 
   /************************************
@@ -86,13 +93,13 @@ const Formset = View.extend({
   ************************************/
 
   enableSort: function () {
-    if (this.$forms.find('.widget-formset-order').length) {
+    if (this.$forms.find('.formset__order').length) {
       this.$forms.sortable({
         update : this.resort.bind(this),
         //change : this._resort,
         stop   : this.repairEditor.bind(this)
       })
-      this.$('.widget-formset-form').addClass('draggable')
+      this.$('.formset__form').addClass('draggable')
       this.isDraggable = true
     }
     this.resort()
@@ -102,7 +109,7 @@ const Formset = View.extend({
     var $helper = this.$('.ui-sortable-helper')
     var $placeholder = this.$('.ui-sortable-placeholder')
 
-    this.$('.widget-formset-form').each(function (i) {
+    this.$forms.find('.formset__form').each(function (i) {
       var $dom = $(this)
 
       if ($dom.is('.was-deleted, .ui-sortable-helper')) {
@@ -115,7 +122,7 @@ const Formset = View.extend({
         $dom.removeClass('odd')
       }
 
-      $dom.find('.widget-formset-order input').val(i)
+      $dom.find('.formset__order input').val(i)
     })
 
     if ($placeholder.hasClass('odd')) {
@@ -140,53 +147,29 @@ const Formset = View.extend({
   Metadata
   ************************************/
 
-  setTypes: function () {
-    var self = this
-    this.$controls.find('.widget-formset-add').each(function () {
-      self.types.push($(this).data('prefix'))
-    })
+  setFormsetTypes: function () {
+    $('.formset__type').each(function (i, el) {
+      var $el = $(el)
+      this.formsetTypes.push({
+        text: $el.data('text'),
+        value: $el.data('prefix')
+      })
+    }.bind(this))
   },
 
   updateMetadata: function () {
-    for (var i = 0; i < this.types.length; i++) {
+    for (var i = 0; i < this.formsetTypes.length; i++) {
 
-      var typeOf = this.types[i],
-        $formset = $('.widget-formset-form[data-prefix=' + typeOf + ']')
+      var formsetType = this.formsetTypes[i].value,
+        $formset = $('.formset__form[data-prefix=' + formsetType + ']')
 
       $formset.each(function (n, el) {
         var $this = $(this)
-        $this.find('.widget-formset-order input').val($this.prevAll().length)
+        $this.find('.formset__order input').val($this.prevAll().length)
       })
 
-      $('#id_' + typeOf + '-TOTAL_FORMS').val($formset.length)
+      $('#id_' + formsetType + '-TOTAL_FORMS').val($formset.length)
     }
-  },
-
-  /************************************
-  Controls
-  ************************************/
-
-  toggleOptions : function (e) {
-    $(e.currentTarget).toggleClass('show')
-  },
-
-  closeOptions : function (e) {
-    var parent = e.currentTarget
-    var child = e.toElement || e.relatedTarget
-
-    // check all children (checking from bottom up)
-    // prevent closing on child event
-    while (child && child.parentNode && child.parentNode !== window) {
-      if (child.parentNode === parent || child === parent) {
-        if (child.preventDefault) {
-          child.preventDefault()
-        }
-        return false
-      }
-      child = child.parentNode
-    }
-
-    $(parent).removeClass('show')
   }
 })
 

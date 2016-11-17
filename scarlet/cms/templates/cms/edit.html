@@ -63,45 +63,49 @@
 
     {% if formsets %}
       {% for title, formset in formsets.visible_formsets %}
-                {% if title %}
-              <legend class="widget-formset-title">{{ title }}:</legend>
-                {% endif %}
+        <fieldset class="formset" data-prefix="{{ formset.prefix }}">
+          {% if title %}
+          <legend class="formset__title">{{ title }}:</legend>
+          {% endif %}
 
-        <fieldset class="widget-formset" data-prefix="{{ formset.prefix }}">
           {{ formset.management_form }}
           {{ formset.non_form_errors }}
 
-          <div class="widget-formset-forms">
-                      {% if formset.combined %}
-                {% for form, fset in formset %}
-                  <div class="widget-formset-form" data-prefix="{{ fset.prefix }}">
-                    {% include "cms/formset.html" with form=form formset=fset %}
-                  </div>
-                {% endfor %}
-                      {% else %}
-                {% for form in formset %}
-                  <div class="widget-formset-form" data-prefix="{{ formset.prefix }}">
-                    {% include "cms/formset.html" with form=form formset=formset %}
-                  </div>
-                {% endfor %}
-                      {% endif %}
-                    </div>
+          <div class="formset__forms">
+            {% if formset.combined %}
+              {% for form, fset in formset %}
+                <div class="formset__form" data-prefix="{{ fset.prefix }}">
+                  {% include "cms/formset.html" with form=form formset=fset %}
+                </div>
+              {% endfor %}
+            {% else %}
+              {% for form in formset %}
+                <div class="formset__form" data-prefix="{{ formset.prefix }}">
+                  {% include "cms/formset.html" with form=form formset=formset %}
+                </div>
+              {% endfor %}
+            {% endif %}
+          </div>
         </fieldset>
       {% endfor %}
 
-      <div class="widget-formset-controls {% if formsets.formsets|length > 1 %}dropdown{% endif %}">
-        <ul>
-              {% for title, formset in formsets.all_formsets %}
-                <li data-count="{{ formset.count }}" data-prefix="{{ formset.prefix }}" class="widget-formset-add button">
-                  {{ title }}
-              <script type="text/html" data-prefix="{{ formset.prefix }}" class="widget-formset-form-template">
-              {% include "cms/formset.html" with form=formset.empty_form formset=formset %}
-              </script>
-                </li>
-              {% endfor %}
-            </ul>
-            <span class="select-label">Add a new module<span class="select-arrow"></span></span>
+      <div class="formset__controls">
+        {% if formsets.formsets|length > 1 %}
+          <div class="formset__select"></div>
+        {% else %}
+          {% for title, formset in formsets.all_formsets %}
+            <div class="formset__button--add button button--primary">Add {{ title }}</div>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+      {% for title, formset in formsets.all_formsets %}
+        <div class="formset__type" data-text="{{ title }}" data-count="{{ formset.count }}" data-prefix="{{ formset.prefix }}">
+          <script type="text/html" data-prefix="{{ formset.prefix }}" class="formset__form-template">
+            {% include "cms/formset.html" with form=formset.empty_form formset=formset %}
+          </script>
         </div>
+      {% endfor %}
     {% endif %}
   {% endblock formsets %}
 
