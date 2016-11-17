@@ -1,9 +1,23 @@
 @import '~selectize/dist/css/selectize.default.css';
-@import '../helpers/vars';
-@import '../helpers/mixins';
-@import '../helpers/placeholders';
-@import '../helpers/fonts';
 
+.selectize-control.single .selectize-input:after,
+.selectize-control.single .selectize-input.dropdown-active:after {
+    content: '\F078'; // .fa-chevron-down icon
+    color: $gray;
+    font-family: 'FontAwesome';
+    display: block;
+    border: none;
+    margin: 0;
+    right: 26px;
+    top: 13px;
+    transition: transform 150ms;
+}
+
+.selectize-control.single .selectize-input.dropdown-active:after {
+    color: $red;
+    transform: scaleY(-1);
+    margin: 0;
+}
 
 //-- selectize list --//
 
@@ -40,9 +54,20 @@
   border: none;
   border-radius: 0;
   box-shadow: none;
+  color: $black;
 
   input {
-    top: 4px;
+
+    &,
+    &::-webkit-input-placeholder,
+    &:-moz-placeholder,
+    &::-moz-placeholder,
+    &:-ms-input-placeholder {
+      display: inline-block;
+      color: $black;
+      top: 4px;
+      position: relative;
+    }
   }
 }
 
