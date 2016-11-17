@@ -43,11 +43,6 @@ const App = View.extend({
       new ImageCropper({ el: $(this) }).render()
     })
 
-    // Editor
-    $('.editor').each((i, dom) => {
-      new Editor({ el: dom }).render()
-    })
-
     // Insert Image
     $('.widget-insert-image').each(function () {
       let insertImage = new InsertImage({el : $(this)})
@@ -82,17 +77,21 @@ const App = View.extend({
     $('table').each(function (i, dom) {
       let sortable = new Sortable({el: dom}).render()
     })
-
   },
 
   render: function() {
-    // HANDLE WINDOWPOPUP
+    // Bind Popup triggers
     handlePopup()
+
+    // Editor
+    $('.editor:not(.editor--rendered)').each((i, dom) => {
+      new Editor({ el: dom }).render()
+    })
 
     // Formset
     new Formset().render()
 
-    // SELECT
+    // Select
     const select = new Select().render()
 
     // SELECTAPI
@@ -103,7 +102,7 @@ const App = View.extend({
     // SELECTASSET
     $('.asset').each( (i, dom) => {
       if(!$(dom).find('input').hasClass('selectized')){
-       let selectAsset = new SelectAsset({el: dom}).render()
+        let selectAsset = new SelectAsset({el: dom}).render()
       }
     })
 
