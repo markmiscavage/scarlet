@@ -62,10 +62,10 @@
 			</fieldset>
 
 			{% block submit %}
-				<p class="submit-row">
-          <a class="button close-popup" href="{{ cancel_url }}">Cancel</a>
-          <input class="big" type="submit" value="Save" />
-        </p>
+        <div class="button-group button-group--submit">
+            <a class="button button--secondary close-popup" href="{{ cancel_url }} ">Cancel</a>
+            <input class="button button--primary" type="submit" value="Save" />
+        </div>
 			{% endblock submit %}
 		</form>
 	</div>
