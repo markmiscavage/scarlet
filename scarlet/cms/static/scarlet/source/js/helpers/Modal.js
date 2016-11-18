@@ -1,7 +1,6 @@
 'use strict'
 import { dialog } from 'jquery-ui/ui/widgets/dialog'
 import { dasherize } from 'helpers/utils'
-import '../../stylesheets/views/modal.scss'
 
 class Modal {
 
@@ -21,11 +20,11 @@ class Modal {
 			autoOpen: false,
 			closeOnEscape: true,
 			modal: true,
-			height: 600,
-			width: 600,
+		  //height: 600,
+			width: (window.outerWidth/2),
 			draggable: false,
-			show: { effect: 'fadeIn', duration: 300 },
-			dialogClass: 'dialog__no-title'
+			show: { effect: 'fadeIn', duration: 500 },
+			//dialogClass: 'dialog__no-title'
 		}
 		if (options) this.options = Object.assign(this.options, options)
 		if (isModalOpen()) {
