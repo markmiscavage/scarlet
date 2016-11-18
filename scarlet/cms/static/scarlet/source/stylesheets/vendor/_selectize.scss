@@ -1,5 +1,6 @@
 @import '~selectize/dist/css/selectize.default.css';
 
+
 .selectize-control.single .selectize-input:after,
 .selectize-control.single .selectize-input.dropdown-active:after {
     content: '\F078'; // .fa-chevron-down icon
@@ -8,15 +9,16 @@
     display: block;
     border: none;
     margin: 0;
-    right: 26px;
     top: 13px;
+    right: 13px;
+    width: auto;
+    height: auto;
     transition: transform 150ms;
 }
 
 .selectize-control.single .selectize-input.dropdown-active:after {
     color: $red;
     transform: scaleY(-1);
-    margin: 0;
 }
 
 //-- selectize list --//
