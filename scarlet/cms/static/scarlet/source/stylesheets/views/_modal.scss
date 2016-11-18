@@ -1,5 +1,26 @@
-  @import '~jquery-ui/themes/ui-darkness/jquery-ui.css';
-  @import '../mixins/mixins';
+@import '~jquery-ui/themes/base/all.css';
+
+.ui-dialog {
+  padding: 20px;
+  z-index: 4;
+  .ui-dialog-content{
+    padding: 0;
+  }
+}
+
+.ui-widget-overlay {
+    background: $gray-light;
+    opacity: .7;
+}
+
+.ui-widget-header {
+  background: none;
+  border: none;
+}
+
+.ui-dialog .ui-dialog-titlebar-close {
+
+}
 
 .frame-wrapper {
   position: relative;
@@ -7,6 +28,8 @@
   padding-top: 30px;
   height: 0;
   overflow: hidden;
+  z-index: 10;
+
   iframe,
   object,
   embed {
@@ -33,16 +56,6 @@
   display: none;
 }
 
-.ui-dialog {
-  padding: 20px;
-  .ui-dialog-content{
-    padding: 0;
-  }
-}
-.dialog__no-title {  
-  @include transition(height 350ms ease-in-out);
-}
-
 .modal__frameWrap{
   height: 100%;
   width: 100%;
@@ -51,22 +64,17 @@
   top: 0;
 }
 
-body.modal__body, {
-  background: none;
-  border: none;
-  section#main {
-    padding: 0;
-    border-top: 0;
-    &:before {
-      display: none;
-    } 
-  }
-  #container{
-    padding-bottom: 0;
-  }
-}
-
-.ui-widget-overlay {
-  background: #eee;
-  opacity: .3;
-}
+// body.modal__body, {
+//   background: none;
+//   border: none;
+//   section#main {
+//     padding: 0;
+//     border-top: 0;
+//     &:before {
+//       display: none;
+//     }
+//   }
+//   #container{
+//     padding-bottom: 0;
+//   }
+// }
