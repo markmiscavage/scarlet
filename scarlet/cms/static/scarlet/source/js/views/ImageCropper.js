@@ -1,8 +1,6 @@
 import { View } from 'backbone'
 import Jcrop from 'jcrop'
 import imagesready from 'imagesready'
-import '../../stylesheets/views/image-cropper.scss'
-
 
 const ImageCropper = View.extend({
 
