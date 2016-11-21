@@ -38,6 +38,9 @@ const App = View.extend({
       new Filters({ el: $(this) }).render()
     })
 
+    // Formset
+    new Formset().render()
+
     // ImageCropper
     $('.jcrop').each(function () {
       new ImageCropper({ el: $(this) }).render()
@@ -87,9 +90,6 @@ const App = View.extend({
     $('.editor:not(.editor--rendered)').each((i, dom) => {
       new Editor({ el: dom }).render()
     })
-
-    // Formset
-    new Formset().render()
 
     // Select
     const select = new Select().render()
