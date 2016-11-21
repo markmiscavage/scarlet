@@ -5,12 +5,10 @@
     {{ obj.status_line }}</p>
     <form action="{{ action_url }}" method="post">
         {% csrf_token %}
-
         {{ form }}
-
-        <p class="submit-row">
-        	<a class="button" href="{{ done_url }} ">Cancel</a>
-        	<input type="submit" name="publish" value="Publish" />
-        </p>
+        <div class="button-group button-group--submit">
+            <a class="button button--secondary" href="{{ done_url } ">Cancel</a>
+            <input class="button button--primary" type="submit" name="publish" value="Publish" />
+        </div>
     </form>
 {% endblock %}

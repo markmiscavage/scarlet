@@ -19,9 +19,9 @@
             </ul>
         {% endifequal %}
     {{ publish_form }}
-    <p class="submit-row">
-        <a class="button" href="{{ cancel_url }} ">Cancel</a>
-        <input class="big" type="submit" name='modify' value={{ action }} />
-    </p>
+    <div class="button-group button-group--submit">
+        <a class="button button--secondary" href="{{ cancel_url }} ">Cancel</a>
+        <input class="button button--primary" type="submit" name='modify' value="{{ action }}" />
+    </div>
 </form>
 {% endblock %}
