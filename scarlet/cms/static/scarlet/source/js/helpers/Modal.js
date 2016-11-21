@@ -20,11 +20,11 @@ class Modal {
 			autoOpen: false,
 			closeOnEscape: true,
 			modal: true,
-		  //height: 600,
+		  height: 'auto',
 			width: (window.outerWidth/2),
 			draggable: false,
 			show: { effect: 'fadeIn', duration: 500 },
-			//dialogClass: 'dialog__no-title'
+      close: () => this.close()
 		}
 		if (options) this.options = Object.assign(this.options, options)
 		if (isModalOpen()) {
@@ -50,11 +50,11 @@ class Modal {
 			frame.contentWindow.scarlet_form_modal = this.$dialog
 			frame.contentWindow.breadcrumbs = this.breadCrumbs = [this.displayName]
 		}
-		this.initLoad = false
-		$(frame).load( () => {
+		//this.initLoad = false
+
+		$(frame).load(() => {
 			this.onLoad(qry, frame, tags)
 		})
-
 	}
 
 	/**
@@ -70,12 +70,13 @@ class Modal {
 			$(frameBody).find('#id_slug').val(dasherize(qry))
 		}
 		this.addListeners(frameBody)
-		if(!this.initLoad) this.resizeDialog(frameBody)
-		this.initLoad = true
-		let crumb = $('<div></div>')
-		crumb.css({'position':'absolute','bottom':'10px','left': '10px'})
-		crumb.append(this.breadCrumbs.join(' > '))
-		$(frameBody).find('#container').append(crumb)
+    this.resizeDialog(frameBody)
+		//if(!this.initLoad) this.resizeDialog(frameBody)
+		//this.initLoad = true
+		// let crumb = $('<div></div>')
+		// crumb.css({'position':'absolute','bottom':'10px','left': '10px'})
+		// crumb.append(this.breadCrumbs.join(' > '))
+		// $(frameBody).find('#container').append(crumb)
 	}
 
 	/**
@@ -120,14 +121,14 @@ class Modal {
 			// this.$parentModal.dialog({height: getChildrenHeight(children) + 100, width: getLargestWidth(children) + 50})
 			// STACKED
 			let last = this.$parentModal.children().last()
-			this.$parentModal.dialog({height: getModalContent(last).outerHeight() + 25, width: getModalContent(last).outerWidth() + 20})
+			this.$parentModal.dialog({height: getModalContent(last).outerHeight() + 80, width: getModalContent(last).outerWidth() + 20})
 		} else if(this.$dialog){
 			// LIST
 			// let children = this.$dialog.children()
 			// this.$dialog.dialog({height: getChildrenHeight(children) + 100, width: getLargestWidth(children) + 50})
 			// STACKED
 			let last = this.$dialog.children().last()
-			this.$dialog.dialog({height: getModalContent(last).outerHeight() + 25, width: getModalContent(last).outerWidth() + 20})
+			this.$dialog.dialog({height: getModalContent(last).outerHeight() + 80, width: getModalContent(last).outerWidth() + 20})
 		}
 	}
 
