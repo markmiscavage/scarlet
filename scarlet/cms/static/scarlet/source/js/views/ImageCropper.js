@@ -81,7 +81,6 @@ const ImageCropper = View.extend({
     this.loopCoordProps(function (prop) {
       var $coord = $('input[data-property="' + prop + '"]')
 
-      console.log('updateCoords', prop)
       if ($coord.length) {
         // sync field val
         $coord.attr('value', this.cropCoords[prop])
