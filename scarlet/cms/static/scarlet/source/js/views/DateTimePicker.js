@@ -1,5 +1,6 @@
 import { View } from 'backbone'
 import 'jquery-ui-timepicker-addon/dist/jquery-ui-timepicker-addon'
+import 'jquery-ui/ui/widgets/slider'
 import '../../stylesheets/views/date-time-picker.scss'
 
 const DateTimePicker = View.extend({
@@ -15,9 +16,9 @@ const DateTimePicker = View.extend({
     this.$el.datetimepicker({
 			dateFormat: this.dateFormat,
 			timeFormat : this.timeFormat,
-			showButtonPanel : false,
-			showSecond : false,
-			timeText : 'Time (' + this.$el.data('timezone') + ')'
+			showButtonPanel: false,
+			showSecond: false,
+			timeText: 'Time (' + this.$el.data('timezone') + ')'
 		})
   }
 })
