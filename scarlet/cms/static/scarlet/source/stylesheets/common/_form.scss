@@ -1,4 +1,6 @@
 input[type=text],
+input[type=file],
+input[type=password],
 textarea {
   background-color: $bg-primary;
   display: block;
@@ -10,22 +12,24 @@ textarea {
   }
 }
 
-label {
-  display: block;
-  margin-bottom: 10px;
-}
-
-input[type=text] {
+input[type=text],
+input[type=file],
+input[type=password] {
   line-height: 38px;
   text-indent: 10px;
   margin-top: 10px;
 }
 
-fieldset {
+input[type=file] {
+  padding: 12px;
+}
 
-  legend {
-    display: none;
-  }
+label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+fieldset {
 
   &:not(:last-of-type),
   & > div:not(:last-of-type) {
