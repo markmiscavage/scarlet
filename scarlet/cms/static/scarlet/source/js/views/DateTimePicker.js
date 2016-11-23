@@ -18,7 +18,7 @@ const DateTimePicker = View.extend({
 			timeFormat : this.timeFormat,
 			showButtonPanel: false,
 			showSecond: false,
-			timeText: 'Time (' + this.$el.data('timezone') + ')'
+			timeText: unescape('Time <span class="timezone">(' + this.$el.data('timezone') + ')</span>')
 		})
   }
 })
