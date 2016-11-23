@@ -48,7 +48,7 @@
                 data-{{field.field_tag}}-value="{{field.field.value}}"
               {% endif %}
             {% endif %}
-              {{ field.label_tag }}
+              <label>{{ field.label_tag }}</label>
               {% if field.field.help_text %}<em class="help">{{ field.field.help_text|safe }}</em>{% endif %}
               {{ field.field }}
             {{ field.errors }}
