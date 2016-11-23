@@ -3,6 +3,7 @@
 @import '../helpers/mixins';
 @import '../helpers/placeholders';
 @import '../helpers/fonts';
+//-- selectize list --//
 
 .select2-container,
 .selectize-input,
@@ -17,6 +18,14 @@
   min-width: 200px;
 }
 
+.selectize-input.dropdown-active {
+  border-radius: 0;
+}
+
+.selectize-input.focus {
+  box-shadow: none;
+}
+
 .selectize-control,
 .selectize-input {
   height: 40px;
@@ -29,15 +38,22 @@
   border: none;
   border-radius: 0;
   box-shadow: none;
+
+  input {
+    top: 4px;
+  }
 }
 
-.selectize-dropdown.single {
-  @include box-shadow;
+.selectize-dropdown.single,
+.selectize-dropdown.multi {
+  // NOTE: design requires shadow but this creates a scrollbar bug
+  //@include box-shadow;
   margin-top: 10px;
   border: 1px solid $gray-light;
 }
 
 .selectize-dropdown-content {
+  border: 1px solid $gray-light;
 
   & > div {
     background-color: $white;
@@ -71,8 +87,38 @@
   margin-right: 10px;
 }
 
-.widget-asset {
-  overflow: initial;
+
+//-- selectize tags --//
+
+.selectize-control.multi .selectize-input  {
+
+  [data-value] {
+    &,
+    &.active {
+      box-shadow: none;
+      background-image: none;
+      background-color: $white;
+      border-radius: 0;
+      border: none;
+      text-shadow: none;
+      color: $blue;
+    }
+
+    .remove {
+      border: none;
+      color: $gray;
+      font-size: 20px;
+      padding: 3px 4px 0 0;
+
+      &:hover {
+        background-color: $white;
+        color: $red;
+      }
+    }
+  }
+
+  & > div {
+    margin: 0 8px 3px 0;
+    padding: 6px 12px;
+  }
 }
-
-
