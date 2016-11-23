@@ -165,7 +165,7 @@ const SelectApi = View.extend({
       this.selectize.unlock()
     })
 
-    modal.open(input)
+    modal.open()
 
     return false
   },
