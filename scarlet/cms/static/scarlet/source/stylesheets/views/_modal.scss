@@ -59,22 +59,26 @@
 .modal__frameWrap{
   height: 100%;
   width: 100%;
-  // STACKED
   position: absolute;
   top: 0;
+  overflow: hidden;
 }
 
-// body.modal__body, {
-//   background: none;
-//   border: none;
-//   section#main {
-//     padding: 0;
-//     border-top: 0;
-//     &:before {
-//       display: none;
-//     }
-//   }
-//   #container{
-//     padding-bottom: 0;
-//   }
-// }
+body.modal__body, {
+  background: none;
+  border: none;
+  overflow: hidden;
+
+  section#main {
+    box-shadow: none;
+    padding: 0;
+    border-top: 0;
+    &:before {
+      display: none;
+    }
+  }
+
+  #container{
+    padding-bottom: 0;
+  }
+}
