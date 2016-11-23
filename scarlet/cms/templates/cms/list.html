@@ -30,6 +30,7 @@
     {{ list.formset.management_form }}
   {% endif %}
 
+  {% if not list.empty %}
   <div class="button-group button-group--actions {% if not actions %}hidden{% endif %}">
       {% block add %}
       <div class="divider">
@@ -51,7 +52,7 @@
       {% endif %}
 
       {% block submit %}
-      {% if show_form and not list.empty %}
+      {% if show_form %}
         <div class="divider">
           <a class="button button--secondary" href="{{ cancel_url }}">Cancel</a>
           <input class="button button--primary" type="submit" value="Save" />
@@ -59,7 +60,8 @@
       {% endif %}
       {% endblock %}
   </div>
-  <table>
+  {% endif %}
+  <table class="{% if list.empty %}is-empty{% endif %}">
     <thead>
     <tr>
       {% if actions and not list.empty %}
