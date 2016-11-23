@@ -115,21 +115,12 @@ class Modal {
 	 * @param  {object} iframe document body
 	 */
 	resizeDialog () {
-		if(this.$parentModal){
-			// LIST
-			// let children = this.$parentModal.children()
-			// this.$parentModal.dialog({height: getChildrenHeight(children) + 100, width: getLargestWidth(children) + 50})
-			// STACKED
-			let last = this.$parentModal.children().last()
-			this.$parentModal.dialog({height: getModalContent(last).outerHeight() + 80, width: getModalContent(last).outerWidth() + 20})
-		} else if(this.$dialog){
-			// LIST
-			// let children = this.$dialog.children()
-			// this.$dialog.dialog({height: getChildrenHeight(children) + 100, width: getLargestWidth(children) + 50})
-			// STACKED
-			let last = this.$dialog.children().last()
-			this.$dialog.dialog({height: getModalContent(last).outerHeight() + 80, width: getModalContent(last).outerWidth() + 20})
-		}
+    let modal = this.$parentModal ? '$parentModal' : '$dialog'
+    let last = getModalContent(this[modal].children().last())
+
+    if (last) {
+      this[modal].dialog({height: last.outerHeight() + 80, width: last.outerWidth() + 20})
+    }
 	}
 
 }
