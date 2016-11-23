@@ -32,3 +32,28 @@
     display: none;
   }
 }
+
+.errorlist {
+
+  li {
+    color: $red;
+  }
+}
+
+.formset__field--has-add-button {
+  @include flex-container;
+
+  label {
+    width: 100%;
+    order: 0;
+  }
+
+  .selectize-control {
+    flex-grow: 1;
+    margin-right: 10px;
+  }
+
+  .button {
+    flex-grow: 0;
+  }
+}
