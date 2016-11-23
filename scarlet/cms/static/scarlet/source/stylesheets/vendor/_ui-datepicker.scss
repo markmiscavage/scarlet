@@ -201,6 +201,7 @@ visit http://jqueryui.com/themeroller/?ffDefault=Helvetica%2CArial%2Csans-serif&
   top: 6px;
   width: 1.8em;
   height: 1.8em;
+  z-index: 1;
 
   &:after {
     color: $blue;
@@ -254,8 +255,11 @@ visit http://jqueryui.com/themeroller/?ffDefault=Helvetica%2CArial%2Csans-serif&
   width: 49%;
 }
 
-.ui-datepicker-calendar thead tr th,
-.ui-datepicker-calendar tr,
+.ui-datepicker-year {
+  font-weight: normal;
+}
+
+.ui-datepicker tr,
 .ui-datepicker td {
 
   &,
@@ -287,10 +291,16 @@ visit http://jqueryui.com/themeroller/?ffDefault=Helvetica%2CArial%2Csans-serif&
 }
 
 .ui-datepicker th {
-  padding: .7em .3em;
+  color: $gray;
   text-align: center;
   font-weight: bold;
   border: 0;
+
+  &,
+  &:first-of-type:not(:only-child),
+  &:last-of-type:not(:only-child) {
+    padding: .7em .3em;
+  }
 }
 
 .ui-datepicker td {
@@ -509,6 +519,10 @@ visit http://jqueryui.com/themeroller/?ffDefault=Helvetica%2CArial%2Csans-serif&
 .ui-timepicker-div dl {
   border: none;
   background: $white;
+
+  .timezone {
+    font-weight: normal;
+  }
 }
 
 .ui-timepicker-div dl dd.ui_tpicker_hour {
