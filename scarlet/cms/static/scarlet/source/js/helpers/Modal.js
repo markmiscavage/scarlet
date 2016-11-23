@@ -65,12 +65,13 @@ class Modal {
 		let frameBody = frame.contentDocument.body
 		if(tags) $(frameBody).find('#auto_tags, #id_tags').val(tags.join(','))
 		$(frameBody).addClass('modal__body')
-		if(qry) {
+		if (qry) {
 			$(frameBody).find('#id_name').val(qry)
 			$(frameBody).find('#id_slug').val(dasherize(qry))
 		}
 		this.addListeners(frameBody)
     this.resizeDialog(frameBody)
+
 		//if(!this.initLoad) this.resizeDialog(frameBody)
 		//this.initLoad = true
 		// let crumb = $('<div></div>')
@@ -84,8 +85,8 @@ class Modal {
 	 * close method destroys and removes initialized modal
 	 */
 	close () {
-		if(this.closeCb) this.closeCb()
-		if(this.$dialog.hasClass('ui-dialog-content')) {
+		if (this.closeCb) this.closeCb()
+		if (this.$dialog.hasClass('ui-dialog-content')) {
 			this.$dialog.dialog('destroy').remove()
 		} else {
 			this.$dialog.remove()
@@ -136,7 +137,6 @@ function buildDialog (url, name, options) {
 		return $('<div class="modal__frameWrap modal__inline"></div>')
 	 		.html('<iframe id="'+name+'" src="'+url+'" style="border: 0px; " src="' + url + '" width="100%" height="100%"></iframe>')
 	} else {
-
 		return $('<div class="modal__framesContainer"></div>')
 			.html('<div class="modal__frameWrap"><iframe id="'+name+'" style="border: 0px; " src="' + url + '" width="100%" height="100%"></iframe></div>')
 			.dialog(options)
