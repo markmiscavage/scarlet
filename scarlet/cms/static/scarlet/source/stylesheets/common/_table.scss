@@ -1,6 +1,6 @@
 table {
-  background-color: #fff;
   border-bottom: 1px solid $bg-primary;
+  background-color: #fff;
   width: 100%;
 
   th,
@@ -56,6 +56,14 @@ table {
       &:hover {
         background-color: $bg-primary;
       }
+    }
+  }
+
+  &.is-empty {
+
+    &,
+    thead {
+      border: none;
     }
   }
 }
