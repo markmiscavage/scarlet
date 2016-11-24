@@ -14,15 +14,16 @@
 			</div>
         	{{ field.errors }}
 		{% else %}
-			{% if not field.is_hidden %}
-                <p class="{% if field.is_date %}date{% endif %} {% if field.is_checkbox %}checkbox{% endif %} {% if field.errors %}error-field{% endif %}">
-				{{ field.label_tag }}
-				{% if field.field.help_text %}
-					<em class="help">{{ field.field.help_text|safe }}</em>
-				{% endif %}
-			{% endif %}
-			{{ field }}</p>
-        	{{ field.errors }}
+      <div class="formset__field {% if field.is_date %}date{% endif %} {% if field.is_checkbox %}checkbox{% endif %} {% if field.errors %}error-field{% endif %}">
+  			{% if not field.is_hidden %}
+  				{{ field.label_tag }}
+  				{% if field.field.help_text %}
+  					<em class="help">{{ field.field.help_text|safe }}</em>
+  				{% endif %}
+  			{% endif %}
+			{{ field }}
+      </div>
+      {{ field.errors }}
 		{% endif %}
 	{% endif %}
 {% endfor %}
