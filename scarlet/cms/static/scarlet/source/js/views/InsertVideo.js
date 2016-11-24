@@ -1,7 +1,7 @@
 'use strict'
 import Insert from 'views/Insert'
 
-const InsertImage = Insert.extend({
+const InsertVideo = Insert.extend({
 
   initialize: function () {
     Insert.prototype.initialize.apply(this)
@@ -30,7 +30,7 @@ const InsertImage = Insert.extend({
     let $target = $(e.currentTarget)
     let attribute = $target.data('attribute')
     let value = $(e.currentTarget).val()
-    let $preview = this.$dom.find('.image-preview')
+    let $preview = this.$('.video-preview')
     let $video = $preview.find('iframe')
 
     if (attribute === 'src') {
@@ -57,7 +57,6 @@ const InsertImage = Insert.extend({
     }
 
     if (attribute === 'width' || attribute === 'height') {
-
       value = value.replace('px', '')
 
       if (this.vars.constrain) {
@@ -65,7 +64,6 @@ const InsertImage = Insert.extend({
       }
 
       this.vars.size[attribute] = value
-
     }
 
     this.vars.$node = $video.attr(attribute, value)
@@ -78,7 +76,7 @@ const InsertImage = Insert.extend({
     for (let i = 0, len = this.vars.providers.length; i < len; i++) {
       let provider = providers[i]
       let match = url.match(provider.regex)
-      
+
       if (match) {
         return provider.embed + match[1]
       }
@@ -91,4 +89,4 @@ const InsertImage = Insert.extend({
 
 })
 
-export default InsertImage
+export default InsertVideo
