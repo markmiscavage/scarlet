@@ -1,11 +1,10 @@
 'use strict'
 import { respond } from 'helpers/WindowPopup'
 import { View } from 'backbone'
- 
+
 const Insert = View.extend({
 
 	initialize: function () {
-		this.$dom = this.$el
 		this.vars = {
 			$inputs : null,
 			$form : null,
@@ -16,10 +15,10 @@ const Insert = View.extend({
 				height : null
 			}
 		}
-		this.vars.$inputs = this.$dom.find('[data-attribute]')
-		this.vars.$form = this.$dom.find('form')
+		this.vars.$inputs = this.$el.find('[data-attribute]')
+		this.vars.$form = this.$el.find('form')
 		this.onSubmit = this.onSubmit.bind(this)
-		this.$dom.find('.constrain').attr('checked', true)
+		this.$el.find('.constrain').attr('checked', true)
 		this.bindInputs()
 	},
 
@@ -27,14 +26,14 @@ const Insert = View.extend({
 		this.vars.$inputs.on('keypress paste', this.onDelayInput.bind(this))
 		this.vars.$form.on('submit', this.onSubmit)
 		this.vars.$form.find('.cancel').on('click', this.onCancel)
-		this.$dom.find('.constrain').on('change', this.onConstrainChange.bind(this))
+		this.$el.find('.constrain').on('change', this.onConstrainChange.bind(this))
 	},
 
 	unbindInputs : function () {
 		this.vars.$inputs.off()
 		this.vars.$form.off()
 		this.vars.$form.find('.cancel').off()
-		this.$dom.find('.constrain').off()
+		this.$el.find('.constrain').off()
 	},
 
 	// Helper to delay onInput call on paste
