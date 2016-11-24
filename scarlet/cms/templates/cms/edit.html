@@ -6,10 +6,10 @@
   {% block form_title %}
   {% if obj %}
     {% if subitem %}
-      <h4 data-auto-tag="{{ view_tags }}">Edit {{ obj }}</h4>
+      <h2 data-auto-tag="{{ view_tags }}">Edit {{ obj }}</h2>
     {% endif %}
   {% else %}
-    <h4>Add New {{ model_name }}</h4>
+    <h2>Add New {{ model_name }}</h2>
   {% endif %}
   {% endblock form_title %}
 
