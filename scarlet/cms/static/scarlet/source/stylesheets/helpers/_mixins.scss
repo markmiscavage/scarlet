@@ -70,6 +70,14 @@ $spacer: 1;
   overflow: hidden;
 }
 
+@mixin hide-block {
+  position: absolute;
+  z-index: -2;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
 @mixin box-shadow ($horizontal: 0px, $vertical: 10px, $blur: 40px, $spread: -10px, $color: #c4c4c4) {
   box-shadow: $horizontal $vertical $blur $spread $color;
 }
