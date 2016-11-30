@@ -52,6 +52,13 @@ class Modal {
 		}
 		//this.initLoad = false
 
+    window[this.name] = (data) => {
+      this.cb(data)
+      this.close()
+      window[name] = null
+      delete window[name]
+    }
+
 		$(frame).load(() => {
 			this.onLoad(qry, frame, tags)
 		})
@@ -104,6 +111,11 @@ class Modal {
 			e.preventDefault()
 			this.close()
 		})
+
+    // $(frameBody).on('submit', (e) => {
+    //   this.cb(e.target)
+    //   this.close()
+    // })
 
 		$(frameBody).find('.widget-popup-data').each( (i, dom) => {
 			this.cb($(dom).data())
@@ -199,7 +211,6 @@ const clickOpenModal = function (e, name, cb, tags) {
 const isModalOpen  = function () {
 	return window.location != window.parent.location
 }
-
 
 export default Modal
 export { clickOpenModal, isModalOpen }

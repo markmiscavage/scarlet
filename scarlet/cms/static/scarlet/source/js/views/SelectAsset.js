@@ -243,7 +243,8 @@ const SelectAsset = View.extend({
   },
 
   handlePopup: function (e) {
-    clickOpenModal(e, 'modal-add-asset', this.setSelected.bind(this), this.autoTags)
+    //clickOpenModal(e, 'modal-add-asset', this.setSelected.bind(this), this.autoTags)
+    clickOpenPopup(e, this.setSelected.bind(this))
 
     // LIST APPROACH
     // if(this.addOpen){

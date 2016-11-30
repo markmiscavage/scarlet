@@ -6,6 +6,7 @@ const Insert = View.extend({
 
 	initialize: function () {
 		this.vars = {
+      nodeId: 'insert-media',
 			$inputs : null,
 			$form : null,
 			$node : false,
@@ -16,7 +17,8 @@ const Insert = View.extend({
 			}
 		}
 		this.vars.$inputs = this.$el.find('[data-attribute]')
-		this.vars.$form = this.$el.find('form')
+    // TODO: concept to assign nodeId for Modal communication
+		//this.vars.$form = this.$el.find('form').attr('data-node-id', this.vars.nodeId)
 		this.onSubmit = this.onSubmit.bind(this)
 		this.$el.find('.constrain').attr('checked', true)
 		this.bindInputs()
@@ -87,6 +89,9 @@ const Insert = View.extend({
 	onSubmit : function (e) {
 		e.preventDefault()
 		respond(this.vars.$node)
+
+    // TODO: concept to assign nodeId for Modal communication
+    //this.vars.$node.attr('data-id', this.vars.nodeId)
 	},
 
 	onCancel : function () {
