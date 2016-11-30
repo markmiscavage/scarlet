@@ -62,7 +62,6 @@
 }
 
 .header-object__actions-list {
-  @include flyout($hover-selector: '.header-object__actions:hover');
   margin-left: 7px;
   width: auto;
 

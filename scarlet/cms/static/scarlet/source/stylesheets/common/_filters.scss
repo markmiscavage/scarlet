@@ -18,7 +18,7 @@
 }
 
 .filters__form {
-  @include flyout($hover-selector: '.filters:hover');
+  @include flyout($hover-selector: '.filters');
   background-color: $white;
   padding: 20px;
   text-align: left;

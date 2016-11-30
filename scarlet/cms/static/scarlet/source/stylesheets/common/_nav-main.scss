@@ -78,7 +78,7 @@
 }
 
 .nav-main__sublist {
-  @include flyout($hover-selector: '.nav-main__item:hover');
+  @include flyout($hover-selector: '.nav-main__item');
 
   // .fa-caret-up
   &:before {
