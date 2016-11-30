@@ -14,6 +14,51 @@ a {
   }
 }
 
+p {
+  margin-bottom: 10px;
+}
+
+h2,
+.heading-large {
+  @include heading-large;
+}
+
+h3,
+.heading-medium {
+  @include heading-medium;
+}
+
+h4,
+.heading-small {
+  @include heading-small;
+}
+
+.text-default {
+  @include text-default;
+}
+
+.text-cta {
+  @include text-cta;
+}
+
+.text-description {
+  @include text-description;
+}
+
+.text-meta {
+  @include text-meta;
+}
+
+header {
+  margin-bottom: 40px;
+
+  h2,
+  h3,
+  h4 {
+    margin-bottom: 10px;
+  }
+}
+
 .main {
   @include microfix;
   @include box-shadow;
@@ -86,4 +131,3 @@ svg {
     fill: #000;
   }
 }
-
