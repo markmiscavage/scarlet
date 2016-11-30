@@ -31,7 +31,7 @@
       {% endif %}
       {% for line in fieldset %}
         {% for field in line %}
-          <div class='{% if field.is_autoslug %}auto-slug{% endif %} {% if field.is_date %}date{% endif %} {% if field.is_checkbox %}checkbox{% endif %} {% if field.errors %}error-field{% endif %}'
+          <div class='field-row {% if field.is_autoslug %}auto-slug{% endif %} {% if field.is_date %}date{% endif %} {% if field.is_checkbox %}checkbox{% endif %} {% if field.errors %}error-field{% endif %}'
             {% for attr, value in field.label_attrs.items %}
             data-label-{{attr}}="{{ value }}"
             {% endfor %}
