@@ -20,14 +20,12 @@
         {% endif %}
       {% endif %}
     </h2>
-    {% if obj %}
-      <div class="header-object__actions">
-        <i class="fa fa-chevron-down"></i>
-        <div class="header-object__actions-list">
-          {% block object_links %}{% endblock %}
-        </div>
+    <div class="header-object__actions">
+      <i class="fa fa-chevron-down"></i>
+      <div class="header-object__actions-list">
+        {% block object_links %}{% endblock %}
       </div>
-    {% endif %}
+    </div>
   {% endblock %}
 
   {% block tools %}
