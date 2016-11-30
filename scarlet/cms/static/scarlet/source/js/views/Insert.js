@@ -18,7 +18,7 @@ const Insert = View.extend({
 		}
 		this.vars.$inputs = this.$el.find('[data-attribute]')
     // TODO: concept to assign nodeId for Modal communication
-		//this.vars.$form = this.$el.find('form').attr('data-node-id', this.vars.nodeId)
+		this.vars.$form = this.$el.find('form').attr('data-node-id', this.vars.nodeId)
 		this.onSubmit = this.onSubmit.bind(this)
 		this.$el.find('.constrain').attr('checked', true)
 		this.bindInputs()
