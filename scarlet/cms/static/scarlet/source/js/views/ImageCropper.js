@@ -4,6 +4,8 @@ import imagesready from 'imagesready'
 
 const ImageCropper = View.extend({
 
+  classPrefix: '.image-cropper__',
+
   initialize: function () {
     this.cropCoords = {}
     this.options = {
@@ -12,9 +14,10 @@ const ImageCropper = View.extend({
   },
 
   render: function () {
-    this.$original = this.$('.original')
-    this.$preview = this.$('.preview')
-    this.$thumb = this.$preview.find('.thumb')
+    this.$original = this.$(this.classPrefix + 'original')
+    this.$preview = this.$(this.classPrefix + 'preview')
+    this.$mask = this.$(this.classPrefix + 'mask')
+    this.$thumb = this.$preview.find('img')
 
     this.$original.imagesReady().then(this.onReady.bind(this), this.onError)
   },
@@ -140,7 +143,7 @@ const ImageCropper = View.extend({
         // update preview height
         height = Math.round(scale.scaleX * coords.h)
 
-        this.$preview.find('.mask').css({
+        this.$mask.css({
           height: height + 'px'
         }).end().find('strong').text(this.cropScale.w + ' x ' + height)
 
@@ -149,7 +152,7 @@ const ImageCropper = View.extend({
         height = Math.round(scale.scaleY * coords.h)
         width = Math.round(scale.scaleX * coords.w)
 
-        this.$preview.find('.mask').css({
+        this.$mask.css({
           width: width + 'px',
           height: height + 'px'
         }).end().find('strong').text(width + ' x ' + height)
@@ -195,7 +198,7 @@ const ImageCropper = View.extend({
   },
 
   setupPreview : function () {
-    this.$preview.find('.mask').css({
+    this.$mask.css({
       width: this.cropScale.w,
       height: this.cropScale.h
     }).addClass('active')
