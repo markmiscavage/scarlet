@@ -1,19 +1,4 @@
-@import '../helpers/vars';
-@import '../helpers/mixins';
-@import '../helpers/placeholders';
-@import '../helpers/fonts';
-
-
-.wysihtml5-sandbox {
-  color: $blue;
-  font-size: 18px;
-  outline: 0;
-  width: 100%;
-  background: #fff;
-  height: 400px;
-  margin-bottom: 20px;
-  display: block;
-}
+@import '../vendor/wysihtml5';
 
 .editor__textarea {
   background-color: $gray-light;
@@ -177,11 +162,6 @@
   width: 400px;
   margin-left: -200px;
   z-index: 1;
-
-  label {
-    display: block;
-    margin-bottom: 10px;
-  }
 
   textarea {
     padding: 10px;
