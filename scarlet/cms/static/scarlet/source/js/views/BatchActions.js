@@ -1,8 +1,6 @@
 import { View } from 'backbone'
 
 const BatchActions = View.extend({
-  el: '.list',
-
   events: {
     'click [data-type=batch-check-all]': 'selectAll',
     'click [data-type=batch-check-row]': 'selectRow',
