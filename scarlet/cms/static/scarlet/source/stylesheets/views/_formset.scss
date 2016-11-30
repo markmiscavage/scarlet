@@ -37,16 +37,6 @@
   }
 }
 
-// cannot find markup to update classname
-.errorlist {
-  margin: -15px 0 25px;
-  padding: 0;
-
-  li {
-    color: $red;
-  }
-}
-
 .formset__field--has-add-button {
   @include flex-container;
 
