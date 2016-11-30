@@ -24,9 +24,28 @@ input[type=file] {
   padding: 12px;
 }
 
+legend {
+  @include heading-large;
+}
+
 label {
+  color: $gray;
+  font-size: 18px;
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+
+  &.required {
+    position: relative;
+    padding-left: 11px;
+
+    &:before {
+      content: '*';
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-weight: bold;
+    }
+  }
 }
 
 fieldset {
@@ -35,4 +54,12 @@ fieldset {
   & > div:not(:last-of-type) {
     margin-bottom: 40px;
   }
+}
+
+.field-row {
+  margin-bottom: 25px;
+}
+
+.object-name {
+  font-weight: bold;
 }
