@@ -6,8 +6,6 @@ import pubsub from 'helpers/pubsub'
 import Editor from './editor/Editor'
 
 const Formset = View.extend({
-  el: '.formset',
-
   events: {
     'click .formset__button--delete': 'delete',
     // 'click .button' : function(e){clickOpenPopup(e, (data) => console.log('thing', data));},
