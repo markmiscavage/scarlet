@@ -47,7 +47,7 @@ const App = View.extend({
 
     // ImageCropper
     $('.image-cropper').each((i, dom) => {
-      new ImageCropper({ el: dom }).render()
+      const imageCropper = new ImageCropper({ el: dom }).render()
     })
 
     // Insert Image
