@@ -12,9 +12,11 @@
             </p>
             {% endfor %}
 
-            <p><a class="button" href="{{ done_url }} ">Cancel</a>
-               <input type="submit" name="revert" value="Revert" />
-               <input type="submit" name="delete" value="Delete" /></p>
+            <div class="button-group button-group--submit">
+              <a class="button button--secondary" href="{{ done_url } ">Cancel</a>
+              <input class="button button--secondary" type="submit" name="delete" value="Delete" />
+              <input class="button button--primary" type="submit" name="revert" value="Revert" />
+            </div>
         {% else %}
             <p>There are no other versions of this item yet.</p>
         {% endif %}
