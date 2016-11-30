@@ -16,6 +16,7 @@ button,
     color: $white;
     background-color: $blue;
 
+    &.active,
     &:hover {
       color: $white;
       background-color: $blue-dark;
@@ -26,6 +27,7 @@ button,
     color: $white;
     background-color: $gray;
 
+    &.active,
     &:hover {
       color: $white;
       background-color: $gray-dark;
