@@ -44,7 +44,6 @@
     "karma-webpack": "^1.7.0",
     "morgan": "^1.7.0",
     "node-sass": "^3.4.2",
-    "plop": "^1.5.0",
     "postcss-loader": "^0.8.1",
     "progress-bar-webpack-plugin": "^1.5.0",
     "red-sass": "^0.2.1",
@@ -66,9 +65,9 @@
       "robyn/",
       "scarlet/cms/static/scarlet/legacy/",
       "scarlet/cms/static/scarlet/build/",
-      "scarlet/cms/static/scarlet/source/js/views/wysiwyg/lib",
-      "scarlet/cms/static/scarlet/source/js/views/wysiwyg/commands",
-      "scarlet/cms/static/scarlet/source/js/views/wysiwyg/rules.js",
+      "scarlet/cms/static/scarlet/source/js/views/editor/lib",
+      "scarlet/cms/static/scarlet/source/js/views/editor/commands",
+      "scarlet/cms/static/scarlet/source/js/views/editor/rules.js",
       "scarlet/cms/static/scarlet/source/test"
     ]
   },
