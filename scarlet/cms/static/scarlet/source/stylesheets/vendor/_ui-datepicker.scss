@@ -1,3 +1,5 @@
+@import '~jquery-ui-timepicker-addon/dist/jquery-ui-timepicker-addon.css';
+
 .ui-datepicker {
   // z-index is set inline by datepicker, gets covered by nav
   z-index: $z-high !important;
