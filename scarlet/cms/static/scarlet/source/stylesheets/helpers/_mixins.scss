@@ -134,3 +134,44 @@ $spacer: 1;
   background-color: mix($top, $btm);
   @include background-image(linear-gradient($top, $btm));
 }
+
+@mixin heading-large {
+  // railway light
+  color: $black;
+  font-size: 32px;
+  margin-bottom: 40px;
+}
+
+@mixin heading-medium {
+  // railway regular
+  color: $black;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+@mixin heading-small {
+  // railway semibold
+  color: $black;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+@mixin text-default {
+  // open sans
+  font-size: 14px;
+}
+
+@mixin text-cta {
+  // open sans semi-bold
+  font-size: 14px;
+}
+
+@mixin text-description {
+  // open sans
+  font-size: 12px;
+}
+
+@mixin text-meta {
+  // open sans
+  font-size: 10px;
+}
