@@ -17,7 +17,6 @@ const Tabs = View.extend({
   	}
 
   	this.$tabs.on('click', this.onTabClick.bind(this))
-
   },
 
   unbindTabEvents : function () {
@@ -33,7 +32,6 @@ const Tabs = View.extend({
 
   	this.highlightTab($tab)
   	this.selectTab($tab.data('tabsContent'))
-
   },
 
   highlightTab : function ($tab) {
@@ -50,7 +48,6 @@ const Tabs = View.extend({
 
   	this.hideTabContent()
   	$content.show()
-
   },
 
   hideTabContent : function () {

@@ -4,7 +4,6 @@ import editorRules from './rules'
 import insertAnnotation from './commands/insertAnnotation'
 import insertLink from './commands/insertLink'
 import insertMedia from './commands/insertMedia'
-import '../../../stylesheets/views/_editor.scss'
 
 let guid = 0
 
