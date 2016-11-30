@@ -7,10 +7,6 @@
 @import './helpers/placeholders';
 @import './helpers/fonts';
 
-// VENDOR
-@import './vendor/selectize';
-@import './vendor/ui-datepicker';
-
 // COMMON
 @import './common/base';
 @import './common/actions';
@@ -33,6 +29,10 @@
 @import './views/formset';
 @import './views/modal';
 @import './views/image-cropper';
+@import './views/select';
+@import './views/date-time-picker';
+@import './views/insert-media';
+
 
 
 
