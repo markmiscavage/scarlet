@@ -1,4 +1,5 @@
 import wysihtml5 from 'wysihtml5'
+import Modal from '../../../helpers/Modal'
 import WindowPopup from '../../../helpers/WindowPopup'
 
 export default {
@@ -21,6 +22,11 @@ export default {
       'resizable=no'
     ].join(','), cb)
     pop.request()
+
+
+    // TODO(JM) use case for Modal
+    // let modal = this.modal = new Modal(url, 'modal-insert-media', false, cb)
+    // modal.open()
   },
 
   // Base execute (executes when "insert media" is clicked)
@@ -35,9 +41,17 @@ export default {
 
     // Launches a popup, given a URL.
     this.launchWindow(value.mediaUrl, 1025, 600, null, null, function (data) {
-      // Inserts the response form the popup as a DOM node
+      // Inserts the node from Insert : onSubmit() in Editor
       composer.selection.insertNode($(data)[0]);
-    });
+
+      // TODO: concept to retrieve node from form submit event
+      // Inserts the node found at nodeId in Editor
+
+      // const nodeId = $(data).data('node-id')
+      // if (nodeId) {
+      //   composer.selection.insertNode($(data).find('[data-id=' + nodeId + ']')[0]);
+      // }
+    }.bind(this));
 
   }
 }

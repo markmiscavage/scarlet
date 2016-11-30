@@ -5,7 +5,7 @@ const InsertImage = Insert.extend({
 
   bindInputs : function () {
     Insert.prototype.bindInputs.apply(this)
-    this.$dom.find('[data-respond=\"true\"]').on('change', this.onInput.bind(this))
+    this.$el.find('[data-respond=\"true\"]').on('change', this.onInput.bind(this))
   },
 
   // Generates or updates the image with the latest input value.
@@ -13,7 +13,7 @@ const InsertImage = Insert.extend({
 		let $target = $(e.currentTarget)
 		let attribute = $target.data('attribute')
 		let value = $(e.currentTarget).val()
-		let $preview = this.$dom.find('.image-preview')
+		let $preview = this.$el.find('.image-preview')
 		let $img = $preview.find('img')
 
   	// Adjusts the source to come from the data attribute.
@@ -59,6 +59,7 @@ const InsertImage = Insert.extend({
   	}
 
   	this.vars.$node = $img.attr(attribute, value)
+
 
   }
 

@@ -67,7 +67,6 @@ const InsertVideo = Insert.extend({
     }
 
     this.vars.$node = $video.attr(attribute, value)
-
   },
 
   validateVideo : function (url) {
@@ -83,10 +82,7 @@ const InsertVideo = Insert.extend({
     }
 
     return url
-
   }
-
-
 })
 
 export default InsertVideo
