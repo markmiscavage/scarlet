@@ -26,59 +26,63 @@ const App = View.extend({
   	pubsub.on('scarlet:render', this.render)
 
     // AutoSlug
-    $('.auto-slug').each(function () {
-      new AutoSlug({ el: $(this) }).render()
+    $('.auto-slug').each((i, dom) => {
+      const autoSlug = new AutoSlug({ el: dom }).render()
     })
 
     // BatchActions
-    new BatchActions().render()
+    $('.list').each((i, dom) => {
+      const batchActions = new BatchActions({ el: dom }).render()
+    })
 
     // Filters
-    $('.filters').each(function () {
-      new Filters({ el: $(this) }).render()
+    $('.filters').each((i, dom) => {
+      const filters = new Filters({ el: dom }).render()
     })
 
     // Formset
-    new Formset().render()
+    $('.formset').each((i, dom) => {
+      const formset = new Formset({ el: dom }).render()
+    })
 
     // ImageCropper
-    $('.jcrop').each(function () {
-      new ImageCropper({ el: $(this) }).render()
+    $('.image-cropper').each((i, dom) => {
+      new ImageCropper({ el: dom }).render()
     })
 
     // Insert Image
-    $('.widget-insert-image').each(function () {
-      let insertImage = new InsertImage({el : $(this)})
+    $('.insert-image').each((i, dom) => {
+      const insertImage = new InsertImage({ el: dom })
     })
 
     // Insert Video
-    $('.widget-insert-video').each(function (i, dom) {
-      let insertVideo = new InsertVideo({el : dom})
+    $('.insert-video').each((i, dom) => {
+      const insertVideo = new InsertVideo({ el: dom })
     })
 
     // Insert Audio
-    $('.widget-insert-audio').each( (i, dom) => {
-      let insertAudio = new InsertAudio({el : dom})
+    $('.insert-audio').each((i, dom) => {
+      const insertAudio = new InsertAudio({ el: dom })
     })
 
     // Tabs
-    $('.widget-tabs').each( (i, dom) => {
-      let tabs = new Tabs({el: dom})
+    $('.tabs').each((i, dom) => {
+      const tabs = new Tabs({ el: dom })
     })
 
     // DATEPICKER
-    $('input.date').each(function (i, dom) {
-      let datePicker = new DatePicker({el: dom}).render()
+    $('input.date').each((i, dom) => {
+      const datePicker = new DatePicker({ el: dom }).render()
     })
 
     // DATETIMEPICKER
-    $('input.datetime').each(function (i, dom) {
-      let dateTimePicker = new DateTimePicker({el: dom}).render()
+    $('input.datetime').each((i, dom) => {
+      const dateTimePicker = new DateTimePicker({ el: dom }).render()
     })
 
     // SORTABLE
-    $('table').each(function (i, dom) {
-      let sortable = new Sortable({el: dom}).render()
+    $('table').each((i, dom) => {
+      const sortable = new Sortable({ el: dom }).render()
     })
   },
 
@@ -88,24 +92,25 @@ const App = View.extend({
 
     // Editor
     $('.editor:not(.editor--rendered)').each((i, dom) => {
-      new Editor({ el: dom }).render()
+      const editor = new Editor({ el: dom }).render()
     })
 
     // Select
-    const select = new Select().render()
+    $('select').each((i, dom) => {
+      const select = new Select({ el: dom }).render()
+    })
 
     // SELECTAPI
-    $('.api-select').each( (i, dom) => {
-      let selectApi = new SelectApi({el: dom}).render()
+    $('.api-select').each((i, dom) => {
+      const selectApi = new SelectApi({ el: dom }).render()
     })
 
     // SELECTASSET
-    $('.asset').each( (i, dom) => {
-      if(!$(dom).find('input').hasClass('selectized')){
-        let selectAsset = new SelectAsset({el: dom}).render()
+    $('.asset').each((i, dom) => {
+      if (!$(dom).find('input').hasClass('selectized')){
+        const selectAsset = new SelectAsset({ el: dom }).render()
       }
     })
-
   }
 })
 
