@@ -1,0 +1,67 @@
+@import '~jquery-ui/themes/base/all.css';
+
+.ui-dialog {
+  padding: 10px;
+  z-index: 4;
+
+  // NOTE: nesting necessary for override
+  .ui-dialog-content{
+    padding: 0;
+  }
+
+  .ui-corner-all {
+    border-radius: 0;
+  }
+
+  .ui-dialog-titlebar {
+    padding: 0;
+  }
+
+  .ui-dialog-titlebar-close {
+    background: $gray;
+    padding: 15px;
+    right: 10px;
+    top: 20px;
+    min-width: auto;
+    z-index: $z-low;
+
+    &,
+    &:hover {
+      border: none;
+    }
+
+    &:before {
+      content: '\f00d';
+      font: normal 20px/1 FontAwesome;
+      color: $white;
+      position: absolute;
+      left: 8px;
+      top: 5px;
+      text-indent: 0;
+    }
+
+    span {
+      display: none;
+    }
+
+    &:hover {
+      background: $gray-dark;
+    }
+  }
+}
+
+.ui-dialog-titlebar {
+  position: static !important;
+}
+
+.ui-widget-overlay {
+  position: fixed;
+  background: $gray-light;
+  opacity: .7;
+  height: 100%;
+}
+
+.ui-widget-header {
+  background: none;
+  border: none;
+}
