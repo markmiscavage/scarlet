@@ -35,6 +35,7 @@ function createWebpackPlugins () {
   return plugins
 }
 
+config.devtool = 'cheap-source-map'
 config.output.publicPath = '/build/'
 config.module.loaders.push(...createWebpackLoaders())
 config.plugins.push(...createWebpackPlugins())
