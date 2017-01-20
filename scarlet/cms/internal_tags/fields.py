@@ -1,4 +1,7 @@
-import urllib
+from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+import urllib.request, urllib.parse, urllib.error
 import logging
 from django import forms
 from django.db import models
@@ -48,7 +51,7 @@ class TaggedRelationWidget(APIModelChoiceWidget):
         if url:
             qs = self.get_add_qs()
             if qs:
-                url = "%s&%s" % (url, urllib.urlencode(qs))
+                url = "%s&%s" % (url, urllib.parse.urlencode(qs))
         return url
 
     def render(self, name, value, attrs=None, choices=()):

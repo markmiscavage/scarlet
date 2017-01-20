@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 class Meta(object):
     """
     The options class for Bundle objects, every bundle will

@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import Group
@@ -31,7 +33,7 @@ class UserForm(forms.ModelForm):
         else:
             return {}
 
-    class Meta:
+    class Meta(object):
         model = get_user_model()
         exclude = []
 
@@ -113,7 +115,7 @@ class SignupModelForm(forms.ModelForm):
         return new_user
 
 
-    class Meta:
+    class Meta(object):
         model = get_user_model()
         fields = ('first_name', 'last_name', 'username',
                   'email', 'password1', 'password2')

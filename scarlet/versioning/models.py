@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from builtins import str
+from builtins import object
 import copy
 import sys
 
@@ -9,6 +13,7 @@ from django.db.models.fields import FieldDoesNotExist, related, Field
 from django import dispatch
 from django.utils import formats
 from django.core.exceptions import ValidationError
+from future.utils import with_metaclass
 
 try:
     from ..scheduling.models import Schedulable
@@ -100,7 +105,7 @@ class Cloneable(models.Model):
         object had.
         """
 
-        for k, v in old_m2ms.items():
+        for k, v in list(old_m2ms.items()):
             if v:
                 setattr(self, k, v)
 
@@ -109,8 +114,8 @@ class Cloneable(models.Model):
         Clones all the objects that were previously gathered.
         """
 
-        for ctype, reverses in old_reverses.items():
-            for parts in reverses.values():
+        for ctype, reverses in list(old_reverses.items()):
+            for parts in list(reverses.values()):
                 sub_objs = parts[1]
                 field_name = parts[0]
 
@@ -147,7 +152,7 @@ class Cloneable(models.Model):
             old_m2ms = self._gather_m2ms()
             old_reverses = self._gather_reverses()
 
-            for k, v in attrs.items():
+            for k, v in list(attrs.items()):
                 setattr(self, k, v)
 
             # Do the clone
@@ -245,18 +250,18 @@ class Cloneable(models.Model):
         if not related_name in cls._clone_related:
             cls._clone_related.append(related_name)
 
-    class Meta:
+    class Meta(object):
         abstract = True
 
 
 def get_meta(meta, **kwargs):
     new_meta = type('Meta', (object,), {})
     if meta:
-        for k, v in meta.__dict__.items():
+        for k, v in list(meta.__dict__.items()):
             if v is not None:
                 setattr(new_meta, k, v)
 
-    for k, v in kwargs.items():
+    for k, v in list(kwargs.items()):
         if v is not None:
             setattr(new_meta, k, v)
     return new_meta
@@ -279,7 +284,7 @@ class SharedMeta(models.base.ModelBase):
                     isinstance(value, models.ForeignKey):
                 if version_model:
                     if isinstance(value, models.ManyToManyField):
-                        from fields import M2MFromVersion
+                        from .fields import M2MFromVersion
                         if not isinstance(value, M2MFromVersion):
                             raise TypeError('The model %s cannot contain a ManyToManyField use M2MFromVersion instead' % name)
                         value.db_table = version_model._meta.get_field(name).m2m_db_table()
@@ -372,7 +377,7 @@ class VersionViewMeta(SharedMeta):
         versioned_attrs = add_managers(versioned_attrs)
 
         # Copy all the fields
-        for k, v in attrs.items():
+        for k, v in list(attrs.items()):
             if k in copy_attrs:
                 versioned_attrs[k] = copy.deepcopy(v)
             elif isinstance(v, Field):
@@ -532,7 +537,7 @@ class BaseModel(models.Model):
 
     _version = None
 
-    class Meta:
+    class Meta(object):
         abstract = True
 
     @classmethod
@@ -621,7 +626,7 @@ class BaseVersionedModel(Cloneable, Schedulable):
     user_published = models.CharField(max_length=255, null=True,
                                       editable=False)
 
-    class Meta:
+    class Meta(object):
         abstract = True
 
     def prep_for_clone(self):
@@ -874,7 +879,7 @@ class BaseVersionedModel(Cloneable, Schedulable):
                                                  **kwargs)
 
 
-class VersionView(BaseVersionedModel):
+class VersionView(with_metaclass(VersionViewMeta, BaseVersionedModel)):
     """
     Abstract base model for implementations
     that are pointing to a database view
@@ -905,7 +910,6 @@ class VersionView(BaseVersionedModel):
 
     last_save: The date this version was last_saved.
     """
-    __metaclass__ = VersionViewMeta
 
     # What version id is this
     vid = models.PositiveIntegerField(unique=True, editable=False)
@@ -913,7 +917,7 @@ class VersionView(BaseVersionedModel):
     # What the object id, same as pk just for consistency
     object_id = models.PositiveIntegerField(editable=False)
 
-    class Meta:
+    class Meta(object):
         abstract = True
 
     def get_scheduled_filter_args(self):
@@ -1055,7 +1059,7 @@ class VersionView(BaseVersionedModel):
         published_delete_signal.send(sender, instance=instance)
 
 
-class VersionModel(BaseVersionedModel):
+class VersionModel(with_metaclass(VersionModelMeta, BaseVersionedModel)):
     """
     Abstract base model for implementations
     that are transparent about the fact that
@@ -1086,12 +1090,10 @@ class VersionModel(BaseVersionedModel):
     last_save: The date this version was last_saved.
     """
 
-    __metaclass__ = VersionModelMeta
-
     # Setup the primary key
     vid = models.AutoField(primary_key=True)
 
-    class Meta:
+    class Meta(object):
         abstract = True
 
     def _get_v_last_save(self):

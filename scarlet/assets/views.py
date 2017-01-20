@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import logging
 
 from django.db.models import FileField
@@ -47,7 +48,7 @@ class CropVersionView(views.FormView):
     def get_object(self):
         try:
             return super(CropVersionView, self).get_object()
-        except http.Http404, e:
+        except http.Http404 as e:
             if getattr(self, 'parent_object', None):
                 name = self.kwargs[self.slug_url_kwarg]
                 crop = get_image_cropper().get_crop_config(name)

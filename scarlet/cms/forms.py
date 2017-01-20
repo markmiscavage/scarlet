@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 from django import forms
 from django.db.models import Q, F
 from django.core.validators import EMPTY_VALUES
@@ -166,7 +168,7 @@ class HiddenObjectForm(forms.ModelForm):
     """
     Base form with no fields. Meant for use with formsets.
     """
-    class Meta:
+    class Meta(object):
         fields = []
 
 

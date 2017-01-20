@@ -1,5 +1,13 @@
+from __future__ import unicode_literals
+from __future__ import division
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from past.builtins import basestring
+from past.utils import old_div
 import datetime
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from django.forms import widgets
 from django.forms.utils import flatatt
@@ -37,7 +45,7 @@ TRANSLATION_DICT = {
 }
 
 def translate_format(format_string):
-    for k, v in TRANSLATION_DICT.items():
+    for k, v in list(TRANSLATION_DICT.items()):
         format_string = format_string.replace('%{0}'.format(k), v)
     return format_string
 
@@ -119,9 +127,9 @@ class TimeChoiceWidget(widgets.Select):
             self.repr_format = "%H:%M:%S"
 
         for hour in range(24):
-            for min_v in range(60 / min_interval):
+            for min_v in range(old_div(60, min_interval)):
                 min_v = min_v * min_interval
-                for sec in range(60 / sec_interval):
+                for sec in range(old_div(60, sec_interval)):
                     sec = sec * sec_interval
                     t = datetime.time(hour, min_v, sec)
                     self.choices.append((t.strftime("%H:%M:%S"),
@@ -383,10 +391,10 @@ class APIChoiceWidget(widgets.Input):
             qs = self.get_qs()
             url = "%s?type=choices" % url
             if qs:
-                url = "%s&amp;%s" % (url, u'&amp;'.join([u'%s=%s' % (k, urllib.quote(unicode(v).encode('utf8'))) \
-                                                        for k, v in qs.items()]))
+                url = "%s&amp;%s" % (url, u'&amp;'.join([u'%s=%s' % (k, urllib.parse.quote(str(v).encode('utf8'))) \
+                                                        for k, v in list(qs.items())]))
                 url = "%s&amp;%s" % (url, u'&amp;'.join([u'exclude=%s' % x \
-                                                        for x in qs.keys()]))
+                                                        for x in list(qs.keys())]))
         return url
 
     def get_add_link(self):

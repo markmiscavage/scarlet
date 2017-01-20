@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 from .internal_tags.forms import TagFilterForm
 from .internal_tags import handler
 
@@ -13,7 +15,7 @@ class TagListView(views.ListView):
 class TagBundle(bundles.Bundle):
     main = TagListView()
 
-    class Meta:
+    class Meta(object):
         primary_model_bundle = False
         model = handler.get_model()
 

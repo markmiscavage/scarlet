@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 from django import forms
 from django.db import models
 
@@ -14,7 +16,7 @@ class UploadAssetForm(forms.ModelForm):
     """
     Form for handling new asset creation
     """
-    class Meta:
+    class Meta(object):
         model = get_asset_model()
         fields = ('type', 'file', 'tags')
 
@@ -27,7 +29,7 @@ class UpdateAssetForm(forms.ModelForm):
     """
     Form for handling asset updates
     """
-    class Meta:
+    class Meta(object):
         model = get_asset_model()
         fields = ('file', 'tags')
 

@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 from .groups import CacheGroup
 
 
@@ -85,7 +87,7 @@ class CacheManager(object):
         """
 
         extra = extra or kwargs.pop('extra', {})
-        for group in self._registry.values():
+        for group in list(self._registry.values()):
             if klass in group.models:
                 e = extra.get(group.key)
                 group.invalidate_cache(klass, extra=e, **kwargs)

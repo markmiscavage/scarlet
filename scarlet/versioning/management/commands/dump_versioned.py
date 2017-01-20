@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.core.management.commands import dumpdata
 
 

@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 import json
 
 from django.shortcuts import render_to_response
@@ -27,7 +29,7 @@ class RenderResponse(object):
 
     def __init__(self, **kwargs):
         # Go through keyword arguments and save to instance
-        for key, value in kwargs.iteritems():
+        for key, value in kwargs.items():
             setattr(self, key, value)
 
     def get_context_instance(self, request, **kwargs):

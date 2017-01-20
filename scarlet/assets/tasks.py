@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from . import get_asset_model, get_image_cropper
 from . import settings
 

@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 import logging
 
 from django.utils import timezone
@@ -15,7 +17,7 @@ class Schedulable(models.Model):
     by models that need to be scheduled.
     """
 
-    class Meta:
+    class Meta(object):
         abstract = True
 
     def get_scheduled_filter_args(self):
@@ -77,7 +79,7 @@ class Schedulable(models.Model):
         if callable(action):
             return action(**kwargs)
         else:
-            for k, v in kwargs.items():
+            for k, v in list(kwargs.items()):
                 setattr(self, k, v)
             self.save()
 
@@ -102,5 +104,5 @@ class Schedule(models.Model):
                 obj.do_scheduled_update(self.action, **self.json_args)
         self.delete()
 
-    class Meta:
+    class Meta(object):
         app_label = 'scheduling'

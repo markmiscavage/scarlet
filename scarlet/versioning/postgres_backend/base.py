@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.db.backends.postgresql_psycopg2.base import DatabaseWrapper, \
                                                         DatabaseCreation
 from django import VERSION as DJANGO_VERSION

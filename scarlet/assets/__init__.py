@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import importlib
 
 from django.apps import apps as djapps

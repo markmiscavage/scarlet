@@ -1,4 +1,8 @@
 from __future__ import unicode_literals
+from builtins import next
+from builtins import str
+from past.builtins import basestring
+from builtins import object
 
 from django import forms
 from django.forms.utils import flatatt, ErrorList
@@ -45,7 +49,7 @@ class AdminList(object):
         self.auto_sort = False
         if self.formset:
             self.auto_sort = len([x for x in \
-                                 formset.empty_form.fields.values() \
+                                 list(formset.empty_form.fields.values()) \
                                  if isinstance(x, fields.OrderFormField)]) > 0
 
     def __iter__(self):
@@ -148,7 +152,7 @@ class AdminForm(object):
         except (KeyError, IndexError):
             pass
         try:
-            return iter(self.form).next()
+            return next(iter(self.form))
         except StopIteration:
             return None
 
@@ -180,12 +184,12 @@ class AdminFormSets(object):
     def visible_formsets(self):
         for v in self.combined_sets:
             yield v.title, v
-        for k, v in self.formsets.items():
+        for k, v in list(self.formsets.items()):
             if not k in self.hidden_sets:
                 yield k, v
 
     def all_formsets(self):
-        for k, v in self.formsets.items():
+        for k, v in list(self.formsets.items()):
             yield k, v
 
 class CombinedMultiFormSet(object):
@@ -205,16 +209,16 @@ class CombinedMultiFormSet(object):
         return self.admin_formset.formsets
 
     def management_form(self):
-        return mark_safe(''.join([unicode(x.management_form) for k, x in self.formsets.items() \
+        return mark_safe(''.join([str(x.management_form) for k, x in list(self.formsets.items()) \
                         if k in self.keys]))
 
     def non_form_errors(self):
-        return mark_safe(''.join([unicode(x.non_form_errors()) for k, x in self.formsets.items() \
+        return mark_safe(''.join([str(x.non_form_errors()) for k, x in list(self.formsets.items()) \
                         if k in self.keys]))
 
     def __iter__(self):
         forms = []
-        for k, formset in self.formsets.items():
+        for k, formset in list(self.formsets.items()):
             forms = forms + [(x, k) for x in formset ]
 
         forms = sorted(forms, key=lambda f: getattr(f[0].instance, self.order_by))
@@ -247,7 +251,7 @@ class Fieldline(object):
     def __iter__(self):
         for i, field in enumerate(self.fields):
             cls = ReadOnlyField
-            if (type(field) == str or type(field) == unicode) and \
+            if (type(field) == str or type(field) == str) and \
                                         field in self.form.fields:
                 cls = AdminField
             yield cls(self.form, field, is_first=(i == 0))
@@ -342,7 +346,7 @@ def normalize_dictionary(data_dict):
     Converts all the keys in "data_dict" to strings. The keys must be
     convertible using str().
     """
-    for key, value in data_dict.items():
+    for key, value in list(data_dict.items()):
         if not isinstance(key, str):
             del data_dict[key]
             data_dict[str(key)] = value
@@ -386,7 +390,7 @@ def get_field_value(field, instance):
         if hasattr(f, "flatchoices") and f.flatchoices:
             value = dict(f.flatchoices).get(value)
         elif isinstance(value, models.Manager):
-            value = ', '.join([unicode(x) for x in value.all()])
+            value = ', '.join([str(x) for x in value.all()])
 
     except models.FieldDoesNotExist:
         # For non-field values, the value is either a method, property or

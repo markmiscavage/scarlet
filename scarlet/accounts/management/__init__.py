@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.db.models.signals import post_migrate
 from django.contrib import auth
 from django.contrib.auth.models import Group

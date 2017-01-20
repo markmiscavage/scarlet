@@ -1,3 +1,6 @@
+from __future__ import unicode_literals
+from builtins import zip
+from builtins import object
 from functools import update_wrapper
 from django.http import HttpResponseRedirect
 from django.contrib.admin.forms import AdminAuthenticationForm
@@ -193,7 +196,7 @@ class AdminSite(object):
         )
 
         # Add in each model's views.
-        for base, bundle in self._registry.iteritems():
+        for base, bundle in self._registry.items():
             urlpatterns += patterns('',
                 url(r'^%s/' % base, include(bundle.get_urls()))
             )
@@ -313,7 +316,7 @@ class AdminSite(object):
         dash_blocks = self.get_dashboard_blocks(request)
 
         sections, titles = self._get_allowed_sections(dashboard)
-        choices = zip(sections, titles)
+        choices = list(zip(sections, titles))
         choices.sort(key=lambda tup: tup[1])
         choices.insert(0, ('', 'All'))
 
@@ -342,7 +345,7 @@ class AdminSite(object):
 
         return TemplateResponse(request, [template], {
                             'dashboard': dashboard, 'blocks': dash_blocks,
-                            'page': page, 'bundle' : self._registry.values()[0],
+                            'page': page, 'bundle' : list(self._registry.values())[0],
                             'form': form}, current_app = self.name)
 
 # This global object represents the default admin site, for the common case.

@@ -1,5 +1,11 @@
+from __future__ import unicode_literals
+from __future__ import division
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
+from past.utils import old_div
 import os
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import tempfile
 from collections import namedtuple
 
@@ -36,9 +42,9 @@ class CropConfig(object):
         self.editable = editable
 
     def _adjust_coordinates(self, ratio, current_size, needed_size):
-        diff = current_size - (needed_size / ratio)
+        diff = current_size - (old_div(needed_size, ratio))
         if diff:
-            adjust = int(diff / 2)
+            adjust = int(old_div(diff, 2))
         else:
             adjust = 0
         return adjust
@@ -60,8 +66,8 @@ class CropConfig(object):
             y2 = h
 
         if self.width and self.height:
-            ry = self.height / h
-            rx = self.width / w
+            ry = old_div(self.height, h)
+            rx = old_div(self.width, w)
             if rx < ry:
                 ratio = ry
                 adjust = self._adjust_coordinates(ratio, w, self.width)
@@ -76,11 +82,11 @@ class CropConfig(object):
             width = self.width
             height = self.height
         elif self.width:
-            ratio = self.width / w
+            ratio = old_div(self.width, w)
             width = self.width
             height = int(h * ratio)
         else:
-            ratio = self.height / h
+            ratio = old_div(self.height, h)
             width = int(w * ratio)
             height = self.height
 
@@ -128,7 +134,7 @@ class Cropper(object):
     def __init__(self, storage=None):
         self.storage = storage or default_storage
         self._required_crops = []
-        for k, v in settings.IMAGE_SIZES.items():
+        for k, v in list(settings.IMAGE_SIZES.items()):
             if v and isinstance(v, dict):
                 self.register(CropConfig(k, **v))
                 self._required_crops.append(k)

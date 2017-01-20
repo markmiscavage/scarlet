@@ -1,5 +1,9 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
 import logging
-import urlparse
+import urllib.parse
 
 from django.db import models
 from django.db.models.signals import pre_save
@@ -59,9 +63,9 @@ class AssetFieldFile(FieldFile):
         url = super(AssetFieldFile, self)._get_url()
         if url:
             if version:
-                url_parts = list(urlparse.urlsplit(url))
+                url_parts = list(urllib.parse.urlsplit(url))
                 url_parts[2] = utils.get_size_filename(url_parts[2], version)
-                url = urlparse.urlunsplit(url_parts)
+                url = urllib.parse.urlunsplit(url_parts)
             if settings.USE_CACHE_BUST:
                 if not cbversion:
                     if getattr(self.instance, 'cbversion', None):
@@ -103,9 +107,9 @@ class AssetsFileField(TaggedRelationField):
         cropper = get_image_cropper()
 
         self.image_sizes = []
-        from crops import CropConfig
+        from .crops import CropConfig
         if isinstance(image_sizes, dict):
-            for k, v in image_sizes.items():
+            for k, v in list(image_sizes.items()):
                 if v and isinstance(v, dict):
                     cropper.register(CropConfig(k, **v))
                     self.image_sizes.append(k)

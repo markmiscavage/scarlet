@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from .middleware import SESSION_KEY
 from django.shortcuts import redirect
 

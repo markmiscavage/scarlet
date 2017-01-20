@@ -1,14 +1,15 @@
+from __future__ import unicode_literals
+from past.builtins import basestring
 import json
 
 from django.db import models
 from django.core.serializers.json import DjangoJSONEncoder
+from future.utils import with_metaclass
 
 
-class JSONField(models.TextField):
+class JSONField(with_metaclass(models.SubfieldBase, models.TextField)):
 
     # Used so to_python() is called
-    __metaclass__ = models.SubfieldBase
-
     def __init__(self, *args, **kwargs):
         self.dump_kwargs = kwargs.pop('dump_kwargs',
                                       {'cls': DjangoJSONEncoder})

@@ -1,4 +1,7 @@
-import router
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from builtins import object
+from . import router
 
 class CacheConfig(object):
     ALL = 'all'
@@ -79,7 +82,7 @@ class CacheGroup(object):
         self._models[model] = CacheConfig(values, instance_values)
 
     def _get_models(self):
-        return self._models.keys()
+        return list(self._models.keys())
     models = property(_get_models)
 
     def _get_cache_extras(self, klass, instance=None, extra=None,

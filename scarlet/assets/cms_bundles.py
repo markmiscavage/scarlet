@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 from django.utils.safestring import mark_safe
 
 try:
@@ -34,7 +36,7 @@ class CropBundle(bundles.BlankBundle):
                           base_filter_kwargs={'editable': True})
     edit = CropVersionView()
 
-    class Meta:
+    class Meta(object):
         parent_field = 'image'
         model = models.ImageDetail
         edit_regex_base = '(?P<%(group_name)s_pk>[a-zA-z0-9_.-]+)/%(attname)s/'
@@ -49,7 +51,7 @@ class AssetBundle(bundles.Bundle):
     crop = CropView(default_template="assets/crop.html")
     crops = CropBundle.as_subbundle(name='crops')
 
-    class Meta:
+    class Meta(object):
         item_views = ('edit', 'crop', 'crops', 'delete')
         primary_model_bundle = True
         model = get_asset_model()

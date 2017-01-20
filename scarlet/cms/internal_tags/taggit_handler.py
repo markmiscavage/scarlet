@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import re
 
 from django.db import models
@@ -42,7 +43,7 @@ def tags_to_string(tags):
 
 
 def set_auto_tags_for_form(form, auto_tags):
-    for name, field in form.fields.items():
+    for name, field in list(form.fields.items()):
         if isinstance(field, TaggedRelationFormField) and \
                     name in form.changed_data and \
                     form.cleaned_data.get(name):
@@ -74,7 +75,7 @@ def update_changed_tags(new_tags, old_tags):
             mapping[t['content_type']] = []
         mapping[t['content_type']].append(t['object_id'])
 
-    for t, ids in mapping.items():
+    for t, ids in list(mapping.items()):
         t = ContentType.objects.get_for_id(t)
         m = t.model_class()
         for ins in m.objects.filter(pk__in=ids):

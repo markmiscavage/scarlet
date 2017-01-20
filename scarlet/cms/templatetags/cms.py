@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import str
 from django.template.defaulttags import kwarg_re
 from django.template import Library, TemplateSyntaxError, Node
 from django.utils.encoding import smart_str
@@ -26,7 +28,7 @@ class URLNode(Node):
 
         # Resolve vars
         kwargs = dict([(smart_str(k, 'ascii'), v.resolve(context))
-                       for k, v in self.kwargs.items()])
+                       for k, v in list(self.kwargs.items())])
         follow_parent = kwargs.pop('follow_parent', True)
         bundle = self.bundle.resolve(context)
         url_params = context['url_params']
@@ -90,10 +92,10 @@ class StringNode(Node):
             view = getattr(module, view_name)
 
         kwargs = dict([(smart_str(k, 'ascii'), v.resolve(context))
-                       for k, v in self.kwargs.items()])
+                       for k, v in list(self.kwargs.items())])
 
         class_kwargs = {}
-        for k,v in kwargs.items():
+        for k,v in list(kwargs.items()):
             if hasattr(view, k):
                 class_kwargs[k] = v
 

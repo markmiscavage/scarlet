@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 try:
     from ..cms import renders
 except ValueError:

@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import str
 from django import http
 from django.views.generic.edit import ModelFormMixin
 from django.views.generic.detail import SingleObjectMixin
@@ -68,7 +70,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         )
 
         if self.formsets:
-            for k, v in self.formsets.items():
+            for k, v in list(self.formsets.items()):
                 if not isinstance(v, LazyFormSetFactory):
                     raise TypeError(
                         '%s must be a LazyFormSetFactory instance' % k)
@@ -95,7 +97,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         """
 
         if self.kwargs.get(self.slug_url_kwarg, False) == \
-                    unicode(getattr(self.object, self.slug_field, "")) \
+                    str(getattr(self.object, self.slug_field, "")) \
                     and not self.force_add:
             url = self.request.build_absolute_uri()
         else:
@@ -169,7 +171,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
             return self.fieldsets
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        fields = form.base_fields.keys()
+        fields = list(form.base_fields.keys())
 
         readonly_fields = self.get_readonly_fields()
         if readonly_fields:
@@ -294,7 +296,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
                                              saving=saving)
 
         formsets = {}
-        for k, v in fdict.items():
+        for k, v in list(fdict.items()):
             formsets[k] = self._init_formset(k, v,
                                          obj, saving=saving)
         return formsets
@@ -352,7 +354,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         # Add any force_instance_values
         force = self.get_force_instance_values()
         if force:
-            for k, v in force.items():
+            for k, v in list(force.items()):
                 setattr(form.instance, k, v)
 
         # Are we adding to an attr or manager
@@ -385,7 +387,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         all the given formsets and calls their
         save method.
         """
-        for formset in formsets.values():
+        for formset in list(formsets.values()):
             tag_handler.set_auto_tags_for_formset(formset, auto_tags)
             formset.save()
 
@@ -476,7 +478,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
 
     def is_valid(self, form, formsets):
         valid_formsets = True
-        for formset in formsets.values():
+        for formset in list(formsets.values()):
             if not formset.is_valid():
                 valid_formsets = False
                 break
@@ -485,11 +487,11 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
             # Add any force_instance_values
             force = self.get_force_instance_values()
             if force:
-                for k, v in force.items():
+                for k, v in list(force.items()):
                     setattr(form.instance, k, v)
                 try:
                     form.instance.full_clean()
-                except ValidationError, e:
+                except ValidationError as e:
                     form._update_errors(e)
                     return False
             return True
@@ -510,7 +512,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         formsets = self.get_formsets(form, saving=True)
 
         valid_formsets = True
-        for formset in formsets.values():
+        for formset in list(formsets.values()):
             if not formset.is_valid():
                 valid_formsets = False
                 break

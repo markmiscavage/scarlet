@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from builtins import object
 try:
     try:
         from ..cms.views import SiteView as View
@@ -9,7 +12,7 @@ except ImportError:
 from django.middleware.cache import CacheMiddleware
 from django.utils.cache import patch_response_headers, get_max_age, patch_vary_headers
 from django.conf import settings
-import router
+from . import router
 
 class CacheMixin(object):
 

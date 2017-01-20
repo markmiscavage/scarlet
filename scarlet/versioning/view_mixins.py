@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django import http
 from django.views.generic.detail import SingleObjectMixin
 

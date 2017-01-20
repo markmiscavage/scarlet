@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.contrib.auth import get_user_model
 
@@ -73,7 +75,7 @@ class AccountBundle(bundles.Bundle):
             )
     )
 
-    class Meta:
+    class Meta(object):
         model = get_user_model()
         primary_model_bundle = True
         item_views = ('password', 'edit', 'delete')

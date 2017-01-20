@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 from django.db import models
 
 from . import handler
@@ -33,5 +35,5 @@ class AutoTagModel(models.Model):
                 if not t.pk in current_tags:
                     self.tags.add(t)
 
-    class Meta:
+    class Meta(object):
         abstract = True

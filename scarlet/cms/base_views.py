@@ -1,5 +1,11 @@
+from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
 from functools import update_wrapper
-import urlparse
+import urllib.parse
 import copy
 
 from django import http
@@ -333,7 +339,7 @@ class CMSView(BaseView):
         if fields:
             fields = set(fields)
 
-        for k, f in form_class.base_fields.items():
+        for k, f in list(form_class.base_fields.items()):
             if fields and not k in fields:
                 continue
 
@@ -514,9 +520,9 @@ class ModelCMSMixin(object):
             section = ""
 
         if url:
-            url = urlparse.urlparse(url).path
+            url = urllib.parse.urlparse(url).path
 
-        rep = unicode(instance)
+        rep = str(instance)
         if rep:
             rep = rep[:255]
 

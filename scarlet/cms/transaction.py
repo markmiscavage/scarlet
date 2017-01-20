@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 
 try:
     from django.db.transaction import atomic as commit_on_success

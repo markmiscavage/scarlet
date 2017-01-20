@@ -1,6 +1,10 @@
+from __future__ import unicode_literals
+from builtins import hex
+from builtins import object
 import re
 from functools import update_wrapper
 import random
+from future.utils import with_metaclass
 
 try:
     from django.conf.urls import include, patterns, url
@@ -27,7 +31,7 @@ def create_new_viewclass(base, **kwargs):
     data = {}
     kwargs.update(getattr(base, 'changed_kwargs', {}))
 
-    for k, v in kwargs.items():
+    for k, v in list(kwargs.items()):
         if hasattr(base, k):
             data[k] = v
 
@@ -151,7 +155,7 @@ class BundleMeta(type):
 
         m = attrs.pop('Meta', None)
         meta.add_meta(m)
-        for k, v in attrs.items():
+        for k, v in list(attrs.items()):
             if isinstance(v, PromiseBundle):
                 _children.add(k)
                 _views.add(k)
@@ -171,7 +175,7 @@ class BundleMeta(type):
         return cls
 
 
-class Bundle(object):
+class Bundle(with_metaclass(BundleMeta, object)):
     """
     Base bundle class. A bundle is a class that is meant to group together
     CMSViews and other bundle classes. It contains some methods to
@@ -218,8 +222,6 @@ class Bundle(object):
     * **delete** - DeleteActionView
     """
 
-    __metaclass__ = BundleMeta
-
     parent_attr = PARENT
     action_alias = ACTION_ALIAS
 
@@ -256,7 +258,7 @@ class Bundle(object):
         if self.parent:
             self.name = "%s_%s" % (self.parent.name, self.name)
             reg = r'^%s' % parent.get_regex_for_name(self.name, attr_on_parent)
-            url_params = re.compile(reg).groupindex.keys()
+            url_params = list(re.compile(reg).groupindex.keys())
             l = list(parent.url_params)
             l.extend(url_params)
             self._url_params = tuple(l)
@@ -789,7 +791,7 @@ class ObjectOnlyBundle(Bundle):
     main_list = URLAlias(bundle_attr=PARENT)
     delegated = True
 
-    class Meta:
+    class Meta(object):
         item_views = ()
         action_views = ()
         live_views = ('delete', 'publish', 'unpublish', 'versions')
@@ -810,7 +812,7 @@ class ChildBundle(Bundle):
     """
     required_groups = PARENT
 
-    class Meta:
+    class Meta(object):
         pass
 
 

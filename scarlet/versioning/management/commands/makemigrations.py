@@ -21,6 +21,7 @@ way more complex code.
 
 3) Monkey patching the effected related field types is arguably worse/dirtier.
 """
+from __future__ import unicode_literals
 
 import sys
 
@@ -102,7 +103,7 @@ class Command(BaseMakeMigrations):
         if conflicts and not self.merge:
             name_str = "; ".join(
                 "%s in %s" % (", ".join(names), app)
-                for app, names in conflicts.items()
+                for app, names in list(conflicts.items())
             )
             raise CommandError("Conflicting migrations detected (%s).\nTo fix them run 'python manage.py makemigrations --merge'" % name_str)
 

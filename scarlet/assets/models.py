@@ -1,3 +1,6 @@
+from __future__ import unicode_literals
+from builtins import str
+from builtins import object
 import os
 import uuid
 
@@ -51,7 +54,7 @@ class AssetBase(AutoTagModel):
 
     objects = AssetManager()
 
-    class Meta:
+    class Meta(object):
         abstract = True
 
     def __init__(self, *args, **kwargs):
@@ -198,7 +201,7 @@ class ImageDetailBase(models.Model):
     y = models.PositiveIntegerField(null=True)
     y2 = models.PositiveIntegerField(null=True)
 
-    class Meta:
+    class Meta(object):
         abstract = True
 
     def __unicode__(self):
@@ -222,11 +225,11 @@ class ImageDetailBase(models.Model):
 
 
 class Asset(AssetBase):
-    class Meta:
+    class Meta(object):
         abstract = False
 
 
 class ImageDetail(ImageDetailBase):
 
-    class Meta:
+    class Meta(object):
         abstract = False

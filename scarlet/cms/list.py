@@ -1,4 +1,7 @@
-from urllib import urlencode
+from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from urllib.parse import urlencode
 
 from django import http
 from django.views.generic.list import MultipleObjectMixin
@@ -171,7 +174,7 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     def _add_formset_id(self, data, queryset):
         q = None
         key = self.model._meta.pk.name
-        for k, v in data.items():
+        for k, v in list(data.items()):
             if k.endswith('-%s' % key):
                 new_q = models.Q(**{key: v})
                 if q:

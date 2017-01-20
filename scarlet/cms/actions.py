@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django import http
 from django.views.generic.list import MultipleObjectMixin
 from django.views.generic.detail import SingleObjectMixin
@@ -250,7 +251,7 @@ class DeleteActionView(ActionView):
             msg = "%s object%s deleted." % (count, ('' if count ==1 else 's'))
             url = self.get_done_url()
             return self.render(request, redirect_url=url, message = msg)
-        except ProtectedError, e:
+        except ProtectedError as e:
             protected = []
             for x in e.protected_objects:
                 if hasattr(x, 'delete_blocked_message'):
@@ -614,7 +615,7 @@ class DeleteView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
                     self.log_action(self.object, CMSLog.DELETE)
                     msg = "%s deleted" % self.object
                     self.object.delete()
-            except ProtectedError, e:
+            except ProtectedError as e:
                 protected = []
                 for x in e.protected_objects:
                     if hasattr(x, 'delete_blocked_message'):

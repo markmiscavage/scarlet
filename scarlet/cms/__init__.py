@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 default_app_config = 'scarlet.cms.apps.AppConfig'
 
 try:
@@ -28,7 +29,7 @@ except ImportError:
             try:
                 before_import_registry = copy.copy(site._registry)
                 import_module('%s.cms_bundles' % app)
-            except Exception, e:
+            except Exception as e:
                 # Reset the model registry to the state before the last import as
                 # this import will have to reoccur on the next request and this
                 # could raise NotRegistered and AlreadyRegistered exceptions

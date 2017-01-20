@@ -13,6 +13,8 @@
 
     For full details, check the README.md file.
 """
+from __future__ import unicode_literals
+from builtins import object
 
 from functools import wraps
 
@@ -85,7 +87,7 @@ class _Transaction(object):
             # https://code.djangoproject.com/ticket/16047
 
 
-class _TransactionWrapper:
+class _TransactionWrapper(object):
 
     """ This class wraps the above _Transaction class.  We do this to allow
         reentrancy and thread-safety.  When being used as a decorator, only one

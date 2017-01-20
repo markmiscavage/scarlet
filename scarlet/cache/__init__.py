@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from .manager import cache_manager
 
 default_app_config = 'scarlet.cache.apps.AppConfig'

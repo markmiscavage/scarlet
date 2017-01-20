@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.contrib.admin.sites import AdminSite as OrgAdminSite
 from django.contrib.admin.options import ModelAdmin as OrgModelAdmin
 

@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 from django.db import models
 from django.utils import timezone
 
@@ -38,5 +40,5 @@ class CMSLog(models.Model):
     user_name = models.CharField(max_length=255)
     when = models.DateTimeField(default=timezone.now)
 
-    class Meta:
+    class Meta(object):
         app_label = 'cms'

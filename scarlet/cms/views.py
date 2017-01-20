@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 #imports for backwards compatibility
 from django.views.generic.edit import ModelFormMixin
 
