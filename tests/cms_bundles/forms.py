@@ -6,7 +6,7 @@ from django import forms
 
 from scarlet.cms import views, renders
 
-from models import *
+from .models import *
 
 
 class EditAuthorForm(forms.ModelForm):

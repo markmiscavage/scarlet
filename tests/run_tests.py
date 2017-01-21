@@ -51,10 +51,10 @@ def setup_test_environment(settings_overide, with_scarlet_blog=False):
         'DATABASES': {
             'default': {
                 'ENGINE': 'scarlet.versioning.postgres_backend',
-                'NAME': 'cms',
-                'USER': '',
-                'PASSWORD': '',
-                'HOST': 'localhost',
+                'NAME': 'scarlet',
+                'USER': 'scarlet',
+                'PASSWORD': 'scarlet',
+                'HOST': 'scarletdb',
                 'PORT': '',
             },
         },

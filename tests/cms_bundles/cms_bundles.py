@@ -5,9 +5,9 @@ from django.forms.models import inlineformset_factory
 from scarlet.cms import bundles, forms, options, views, renders, actions
 from scarlet.cms.sites import site
 
-from models import Post, PostImage, Comment, Category, Tag, Author, DummyModel
-from views import PostsListView
-from forms import EditAuthorForm
+from .models import Post, PostImage, Comment, Category, Tag, Author, DummyModel
+from .views import PostsListView
+from .forms import EditAuthorForm
 
 postimages_formset = forms.LazyFormSetFactory(
     inlineformset_factory, Post, PostImage, can_order=True)
