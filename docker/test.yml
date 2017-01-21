@@ -1,0 +1,26 @@
+scarletredis:
+  container_name: scarletredis
+  image: redis:latest
+scarletdb:
+  container_name: scarletdb 
+  image: postgres
+  environment:
+      POSTGRES_PASSWORD: scarlet
+      POSTGRES_USER: scarlet
+  ports:
+      - "5432:5432"
+scarlet:
+  container_name: scarlet 
+  build: .
+  hostname: scarlet-dev
+  command: /bin/bash
+  tty: true
+  stdin_open: true
+  volumes:
+      - ../:/srv/active
+  ports:
+      - "8000:8000"
+      - "3000:3000"
+  links:
+      - scarletredis
+      - scarletdb
