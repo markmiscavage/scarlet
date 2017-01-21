@@ -258,8 +258,8 @@ def get_meta(meta, **kwargs):
     new_meta = type('Meta', (object,), {})
     if meta:
         for k, v in list(meta.__dict__.items()):
-            if v is not None:
-                import ipdb; ipdb.set_trace()
+            # Python3: `meta.__dict__` is <class 'mappingproxy'>
+            if v is not None and k != '__dict__':
                 setattr(new_meta, k, v)
 
     for k, v in list(kwargs.items()):
