@@ -12,7 +12,7 @@ import urllib.request, urllib.parse, urllib.error
 from django.forms import widgets
 from django.forms.utils import flatatt
 from django import forms
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
 from django.core.urlresolvers import reverse
@@ -228,7 +228,7 @@ class DateRenderer(widgets.RadioFieldRenderer):
 
     def render(self):
         return mark_safe(u'<fieldset class="datetime">\n%s\n</fieldset>' % u'\n'.join([u'%s'
-                % force_unicode(w) for w in self]))
+                % force_text(w) for w in self]))
 
 class RadioDateTimeWidget(widgets.RadioSelect):
     NOW = 'now'
@@ -412,7 +412,7 @@ class APIChoiceWidget(widgets.Input):
         """
         Looks up the current value of the field and returns
         a unicode representation. Default implementation does a lookup
-        on the target model and if a match is found calls force_unicode
+        on the target model and if a match is found calls force_text
         on that object. Otherwise a blank string is returned.
         """
         if not key:
@@ -422,7 +422,7 @@ class APIChoiceWidget(widgets.Input):
             try:
                 obj = self.model._default_manager.using(self.db
                                                          ).get(**{key: value})
-                return force_unicode(obj)
+                return force_text(obj)
             except (ValueError, self.model.DoesNotExist):
                 return ''
         return ''
@@ -568,7 +568,7 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
                 objs = self.model.to._default_manager.using(self.db
                                  ).filter(**kwargs)
                 for obj in objs:
-                    d = { 'text' : force_unicode(obj),
+                    d = { 'text' : force_text(obj),
                           'value' : getattr(obj, key),
                           'name' : name }
                     line = '<input type="hidden" data-multiple data-title="%(text)s" name="%(name)s" value="%(value)s" />' % d

@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 import datetime
 
 from django import forms
@@ -21,14 +23,14 @@ class TestMainBundle(bundles.Bundle):
     navigation = bundles.PARENT
     main = views.ListView(display_fields=('user', 'text'))
 
-    class Meta:
+    class Meta(object):
         primary_model_bundle = True
 
 
 class TestBundle1(TestMainBundle):
     navigation = bundles.PARENT
 
-    class Meta:
+    class Meta(object):
         primary_model_bundle = True
 
 
@@ -38,7 +40,7 @@ class TestBundle2(TestMainBundle):
          ('tv_main', 'Landing Page',
                     {'adm_tv_pk': 'tv_main'}),)
 
-    class Meta:
+    class Meta(object):
         primary_model_bundle = True
 
 class TestBundle3(TestBundle2):
@@ -186,7 +188,7 @@ class BundleURLTestCase(TestCaseDeactivate):
 
 
 class TestUserForm(forms.ModelForm):
-    class Meta:
+    class Meta(object):
         model = User
         fields = '__all__'
 
@@ -212,4 +214,4 @@ class MiscViewTestCase(TestCaseDeactivate):
         f.fieldsets = (('User', {'fields': ('first_name',)}),)
         form_class = f.get_form_class()
         form = form_class()
-        self.assertEqual(form.fields.keys(), ['first_name'])
+        self.assertEqual(list(form.fields.keys()), ['first_name'])

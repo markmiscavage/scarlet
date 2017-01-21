@@ -7,7 +7,7 @@ from django.template.loader import  render_to_string
 from django.template import RequestContext
 from django.core.serializers.json import DjangoJSONEncoder
 from django.template.defaultfilters import slugify
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django import http
 
 #import serializer
@@ -150,7 +150,7 @@ class ChoicesRender(object):
     def get_label_attr(self, label):
         attr = label.attr
         if label.attr == '__unicode__':
-            attr = force_unicode(slugify(label.name))
+            attr = force_text(slugify(label.name))
         if hasattr(attr, '__call__'):
             attr = attr.__name__
         return attr
@@ -167,7 +167,7 @@ class ChoicesRender(object):
                 d = row.get_value(label.attr, 1)
                 if callable(d):
                     d = d()
-                data[self.get_label_attr(label)] = force_unicode(d)
+                data[self.get_label_attr(label)] = force_text(d)
             l.append(data)
         return l
 
@@ -175,7 +175,7 @@ class ChoicesRender(object):
         data = {}
         for label in adm_list.labels():
             data[self.get_label_attr(label)] = {
-                'name': force_unicode(label.name),
+                'name': force_text(label.name),
                 'sortable': label.sortable,
                 'order_type': label.order_type
             }

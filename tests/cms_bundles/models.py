@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import str
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -64,7 +66,7 @@ class PostImage(Cloneable):
         if self.caption:
             return self.caption
         else:
-            return unicode(self.image)
+            return str(self.image)
 
 
 class Comment(VersionView):

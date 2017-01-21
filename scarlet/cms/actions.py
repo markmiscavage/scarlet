@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import ProtectedError
 from django.utils.decorators import classonlymethod
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 
 from . import renders
 from . import transaction
@@ -97,12 +97,12 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         confirmation_msg = ""
         if len(queryset) == 1:
             confirmation_msg = self.confirmation_message_single.format(
-                    action_name=force_unicode(self.action_name).lower(),
-                    bundle_name=force_unicode(self.bundle.get_single_title()).lower())
+                    action_name=force_text(self.action_name).lower(),
+                    bundle_name=force_text(self.bundle.get_single_title()).lower())
         else:
             confirmation_msg = self.confirmation_message.format(
-                    action_name=force_unicode(self.action_name).lower(),
-                    bundle_name=force_unicode(self.bundle.get_title()).lower())
+                    action_name=force_text(self.action_name).lower(),
+                    bundle_name=force_text(self.bundle.get_title()).lower())
         return confirmation_msg
 
     def get_context_data(self, **kwargs):

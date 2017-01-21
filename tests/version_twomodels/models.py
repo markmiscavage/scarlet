@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 from django.db import models
 
 from scarlet.versioning.models import VersionModel, Cloneable, BaseModel
@@ -6,20 +8,20 @@ from scarlet.versioning.models import VersionModel, Cloneable, BaseModel
 class NameModel(models.Model):
     name = models.CharField(max_length=255)
 
-    class Meta:
+    class Meta(object):
         abstract = True
         app_label='version_twomodels'
 
 
 class AuthorBase(BaseModel):
-    class Meta:
+    class Meta(object):
         app_label='version_twomodels'
 
 
 class Author(VersionModel, NameModel):
     associates = models.ManyToManyField(AuthorBase, blank=True)
 
-    class Meta:
+    class Meta(object):
         app_label='version_twomodels'
         _base_model = AuthorBase
 
@@ -28,7 +30,7 @@ class Author(VersionModel, NameModel):
 
 
 class BookBase(BaseModel):
-    class Meta:
+    class Meta(object):
         app_label = 'version_twomodels'
 
 
@@ -38,7 +40,7 @@ class Book(VersionModel, NameModel):
     author = models.ForeignKey(AuthorBase)
     galleries = models.ManyToManyField('Gallery')
 
-    class Meta:
+    class Meta(object):
         app_label = 'version_twomodels'
         _base_model = BookBase
 
@@ -47,19 +49,19 @@ class Review(Cloneable):
     book = models.ForeignKey(Book)
     text = models.CharField(max_length=255)
 
-    class Meta:
+    class Meta(object):
         app_label = 'version_twomodels'
 
 
 class StoreBase(BaseModel):
-    class Meta:
+    class Meta(object):
         app_label = 'version_twomodels'
 
 
 class Store(VersionModel, NameModel):
     books = models.ManyToManyField(BookBase)
 
-    class Meta:
+    class Meta(object):
         _base_model = StoreBase
         app_label = 'version_twomodels'
 
@@ -67,5 +69,5 @@ class Store(VersionModel, NameModel):
 class Gallery(Cloneable):
     name = models.CharField(max_length=255)
 
-    class Meta:
+    class Meta(object):
         app_label = 'version_twomodels'

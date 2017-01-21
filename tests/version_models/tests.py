@@ -1,3 +1,6 @@
+from __future__ import unicode_literals
+from builtins import range
+from builtins import object
 import unittest
 import datetime
 
@@ -38,7 +41,7 @@ class ModelStructureTests(unittest.TestCase):
             class BadGun(VersionView):
                 name = dbmodels.CharField(max_length=20)
 
-                class Meta:
+                class Meta(object):
                     _base_model = BadCustomModel
 
     def testNoConcreteModels(self):
@@ -53,12 +56,12 @@ class ModelStructureTests(unittest.TestCase):
     def testTooManyBaseVersionedModels(self):
         class V1(models.BaseVersionedModel):
             name = dbmodels.CharField(max_length=255)
-            class Meta:
+            class Meta(object):
                 abstract = True
 
         class V2(models.BaseVersionedModel):
             code = dbmodels.CharField(max_length=255)
-            class Meta:
+            class Meta(object):
                 abstract = True
 
         with self.assertRaises(TypeError):

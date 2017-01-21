@@ -6,7 +6,7 @@ from builtins import object
 
 from django import forms
 from django.forms.utils import flatatt, ErrorList
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 from django.db import models
@@ -279,7 +279,7 @@ class AdminField(object):
 
     def label_tag(self):
         classes = []
-        contents = conditional_escape(force_unicode(self.field.label))
+        contents = conditional_escape(force_text(self.field.label))
         if self.is_checkbox:
             classes.append(u'vCheckboxLabel')
         else:
@@ -308,7 +308,7 @@ class InnerField(object):
         self.help_text = get_field_attr(field, instance, "help_text", "")
 
     def __unicode__(self):
-        return force_unicode(self.field_repr)
+        return force_text(self.field_repr)
 
 class ReadOnlyField(object):
     def __init__(self, form, field, is_first):
@@ -325,7 +325,7 @@ class ReadOnlyField(object):
         label = self.field.label
         return mark_safe('<label{0}>{1}:</label>'.format(
                            conditional_escape(flatatt(attrs)),
-                           capfirst(conditional_escape(force_unicode(label)))))
+                           capfirst(conditional_escape(force_text(label)))))
 
     def errors(self):
         return ErrorList()

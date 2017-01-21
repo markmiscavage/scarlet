@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 from django.forms.models import inlineformset_factory
 
 from scarlet.cms import bundles, forms, options, views, renders, actions
@@ -79,7 +81,7 @@ class CategoryBundle(bundles.Bundle):
     navigation = bundles.PARENT
     main = views.ListView(paginate_by = 1, display_fields=('category',), change_fields=('category',))
 
-    class Meta:
+    class Meta(object):
         model = Category
         primary_model_bundle = True
 
@@ -88,7 +90,7 @@ class TagBundle(bundles.Bundle):
     navigation = bundles.PARENT
     main = views.ListView(paginate_by = 1, display_fields=('tag',), change_fields=('tag',))
 
-    class Meta:
+    class Meta(object):
         model = Tag
         primary_model_bundle = True
 
@@ -100,7 +102,7 @@ class CommentBundle(bundles.ParentVersionedBundle, bundles.VersionMixin):
     main = views.ListView(display_fields=('name', 'text'))
     something = SomethingAction()
 
-    class Meta:
+    class Meta(object):
         model = Comment
         parent_field = "post"
         action_views = ['delete', 'clone', 'something',
@@ -112,21 +114,21 @@ class AuthorBundle(bundles.Bundle):
     edit = views.FormView(form_class=EditAuthorForm)
     main = views.ListView(filter_form = forms.search_form('name', 'bio',))
 
-    class Meta:
+    class Meta(object):
         model = Author
 
 class DummyAliasBundle(bundles.Bundle):
     dummy_edit = views.FormView()
     edit = bundles.URLAlias(alias_to = "dummy_edit")
 
-    class Meta():
+    class Meta(object):
         model = DummyModel
         item_views = ('dummy_edit', 'delete')
 
 class DummyRedirectorBundle(bundles.Bundle):
     edit = views.FormView(redirect_to_view='edit')
 
-    class Meta():
+    class Meta(object):
         model = DummyModel
         item_views = ('edit', 'delete')
 
@@ -169,7 +171,7 @@ class BlogEditBundle(bundles.VersionedObjectOnlyBundle):
             }),
         ))
 
-    class Meta:
+    class Meta(object):
         model = Post
 
 
@@ -207,7 +209,7 @@ class BlogBundle(bundles.DelegatedObjectBundle):
     change = DummyActionView(short_description="Change names to 'Dummy'")
     clone = CloneAction()
 
-    class Meta:
+    class Meta(object):
         model = Post
         primary_model_bundle = True
         item_views = list(options.VersionMeta.item_views) + ['preview']

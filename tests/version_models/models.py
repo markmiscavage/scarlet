@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 from django.db import models
 
 from scarlet.versioning import fields
@@ -13,13 +15,13 @@ class ConcreteModel(models.Model):
 class NameModel(models.Model):
     name = models.CharField(max_length=255)
 
-    class Meta:
+    class Meta(object):
         abstract = True
 
 class Abstract(BaseVersionedModel, NameModel):
     associates = fields.M2MFromVersion('self', blank=True)
 
-    class Meta:
+    class Meta(object):
         abstract = True
 
 
@@ -27,7 +29,7 @@ class AbstractM2MBook(models.Model):
     books = fields.M2MFromVersion('Book', blank=True)
     cartoon = fields.FKToVersion('Cartoon', blank=True, null=True)
 
-    class Meta:
+    class Meta(object):
         abstract = True
 
 
@@ -97,5 +99,5 @@ class CustomModel(BaseModel):
 class Gun(VersionView):
     name = models.CharField(max_length=20)
 
-    class Meta:
+    class Meta(object):
         _base_model = CustomModel

@@ -259,6 +259,7 @@ def get_meta(meta, **kwargs):
     if meta:
         for k, v in list(meta.__dict__.items()):
             if v is not None:
+                import ipdb; ipdb.set_trace()
                 setattr(new_meta, k, v)
 
     for k, v in list(kwargs.items()):

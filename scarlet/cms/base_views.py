@@ -15,7 +15,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 
 from . import helpers
 from . import renders
@@ -209,12 +209,12 @@ class CMSView(BaseView):
         This method return a list of tags to use in the template
         :return: list of tags
         """
-        tags = [force_unicode(self.bundle.get_title())]
+        tags = [force_text(self.bundle.get_title())]
         back_bundle = self.get_back_bundle()
         if back_bundle and back_bundle != self.bundle:
-            tags.append(force_unicode(back_bundle.get_title()))
+            tags.append(force_text(back_bundle.get_title()))
         if view_object:
-            tags.append(force_unicode(view_object))
+            tags.append(force_text(view_object))
 
         return tags
 
