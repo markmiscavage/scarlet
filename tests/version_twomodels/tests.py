@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 
 from scarlet.versioning.models import published_signal, BaseModel, VersionModel
 
-import models
+from . import models
 
 
 class ModelTests(TestCase):

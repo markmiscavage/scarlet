@@ -12,7 +12,7 @@ from django.db import models as dbmodels
 from scarlet.versioning.models import VersionView
 from scarlet.versioning import manager
 
-import models
+from . import models
 
 class ModelStructureTests(unittest.TestCase):
 

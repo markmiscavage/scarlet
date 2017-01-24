@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
                 ('is_published', models.BooleanField(default=False, editable=False)),
                 ('created_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('v_last_save', models.DateTimeField(editable=False, null=True)),
-                ('state', models.CharField(choices=[(b'published', b'published'), (b'scheduled', b'scheduled'), (b'draft', b'draft'), (b'archived', b'archived')], editable=False, max_length=50)),
+                ('state', models.CharField(choices=[('published', 'published'), ('scheduled', 'scheduled'), ('draft', 'draft'), ('archived', 'archived')], editable=False, max_length=50)),
                 ('last_scheduled', models.DateTimeField(editable=False, null=True)),
                 ('date_published', models.DateTimeField(editable=False, null=True)),
                 ('user_published', models.CharField(editable=False, max_length=255, null=True)),
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('slug', models.SlugField(editable=False, max_length=150)),
             ],
             options={
-                b'db_table': 'cms_bundles_category_base',
+                'db_table': 'cms_bundles_category_base',
                 'managed': False,
             },
             bases=(models.Model, cms_bundles_models.CategoryReferences),
@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
                 ('is_published', models.BooleanField(default=False, editable=False)),
                 ('created_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('v_last_save', models.DateTimeField(editable=False, null=True)),
-                ('state', models.CharField(choices=[(b'published', b'published'), (b'scheduled', b'scheduled'), (b'draft', b'draft'), (b'archived', b'archived')], editable=False, max_length=50)),
+                ('state', models.CharField(choices=[('published', 'published'), ('scheduled', 'scheduled'), ('draft', 'draft'), ('archived', 'archived')], editable=False, max_length=50)),
                 ('last_scheduled', models.DateTimeField(editable=False, null=True)),
                 ('date_published', models.DateTimeField(editable=False, null=True)),
                 ('user_published', models.CharField(editable=False, max_length=255, null=True)),
@@ -61,7 +61,7 @@ class Migration(migrations.Migration):
                 ('text', models.TextField()),
             ],
             options={
-                b'db_table': 'cms_bundles_comment_base',
+                'db_table': 'cms_bundles_comment_base',
                 'managed': False,
             },
             bases=(models.Model, cms_bundles_models.CommentReferences),
@@ -74,7 +74,7 @@ class Migration(migrations.Migration):
                 ('is_published', models.BooleanField(default=False, editable=False)),
                 ('created_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('v_last_save', models.DateTimeField(editable=False, null=True)),
-                ('state', models.CharField(choices=[(b'published', b'published'), (b'scheduled', b'scheduled'), (b'draft', b'draft'), (b'archived', b'archived')], editable=False, max_length=50)),
+                ('state', models.CharField(choices=[('published', 'published'), ('scheduled', 'scheduled'), ('draft', 'draft'), ('archived', 'archived')], editable=False, max_length=50)),
                 ('last_scheduled', models.DateTimeField(editable=False, null=True)),
                 ('date_published', models.DateTimeField(editable=False, null=True)),
                 ('user_published', models.CharField(editable=False, max_length=255, null=True)),
@@ -88,7 +88,7 @@ class Migration(migrations.Migration):
                 ('description', models.TextField(blank=True)),
             ],
             options={
-                b'db_table': 'cms_bundles_post_base',
+                'db_table': 'cms_bundles_post_base',
                 'managed': False,
             },
             bases=(models.Model, cms_bundles_models.PostReferences),
@@ -117,7 +117,7 @@ class Migration(migrations.Migration):
             name='Category_version',
             fields=[
                 ('last_save', models.DateTimeField(editable=False)),
-                ('state', models.CharField(choices=[(b'published', b'published'), (b'scheduled', b'scheduled'), (b'draft', b'draft'), (b'archived', b'archived')], editable=False, max_length=50)),
+                ('state', models.CharField(choices=[('published', 'published'), ('scheduled', 'scheduled'), ('draft', 'draft'), ('archived', 'archived')], editable=False, max_length=50)),
                 ('last_scheduled', models.DateTimeField(editable=False, null=True)),
                 ('date_published', models.DateTimeField(editable=False, null=True)),
                 ('user_published', models.CharField(editable=False, max_length=255, null=True)),
@@ -147,7 +147,7 @@ class Migration(migrations.Migration):
             name='Comment_version',
             fields=[
                 ('last_save', models.DateTimeField(editable=False)),
-                ('state', models.CharField(choices=[(b'published', b'published'), (b'scheduled', b'scheduled'), (b'draft', b'draft'), (b'archived', b'archived')], editable=False, max_length=50)),
+                ('state', models.CharField(choices=[('published', 'published'), ('scheduled', 'scheduled'), ('draft', 'draft'), ('archived', 'archived')], editable=False, max_length=50)),
                 ('last_scheduled', models.DateTimeField(editable=False, null=True)),
                 ('date_published', models.DateTimeField(editable=False, null=True)),
                 ('user_published', models.CharField(editable=False, max_length=255, null=True)),
@@ -185,7 +185,7 @@ class Migration(migrations.Migration):
             name='Post_version',
             fields=[
                 ('last_save', models.DateTimeField(editable=False)),
-                ('state', models.CharField(choices=[(b'published', b'published'), (b'scheduled', b'scheduled'), (b'draft', b'draft'), (b'archived', b'archived')], editable=False, max_length=50)),
+                ('state', models.CharField(choices=[('published', 'published'), ('scheduled', 'scheduled'), ('draft', 'draft'), ('archived', 'archived')], editable=False, max_length=50)),
                 ('last_scheduled', models.DateTimeField(editable=False, null=True)),
                 ('date_published', models.DateTimeField(editable=False, null=True)),
                 ('user_published', models.CharField(editable=False, max_length=255, null=True)),
@@ -230,7 +230,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('data', models.IntegerField()),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, to_field=b'username')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, to_field='username')),
             ],
         ),
         migrations.AddField(

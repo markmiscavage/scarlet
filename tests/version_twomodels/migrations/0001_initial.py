@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             name='Author',
             fields=[
                 ('last_save', models.DateTimeField(editable=False)),
-                ('state', models.CharField(choices=[(b'published', b'published'), (b'scheduled', b'scheduled'), (b'draft', b'draft'), (b'archived', b'archived')], editable=False, max_length=50)),
+                ('state', models.CharField(choices=[('published', 'published'), ('scheduled', 'scheduled'), ('draft', 'draft'), ('archived', 'archived')], editable=False, max_length=50)),
                 ('last_scheduled', models.DateTimeField(editable=False, null=True)),
                 ('date_published', models.DateTimeField(editable=False, null=True)),
                 ('user_published', models.CharField(editable=False, max_length=255, null=True)),
@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
             name='Book',
             fields=[
                 ('last_save', models.DateTimeField(editable=False)),
-                ('state', models.CharField(choices=[(b'published', b'published'), (b'scheduled', b'scheduled'), (b'draft', b'draft'), (b'archived', b'archived')], editable=False, max_length=50)),
+                ('state', models.CharField(choices=[('published', 'published'), ('scheduled', 'scheduled'), ('draft', 'draft'), ('archived', 'archived')], editable=False, max_length=50)),
                 ('last_scheduled', models.DateTimeField(editable=False, null=True)),
                 ('date_published', models.DateTimeField(editable=False, null=True)),
                 ('user_published', models.CharField(editable=False, max_length=255, null=True)),
@@ -91,7 +91,7 @@ class Migration(migrations.Migration):
             name='Store',
             fields=[
                 ('last_save', models.DateTimeField(editable=False)),
-                ('state', models.CharField(choices=[(b'published', b'published'), (b'scheduled', b'scheduled'), (b'draft', b'draft'), (b'archived', b'archived')], editable=False, max_length=50)),
+                ('state', models.CharField(choices=[('published', 'published'), ('scheduled', 'scheduled'), ('draft', 'draft'), ('archived', 'archived')], editable=False, max_length=50)),
                 ('last_scheduled', models.DateTimeField(editable=False, null=True)),
                 ('date_published', models.DateTimeField(editable=False, null=True)),
                 ('user_published', models.CharField(editable=False, max_length=255, null=True)),

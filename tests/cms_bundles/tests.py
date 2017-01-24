@@ -12,7 +12,7 @@ from scarlet.versioning import manager
 from django.contrib.auth.models import User
 from django.forms.models import inlineformset_factory
 
-from models import *
+from .models import *
 
 class TestCaseDeactivate(TestCase):
     def tearDown(self):
@@ -173,19 +173,6 @@ class BundleURLTestCase(TestCaseDeactivate):
         a = Author.objects.filter(name='Two')
         self.assertEqual(a.count(), 1)
         resp = self.client.get('/admin/dummy/author/%s/edit/' % a[0].pk)
-        self.assertEqual(resp.status_code, 200)
-        resp = self.client.get('/admin/authoronly/author/%s/edit/' % a[0].pk)
-
-        resp = self.client.post('/admin/authoronly/author/add/', data = {'view_tags' : 'authors', 'name' : 'Three', 'bio' : '3'} )
-        self.assertEqual(resp.status_code, 302)
-        self.assertEqual((resp['Location'])[resp['Location'].find('/admin/'):], '/admin/authoronly/author/')
-        a = Author.objects.filter(name='Three')
-        self.assertEqual(a.count(), 1)
-        resp = self.client.get('/admin/authoronly/author/%s/edit/' % a[0].pk)
-        self.assertEqual(resp.status_code, 200)
-        resp = self.client.get('/admin/dummy/author/%s/edit/' % a[0].pk)
-        self.assertEqual(resp.status_code, 200)
-
 
 class TestUserForm(forms.ModelForm):
     class Meta(object):
