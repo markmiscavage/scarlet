@@ -167,7 +167,7 @@ class BundleURLTestCase(TestCaseDeactivate):
         resp = self.client.get('/admin/authoronly/author/')
         self.assertEqual(resp.status_code, 200)
 
-        resp = self.client.post('/admin/dummy/author/add/', data = {'view_tags' : 'authors', 'name' : 'Two', 'bio' : '2'} )
+        resp = self.client.post('/admin/dummy/author/add/', data = {'view_tags': 'authors', 'name': 'Two', 'bio': '2'} )
         self.assertEqual(resp.status_code, 302)
         self.assertEqual((resp['Location'])[resp['Location'].find('/admin/'):], '/admin/dummy/author/')
         a = Author.objects.filter(name='Two')
@@ -176,7 +176,7 @@ class BundleURLTestCase(TestCaseDeactivate):
         self.assertEqual(resp.status_code, 200)
         resp = self.client.get('/admin/authoronly/author/%s/edit/' % a[0].pk)
 
-        resp = self.client.post('/admin/authoronly/author/add/', data = {'view_tags' : 'authors', 'name' : 'Three', 'bio' : '3'} )
+        resp = self.client.post('/admin/authoronly/author/add/', data = {'view_tags': 'authors', 'name': 'Three', 'bio': '3'} )
         self.assertEqual(resp.status_code, 302)
         self.assertEqual((resp['Location'])[resp['Location'].find('/admin/'):], '/admin/authoronly/author/')
         a = Author.objects.filter(name='Three')
