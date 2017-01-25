@@ -303,9 +303,12 @@ class InnerField(object):
             class_name = field
 
         self.name = class_name
-        self.label = label_for_field(field, instance.__class__)
-        self.field_repr = get_field_value(field, instance)
-        self.help_text = get_field_attr(field, instance, "help_text", "")
+        try:
+            self.label = label_for_field(field, instance.__class__)
+            self.field_repr = get_field_value(field, instance)
+            self.help_text = get_field_attr(field, instance, "help_text", "")
+        except:
+            pass
 
     def __unicode__(self):
         return force_text(self.field_repr)
@@ -322,10 +325,13 @@ class ReadOnlyField(object):
         attrs = {}
         if not self.is_first:
             attrs["class"] = "inline"
-        label = self.field.label
-        return mark_safe('<label{0}>{1}:</label>'.format(
-                           conditional_escape(flatatt(attrs)),
-                           capfirst(conditional_escape(force_text(label)))))
+        try:
+            label = self.field.label
+            return mark_safe('<label{0}>{1}:</label>'.format(
+                             conditional_escape(flatatt(attrs)),
+                             capfirst(conditional_escape(force_text(label)))))
+        except:
+            return ''
 
     def errors(self):
         return ErrorList()
