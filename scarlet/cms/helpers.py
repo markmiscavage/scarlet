@@ -243,10 +243,7 @@ class Fieldset(object):
 class Fieldline(object):
     def __init__(self, form, field):
         self.form = form  # A django.forms.Form instance
-        if not hasattr(field, "__iter__"):
-            self.fields = [field]
-        else:
-            self.fields = field
+        self.fields = [field]
 
     def __iter__(self):
         for i, field in enumerate(self.fields):
@@ -303,15 +300,13 @@ class InnerField(object):
             class_name = field
 
         self.name = class_name
-        try:
-            self.label = label_for_field(field, instance.__class__)
-            self.field_repr = get_field_value(field, instance)
-            self.help_text = get_field_attr(field, instance, "help_text", "")
-        except:
-            pass
+        self.label = label_for_field(field, instance.__class__)
+        self.field_repr = get_field_value(field, instance)
+        self.help_text = get_field_attr(field, instance, "help_text", "")
 
     def __unicode__(self):
         return force_text(self.field_repr)
+
 
 class ReadOnlyField(object):
     def __init__(self, form, field, is_first):

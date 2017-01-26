@@ -259,7 +259,7 @@ def get_meta(meta, **kwargs):
     if meta:
         for k, v in list(meta.__dict__.items()):
             # Python3: `meta.__dict__` is <class 'mappingproxy'>
-            if v is not None and k != '__dict__':
+            if v is not None and (k != '__dict__' and k != '__weakref__'):
                 setattr(new_meta, k, v)
 
     for k, v in list(kwargs.items()):
