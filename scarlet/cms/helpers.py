@@ -243,7 +243,10 @@ class Fieldset(object):
 class Fieldline(object):
     def __init__(self, form, field):
         self.form = form  # A django.forms.Form instance
-        self.fields = [field]
+        if isinstance(field, tuple) or isinstance(field, list):
+            self.fields = [item for item in field]
+        else:
+            self.fields = [field]
 
     def __iter__(self):
         for i, field in enumerate(self.fields):
