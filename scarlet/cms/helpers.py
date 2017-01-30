@@ -307,7 +307,7 @@ class InnerField(object):
         self.field_repr = get_field_value(field, instance)
         self.help_text = get_field_attr(field, instance, "help_text", "")
 
-    def __unicode__(self):
+    def __str__(self):
         return force_text(self.field_repr)
 
 

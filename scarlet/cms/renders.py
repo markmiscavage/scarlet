@@ -149,7 +149,7 @@ class ChoicesRender(object):
 
     def get_label_attr(self, label):
         attr = label.attr
-        if label.attr == '__unicode__':
+        if label.attr == '__str__':
             attr = force_text(slugify(label.name))
         if hasattr(attr, '__call__'):
             attr = attr.__name__

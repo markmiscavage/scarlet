@@ -29,7 +29,7 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     type.
 
     :param display_fields: List of fields to display in the table. \
-    Defaults to ('__unicode__',).
+    Defaults to ('__str__',).
     :param change_fields: List of fields that are editable in this \
     view. Defaults to empty tuple.
     :param form_class: A model form class to use.
@@ -53,7 +53,7 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     change_fields = ()
 
     # Fields that should be displayed. Must include
-    display_fields = ('__unicode__',)
+    display_fields = ('__str__',)
 
     # class that each form should use
     form_class = None

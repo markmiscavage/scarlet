@@ -184,7 +184,7 @@ class AssetBase(AutoTagModel):
         super(AssetBase, self).delete(*args, **kwargs)
         self.delete_real_file(file_obj)
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s' % (self.user_filename)
 
 
@@ -204,7 +204,7 @@ class ImageDetailBase(models.Model):
     class Meta(object):
         abstract = True
 
-    def __unicode__(self):
+    def __str__(self):
         return pretty_name(self.name)
 
     def get_crop_config(self):
