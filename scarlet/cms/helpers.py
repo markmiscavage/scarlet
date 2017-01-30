@@ -383,7 +383,20 @@ def get_sort_field(attr, model):
                 return getattr(model, attr).sort_field
         return None
 
+
+def check_unicode(instance, field):
+    if hasattr(instance, '__str__'):
+        return instance.__str__()
+    elif hasattr(instance, '__unicode__'):
+        # Python 2 compatible
+        return instance.__unicode__()
+    else:
+        return ''
+
+
 def get_field_value(field, instance):
+    if field == '__unicode__':
+        return check_unicode(instance, field)
     try:
         f = instance._meta.get_field(field)
         try:
