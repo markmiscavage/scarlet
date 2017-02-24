@@ -3,31 +3,33 @@
 # -----------------------------------------
 from django.db import connection, transaction
 from django import VERSION as DJANGO_VERSION
+from django.conf import settings
 
 
 class MSSQLBackend(object):
     VIEW_SQL = "DECLARE @SQL as varchar(4000); \
-    SET @SQL = 'SELECT * from blog_postversioned_version inner join blog_postversioned_base \
-    on blog_postversioned_base.id = blog_postversioned_version.object_id'; \
-    IF OBJECT_ID('dbo.blog_postversioned') IS NULL \
-    SET @SQL = 'CREATE VIEW dbo.blog_postversioned AS ' + @SQL \
-    ELSE SET @SQL = 'ALTER VIEW  dbo.blog_postversioned AS ' + @SQL; EXEC(@SQL);"
+    SET @SQL = 'SELECT * from %(version_model)s  inner join %(base_model)s \
+    on %(base_model)s.id = %(version_model)s.object_id'; \
+    IF OBJECT_ID('%(model_table)s') IS NULL \
+    SET @SQL = 'CREATE VIEW %(model_table)s AS ' + @SQL \
+    ELSE SET @SQL = 'ALTER VIEW  %(model_table)s AS ' + @SQL; EXEC(@SQL);"
     VIEW_SQL_SCHEMA = "DECLARE @SQL as varchar(4000); \
-    SET @SQL = 'SELECT * from %(schema)s.%(model_table)s  \
-    inner join blog_postversioned_base on blog_postversioned_base.id = %(schema)s.%(model_table)s.object_id \
+    SET @SQL = 'SELECT * from %(schema)s.%(version_model)s  \
+    inner join %(base_model)s on %(base_model)s.id = %(version_model)s.object_id \
     WHERE %(version_model)s.%(state)s = {schema}';\
-    IF OBJECT_ID('%(version_model)s') IS NULL \
-    SET @SQL = 'CREATE VIEW %(version_model)s AS ' + @SQL \
+    IF OBJECT_ID('%(model_table)s') IS NULL \
+    SET @SQL = 'CREATE VIEW %(model_table)s AS ' + @SQL \
     ELSE \
-    SET @SQL = 'ALTER VIEW  %(version_model)s AS ' + @SQL"
+    SET @SQL = 'ALTER VIEW  %(model_table)s AS ' + @SQL"
     DROP_SQL = "IF OBJECT_ID('%(schema)s.%(model_table)s') IS NOT NULL DROP VIEW %(schema)s.%(model_table)s"
-    DEFAULT_SCHEMA = 'dbo'
+    # MS SQL uses database name as default schema
+    DEFAULT_SCHEMA = settings.DATABASES.get('default').get('NAME')
 
-    def _get_declare(self, m, cursor, columns):
+    def _get_declare(self, table, cursor, columns):
         declare_st = ''
         for x in columns:
             sql = "SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS \
-            where TABLE_NAME='{0}' and column_name='{1}'".format(m._meta.db_table, x)
+            where TABLE_NAME='{0}' and column_name='{1}'".format(table, x)
             res = cursor.execute(sql)
             column_type = res.fetchall()[0][0]
             declare_st += '@new_{0} {1}, '.format(x, column_type)
@@ -71,8 +73,8 @@ class MSSQLBackend(object):
         trigger_name = '_update_trigger'
 
         declare_st = 'DECLARE {0} {1} @old_id int, @old_vid int '.format(
-            self._get_declare(m, cursor, base_cols),
-            self._get_declare(m, cursor, version_cols))
+            self._get_declare(m._meta._base_model._meta.db_table, cursor, base_cols),
+            self._get_declare(m._meta._version_model._meta.db_table, cursor, version_cols))
 
         inserted = self._get_insert(base_cols)
         deleted = self._get_delete(base_cols)
@@ -88,20 +90,21 @@ class MSSQLBackend(object):
         # Creating trigger when INSERT
         trigger = "SET NOCOUNT ON \
         DECLARE @SQL as varchar(5000); \
-        IF OBJECT_ID('{0}') IS NOT NULL \
-        DROP TRIGGER {0} \
+        IF OBJECT_ID('{7}{0}') IS NOT NULL \
+        DROP TRIGGER {7}{0} \
         ELSE \
-        SET @SQL = 'CREATE TRIGGER {0} ON {1} INSTEAD OF {7} AS BEGIN SET NOCOUNT ON; \
-        {2} {3} {4} {5} {6}; END'; EXEC(@SQL)".format(
-            m._meta.db_table + trigger_name,
-            m._meta.db_table,
+        SET @SQL = 'CREATE TRIGGER {7}{0} ON {8}.{7} INSTEAD OF \
+        {1} AS BEGIN SET NOCOUNT ON; {2} {3} {4} {5} {6}; END'; EXEC(@SQL)".format(
+            trigger_name,
+            action,
             declare_st,
             inserted,
             deleted,
             update_1,
             update_2,
-            action,
-            self.DEFAULT_SCHEMA)
+            m._meta.db_table,
+            self.DEFAULT_SCHEMA,
+        )
         return(trigger)
 
     def do_updates(self, m):
@@ -113,15 +116,14 @@ class MSSQLBackend(object):
         args = {'base_model': m._meta._base_model._meta.db_table,
                 'version_model': m._meta._version_model._meta.db_table,
                 'model_table': m._meta.db_table,
-                'function_name': m._meta.db_table + '_func',
-                'trigger_name': m._meta.db_table + '_trigger',
                 'schema': self.DEFAULT_SCHEMA,
                 'state': 'state'}
 
-        base_sql = self.VIEW_SQL % args
         cursor = connection.cursor()
 
         cursor.execute(self.DROP_SQL % args)
+
+        base_sql = self.VIEW_SQL % args
         cursor.execute(base_sql)
 
         base_cols = [f.column for f in m._meta._base_model._meta.local_fields if f.column and f.column != 'id']
