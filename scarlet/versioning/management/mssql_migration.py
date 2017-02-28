@@ -7,8 +7,6 @@ from django.conf import settings
 
 
 class MSSQLBackend(object):
-    # MS SQL uses database name as default schema
-    DEFAULT_SCHEMA = settings.DATABASES.get('default').get('NAME')
     VIEW_SQL = "DECLARE @SQL as varchar(4000); \
     SET @SQL = 'SELECT * from %(version_model)s  inner join %(base_model)s \
     on %(base_model)s.id = %(version_model)s.object_id'; \
@@ -28,6 +26,14 @@ class MSSQLBackend(object):
         SET @SQL = 'ALTER VIEW  %(schema)s.%(model_table)s AS ' + @SQL; \
     EXEC(@SQL);"
     DROP_SQL = "IF OBJECT_ID('%(schema)s.%(model_table)s') IS NOT NULL DROP VIEW %(schema)s.%(model_table)s"
+
+    def __init__(self):
+        # When tests are running `DEFAULT_SCHEMA` is `dbo`, otherwise
+        # `DEFAULT_SCHEMA` is database name in settings
+        database_name = settings.DATABASES.get('default').get('NAME')
+        self.DEFAULT_SCHEMA = database_name
+        if database_name[:5] == 'test_':
+            self.DEFAULT_SCHEMA = 'dbo'
 
     def _get_declare(self, table, cursor, columns):
         declare_st = ''
