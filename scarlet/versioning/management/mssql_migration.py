@@ -7,23 +7,27 @@ from django.conf import settings
 
 
 class MSSQLBackend(object):
+    # MS SQL uses database name as default schema
+    DEFAULT_SCHEMA = settings.DATABASES.get('default').get('NAME')
     VIEW_SQL = "DECLARE @SQL as varchar(4000); \
     SET @SQL = 'SELECT * from %(version_model)s  inner join %(base_model)s \
     on %(base_model)s.id = %(version_model)s.object_id'; \
     IF OBJECT_ID('%(model_table)s') IS NULL \
-    SET @SQL = 'CREATE VIEW %(model_table)s AS ' + @SQL \
-    ELSE SET @SQL = 'ALTER VIEW  %(model_table)s AS ' + @SQL; EXEC(@SQL);"
+    SET @SQL = 'CREATE VIEW %(schema)s.%(model_table)s AS ' + @SQL \
+    ELSE SET @SQL = 'ALTER VIEW %(schema)s.%(model_table)s AS ' + @SQL; EXEC(@SQL);"
     VIEW_SQL_SCHEMA = "DECLARE @SQL as varchar(4000); \
-    SET @SQL = 'SELECT * from %(schema)s.%(version_model)s  \
-    inner join %(base_model)s on %(base_model)s.id = %(version_model)s.object_id \
-    WHERE %(version_model)s.%(state)s = {schema}';\
-    IF OBJECT_ID('%(model_table)s') IS NULL \
-    SET @SQL = 'CREATE VIEW %(model_table)s AS ' + @SQL \
-    ELSE \
-    SET @SQL = 'ALTER VIEW  %(model_table)s AS ' + @SQL"
+    DECLARE @STATE as varchar(100); \
+    SET @STATE = '%(schema)s'; \
+    SET @SQL = 'SELECT * from %(default_schema)s.%(version_model)s  inner join \
+    %(default_schema)s.%(base_model)s on  \
+    %(default_schema)s.%(base_model)s.id = %(default_schema)s.%(version_model)s.object_id \
+    WHERE %(default_schema)s.%(version_model)s.state = ''' + @STATE + '''' \
+    IF OBJECT_ID('%(schema)s.%(model_table)s') IS NULL \
+        SET @SQL = 'CREATE VIEW %(schema)s.%(model_table)s AS ' + @SQL \
+    ELSE  \
+        SET @SQL = 'ALTER VIEW  %(schema)s.%(model_table)s AS ' + @SQL; \
+    EXEC(@SQL);"
     DROP_SQL = "IF OBJECT_ID('%(schema)s.%(model_table)s') IS NOT NULL DROP VIEW %(schema)s.%(model_table)s"
-    # MS SQL uses database name as default schema
-    DEFAULT_SCHEMA = settings.DATABASES.get('default').get('NAME')
 
     def _get_declare(self, table, cursor, columns):
         declare_st = ''
@@ -93,7 +97,7 @@ class MSSQLBackend(object):
         IF OBJECT_ID('{7}{0}') IS NOT NULL \
         DROP TRIGGER {7}{0} \
         ELSE \
-        SET @SQL = 'CREATE TRIGGER {7}{0} ON {8}.{7} INSTEAD OF \
+        SET @SQL = 'CREATE TRIGGER {7}{0} ON %(schema)s.{7} INSTEAD OF \
         {1} AS BEGIN SET NOCOUNT ON; {2} {3} {4} {5} {6}; END'; EXEC(@SQL)".format(
             trigger_name,
             action,
@@ -103,7 +107,6 @@ class MSSQLBackend(object):
             update_1,
             update_2,
             m._meta.db_table,
-            self.DEFAULT_SCHEMA,
         )
         return(trigger)
 
@@ -117,6 +120,7 @@ class MSSQLBackend(object):
                 'version_model': m._meta._version_model._meta.db_table,
                 'model_table': m._meta.db_table,
                 'schema': self.DEFAULT_SCHEMA,
+                'default_schema': self.DEFAULT_SCHEMA,
                 'state': 'state'}
 
         cursor = connection.cursor()
@@ -132,6 +136,9 @@ class MSSQLBackend(object):
         trigger_update = self._get_mssql_trigger(base_cols, version_cols, cursor, m)
         trigger_delete = self._get_mssql_trigger(base_cols, version_cols, cursor, m, 'DELETE')
 
+        cursor.execute(trigger_update % args)
+        cursor.execute(trigger_delete % args)
+
         for schema in m._meta._version_model.UNIQUE_STATES:
             qn_schema = qn(schema)
             res = cursor.execute("select schema_name FROM information_schema.schemata \
@@ -140,10 +147,9 @@ class MSSQLBackend(object):
                 cursor.execute("CREATE SCHEMA %s" % qn_schema)
             args['schema'] = schema
             cursor.execute(self.DROP_SQL % args)
-            base_sql = self.VIEW_SQL_SCHEMA % args
-            cursor.execute(base_sql.format(schema=schema))
-            cursor.execute(trigger_update)
-            cursor.execute(trigger_delete)
+            cursor.execute(self.VIEW_SQL_SCHEMA % args)
+            cursor.execute(trigger_update % args)
+            cursor.execute(trigger_delete % args)
 
         if DJANGO_VERSION < (1, 6):
             transaction.commit_unless_managed()
