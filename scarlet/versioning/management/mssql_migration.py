@@ -118,15 +118,15 @@ class MSSQLBackend(object):
 
         # Stored procedures and triggers for default schema
         self.cursor.execute(self.DELETE_PROC.format(
-            name='{0}_update'.format(base_model),
+            name='{0}_delete'.format(base_model),
             schema=schema,
             version_model=version_model,
             base_model=base_model,
         ))
 
         self.cursor.execute(self.DELETE_TRIGGER.format(
-            proc_name='{0}_update'.format(base_model),
-            name='{0}_update_trigger'.format(base_model),
+            proc_name='{0}_delete'.format(base_model),
+            name='{0}_delete_trigger'.format(base_model),
             model_table=model_table,
             schema=schema,
         ))
