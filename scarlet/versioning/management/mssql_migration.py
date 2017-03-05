@@ -7,12 +7,13 @@ from django.conf import settings
 
 
 class MSSQLBackend(object):
-    VIEW_SQL = "DECLARE @SQL as varchar(4000); \
+    VIEW_SQL = "DECLARE @SQL as varchar(4000) ,\
+        @STATE as varchar(20); \
         {declare} \
         SET @SQL = 'SELECT * from {schema}.{version_model} \
             inner join {schema}.{base_model} \
-            on {schema}.{base_model}.id = {schema}.{version_model}.object_id' \
-            {where} \
+            on {schema}.{base_model}.id = {schema}.{version_model}.object_id \
+            {where}'; \
         IF OBJECT_ID('{schema}.{model_table}') IS NULL \
             SET @SQL = 'CREATE VIEW {schema}.{model_table} AS ' + @SQL \
         ELSE \
@@ -87,7 +88,13 @@ class MSSQLBackend(object):
         SET NOCOUNT ON; \
         SELECT @old_id=id, @old_vid=vid FROM {schema}.{model_table}; \
         SELECT {select_fields} FROM INSERTED; \
-        EXEC {proc_name} {proc_params} \
+        EXEC {proc_name} \
+        @new_is_published, \
+        @new_created_date, \
+        @new_v_last_save, \
+        @old_id, \
+        @old_vid, \
+        {proc_params} \
         END;'; \
         IF OBJECT_ID('{name}') IS NULL \
         EXEC(@SQL)"
@@ -122,6 +129,12 @@ class MSSQLBackend(object):
 
         version_cols = [f.column for f in m._meta._version_model._meta.local_fields
                         if f.column and f.column != 'vid']
+
+        base_cols = [f.column for f in m._meta._base_model._meta.local_fields \
+                     if f.column and f.column != 'id']
+
+        join_version_cols = ', '.join(['{0}=@new_{0}'.format(x) for x in version_cols])
+        join_base_cols = ', '.join(['{0}=@new_{0}'.format(x) for x in base_cols])
 
         # View for default schema
         self.cursor.execute(self.DROP_SQL.format(
@@ -161,10 +174,20 @@ class MSSQLBackend(object):
             version_fields_params=self._get_declare_cols(
                 version_cols, model_table, 'new',
             ),
-            version_fields_update=', '.join(['{0}=@new_{0}'.format(x) for x in version_cols])
+            version_fields_update=join_version_cols
         ))
 
-        ### TODO: Call to UPDATE trigger here
+        self.cursor.execute(self.UPDATE_TRIGGER.format(
+            proc_name='{0}_update'.format(base_model),
+            name='{0}_update_trigger'.format(base_model),
+            model_table=model_table,
+            schema=schema,
+            version_fields_declare=self._get_declare_cols(
+                version_cols, model_table, 'new',
+            )[:-2],
+            proc_params=', '.join(['@new_{0}'.format(x) for x in version_cols]),
+            select_fields=join_base_cols + ', ' + join_version_cols
+        ))
 
         for schema in m._meta._version_model.UNIQUE_STATES:
             res = self.cursor.execute("select schema_name FROM \
@@ -183,8 +206,8 @@ class MSSQLBackend(object):
                 version_model=version_model,
                 base_model=base_model,
                 model_table=model_table,
-                where='{0}={1}'.format(version_model, schema),
-                declare=''
+                where="WHERE blog_post_version.state=''' + @STATE + '''",
+                declare="SET @STATE = '{0}';".format(schema)
             ))
 
             self.cursor.execute(self.DELETE_PROC.format(
@@ -212,7 +235,17 @@ class MSSQLBackend(object):
                 version_fields_update=', '.join(['{0}=@new_{0}'.format(x) for x in version_cols])
             ))
 
-           ### TODO: Call to UPDATE trigger here
+            self.cursor.execute(self.UPDATE_TRIGGER.format(
+                proc_name='{0}_update'.format(base_model),
+                name='{0}_update_trigger'.format(base_model),
+                model_table=model_table,
+                schema=schema,
+                version_fields_declare=self._get_declare_cols(
+                    version_cols, model_table, 'new',
+                )[:-2],
+                proc_params=', '.join(['@new_{0}'.format(x) for x in version_cols]),
+                select_fields=join_base_cols + ', ' + join_version_cols
+            ))
 
         if DJANGO_VERSION < (1, 6):
             transaction.commit_unless_managed()
