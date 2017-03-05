@@ -10,9 +10,9 @@ class MSSQLBackend(object):
     VIEW_SQL = "DECLARE @SQL as varchar(4000) ,\
         @STATE as varchar(20); \
         {declare} \
-        SET @SQL = 'SELECT * from {schema}.{version_model} \
-            inner join {schema}.{base_model} \
-            on {schema}.{base_model}.id = {schema}.{version_model}.object_id \
+        SET @SQL = 'SELECT * from {version_model} \
+            inner join {base_model} \
+            on {base_model}.id = {version_model}.object_id \
             {where}'; \
         IF OBJECT_ID('{schema}.{model_table}') IS NULL \
             SET @SQL = 'CREATE VIEW {schema}.{model_table} AS ' + @SQL \
@@ -28,8 +28,8 @@ class MSSQLBackend(object):
         AS \
         BEGIN \
         SET NOCOUNT ON; \
-        DELETE FROM {schema}.{version_model} WHERE object_id=@old_id; \
-        DELETE FROM {schema}.{base_model} WHERE id=@old_id; \
+        DELETE FROM {version_model} WHERE object_id=@old_id; \
+        DELETE FROM {base_model} WHERE id=@old_id; \
         END;'; \
         IF OBJECT_ID('{name}') IS NOT NULL \
             DROP PROCEDURE {name}; \
@@ -60,11 +60,11 @@ class MSSQLBackend(object):
     AS \
     BEGIN \
     SET NOCOUNT ON; \
-    UPDATE {schema}.{base_model} SET \
+    UPDATE {base_model} SET \
         is_published=@new_is_published, \
         created_date=@new_created_date, v_last_save=@new_v_last_save \
     WHERE id=@old_id; \
-    UPDATE {schema}.{version_model} SET \
+    UPDATE {version_model} SET \
         {version_fields_update} \
     WHERE object_id=@old_id and vid=@old_vid \
     END;'; \
@@ -86,7 +86,7 @@ class MSSQLBackend(object):
         {version_fields_declare} \
         BEGIN \
         SET NOCOUNT ON; \
-        SELECT @old_id=id, @old_vid=vid FROM {schema}.{model_table}; \
+        SELECT @old_id=id, @old_vid=vid FROM {model_table}; \
         SELECT {select_fields} FROM INSERTED; \
         EXEC {proc_name} \
         @new_is_published, \
