@@ -50,9 +50,9 @@ class MSSQLBackend(object):
 
     UPDATE_PROC = "DECLARE @SQL as varchar(4000); \
     SET @SQL = 'CREATE PROCEDURE {name} \
-    @new_is_published \
-    @new_created_date \
-    @new_v_last_save \
+    @new_is_published bit \
+    @new_created_date datetime \
+    @new_v_last_save datetime \
     @old_id int, \
     @old_vid int, \
     {version_fields_declare} \
@@ -71,7 +71,26 @@ class MSSQLBackend(object):
     DROP PROCEDURE {name}; \
     EXEC(@SQL)"
 
-    ### TODO: Define `UPDATE_TRIGGER` here
+    UPDATE_TRIGGER = "DECLARE @SQL as varchar(4000); \
+        SET @SQL = 'CREATE TRIGGER {name} ON {schema}.{model_table} \
+        INSTEAD OF UPDATE \
+        AS \
+        DECLARE \
+        @old_id int, \
+        @old_vid int, \
+        @new_is_published bit, \
+        @new_created_date datetime, \
+        @new_v_last_save datetime, \
+        @new_last_save datetime, \
+        {version_fields_declare} \
+        BEGIN \
+        SET NOCOUNT ON; \
+        SELECT @old_id=id, @old_vid=vid FROM {schema}.{model_table}; \
+        SELECT {select_fields} FROM INSERTED; \
+        EXEC {proc_name} {proc_params} \
+        END;'; \
+        IF OBJECT_ID('{name}') IS NULL \
+        EXEC(@SQL)"
 
     def __init__(self):
         # When tests are running `DEFAULT_SCHEMA` is `dbo`, otherwise
@@ -131,6 +150,8 @@ class MSSQLBackend(object):
             schema=schema,
         ))
 
+        ### TODO: Call to UPDATE store_procedure and trigger here
+
         for schema in m._meta._version_model.UNIQUE_STATES:
             res = self.cursor.execute("select schema_name FROM \
             information_schema.schemata WHERE schema_name = %s", (schema,))
@@ -148,11 +169,25 @@ class MSSQLBackend(object):
                 version_model=version_model,
                 base_model=base_model,
                 model_table=model_table,
-                where='',
+                where='{0}={1}'.format(version_model, schema),
                 declare=''
             ))
 
-            ### TODO: Call to procedures and triggers here
+            self.cursor.execute(self.DELETE_PROC.format(
+                name='{0}_delete'.format(base_model),
+                schema=schema,
+                version_model=version_model,
+                base_model=base_model,
+            ))
+
+            self.cursor.execute(self.DELETE_TRIGGER.format(
+                proc_name='{0}_delete'.format(base_model),
+                name='{0}_delete_trigger'.format(base_model),
+                model_table=model_table,
+                schema=schema,
+            ))
+
+           ### TODO: Call to UPDATE store_procedure and trigger here
 
         if DJANGO_VERSION < (1, 6):
             transaction.commit_unless_managed()
