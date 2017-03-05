@@ -206,7 +206,7 @@ class MSSQLBackend(object):
                 version_model=version_model,
                 base_model=base_model,
                 model_table=model_table,
-                where="WHERE blog_post_version.state=''' + @STATE + '''",
+                where="WHERE {0}.state=''' + @STATE + '''".format(version_model),
                 declare="SET @STATE = '{0}';".format(schema)
             ))
 
