@@ -136,64 +136,23 @@ class MSSQLBackend(object):
         join_version_cols = ', '.join(['{0}=@new_{0}'.format(x) for x in version_cols])
         join_base_cols = ', '.join(['{0}=@new_{0}'.format(x) for x in base_cols])
 
-        # View for default schema
-        self.cursor.execute(self.DROP_SQL.format(
-            schema=schema,
-            model_table=model_table,
-        ))
+        unique_states = m._meta._version_model.UNIQUE_STATES
+        default_schema_lst = list()
+        default_schema_lst.append(self.DEFAULT_SCHEMA)
+        schemas = default_schema_lst + [u for u in unique_states]
+        where = ''
+        declare = ''
 
-        self.cursor.execute(self.VIEW_SQL.format(
-            schema=schema,
-            version_model=version_model,
-            base_model=base_model,
-            model_table=model_table,
-            where='',
-            declare=''
-        ))
-
-        # Stored procedures and triggers for default schema
-        self.cursor.execute(self.DELETE_PROC.format(
-            name='{0}_delete'.format(base_model),
-            schema=schema,
-            version_model=version_model,
-            base_model=base_model,
-        ))
-
-        self.cursor.execute(self.DELETE_TRIGGER.format(
-            proc_name='{0}_delete'.format(base_model),
-            name='{0}_delete_trigger'.format(base_model),
-            model_table=model_table,
-            schema=schema,
-        ))
-
-        self.cursor.execute(self.UPDATE_PROC.format(
-            name='{0}_update'.format(base_model),
-            schema=schema,
-            version_model=version_model,
-            base_model=base_model,
-            version_fields_params=self._get_declare_cols(
-                version_cols, model_table, 'new',
-            ),
-            version_fields_update=join_version_cols
-        ))
-
-        self.cursor.execute(self.UPDATE_TRIGGER.format(
-            proc_name='{0}_update'.format(base_model),
-            name='{0}_update_trigger'.format(base_model),
-            model_table=model_table,
-            schema=schema,
-            version_fields_declare=self._get_declare_cols(
-                version_cols, model_table, 'new',
-            )[:-2],
-            proc_params=', '.join(['@new_{0}'.format(x) for x in version_cols]),
-            select_fields=join_base_cols + ', ' + join_version_cols
-        ))
-
-        for schema in m._meta._version_model.UNIQUE_STATES:
-            res = self.cursor.execute("select schema_name FROM \
-            information_schema.schemata WHERE schema_name = %s", (schema,))
-            if len(res.fetchall()) == 0:
-                self.cursor.execute("CREATE SCHEMA %s" % schema)
+        for schema in schemas:
+            # Iterating over every schema for creating view, stored procedures
+            # and triggers. Notice we must iterate over default schema first
+            if schema in unique_states:
+                res = self.cursor.execute("select schema_name FROM \
+                information_schema.schemata WHERE schema_name = %s", (schema,))
+                if len(res.fetchall()) == 0:
+                    self.cursor.execute("CREATE SCHEMA %s" % schema)
+                where = "WHERE {0}.state=''' + @STATE + '''".format(version_model),
+                declare = "SET @STATE = '{0}';".format(schema)
 
             # View for given schema
             self.cursor.execute(self.DROP_SQL.format(
@@ -206,8 +165,8 @@ class MSSQLBackend(object):
                 version_model=version_model,
                 base_model=base_model,
                 model_table=model_table,
-                where="WHERE {0}.state=''' + @STATE + '''".format(version_model),
-                declare="SET @STATE = '{0}';".format(schema)
+                where=where,
+                declare=declare
             ))
 
             self.cursor.execute(self.DELETE_PROC.format(
