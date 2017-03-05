@@ -55,7 +55,7 @@ class MSSQLBackend(object):
     @new_v_last_save datetime \
     @old_id int, \
     @old_vid int, \
-    {version_fields_declare} \
+    {version_fields_params} \
     AS \
     BEGIN \
     SET NOCOUNT ON; \
@@ -120,6 +120,9 @@ class MSSQLBackend(object):
         model_table = m._meta.db_table
         schema = self.DEFAULT_SCHEMA
 
+        version_cols = [f.column for f in m._meta._version_model._meta.local_fields
+                        if f.column and f.column != 'vid']
+
         # View for default schema
         self.cursor.execute(self.DROP_SQL.format(
             schema=schema,
@@ -150,7 +153,18 @@ class MSSQLBackend(object):
             schema=schema,
         ))
 
-        ### TODO: Call to UPDATE store_procedure and trigger here
+        self.cursor.execute(self.UPDATE_PROC.format(
+            name='{0}_update'.format(base_model),
+            schema=schema,
+            version_model=version_model,
+            base_model=base_model,
+            version_fields_params=self._get_declare_cols(
+                version_cols, model_table, 'new',
+            ),
+            version_fields_update=', '.join(['{0}=@new_{0}'.format(x) for x in version_cols])
+        ))
+
+        ### TODO: Call to UPDATE trigger here
 
         for schema in m._meta._version_model.UNIQUE_STATES:
             res = self.cursor.execute("select schema_name FROM \
@@ -187,7 +201,18 @@ class MSSQLBackend(object):
                 schema=schema,
             ))
 
-           ### TODO: Call to UPDATE store_procedure and trigger here
+            self.cursor.execute(self.UPDATE_PROC.format(
+                name='{0}_update'.format(base_model),
+                schema=schema,
+                version_model=version_model,
+                base_model=base_model,
+                version_fields_params=self._get_declare_cols(
+                    version_cols, model_table, 'new',
+                ),
+                version_fields_update=', '.join(['{0}=@new_{0}'.format(x) for x in version_cols])
+            ))
+
+           ### TODO: Call to UPDATE trigger here
 
         if DJANGO_VERSION < (1, 6):
             transaction.commit_unless_managed()
