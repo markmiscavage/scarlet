@@ -108,10 +108,10 @@ class MSSQLBackend(object):
         # using dbname as schema. For this reason, we need an addtional setting
         # to check if we're using `Azure DB` or `MSSQL`:
         #  'OPTIONS': {
-        #      'azure_db': True,
+        #      'is_azuredb': True,
         #   }
         #
-        azure_options = settings.DATABASES.get('default').get('OPTIONS').get('is_azure')
+        azure_options = settings.DATABASES.get('default').get('OPTIONS').get('is_azuredb')
         if database_name[:5] == 'test_' or azure_options:
             self.DEFAULT_SCHEMA = 'dbo'
         self.cursor = connection.cursor()
