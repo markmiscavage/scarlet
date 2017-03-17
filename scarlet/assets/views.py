@@ -24,7 +24,7 @@ class AssetListView(views.ListView):
     """
     A view class to manage the list of all assets
     """
-    display_fields = ('user_filename',)
+    display_fields = ('user_filename', )
     paginate_by = 100
     filter_form = AssetFilterForm
 
@@ -35,6 +35,7 @@ class AssetListView(views.ListView):
     def get_queryset(self, **filter_kwargs):
         qs = super(AssetListView, self).get_queryset(**filter_kwargs)
         return qs.distinct()
+
 
 class CropVersionView(views.FormView):
     default_template = "assets/crop.html"
@@ -51,60 +52,49 @@ class CropVersionView(views.FormView):
                 name = self.kwargs[self.slug_url_kwarg]
                 crop = get_image_cropper().get_crop_config(name)
                 if crop and crop.editable:
-                    return self.model(editable=True, name=name,
-                                      x=0, y=0, x2=0, y2=0,
+                    return self.model(editable=True,
+                                      name=name,
+                                      x=0,
+                                      y=0,
+                                      x2=0,
+                                      y2=0,
                                       image=self.parent_object,
-                                      width=crop.width, height=crop.height)
+                                      width=crop.width,
+                                      height=crop.height)
             raise
 
     def get_success_url(self):
-        return self.bundle.get_view_url("edit_asset",
-                                        self.request.user, {},
-                                        self.kwargs)
+        return self.bundle.get_view_url("edit_asset", self.request.user, {}, self.kwargs)
 
     def form_valid(self, form, formsets):
-        self.object.image.create_crop(self.object.name,
-                                      form.cleaned_data['x'],
-                                      form.cleaned_data['x2'],
-                                      form.cleaned_data['y'],
+        self.object.image.create_crop(self.object.name, form.cleaned_data['x'],
+                                      form.cleaned_data['x2'], form.cleaned_data['y'],
                                       form.cleaned_data['y2'])
-        return self.success_response()
+        return self.success_response(message='Crop saved')
 
 
-class CropView(views.ModelCMSMixin, views.ModelFormMixin,
-                views.ModelCMSView):
+class CropView(views.ModelCMSMixin, views.ModelFormMixin, views.ModelCMSView):
     base_template = "cms/partial.html"
     slug_field = 'pk'
 
     def get_asset_url(self):
-        return self.bundle.get_view_url("edit",
-                                        self.request.user, {},
-                                        self.kwargs)
+        return self.bundle.get_view_url("edit", self.request.user, {}, self.kwargs)
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = CropForm()
-        context = {
-            'form': form,
-            'obj': self.object,
-            'cancel_url': self.get_asset_url()
-        }
+        context = {'form': form, 'obj': self.object, 'cancel_url': self.get_asset_url()}
         return self.render(request, **context)
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = CropForm(request.POST)
         if form.is_valid():
-            im = get_image_cropper().replace_image(self.object.file,
-                                                   **form.cleaned_data)
+            im = get_image_cropper().replace_image(self.object.file, **form.cleaned_data)
             self.object.reset_crops()
-            return self.render(self.request,
-                               redirect_url=self.get_asset_url())
+            return self.render(self.request, redirect_url=self.get_asset_url())
         else:
-            context = {
-                'form': form,
-                'obj': self.object,
-            }
+            context = {'form': form, 'obj': self.object, }
             return self.render(request, **context)
 
 
@@ -116,10 +106,8 @@ class AssetFormView(views.FormView):
 
     def __init__(self, *args, **kwargs):
         super(AssetFormView, self).__init__(*args, **kwargs)
-        self.renders['popup'] = renders.PopupRender(
-                redirect_template='assets/asset_uploaded.html',
-                template=self.default_template
-        )
+        self.renders['popup'] = renders.PopupRender(redirect_template='assets/asset_uploaded.html',
+                                                    template=self.default_template)
 
     def render(self, *args, **kwargs):
         obj = kwargs.get('obj')

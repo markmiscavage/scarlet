@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from django.db.models.loading import get_models
+from django.apps import apps
 from django.db.models import F
 try:
     from django.db.transaction import atomic
@@ -15,7 +15,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         with atomic():
-            for m in get_models():
+            for m in apps.get_models():
                 if hasattr(m._meta, '_view_model') and not (m._meta, 'is_view', False):
                     continue
 

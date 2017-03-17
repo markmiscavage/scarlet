@@ -1,1 +1,1 @@
-default_app_config = 'cms_bundles.apps.AppConfig'
+default_app_config = 'tests.cms_bundles.apps.AppConfig'

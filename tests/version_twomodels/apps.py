@@ -2,4 +2,4 @@ from django.apps import AppConfig as DjangoAppConfig
 
 
 class AppConfig(DjangoAppConfig):
-    name = 'version_twomodels'
+    name = 'tests.version_twomodels'

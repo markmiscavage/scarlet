@@ -27,12 +27,12 @@ def setup_test_environment(settings_overide, with_scarlet_blog=False):
         'scarlet.versioning',
         'scarlet.scheduling',
         'taggit',
-        'version_models',
-        'version_twomodels',
-        'cms_bundles',
+        'tests.version_models',
+        'tests.version_twomodels',
+        'tests.cms_bundles',
     ]
 
-    urls = 'cms_bundles.urls'
+    urls = 'tests.cms_bundles.urls'
     if with_scarlet_blog:
         apps.append('scarlet_blog.blog')
         apps.append('scarlet_blog.galleries')
@@ -90,7 +90,7 @@ def runtests(settings_overide, test_args):
 
     with_scarlet_blog = False
     if not test_args:
-        test_args = ['cms_bundles', 'version_models', 'version_twomodels']
+        test_args = ['tests.cms_bundles', 'tests.version_models', 'tests.version_twomodels']
         try:
             imp.find_module('scarlet_blog')
             test_args.append('blog')

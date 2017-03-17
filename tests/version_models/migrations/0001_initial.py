@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 import django.db.models.deletion
-import version_models.models
+from .. import models as version_models
 import django.utils.timezone
 import scarlet.versioning.fields
 
@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
                 b'db_table': 'version_models_author_base',
                 'managed': False,
             },
-            bases=(models.Model, version_models.models.AuthorReferences),
+            bases=(models.Model, version_models.AuthorReferences),
         ),
         migrations.CreateModel(
             name='Book',
@@ -56,7 +56,7 @@ class Migration(migrations.Migration):
                 b'db_table': 'version_models_book_base',
                 'managed': False,
             },
-            bases=(models.Model, version_models.models.Harmless, version_models.models.BookReferences),
+            bases=(models.Model, version_models.Harmless, version_models.BookReferences),
         ),
         migrations.CreateModel(
             name='BookNoRelated',
@@ -100,7 +100,7 @@ class Migration(migrations.Migration):
                 b'db_table': 'version_models_cartoon_base',
                 'managed': False,
             },
-            bases=(models.Model, version_models.models.CartoonReferences),
+            bases=(models.Model, version_models.CartoonReferences),
         ),
         migrations.CreateModel(
             name='Gun',
@@ -123,7 +123,7 @@ class Migration(migrations.Migration):
                 b'db_table': 'version_models_custommodel',
                 'managed': False,
             },
-            bases=(models.Model, version_models.models.GunReferences),
+            bases=(models.Model, version_models.GunReferences),
         ),
         migrations.CreateModel(
             name='NoReverse',
@@ -145,7 +145,7 @@ class Migration(migrations.Migration):
                 b'db_table': 'version_models_noreverse_base',
                 'managed': False,
             },
-            bases=(models.Model, version_models.models.NoReverseReferences),
+            bases=(models.Model, version_models.NoReverseReferences),
         ),
         migrations.CreateModel(
             name='Store',
@@ -167,7 +167,7 @@ class Migration(migrations.Migration):
                 b'db_table': 'version_models_store_base',
                 'managed': False,
             },
-            bases=(models.Model, version_models.models.StoreReferences),
+            bases=(models.Model, version_models.StoreReferences),
         ),
         migrations.CreateModel(
             name='Author_base',
@@ -198,7 +198,7 @@ class Migration(migrations.Migration):
             options={
                 'managed': True,
             },
-            bases=(models.Model, version_models.models.AuthorVersionReferences),
+            bases=(models.Model, version_models.AuthorVersionReferences),
         ),
         migrations.CreateModel(
             name='Book_base',
@@ -228,7 +228,7 @@ class Migration(migrations.Migration):
             options={
                 'managed': True,
             },
-            bases=(models.Model, version_models.models.Harmless, version_models.models.BookVersionReferences),
+            bases=(models.Model, version_models.Harmless, version_models.BookVersionReferences),
         ),
         migrations.CreateModel(
             name='BookNoRelated_base',
@@ -289,7 +289,7 @@ class Migration(migrations.Migration):
             options={
                 'managed': True,
             },
-            bases=(models.Model, version_models.models.CartoonVersionReferences),
+            bases=(models.Model, version_models.CartoonVersionReferences),
         ),
         migrations.CreateModel(
             name='ConcreteModel',
@@ -342,7 +342,7 @@ class Migration(migrations.Migration):
             options={
                 'managed': True,
             },
-            bases=(models.Model, version_models.models.GunVersionReferences),
+            bases=(models.Model, version_models.GunVersionReferences),
         ),
         migrations.CreateModel(
             name='Image',
@@ -385,7 +385,7 @@ class Migration(migrations.Migration):
             options={
                 'managed': True,
             },
-            bases=(models.Model, version_models.models.NoReverseVersionReferences),
+            bases=(models.Model, version_models.NoReverseVersionReferences),
         ),
         migrations.CreateModel(
             name='Review',
@@ -442,7 +442,7 @@ class Migration(migrations.Migration):
             options={
                 'managed': True,
             },
-            bases=(models.Model, version_models.models.StoreVersionReferences),
+            bases=(models.Model, version_models.StoreVersionReferences),
         ),
         migrations.AddField(
             model_name='book_version',

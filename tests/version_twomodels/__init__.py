@@ -1,1 +1,1 @@
-default_app_config = 'version_twomodels.apps.AppConfig'
+default_app_config = 'tests.version_twomodels.apps.AppConfig'
