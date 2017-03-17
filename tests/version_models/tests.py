@@ -1,3 +1,4 @@
+import time
 import unittest
 import datetime
 
@@ -102,18 +103,6 @@ class ModelTests(TestCase):
 
         return bp, bd
 
-    def testFieldMap(self):
-        book = models.Book.objects.get(pk=1)
-        map1 = book._get_field_map()
-
-        delattr(book._meta, '_name_map')
-        self.assertFalse(hasattr(book._meta, '_name_map'))
-        map2 = book._get_field_map()
-        # after _meta.init_name_map(), the _name_map is created and cached.
-        self.assertTrue(hasattr(book._meta, '_name_map'))
-
-        self.assertEqual(map1, map2)
-
     def testNew(self):
         author = models.Author(name='MoYan')
         author.save()
@@ -126,31 +115,28 @@ class ModelTests(TestCase):
         class Cloneable _clone method.
         a clone has identical properties except vid
         """
-        delattr(models.Book, '_clone_related')
-        self.assertFalse(hasattr(models.Book, '_clone_related'))
+        self.assertFalse(hasattr(models.BookNoRelated, '_clone_related'))
 
-        book = models.Book.objects.get(pk=1)
+        book = models.BookNoRelated.objects.get(pk=1)
         last_save = book.last_save
 
         with manager.SwitchSchema('public'):
-            n_books = models.Book.normal.all().count()
+            n_books = models.BookNoRelated.objects.all().count()
 
         book._clone()
-        book = models.Book.objects.get(vid=1)
+        book = models.BookNoRelated.objects.get(vid=1)
 
         with manager.SwitchSchema('public'):
-            n_books_new = models.Book.normal.all().count()
+            n_books_new = models.BookNoRelated.objects.all().count()
 
         self.assertEqual(n_books, n_books_new - 1)
 
         self.assertEqual(book.pk, 1)
         self.assertEqual(last_save, book.last_save)
 
-        clone = models.Book.objects.get(vid=2)
+        clone = models.BookNoRelated.objects.get(vid=2)
         self.assertEqual(clone.author, book.author)
         self.assertEqual(clone.object_id, book.object_id)
-
-        setattr(models.Book, '_clone_related', ['review', 'galleries'])
 
     def testCloneRelated(self):
         """
@@ -165,7 +151,7 @@ class ModelTests(TestCase):
         self.assertEqual(n_gallery, 2)
 
         book._clone()
-        clone = models.Book.objects.get(vid=2)
+        clone = models.Book.objects.get(vid__gt=1)
         book = models.Book.objects.get(vid=1)
 
         n_review = clone.review_set.all().count()
@@ -219,10 +205,8 @@ class ModelTests(TestCase):
         with manager.SwitchSchema('public'):
             self.assertEqual(models.Cartoon.normal.all().count(), 2)
 
-
         klass = cartoon.get_version_class()
-        ins = klass.normal.get(vid=2)
-        ins.delete()
+        klass.normal.filter(vid__gt=1).delete()
 
         self.assertEqual(models.Cartoon.normal.all().count(), 1)
         image = models.Image(pk=1)
@@ -308,7 +292,7 @@ class ModelTests(TestCase):
 
     def testRegisterRelated(self):
         original = models.Book._clone_related
-        delattr(models.Book, '_clone_related')
+        setattr(models.Book, '_clone_related', [])
         models.Book.register_related('test')
         related = models.Book._clone_related
         self.assertEqual(related, ['test'])
@@ -318,7 +302,7 @@ class ModelTests(TestCase):
         related = models.Book._clone_related
         self.assertEqual(related, ['test', 'test2'])
 
-        models.Book._clone_related = original
+        setattr(models.Book, '_clone_related', original)
 
     def testGetVersion(self):
         author = models.Author.objects.get(pk=1)

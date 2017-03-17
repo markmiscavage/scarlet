@@ -7,7 +7,7 @@ from scarlet import cms
 
 cms.autodiscover()
 urlpatterns = patterns('',
-    (r'^admin/', include(cms.site.urls)),
+    (r'^admin/', include(cms.sites.site.urls)),
 )
 
 try:

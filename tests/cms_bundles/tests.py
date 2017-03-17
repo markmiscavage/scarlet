@@ -48,7 +48,7 @@ class TestBundle3(TestBundle2):
 class TestPatchedDjango(TestCase):
     def test_inline_model_with_to_field(self):
         "An inline model with a to_field of a formset with instance have working relations. Regression for #13794"
-        FormSet = inlineformset_factory(User, UserSite)
+        FormSet = inlineformset_factory(User, UserSite, fields='__all__')
         user = User.objects.create(username="guido")
         UserSite.objects.create(user=user, data=10)
         formset = FormSet(instance=user)
@@ -188,6 +188,7 @@ class BundleURLTestCase(TestCaseDeactivate):
 class TestUserForm(forms.ModelForm):
     class Meta:
         model = User
+        fields = '__all__'
 
 
 class MiscViewTestCase(TestCaseDeactivate):
