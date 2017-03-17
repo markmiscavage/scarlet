@@ -78,7 +78,7 @@ class Migration(migrations.Migration):
                 b'db_table': 'version_models_booknorelated_base',
                 'managed': False,
             },
-            bases=(models.Model, version_models.models.Harmless, version_models.models.BookReferences),
+            bases=(models.Model, version_models.Harmless, version_models.BookReferences),
         ),
         migrations.CreateModel(
             name='Cartoon',
@@ -258,7 +258,7 @@ class Migration(migrations.Migration):
             options={
                 'managed': True,
             },
-            bases=(models.Model, version_models.models.Harmless, version_models.models.BookVersionReferences),
+            bases=(models.Model, version_models.Harmless, version_models.BookVersionReferences),
         ),
         migrations.CreateModel(
             name='Cartoon_base',
