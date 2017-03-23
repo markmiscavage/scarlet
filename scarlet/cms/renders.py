@@ -1,14 +1,12 @@
 import json
 
-from django.shortcuts import render_to_response
-from django.template.loader import  render_to_string
-from django.template import RequestContext
+from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.core.serializers.json import DjangoJSONEncoder
 from django.template.defaultfilters import slugify
 from django.utils.encoding import force_unicode
 from django import http
 
-#import serializer
 
 class RenderResponse(object):
     """
@@ -29,10 +27,6 @@ class RenderResponse(object):
         # Go through keyword arguments and save to instance
         for key, value in kwargs.iteritems():
             setattr(self, key, value)
-
-    def get_context_instance(self, request, **kwargs):
-        current_app = kwargs.get('current_app')
-        return RequestContext(request, current_app=current_app)
 
     def update_kwargs(self, request, **kwargs):
         """
@@ -64,9 +58,7 @@ class RenderResponse(object):
             return self.redirect(request, redirect_url, **kwargs)
 
         kwargs = self.update_kwargs(request, **kwargs)
-        context_instance=self.get_context_instance(request, **kwargs)
-        return render_to_response(self.template, kwargs,
-                        context_instance=context_instance)
+        return render(request, self.template, kwargs)
 
     def redirect(self, request, url, **kwargs):
         """
@@ -79,6 +71,7 @@ class RenderResponse(object):
         :param kwargs: The current context keyword arguments.
         """
         return http.HttpResponseRedirect(url)
+
 
 class CMSRender(RenderResponse):
     """
@@ -280,9 +273,8 @@ class RenderString(RenderResponse):
 
     def render(self, request, **kwargs):
         kwargs = self.update_kwargs(request, **kwargs)
-        context_instance=self.get_context_instance(request, **kwargs)
-        return render_to_string(self.template, kwargs,
-                                context_instance=context_instance)
+        return render_to_string(self.template, kwargs, request)
+
 
 class PopupRender(RenderResponse):
     """
@@ -303,6 +295,4 @@ class PopupRender(RenderResponse):
         return kwargs
 
     def redirect(self, request, url, **kwargs):
-        context_instance=self.get_context_instance(request, **kwargs)
-        return render_to_response(self.redirect_template, kwargs,
-                                  context_instance=context_instance)
+        return render(request, self.template, kwargs)

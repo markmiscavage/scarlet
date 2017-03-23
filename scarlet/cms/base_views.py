@@ -248,8 +248,7 @@ class CMSView(BaseView):
         data.update(kwargs)
         data.update({
             'bundle': self.bundle,
-            'navigation' : self.get_navigation(),
-            'current_app': self.bundle.admin_site.name,
+            'navigation': self.get_navigation(),
             'url_params': self.kwargs,
             'user': self.request.user,
             'object_header_tmpl': self.object_header_tmpl,
@@ -627,7 +626,7 @@ class ModelCMSMixin(object):
                 field, mod, direct, m2m = cache[self.parent_field]
             else:
                 # 1.8+
-                field, mod, direct, m2m = self.model._meta.get_field_by_name(
+                field, mod, direct, m2m = self.model._meta.get_field(
                     self.parent_field)
             to = None
             field_name = None

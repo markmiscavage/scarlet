@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import os
 import sys
 import argparse
@@ -6,8 +7,6 @@ import imp
 
 import django
 from django.conf import settings
-
-
 
 
 def setup_test_environment(settings_overide, with_scarlet_blog=False):
@@ -63,6 +62,28 @@ def setup_test_environment(settings_overide, with_scarlet_blog=False):
         )
     }
 
+    if django.VERSION[1] >= 10:
+        PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
+        settings_dict.update({
+            'TEMPLATES': [{
+                'BACKEND': 'django.template.backends.django.DjangoTemplates',
+                'DIRS': os.path.join(PROJECT_ROOT, 'scarlet', 'templates'),
+                'APP_DIRS': True,
+                'OPTIONS': {
+                    'context_processors': [
+                        'django.contrib.auth.context_processors.auth',
+                        'django.template.context_processors.debug',
+                        'django.template.context_processors.i18n',
+                        'django.template.context_processors.media',
+                        'django.template.context_processors.static',
+                        'django.contrib.messages.context_processors.messages',
+                        'django.template.context_processors.request',
+                    ],
+                    'debug': 'True',
+                },
+            }, ]
+        })
+
     if settings_overide:
         settings_dict.update(settings_overide)
 
@@ -112,6 +133,7 @@ def runtests(settings_overide, test_args):
 
     failures = run_tests(test_args, verbosity=1, interactive=True)
     sys.exit(failures)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
