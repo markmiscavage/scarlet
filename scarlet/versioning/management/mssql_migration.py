@@ -51,9 +51,9 @@ class MSSQLBackend(object):
 
     UPDATE_PROC = "DECLARE @SQL as varchar(4000); \
     SET @SQL = 'CREATE PROCEDURE {name} \
-    @new_is_published bit \
-    @new_created_date datetime \
-    @new_v_last_save datetime \
+    @new_is_published bit, \
+    @new_created_date datetime2, \
+    @new_v_last_save datetime2, \
     @old_id int, \
     @old_vid int, \
     {version_fields_params} \
@@ -80,9 +80,9 @@ class MSSQLBackend(object):
         @old_id int, \
         @old_vid int, \
         @new_is_published bit, \
-        @new_created_date datetime, \
-        @new_v_last_save datetime, \
-        @new_last_save datetime, \
+        @new_created_date datetime2, \
+        @new_v_last_save datetime2, \
+        @new_last_save datetime2, \
         {version_fields_declare} \
         BEGIN \
         SET NOCOUNT ON; \
@@ -159,7 +159,7 @@ class MSSQLBackend(object):
                 information_schema.schemata WHERE schema_name = %s", (schema,))
                 if len(res.fetchall()) == 0:
                     self.cursor.execute("CREATE SCHEMA %s" % schema)
-                where = "WHERE {0}.state=''' + @STATE + '''".format(version_model),
+                where = "WHERE {0}.state=''' + @STATE + '''".format(version_model)
                 declare = "SET @STATE = '{0}';".format(schema)
 
             # View for given schema
@@ -168,14 +168,15 @@ class MSSQLBackend(object):
                 model_table=model_table,
             ))
 
-            self.cursor.execute(self.VIEW_SQL.format(
+            sql = self.VIEW_SQL.format(
                 schema=schema,
                 version_model=version_model,
                 base_model=base_model,
                 model_table=model_table,
                 where=where,
                 declare=declare
-            ))
+            )
+            self.cursor.execute(sql)
 
             self.cursor.execute(self.DELETE_PROC.format(
                 name='{0}_delete'.format(base_model),
@@ -184,35 +185,40 @@ class MSSQLBackend(object):
                 base_model=base_model,
             ))
 
-            self.cursor.execute(self.DELETE_TRIGGER.format(
+            sql = self.DELETE_TRIGGER.format(
                 proc_name='{0}_delete'.format(base_model),
                 name='{0}_delete_trigger'.format(base_model),
                 model_table=model_table,
                 schema=schema,
-            ))
+            )
+            self.cursor.execute(sql)
 
-            self.cursor.execute(self.UPDATE_PROC.format(
+            sql = self.UPDATE_PROC.format(
                 name='{0}_update'.format(base_model),
                 schema=schema,
                 version_model=version_model,
                 base_model=base_model,
                 version_fields_params=self._get_declare_cols(
-                    version_cols, model_table, 'new',
-                ),
+                    version_cols, version_model, 'new',
+                )[:-2],
                 version_fields_update=', '.join(['{0}=@new_{0}'.format(x) for x in version_cols])
-            ))
+            )
+            self.cursor.execute(sql)
 
-            self.cursor.execute(self.UPDATE_TRIGGER.format(
+            version_fields_declare = self._get_declare_cols(
+                version_cols, version_model, 'new',
+            )
+
+            sql = self.UPDATE_TRIGGER.format(
                 proc_name='{0}_update'.format(base_model),
                 name='{0}_update_trigger'.format(base_model),
                 model_table=model_table,
                 schema=schema,
-                version_fields_declare=self._get_declare_cols(
-                    version_cols, model_table, 'new',
-                )[:-2],
+                version_fields_declare=version_fields_declare[:-2],
                 proc_params=', '.join(['@new_{0}'.format(x) for x in version_cols]),
                 select_fields=join_base_cols + ', ' + join_version_cols
-            ))
+            )
+            self.cursor.execute(sql)
 
         if DJANGO_VERSION < (1, 6):
             transaction.commit_unless_managed()

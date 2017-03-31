@@ -1,6 +1,8 @@
 from sql_server.pyodbc.base import DatabaseWrapper, DatabaseCreation
 from django import VERSION as DJANGO_VERSION
 
+from scarlet.versioning.management import get_db_default_schema
+
 
 class DatabaseWrapper(DatabaseWrapper):
     UNTOUCHED = 1
@@ -12,6 +14,20 @@ class DatabaseWrapper(DatabaseWrapper):
 
     def reset_schema(self):
         self.schema = self.UNTOUCHED
+
+    def _cursor(self):
+        from ..manager import get_schema
+
+        cursor = super(DatabaseWrapper, self)._cursor()
+        schema = get_schema()
+
+        if schema != self.schema:
+            self.schema = schema
+            if schema:
+                cursor.execute("execute as user='{0}'".format(schema))
+            else:
+                cursor.execute("execute as user='{0}'".format(get_db_default_schema))
+        return cursor
 
 
 class ViewDatabaseCreation(DatabaseCreation):
