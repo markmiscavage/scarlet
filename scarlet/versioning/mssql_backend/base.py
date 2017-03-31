@@ -26,7 +26,7 @@ class DatabaseWrapper(DatabaseWrapper):
             if schema:
                 cursor.execute("execute as user='{0}'".format(schema))
             else:
-                cursor.execute("execute as user='{0}'".format(get_db_default_schema))
+                cursor.execute("execute as user='{0}'".format(get_db_default_schema()))
         return cursor
 
 
