@@ -8,7 +8,6 @@ from django.db import models as dbmodels
 
 from scarlet.versioning.models import VersionView
 from scarlet.versioning import manager
-from scarlet.versioning.management import get_db_default_schema
 
 import models
 
@@ -122,13 +121,13 @@ class ModelTests(TestCase):
         book = models.BookNoRelated.objects.get(pk=1)
         last_save = book.last_save
 
-        with manager.SwitchSchema(get_db_default_schema()):
+        with manager.SwitchSchema('public'):
             n_books = models.BookNoRelated.objects.all().count()
 
         book._clone()
         book = models.BookNoRelated.objects.get(vid=1)
 
-        with manager.SwitchSchema(get_db_default_schema()):
+        with manager.SwitchSchema('public'):
             n_books_new = models.BookNoRelated.objects.all().count()
 
         self.assertEqual(n_books, n_books_new - 1)
@@ -194,7 +193,7 @@ class ModelTests(TestCase):
         bp, bd = self._prepare_books()
 
         bp.delete()
-        with manager.SwitchSchema(get_db_default_schema()):
+        with manager.SwitchSchema('public'):
             self.assertFalse(models.Book.normal.filter(object_id=bd.object_id).exists())
 
         self.assertEqual(models.Gallery.objects.all().count(), 0)
@@ -203,7 +202,7 @@ class ModelTests(TestCase):
         cartoon = models.Cartoon.objects.get(vid=1)
         cartoon.publish()
 
-        with manager.SwitchSchema(get_db_default_schema()):
+        with manager.SwitchSchema('public'):
             self.assertEqual(models.Cartoon.normal.all().count(), 2)
 
         klass = cartoon.get_version_class()
@@ -217,7 +216,7 @@ class ModelTests(TestCase):
         cartoon = models.Cartoon.objects.get(vid=1)
         cartoon.publish()
 
-        with manager.SwitchSchema(get_db_default_schema()):
+        with manager.SwitchSchema('public'):
             self.assertEqual(models.Cartoon.normal.all().count(), 2)
 
             image = models.Image(pk=1)
@@ -460,7 +459,7 @@ class ModelTests(TestCase):
         obd.publish()
         klass = obp.get_version_class()
 
-        with manager.SwitchSchema(get_db_default_schema()):
+        with manager.SwitchSchema('public'):
             bp = klass.normal.get(object_id=obp.object_id,
                                   state=models.Book.PUBLISHED)
             bd = klass.normal.get(object_id=obp.object_id,
@@ -475,7 +474,7 @@ class ModelTests(TestCase):
         self.assertEqual(ba.name, 'Book1')
 
         ba.make_draft()
-        with manager.SwitchSchema(get_db_default_schema()):
+        with manager.SwitchSchema('public'):
             self.assertEqual(models.Book.normal.all().count(), 3)
             bp2 = models.Book.normal.get(object_id=obp.object_id,
                                          state=models.Book.PUBLISHED)
@@ -686,7 +685,7 @@ class ModelTests(TestCase):
         book = models.Book.objects.get(vid=1)
         book.publish()
         self.assertEqual(models.Book.normal.all().count(), 1)
-        with manager.SwitchSchema(get_db_default_schema()):
+        with manager.SwitchSchema('public'):
             self.assertEqual(models.Book.normal.all().count(), 2)
 
         self.assertEqual(models.Book.normal.all().count(), 1)
@@ -786,7 +785,7 @@ class TransactionSwitchTests(TestCase):
         book2 = models.Book(name='test', author_id=2)
         book2.save()
 
-        with manager.SwitchSchema(get_db_default_schema()):
+        with manager.SwitchSchema('public'):
             self.assertEqual(models.Author.normal.filter(associates__pk=2).count(), 2)
             self.assertEqual(models.Cartoon.normal.filter(author=author).count(), 2)
             self.assertEqual(models.Cartoon.normal.filter(author__isnull=True).count(), 0)
@@ -802,7 +801,7 @@ class TransactionSwitchTests(TestCase):
             self.assertEqual(book.author, author)
             author.delete()
 
-        with manager.SwitchSchema(get_db_default_schema()):
+        with manager.SwitchSchema('public'):
             self.assertEqual(models.Author.normal.filter(associates__pk=2).count(), 0)
             self.assertFalse(models.Author.normal.filter(pk=author_id).exists())
             self.assertEqual(models.Cartoon.normal.filter(author_id=author_id).count(), 0)

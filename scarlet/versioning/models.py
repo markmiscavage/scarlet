@@ -9,15 +9,12 @@ from django.db.models.fields import FieldDoesNotExist, related, Field
 from django import dispatch
 from django.utils import formats
 from django.core.exceptions import ValidationError
-from django.db.models.manager import ManagerDescriptor
 
 try:
     from ..scheduling.models import Schedulable
 except ValueError:
     from scheduling.models import Schedulable
 
-
-from scarlet.versioning.management import get_db_default_schema
 
 try:
     from django.db.transaction import atomic as xact
@@ -675,8 +672,7 @@ class BaseVersionedModel(Cloneable, Schedulable):
 
             # Delete all scheduled items
             klass = self.get_version_class()
-            for obj in klass.normal.filter(object_id=self.object_id,
-                                            state=self.SCHEDULED):
+            for obj in klass.normal.filter(object_id=self.object_id, state=self.SCHEDULED):
                 obj.delete()
 
     def publish(self, user=None, when=None):
@@ -959,7 +955,7 @@ class VersionView(BaseVersionedModel):
         with xact():
             # Delete's happen in default schema so that all
             # versions are found.
-            with manager.SwitchSchema(get_db_default_schema()):
+            with manager.SwitchSchema('public'):
                 super(VersionView, self).delete(**kwargs)
 
     def _get_should_save_base(self):
@@ -1181,6 +1177,7 @@ class VersionModel(BaseVersionedModel):
                     self.object = base
 
             super(VersionModel, self).save(*args, **kwargs)
+
 
 # Setup signal for published
 published_signal = dispatch.Signal(providing_args=['instance'])
