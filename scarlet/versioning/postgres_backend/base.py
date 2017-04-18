@@ -1,5 +1,4 @@
-from django.db.backends.postgresql_psycopg2.base import DatabaseWrapper, \
-                                                        DatabaseCreation
+from django.db.backends.postgresql_psycopg2.base import DatabaseWrapper, DatabaseCreation
 from django import VERSION as DJANGO_VERSION
 
 
@@ -11,7 +10,7 @@ class DatabaseWrapper(DatabaseWrapper):
         self.creation = ViewDatabaseCreation(self)
         self.schema = self.UNTOUCHED
 
-    def _cursor(self):
+    def _cursor(self, name=None):
         from ..manager import get_schema
 
         cursor = super(DatabaseWrapper, self)._cursor()
@@ -26,6 +25,7 @@ class DatabaseWrapper(DatabaseWrapper):
 
     def reset_schema(self):
         self.schema = self.UNTOUCHED
+
 
 class ViewDatabaseCreation(DatabaseCreation):
 
