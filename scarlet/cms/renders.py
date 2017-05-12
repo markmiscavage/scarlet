@@ -6,6 +6,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.template.defaultfilters import slugify
 from django.utils.encoding import force_unicode
 from django import http
+from django.contrib import messages
 
 
 class RenderResponse(object):
@@ -55,6 +56,12 @@ class RenderResponse(object):
         :param kwargs: The current context keyword arguments.
         """
         if redirect_url:
+            # Redirection is used when we click on `Save` for ordering
+            # items on `ListView`. `kwargs` contains `message` but that
+            # one is not passing through redirection. That's the reason for using
+            # directly `messages` and get message on result template
+            if kwargs.get('message'):
+                messages.success(request, kwargs.get('message'))
             return self.redirect(request, redirect_url, **kwargs)
 
         kwargs = self.update_kwargs(request, **kwargs)
