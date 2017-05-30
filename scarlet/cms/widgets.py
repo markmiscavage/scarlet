@@ -13,7 +13,7 @@ import urllib.request, urllib.parse, urllib.error
 from django.forms import widgets
 from django.forms.utils import flatatt
 from django import forms
-from django.utils.encoding import force_unicode, python_2_unicode_compatible, force_text
+from django.utils.encoding import python_2_unicode_compatible, force_text
 from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape, html_safe, format_html
 from django.core.urlresolvers import reverse

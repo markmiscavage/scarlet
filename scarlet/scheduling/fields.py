@@ -26,7 +26,7 @@ class CastOnAssignDescriptor(object):
         obj.__dict__[self.field.name] = self.field.to_python(value)
 
 
-class JSONField(with_metaclass(models.SubfieldBase, models.TextField)):
+class JSONField(models.TextField):
     # Used so to_python() is called
     def __init__(self, *args, **kwargs):
         self.dump_kwargs = kwargs.pop('dump_kwargs',
