@@ -195,7 +195,7 @@ class AdminSite(object):
         ]
 
         # Add in each model's views.
-        for base, bundle in self._registry.iteritems():
+        for base, bundle in self._registry.items():
             urlpatterns += [
                 url(r'^%s/' % base, include(bundle.get_urls()))
             ]

@@ -75,7 +75,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=255)),
             ],
             options={
-                b'db_table': 'version_models_booknorelated_base',
+                'db_table': 'version_models_booknorelated_base',
                 'managed': False,
             },
             bases=(models.Model, version_models.Harmless, version_models.BookReferences),
