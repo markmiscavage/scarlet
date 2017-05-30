@@ -20,11 +20,13 @@ try:
 except ValueError:
     from scheduling.models import Schedulable
 
+
 try:
     from django.db.transaction import atomic as xact
 except ImportError:
     from .transactions import xact
 from . import manager
+
 
 class Cloneable(models.Model):
     """
@@ -64,7 +66,7 @@ class Cloneable(models.Model):
                 cache = self._meta.init_name_map()
             except AttributeError:
                 cache = {
-                    field.name: self._meta.get_field_by_name(field.name)
+                    field.name: self._meta.get_field(field.name)
                     for field
                     in self._meta.get_fields()
                 }
@@ -72,7 +74,9 @@ class Cloneable(models.Model):
 
     def _gather_reverse(self, reverse):
         cache = self._get_field_map()
-        rel, mod, direct, m2m = cache[reverse]
+        rel = cache[reverse]
+        m2m = rel.is_relation and rel.many_to_many
+
         if m2m:
             ctype = 'm2m'
             name = reverse
@@ -189,7 +193,9 @@ class Cloneable(models.Model):
 
     def _delete_reverse(self, reverse):
         cache = self._get_field_map()
-        rel, mod, direct, m2m = cache[reverse]
+        rel = cache[reverse]
+        m2m = rel.is_relation and rel.many_to_many
+        direct = not rel.auto_created or rel.concrete
 
         if m2m:
             if direct:
@@ -275,6 +281,7 @@ def add_managers(attrs):
     attrs['_base_manager'] = models.Manager()
     return attrs
 
+
 class SharedMeta(models.base.ModelBase):
     def add_to_class(cls, name, value):
         if not cls._meta.abstract:
@@ -291,7 +298,7 @@ class SharedMeta(models.base.ModelBase):
                         value.db_table = version_model._meta.get_field(name).m2m_db_table()
                 else:
                     if value.remote_field.related_name and not \
-                                value.remote_field.related_name.endswith('+'):
+                            value.remote_field.related_name.endswith('+'):
                         value.remote_field.related_name = "%s_version" % value.remote_field.related_name
 
                 # relationships to self should always point
@@ -299,7 +306,16 @@ class SharedMeta(models.base.ModelBase):
                 if value.remote_field.model == related.RECURSIVE_RELATIONSHIP_CONSTANT:
                     value.remote_field.model = base_model
 
-        return super(SharedMeta, cls).add_to_class(name, value)
+        # Django 1.10 doesn't allow us to modify `_base_manager` attr:
+        # https://docs.djangoproject.com/en/1.10/topics/db/managers/#django.db.models.Model._base_manager
+        if name == '_base_manager':
+            if not value.name:
+                value.name = name
+            value.model = cls
+            setattr(cls._meta, 'base_manager_name', 'normal')
+        else:
+            super(SharedMeta, cls).add_to_class(name, value)
+
 
 class VersionViewMeta(SharedMeta):
     """
@@ -308,15 +324,13 @@ class VersionViewMeta(SharedMeta):
     underlying models and fetch version with a parent
     automatically.
     """
-
     def __new__(cls, name, bases, attrs):
         meta = attrs.pop('Meta', None)
 
         # If this is an abstract model don't do anything special
         if meta and getattr(meta, 'abstract', False):
             attrs['Meta'] = meta
-            return super(VersionViewMeta, cls).__new__(cls, name,
-                                            bases, attrs)
+            return super(VersionViewMeta, cls).__new__(cls, name, bases, attrs)
         # List of non field attrs we want to copy
         copy_attrs = attrs.pop('_copy_extra_attrs', [])
 
@@ -335,8 +349,7 @@ class VersionViewMeta(SharedMeta):
             meta._base_model = None
             assert issubclass(base_model, BaseModel)
 
-            base_name = "%s.%s" % (base_model._meta.app_label,
-                                base_model.__name__)
+            base_name = "%s.%s" % (base_model._meta.app_label, base_model.__name__)
 
             # Create a new abstract base model we can inherit from
             ab_base_model = type(str(base_name) + "Abs", (BaseModel,), {
@@ -352,8 +365,7 @@ class VersionViewMeta(SharedMeta):
                     try:
                         ab_base_model._meta.get_field(field.name)
                     except FieldDoesNotExist:
-                        ab_base_model.add_to_class(field.name,
-                                               copy.deepcopy(field))
+                        ab_base_model.add_to_class(field.name, copy.deepcopy(field))
 
         # Create a base model that isn't abstract
         else:
@@ -412,8 +424,7 @@ class VersionViewMeta(SharedMeta):
         })
         version_bases.append(v_mod)
         setattr(sys.modules[attrs.get('__module__')], vname, v_mod)
-        version_model = SharedMeta("%s_version" % name,
-                                  tuple(version_bases), versioned_attrs)
+        version_model = SharedMeta("%s_version" % name, tuple(version_bases), versioned_attrs)
 
         # Make sure the managed = False
         attrs['Meta'] = get_meta(meta, managed=False)
@@ -434,8 +445,7 @@ class VersionViewMeta(SharedMeta):
         setattr(sys.modules[attrs.get('__module__')], rname, ref_mod)
         new_bases.append(ref_mod)
 
-        mod = super(VersionViewMeta, cls).__new__(cls, name,
-                                            tuple(new_bases), attrs)
+        mod = super(VersionViewMeta, cls).__new__(cls, name, tuple(new_bases), attrs)
 
         # All the models should know about each other
         base_model._meta._view_model = mod
@@ -449,17 +459,22 @@ class VersionViewMeta(SharedMeta):
         mod._meta._is_view = True
 
         # Register signals
-        published_delete_signal.connect(mod.handle_published_delete_signal,
-                            sender=mod,
-                            dispatch_uid=mod.__name__ + "delete")
-        published_signal.connect(mod.handle_published_signal, sender=mod,
-                            dispatch_uid=mod.__name__ + "publish")
-        models.signals.pre_delete.connect(mod.handle_pre_delete_signal,
-                            sender=mod,
-                            dispatch_uid=mod.__name__ + "pre_delete")
-        models.signals.post_delete.connect(mod.handle_post_delete_signal,
-                            sender=mod,
-                            dispatch_uid=mod.__name__ + "post_delete")
+        published_delete_signal.connect(
+            mod.handle_published_delete_signal,
+            sender=mod,
+            dispatch_uid=mod.__name__ + "delete")
+        published_signal.connect(
+            mod.handle_published_signal,
+            sender=mod,
+            dispatch_uid=mod.__name__ + "publish")
+        models.signals.pre_delete.connect(
+            mod.handle_pre_delete_signal,
+            sender=mod,
+            dispatch_uid=mod.__name__ + "pre_delete")
+        models.signals.post_delete.connect(
+            mod.handle_post_delete_signal,
+            sender=mod,
+            dispatch_uid=mod.__name__ + "post_delete")
 
         return mod
 
@@ -473,12 +488,25 @@ class VersionViewMeta(SharedMeta):
 
         return super(VersionViewMeta, cls).add_to_class(name, value)
 
+
 class VersionModelMeta(models.base.ModelBase):
     """
     Meta class for models that are transparent
     about there being two models and that fetch
     versions/parents manually.
     """
+    def add_to_class(cls, name, value):
+        """
+        Django 1.10 doesn't allow us to modify `_base_manager` attr:
+        https://docs.djangoproject.com/en/1.10/topics/db/managers/#django.db.models.Model._base_manager
+        """
+        if name == '_base_manager':
+            if not value.name:
+                value.name = name
+            value.model = cls
+            setattr(cls._meta, 'base_manager_name', 'normal')
+        else:
+            super(VersionModelMeta, cls).add_to_class(name, value)
 
     def __new__(cls, name, bases, attrs):
         meta = attrs.get('Meta', None)
@@ -487,7 +515,7 @@ class VersionModelMeta(models.base.ModelBase):
         # Only do this work if we have a non-abstract model
         if not getattr(meta, 'abstract', False):
             if not getattr(meta, '_base_model', None) or \
-                     not issubclass(meta._base_model, BaseModel):
+                    not issubclass(meta._base_model, BaseModel):
                 raise TypeError("%s must declare a subclass of BaseModel as \
                                 it's _base_model in it's meta class" % name)
             else:
@@ -513,6 +541,7 @@ class VersionModelMeta(models.base.ModelBase):
 
 
 class BaseModel(models.Model):
+
     """
     Abstract model for the base model of your versioned model.
     This is the model where there is only one row per
@@ -649,8 +678,7 @@ class BaseVersionedModel(Cloneable, Schedulable):
 
             # Delete all scheduled items
             klass = self.get_version_class()
-            for obj in klass.normal.filter(object_id=self.object_id,
-                                            state=self.SCHEDULED):
+            for obj in klass.normal.filter(object_id=self.object_id, state=self.SCHEDULED):
                 obj.delete()
 
     def publish(self, user=None, when=None):
@@ -682,8 +710,8 @@ class BaseVersionedModel(Cloneable, Schedulable):
             if not when and not published and self.last_scheduled:
                 klass = self.get_version_class()
                 for obj in klass.normal.filter(object_id=self.object_id,
-                                        last_scheduled=self.last_scheduled,
-                                        state=self.SCHEDULED):
+                                               last_scheduled=self.last_scheduled,
+                                               state=self.SCHEDULED):
                     when = self.date_published
                     obj.delete()
 
@@ -780,8 +808,7 @@ class BaseVersionedModel(Cloneable, Schedulable):
             }
 
             klass = self.get_version_class()
-            klass.normal.filter(**filter_args).update(
-                                  state=self.ARCHIVED)
+            klass.normal.filter(**filter_args).update(state=self.ARCHIVED)
 
             now = timezone.now()
 
@@ -796,9 +823,9 @@ class BaseVersionedModel(Cloneable, Schedulable):
 
             # Update the base model as published and cache the scheduled
             # date for comparisons.
-            self._meta._base_model.objects.filter(pk=self.object_id
-                                    ).update(is_published=published,
-                                             v_last_save=self.last_scheduled)
+            self._meta._base_model.objects.filter(pk=self.object_id).update(
+                is_published=published,
+                v_last_save=self.last_scheduled)
             self.is_published = published
             self.v_last_save = self.last_scheduled
 
@@ -819,8 +846,7 @@ class BaseVersionedModel(Cloneable, Schedulable):
 
         klass = self.get_version_class()
         qs = klass.normal.filter(object_id=self.object_id,
-                        state=self.ARCHIVED
-                        ).order_by('-last_save')[self.NUM_KEEP_ARCHIVED:]
+                                 state=self.ARCHIVED).order_by('-last_save')[self.NUM_KEEP_ARCHIVED:]
 
         for obj in qs:
             obj._delete_reverses()
@@ -865,8 +891,7 @@ class BaseVersionedModel(Cloneable, Schedulable):
                 date = self.date_published
 
         if date:
-            status = "%s: %s" % (status,
-                             formats.date_format(date, "SHORT_DATE_FORMAT"))
+            status = "%s: %s" % (status, formats.date_format(date, "SHORT_DATE_FORMAT"))
         return status
 
     def schedule(self, when=None, action=None, **kwargs):
@@ -933,7 +958,7 @@ class VersionView(with_metaclass(VersionViewMeta, BaseVersionedModel)):
 
     def delete(self, **kwargs):
         with xact():
-            # Delete's happen in public so that all
+            # Delete's happen in default schema so that all
             # versions are found.
             with manager.SwitchSchema('public'):
                 super(VersionView, self).delete(**kwargs)
@@ -950,7 +975,7 @@ class VersionView(with_metaclass(VersionViewMeta, BaseVersionedModel)):
 
     def save(self, *args, **kwargs):
         models.signals.pre_save.send(sender=self.__class__, instance=self,
-            raw=kwargs.get('raw'), using=kwargs.get('using'))
+                                     raw=kwargs.get('raw'), using=kwargs.get('using'))
 
         last_save = kwargs.pop('last_save', timezone.now())
         with xact():
@@ -997,8 +1022,10 @@ class VersionView(with_metaclass(VersionViewMeta, BaseVersionedModel)):
             self._state = version._state
             self.state = version.state
             self.last_save = version.last_save
-        models.signals.post_save.send(sender=self.__class__, instance=self,
-            raw=kwargs.get('raw'), using=kwargs.get('using'))
+        models.signals.post_save.send(sender=self.__class__,
+                                      instance=self,
+                                      raw=kwargs.get('raw'),
+                                      using=kwargs.get('using'))
 
     def validate_unique(self, *args, **kwargs):
         """
@@ -1153,6 +1180,7 @@ class VersionModel(with_metaclass(VersionModelMeta, BaseVersionedModel)):
                     self.object = base
 
             super(VersionModel, self).save(*args, **kwargs)
+
 
 # Setup signal for published
 published_signal = dispatch.Signal(providing_args=['instance'])

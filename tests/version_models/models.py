@@ -9,14 +9,17 @@ from scarlet.versioning.models import VersionView, Cloneable, BaseModel, BaseVer
 class Harmless(object):
     is_harmless = True
 
+
 class ConcreteModel(models.Model):
     name = models.CharField(max_length=255)
+
 
 class NameModel(models.Model):
     name = models.CharField(max_length=255)
 
     class Meta(object):
         abstract = True
+
 
 class Abstract(BaseVersionedModel, NameModel):
     associates = fields.M2MFromVersion('self', blank=True)
@@ -34,7 +37,6 @@ class AbstractM2MBook(models.Model):
 
 
 class Author(VersionView, Abstract):
-
     def __unicode__(self):
         return self.name
 
@@ -42,6 +44,14 @@ class Author(VersionView, Abstract):
 class Book(VersionView, NameModel, Harmless):
     _clone_related = ['review', 'galleries']
 
+    author = models.ForeignKey(Author)
+    galleries = fields.M2MFromVersion('Gallery')
+
+    def __unicode__(self):
+        return self.name
+
+
+class BookNoRelated(VersionView, NameModel, Harmless):
     author = models.ForeignKey(Author)
     galleries = fields.M2MFromVersion('Gallery')
 
@@ -69,7 +79,7 @@ class Gallery(Cloneable):
 
 
 class NoReverse(VersionView, NameModel):
-    _clone_related = ('rm2m',)
+    _clone_related = ('rm2m', )
 
 
 class RM2M(Cloneable):
@@ -77,9 +87,12 @@ class RM2M(Cloneable):
 
 
 class Cartoon(VersionView, NameModel):
-    author = models.ForeignKey(Author, related_name="works",
-                                       blank=True, null=True,
-                                       on_delete=models.SET_NULL)
+    author = models.ForeignKey(Author,
+                               related_name="works",
+                               blank=True,
+                               null=True,
+                               on_delete=models.SET_NULL)
+
     def __unicode__(self):
         return self.name
 

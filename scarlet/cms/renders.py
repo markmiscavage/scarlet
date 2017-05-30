@@ -2,15 +2,14 @@ from __future__ import unicode_literals
 from builtins import object
 import json
 
-from django.shortcuts import render_to_response
-from django.template.loader import  render_to_string
-from django.template import RequestContext
+from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.core.serializers.json import DjangoJSONEncoder
 from django.template.defaultfilters import slugify
 from django.utils.encoding import force_text
 from django import http
+from django.contrib import messages
 
-#import serializer
 
 class RenderResponse(object):
     """
@@ -31,10 +30,6 @@ class RenderResponse(object):
         # Go through keyword arguments and save to instance
         for key, value in kwargs.items():
             setattr(self, key, value)
-
-    def get_context_instance(self, request, **kwargs):
-        current_app = kwargs.get('current_app')
-        return RequestContext(request, current_app=current_app)
 
     def update_kwargs(self, request, **kwargs):
         """
@@ -63,12 +58,16 @@ class RenderResponse(object):
         :param kwargs: The current context keyword arguments.
         """
         if redirect_url:
+            # Redirection is used when we click on `Save` for ordering
+            # items on `ListView`. `kwargs` contains `message` but that
+            # one is not passing through redirection. That's the reason for using
+            # directly `messages` and get message on result template
+            if kwargs.get('message'):
+                messages.success(request, kwargs.get('message'))
             return self.redirect(request, redirect_url, **kwargs)
 
         kwargs = self.update_kwargs(request, **kwargs)
-        context_instance=self.get_context_instance(request, **kwargs)
-        return render_to_response(self.template, kwargs,
-                        context_instance=context_instance)
+        return render(request, self.template, kwargs)
 
     def redirect(self, request, url, **kwargs):
         """
@@ -81,6 +80,7 @@ class RenderResponse(object):
         :param kwargs: The current context keyword arguments.
         """
         return http.HttpResponseRedirect(url)
+
 
 class CMSRender(RenderResponse):
     """
@@ -113,17 +113,14 @@ class CMSRender(RenderResponse):
         url_kwargs = kwargs.get('url_params')
         view = None
         if bundle:
-            view, name = bundle.get_object_header_view(request,
-                                                 url_kwargs,
-                                                 parent_only=True)
+            view, name = bundle.get_object_header_view(request, url_kwargs, parent_only=True)
 
         kwargs['dashboard'] = bundle.admin_site.get_dashboard_urls(request)
 
         if view:
             obj = view.get_object()
             if not 'object_header' in kwargs:
-                kwargs['object_header'] = bundle._render_view_as_string(view,
-                                                    name, request, url_kwargs)
+                kwargs['object_header'] = bundle._render_view_as_string(view, name, request, url_kwargs)
             if obj and obj != kwargs.get('obj'):
                 kwargs['subitem'] = True
         return kwargs
@@ -282,9 +279,8 @@ class RenderString(RenderResponse):
 
     def render(self, request, **kwargs):
         kwargs = self.update_kwargs(request, **kwargs)
-        context_instance=self.get_context_instance(request, **kwargs)
-        return render_to_string(self.template, kwargs,
-                                context_instance=context_instance)
+        return render_to_string(self.template, kwargs, request)
+
 
 class PopupRender(RenderResponse):
     """
@@ -305,6 +301,4 @@ class PopupRender(RenderResponse):
         return kwargs
 
     def redirect(self, request, url, **kwargs):
-        context_instance=self.get_context_instance(request, **kwargs)
-        return render_to_response(self.redirect_template, kwargs,
-                                  context_instance=context_instance)
+        return render(request, self.redirect_template, kwargs)

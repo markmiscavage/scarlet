@@ -12,7 +12,6 @@ from django.views.decorators.cache import never_cache
 from django.template.response import TemplateResponse
 from django.utils.translation import ugettext as _
 from django import forms
-from django.views.generic import TemplateView
 
 from . import models
 from . forms import BaseFilterForm
@@ -158,8 +157,8 @@ class AdminSite(object):
             if manager:
                 manager.activate(BaseVersionedModel.DRAFT)
             if not self.has_permission(request):
-                if request.path == reverse('admin:cms_logout', current_app=self.name):
-                    index_path = reverse('admin:cms_index', current_app=self.name)
+                if request.path == reverse('admin:cms_logout'):
+                    index_path = reverse('admin:cms_index')
                     return HttpResponseRedirect(index_path)
                 return self.login(request)
             return view(request, *args, **kwargs)
@@ -172,7 +171,7 @@ class AdminSite(object):
         return update_wrapper(inner, view)
 
     def get_urls(self):
-        from django.conf.urls import patterns, url, include
+        from django.conf.urls import url, include
 
         def wrap(view, cacheable=False):
             def wrapper(*args, **kwargs):
@@ -180,7 +179,7 @@ class AdminSite(object):
             return update_wrapper(wrapper, view)
 
         # Admin-site-wide views.
-        urlpatterns = patterns('',
+        urlpatterns = [
             url(r'^$',
                 wrap(self.index),
                 name='cms_index'),
@@ -193,13 +192,13 @@ class AdminSite(object):
             url(r'^password_change/done/$',
                 wrap(self.password_change_done, cacheable=True),
                 name='cms_password_change_done'),
-        )
+        ]
 
         # Add in each model's views.
-        for base, bundle in self._registry.items():
-            urlpatterns += patterns('',
+        for base, bundle in self._registry.iteritems():
+            urlpatterns += [
                 url(r'^%s/' % base, include(bundle.get_urls()))
-            )
+            ]
         return urlpatterns
 
     @property
@@ -213,11 +212,10 @@ class AdminSite(object):
         Uses the default auth views.
         """
         from django.contrib.auth.views import password_change
-        url = reverse('admin:cms_password_change_done', current_app=self.name)
+        url = reverse('admin:cms_password_change_done')
         defaults = {
             'post_change_redirect': url,
             'template_name': 'cms/password_change_form.html',
-            'current_app': self.name,
         }
         if self.password_change_template is not None:
             defaults['template_name'] = self.password_change_template
@@ -231,7 +229,6 @@ class AdminSite(object):
         defaults = {
             'extra_context': extra_context or {},
             'template_name': 'cms/password_change_done.html',
-            'current_app': self.name,
         }
         if self.password_change_done_template is not None:
             defaults['template_name'] = self.password_change_done_template
@@ -248,7 +245,6 @@ class AdminSite(object):
         defaults = {
             'extra_context': extra_context or {},
             'template_name': 'cms/logged_out.html',
-            'current_app': self.name,
         }
         if self.logout_template is not None:
             defaults['template_name'] = self.logout_template
@@ -344,9 +340,11 @@ class AdminSite(object):
         page = paginator.page(page_number)
 
         return TemplateResponse(request, [template], {
-                            'dashboard': dashboard, 'blocks': dash_blocks,
-                            'page': page, 'bundle' : list(self._registry.values())[0],
-                            'form': form}, current_app = self.name)
+            'dashboard': dashboard, 'blocks': dash_blocks,
+            'page': page, 'bundle': self._registry.values()[0],
+            'form': form
+        },)
+
 
 # This global object represents the default admin site, for the common case.
 # You can instantiate AdminSite in your own code to create a custom admin site.

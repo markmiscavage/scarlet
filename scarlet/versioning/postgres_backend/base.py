@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
-from django.db.backends.postgresql_psycopg2.base import DatabaseWrapper, \
-                                                        DatabaseCreation
+
+from django.db.backends.postgresql_psycopg2.base import DatabaseWrapper, DatabaseCreation
 from django import VERSION as DJANGO_VERSION
 
 
@@ -12,7 +12,7 @@ class DatabaseWrapper(DatabaseWrapper):
         self.creation = ViewDatabaseCreation(self)
         self.schema = self.UNTOUCHED
 
-    def _cursor(self):
+    def _cursor(self, name=None):
         from ..manager import get_schema
 
         cursor = super(DatabaseWrapper, self)._cursor()
@@ -27,6 +27,7 @@ class DatabaseWrapper(DatabaseWrapper):
 
     def reset_schema(self):
         self.schema = self.UNTOUCHED
+
 
 class ViewDatabaseCreation(DatabaseCreation):
 
@@ -68,13 +69,11 @@ class ViewDatabaseCreation(DatabaseCreation):
     if DJANGO_VERSION < (1, 6):
         def sql_for_inline_foreign_key_references(self, field, known_models,
                                                   style):
-            return self._sql_for_inline_fk_refs(field, known_models,
-                                                    style)
+            return self._sql_for_inline_fk_refs(field, known_models, style)
     else:
         def sql_for_inline_foreign_key_references(self, model, field, known_models,
                                                   style):
-            return self._sql_for_inline_fk_refs(field, known_models,
-                                                    style, model)
+            return self._sql_for_inline_fk_refs(field, known_models, style, model)
 
     def sql_for_pending_references(self, model, style, pending_references):
         from ..fields import FKToVersion

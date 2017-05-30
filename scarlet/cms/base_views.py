@@ -8,6 +8,7 @@ from functools import update_wrapper
 import urllib.parse
 import copy
 
+from django import VERSION as DJANGO_VERSION
 from django import http
 from django.views import generic
 from django.utils.decorators import method_decorator, classonlymethod
@@ -254,8 +255,7 @@ class CMSView(BaseView):
         data.update(kwargs)
         data.update({
             'bundle': self.bundle,
-            'navigation' : self.get_navigation(),
-            'current_app': self.bundle.admin_site.name,
+            'navigation': self.get_navigation(),
             'url_params': self.kwargs,
             'user': self.request.user,
             'object_header_tmpl': self.object_header_tmpl,
@@ -632,9 +632,15 @@ class ModelCMSMixin(object):
                 cache = self.model._meta.init_name_map()
                 field, mod, direct, m2m = cache[self.parent_field]
             else:
-                # 1.8+
-                field, mod, direct, m2m = self.model._meta.get_field_by_name(
-                    self.parent_field)
+                # 1.10
+                if DJANGO_VERSION[1] >= 10:
+                    field = self.model._meta.get_field(self.parent_field)
+                    m2m = field.is_relation and field.many_to_many
+                    direct = not field.auto_created or field.concrete
+                else:
+                    # 1.8 and 1.9
+                    field, mod, direct, m2m = self.model._meta.get_field(self.parent_field)
+
             to = None
             field_name = None
             if self.parent_lookups is None:

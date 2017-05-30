@@ -178,7 +178,7 @@ class WhenForm(forms.Form):
     Set a 'when' DateTimeField that is not required.
     """
 
-    when = forms.DateTimeField(widget=widgets.RadioDateTimeWidget)
+    when = forms.DateTimeField(widget=widgets.RadioDateTimeWidget, required=False)
 
 
 class MassActionForm(forms.ModelForm):

@@ -6,15 +6,12 @@ from functools import update_wrapper
 import random
 from future.utils import with_metaclass
 
-try:
-    from django.conf.urls import include, patterns, url
-except ImportError:
-    from django.conf.urls.defaults import include, patterns, url
+from django.conf.urls import url, include
+
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django import http
 from django.utils.decorators import classonlymethod
-from django.core.exceptions import ImproperlyConfigured
 
 from . import views
 from . import options
@@ -398,8 +395,7 @@ class Bundle(with_metaclass(BundleMeta, object)):
 
     def _render_view_as_string(self, view, name, request, url_kwargs):
         url_kwargs = view.get_url_kwargs()
-        url = reverse("admin:%s" % name, kwargs=url_kwargs,
-                        current_app=self.admin_site.name)
+        url = reverse("admin:%s" % name, kwargs=url_kwargs)
         view.add_to_render_data(action_url=url)
         return mark_safe(view.as_string(request, **url_kwargs))
 
@@ -454,8 +450,7 @@ class Bundle(with_metaclass(BundleMeta, object)):
             if check_permissions and not view.can_view(user):
                 return None
 
-            url = reverse("admin:%s" % url_name, kwargs=url_kwargs,
-                          current_app=self.admin_site.name)
+            url = reverse("admin:%s" % url_name, kwargs=url_kwargs)
             return url
 
     def _view_uses_name_as_url_kwarg(self, view_name):
@@ -463,7 +458,7 @@ class Bundle(with_metaclass(BundleMeta, object)):
         # self.name in url kwargs
         view_name = view_name.replace(ACTION_ALIAS, '')
         return (view_name in self._meta.item_views) or \
-                (view_name in self._meta.action_views)
+            (view_name in self._meta.action_views)
 
     def _get_slug_url_kwarg_for_name(self, view_name):
         arg = None
@@ -642,7 +637,7 @@ class Bundle(with_metaclass(BundleMeta, object)):
             if view and name:
                 parts.append(self.get_url(name, view, v))
 
-        return patterns('', *parts)
+        return parts
 
     def _optional_tuples(self, tup):
         for item in tup:
