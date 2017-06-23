@@ -1,0 +1,152 @@
+@import '~selectize/dist/css/selectize.default.css';
+
+.selectize-control.single .selectize-input:after,
+.selectize-control.single .selectize-input.dropdown-active:after {
+    content: '\F078'; // .fa-chevron-down icon
+    color: $gray;
+    font-family: 'FontAwesome';
+    display: block;
+    border: none;
+    margin: 0;
+    top: 13px;
+    right: 13px;
+    width: auto;
+    height: auto;
+    transition: transform 150ms;
+}
+
+.selectize-control.single .selectize-input.dropdown-active:after {
+    color: $red;
+    transform: scaleY(-1);
+}
+
+//-- selectize list --//
+
+.select2-container,
+.selectize-input,
+.selectize-control.single .selectize-input,
+.selectize-dropdown.single,
+.selectize-control.single .selectize-input.input-active {
+  background-color: $gray-light;
+}
+
+.select2-container,
+.selectize-control {
+  min-width: 200px;
+}
+
+.selectize-input.dropdown-active {
+  border-radius: 0;
+}
+
+.selectize-input.focus {
+  box-shadow: none;
+}
+
+.selectize-control,
+.selectize-input {
+  height: 40px;
+}
+
+.selectize-control.single .selectize-input,
+.selectize-dropdown.single,
+.selectize-dropdown,
+.selectize-input {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  color: $black;
+
+  input {
+
+    &,
+    &::-webkit-input-placeholder,
+    &:-moz-placeholder,
+    &::-moz-placeholder,
+    &:-ms-input-placeholder {
+      display: inline-block;
+      color: $black;
+      top: 4px;
+      position: relative;
+    }
+  }
+}
+
+.selectize-dropdown.single,
+.selectize-dropdown.multi {
+  // NOTE: design requires shadow but this creates a scrollbar bug
+  //@include box-shadow;
+  margin-top: 10px;
+  border: 1px solid $gray-light;
+}
+
+.selectize-dropdown-content {
+  border: 1px solid $gray-light;
+
+  & > div {
+    background-color: $white;
+  }
+}
+
+.selectize-control.single .selectize-input,
+.selectize-dropdown.single {
+  background-image: none;
+}
+
+.create--hide {
+  display: none;
+}
+
+.select-asset__item {
+  position: relative;
+}
+
+.select-asset__caption {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.select-asset__image--thumb {
+  width: 50px;
+  height: 50px;
+  background-size: cover;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+
+//-- selectize tags --//
+
+.selectize-control.multi .selectize-input  {
+
+  [data-value] {
+    &,
+    &.active {
+      box-shadow: none;
+      background-image: none;
+      background-color: $white;
+      border-radius: 0;
+      border: none;
+      text-shadow: none;
+      color: $blue;
+    }
+
+    .remove {
+      border: none;
+      color: $gray;
+      font-size: 20px;
+      padding: 3px 4px 0 0;
+
+      &:hover {
+        background-color: $white;
+        color: $red;
+      }
+    }
+  }
+
+  & > div {
+    margin: 0 8px 3px 0;
+    padding: 6px 12px;
+  }
+}

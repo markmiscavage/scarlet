@@ -1,0 +1,19 @@
+@import '../vendor/selectize';
+
+.select-asset__item {
+  position: relative;
+}
+
+.select-asset__caption {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.select-asset__image--thumb {
+  width: 50px;
+  height: 50px;
+  background-size: cover;
+  display: inline-block;
+  margin-right: 10px;
+}

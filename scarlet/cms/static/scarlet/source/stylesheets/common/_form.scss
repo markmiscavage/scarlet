@@ -1,0 +1,83 @@
+input[type=text],
+input[type=file],
+input[type=password],
+textarea {
+  background-color: $bg-primary;
+  display: block;
+  width: 100%;
+
+  td & {
+    display: inline-block;
+    width: auto;
+  }
+}
+
+input[type=text],
+input[type=file],
+input[type=password],
+input[type=number] {
+  line-height: 38px;
+  text-indent: 10px;
+  margin-top: 10px;
+}
+
+input[type=file] {
+  padding: 12px;
+}
+
+legend {
+  @include heading-large;
+}
+
+label {
+  color: $gray;
+  font-size: 18px;
+  font-weight: normal;
+  display: block;
+  margin-bottom: 15px;
+
+  &.required {
+    position: relative;
+    padding-left: 11px;
+
+    &:before {
+      content: '*';
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-weight: bold;
+    }
+  }
+}
+
+fieldset {
+
+  &:not(:last-of-type),
+  & > div:not(:last-of-type) {
+    margin-bottom: 40px;
+  }
+}
+
+.field-row {
+  margin-bottom: 25px;
+}
+
+.object-name {
+  font-weight: bold;
+}
+
+// cannot find markup to update classname
+.errorlist {
+  margin: -15px 0 25px;
+  padding: 0;
+
+  li {
+    color: $red;
+  }
+}
+
+.messagelist {
+  @include heading-medium;
+  color: $blue;
+  margin-bottom: 20px;
+}
