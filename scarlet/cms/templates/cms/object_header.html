@@ -1,63 +1,63 @@
 {% load cms %}
-<section id="object-info" {% if obj %}class="tools"{% endif %}>
-	<div>
-	{% block header %}
-		{% if back_bundle %}
-			{% bundle_url back_bundle "main_list" as back_url %}
-			{% if back_url %}
-				<a href="{{ back_url }}" class="back">{{ back_bundle.get_title }}</a>
-			{% endif %}
-		{% else %}
-			<a href="{% url 'admin:cms_index' %}" class="back">Dashboard</a>
-		{% endif %}
-		<h2 data-auto-tag="{{ view_tags }}">
-			{% if obj %}
-				{{ obj }}
-			{% else %}
-				{% if single_title %}
-					{{ bundle.get_single_title }}
-				{% else %}
-					{{ bundle.get_title }}
-				{% endif %}
-			{% endif %}
+<header class="header-object">
+  {% block header %}
+    {% if back_bundle %}
+      {% bundle_url back_bundle "main_list" as back_url %}
+      {% if back_url %}
+        <a href="{{ back_url }}" class="header-object__breadcrumb fa fa-chevron-left">{{ back_bundle.get_title }}</a>
+      {% endif %}
+    {% else %}
+      <a href="{% url 'admin:cms_index' %}" class="header-object__breadcrumb fa fa-chevron-left">Dashboard</a>
+    {% endif %}
+    <h2 data-auto-tag="{{ view_tags }}" class="header-object__title">
+      {% if obj %}
+        {{ obj }}
+      {% else %}
+        {% if single_title %}
+          {{ bundle.get_single_title }}
+        {% else %}
+          {{ bundle.get_title }}
+        {% endif %}
+      {% endif %}
+    </h2>
+    <div class="header-object__actions">
+      <i class="fa fa-chevron-down"></i>
+      <div class="header-object__actions-list">
+        {% block object_links %}{% endblock %}
+      </div>
+    </div>
+  {% endblock %}
 
-			<span class="actions">
-				{% block object_links %}{% endblock %}
-			</span>
-		</h2>
-	{% endblock %}
+  {% block tools %}
+    {% if obj %}
+    <nav role="object-tools" class="header-object__tools">
 
-	{% block tools %}
-		{% if obj %}
-		<nav role="object-tools">
+      {% with obj.status_line as line %}
+      {% if line %}
+        <p><span class="divider">Currently: {% if obj.is_published %}live{% else %}draft{% endif %}</span>{{ line }}</p>
+      {% endif %}
+      {% endwith %}
 
-			{% with obj.status_line as line %}
-			{% if line %}
-				<p>Currently: {% if obj.is_published %}LIVE{% else %}DRAFT{% endif %} &#9119; {{ line }}</p>
-			{% endif %}
-			{% endwith %}
+      {# {% block object_links %}{% endblock %} #}
 
-			{# {% block object_links %}{% endblock %} #}
+      {% bundle_url bundle "versions" object=obj follow_parent=False as versions_url %}
+      {% if versions_url %}<a href="{{ versions_url }}">Versions</a>{% endif %}
 
-			{% bundle_url bundle "versions" object=obj follow_parent=False as versions_url %}
-			{% if versions_url %}<a href="{{ versions_url }}">Versions</a>{% endif %}
+      {% block header_preview %}
+      {% bundle_url bundle "preview" object=obj follow_parent=False as preview_url %}
+      {% if preview_url %}
+        <a href="{{ preview_url }}" target="_blank">Preview</a>
+      {% elif obj.get_absolute_url %}
+        <a href="{{ obj.get_absolute_url }}" target="_blank">Preview</a>
+      {% endif %}
+      {% endblock %}
 
-			{% block header_preview %}
-			{% bundle_url bundle "preview" object=obj follow_parent=False as preview_url %}
-			{% if preview_url %}
-				<a href="{{ preview_url }}" target="_blank">Preview</a>
-			{% elif obj.get_absolute_url %}
-				<a href="{{ obj.get_absolute_url }}" target="_blank">Preview</a>
-			{% endif %}
-			{% endblock %}
+      {% if obj.is_published %}
+      {% bundle_url bundle "unpublish" object=obj follow_parent=False as unpublish_url %}
+      {% if unpublish_url %}<a href="{{ unpublish_url }}">Unpublish</a>{% endif %}
+      {% endif %}
 
-			{% if obj.is_published %}
-			{% bundle_url bundle "unpublish" object=obj follow_parent=False as unpublish_url %}
-			{% if unpublish_url %}<a href="{{ unpublish_url }}">Unpublish</a>{% endif %}
-			{% endif %}
-
-		</nav>
-		{% endif %}
-	{% endblock %}
-	</div>
-</section>
+    </nav>
+    {% endif %}
+  {% endblock %}
+</header>

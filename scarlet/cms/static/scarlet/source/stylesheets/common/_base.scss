@@ -1,8 +1,9 @@
 $padding-width: 70px;
 
 body {
-  @include helvetica;
+  @include open-sans;
   background-color: $bg-primary;
+  font-size: 14px;
 }
 
 a {

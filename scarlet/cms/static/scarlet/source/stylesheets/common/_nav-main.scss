@@ -94,6 +94,8 @@
   background-color: $white;
   padding: 10px;
   text-align: center;
+  @include text-cta;
+  text-transform: uppercase;
 
   &:first-child {
     padding-top: 20px;

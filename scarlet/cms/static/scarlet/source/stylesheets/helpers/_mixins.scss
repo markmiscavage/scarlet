@@ -1,4 +1,6 @@
-$blue: blue;
+@import '_fonts';
+
+$blue: #0084ff;
 $light-blue: lightblue;
 $gridlet: 1;
 $spacer: 1;
@@ -144,42 +146,46 @@ $spacer: 1;
 }
 
 @mixin heading-large {
-  // railway light
+  @include raleway;
+  font-weight: 300;
   color: $black;
   font-size: 32px;
   margin-bottom: 40px;
 }
 
 @mixin heading-medium {
-  // railway regular
+  @include raleway;
+  font-weight: 400;
   color: $black;
   font-size: 18px;
   margin-bottom: 10px;
 }
 
 @mixin heading-small {
-  // railway semibold
+  @include raleway;
+  font-weight: 600;
   color: $black;
   font-size: 15px;
   margin-bottom: 10px;
 }
 
 @mixin text-default {
-  // open sans
+  @include open-sans;
   font-size: 14px;
 }
 
 @mixin text-cta {
-  // open sans semi-bold
+  @include open-sans;
+  font-weight: 600;
   font-size: 14px;
 }
 
 @mixin text-description {
-  // open sans
+  @include open-sans;
   font-size: 12px;
 }
 
 @mixin text-meta {
-  // open sans
+  @include open-sans;
   font-size: 10px;
 }

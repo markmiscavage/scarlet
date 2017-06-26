@@ -4,6 +4,7 @@
 
   caption {
     margin-bottom: 30px;
+    @include heading-large;
   }
 }
 
@@ -17,4 +18,6 @@
   .button {
     display: none;
   }
+
+
 }
