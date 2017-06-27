@@ -1,7 +1,6 @@
-.widget {
-  background-color: pink;
-  &-asset-preview {
-    width: 60px;
-    height: auto;
+.widget-asset {
+  &-preview {
+    width: 100px;
+    height: 100px;
   }
 }

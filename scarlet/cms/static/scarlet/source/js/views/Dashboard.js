@@ -23,6 +23,7 @@ const Dashboard = View.extend({
 			.find('.nav-dashboard__item-title')
 			.each(function(i) {
 				const text = $(this).text().replace(/\s/g, '').toLowerCase()
+				console.log(self.iconMap)
 				$(this)
 					.children()
 					.first()

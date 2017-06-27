@@ -84,6 +84,10 @@ const App = View.extend({
 		$('table').each((i, dom) => {
 			const sortable = new Sortable({ el: dom }).render()
 		})
+
+		$('.nav-dashboard__list').each((i, dom) => {
+			const dashboard = new Dashboard({ el: dom }).render()
+		})
 	},
 
 	render: function() {
@@ -92,11 +96,8 @@ const App = View.extend({
 
 		// Editor
 		$('.editor:not(.editor--rendered)').each((i, dom) => {
+			console.log('WE RENDERING NOW')
 			const editor = new Editor({ el: dom }).render()
-		})
-
-		$('.nav-dashboard__list').each((i, dom) => {
-			const select = new Dashboard({ el: dom }).render()
 		})
 
 		// Select
