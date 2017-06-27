@@ -1,17 +1,19 @@
 .header-object {
   @include microfix;
+  width: 100%;
   max-width: $max-width;
-  margin: 0 auto 30px;
+  margin: 0 30px 30px;
   position: relative;
-  padding-top: 40px;
+  padding: 40px 30px 0;
   z-index: $z-mid;
 }
 
 .header-object__breadcrumb {
+  @include text-default;
   color: $gray;
   font-size: 18px;
   position: absolute;
-  left: 0;
+  left: 30px;
   top: 0;
 
   &:before {

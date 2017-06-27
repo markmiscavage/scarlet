@@ -46,6 +46,8 @@
 .selectize-control,
 .selectize-input {
   height: 40px;
+  display: flex;
+  align-items: center;
 }
 
 .selectize-control.single .selectize-input,

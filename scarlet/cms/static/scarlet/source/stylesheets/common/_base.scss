@@ -2,6 +2,7 @@ $padding-width: 70px;
 
 body {
   @include open-sans;
+  color: $black;
   background-color: $bg-primary;
   font-size: 14px;
 }
@@ -60,13 +61,22 @@ header {
   }
 }
 
+#container {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+}
+
 .main {
   @include microfix;
   @include box-shadow;
   background-color: #fff;
   padding: 30px;
-  margin: 0 auto;
+  margin: 0 30px;
   position: relative;
+  width: 100%;
   max-width: $max-width;
   min-height: 250px;
   z-index: $z-low;

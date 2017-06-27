@@ -2,6 +2,7 @@ import { View } from 'backbone'
 import pubsub from 'helpers/pubsub'
 import AutoSlug from 'views/AutoSlug'
 import BatchActions from 'views/BatchActions'
+import Dashboard from 'views/Dashboard'
 import DatePicker from 'views/DatePicker'
 import DateTimePicker from 'views/DateTimePicker'
 import Editor from 'views/editor/Editor'
@@ -21,96 +22,100 @@ import { handlePopup } from 'helpers/WindowPopup'
 import '../../stylesheets/app.scss'
 
 const App = View.extend({
-  initialize: function() {
-    pubsub.on('scarlet:render', this.render)
+	initialize: function() {
+		pubsub.on('scarlet:render', this.render)
 
-    // AutoSlug
-    $('.auto-slug').each((i, dom) => {
-      const autoSlug = new AutoSlug({ el: dom }).render()
-    })
+		// AutoSlug
+		$('.auto-slug').each((i, dom) => {
+			const autoSlug = new AutoSlug({ el: dom }).render()
+		})
 
-    // BatchActions
-    $('.list').each((i, dom) => {
-      const batchActions = new BatchActions({ el: dom }).render()
-    })
+		// BatchActions
+		$('.list').each((i, dom) => {
+			const batchActions = new BatchActions({ el: dom }).render()
+		})
 
-    // Filters
-    $('.filters').each((i, dom) => {
-      const filters = new Filters({ el: dom }).render()
-    })
+		// Filters
+		$('.filters').each((i, dom) => {
+			const filters = new Filters({ el: dom }).render()
+		})
 
-    // Formset
-    $('.formset').each((i, dom) => {
-      const formset = new Formset({ el: dom }).render()
-    })
+		// Formset
+		$('.formset').each((i, dom) => {
+			const formset = new Formset({ el: dom }).render()
+		})
 
-    // ImageCropper
-    $('.image-cropper').each((i, dom) => {
-      const imageCropper = new ImageCropper({ el: dom }).render()
-    })
+		// ImageCropper
+		$('.image-cropper').each((i, dom) => {
+			const imageCropper = new ImageCropper({ el: dom }).render()
+		})
 
-    // Insert Image
-    $('.insert-image').each((i, dom) => {
-      const insertImage = new InsertImage({ el: dom })
-    })
+		// Insert Image
+		$('.insert-image').each((i, dom) => {
+			const insertImage = new InsertImage({ el: dom })
+		})
 
-    // Insert Video
-    $('.insert-video').each((i, dom) => {
-      const insertVideo = new InsertVideo({ el: dom })
-    })
+		// Insert Video
+		$('.insert-video').each((i, dom) => {
+			const insertVideo = new InsertVideo({ el: dom })
+		})
 
-    // Insert Audio
-    $('.insert-audio').each((i, dom) => {
-      const insertAudio = new InsertAudio({ el: dom })
-    })
+		// Insert Audio
+		$('.insert-audio').each((i, dom) => {
+			const insertAudio = new InsertAudio({ el: dom })
+		})
 
-    // Tabs
-    $('.tabs').each((i, dom) => {
-      const tabs = new Tabs({ el: dom })
-    })
+		// Tabs
+		$('.tabs').each((i, dom) => {
+			const tabs = new Tabs({ el: dom })
+		})
 
-    // DATEPICKER
-    $('input.date').each((i, dom) => {
-      const datePicker = new DatePicker({ el: dom }).render()
-    })
+		// DATEPICKER
+		$('input.date').each((i, dom) => {
+			const datePicker = new DatePicker({ el: dom }).render()
+		})
 
-    // DATETIMEPICKER
-    $('input.datetime').each((i, dom) => {
-      const dateTimePicker = new DateTimePicker({ el: dom }).render()
-    })
+		// DATETIMEPICKER
+		$('input.datetime').each((i, dom) => {
+			const dateTimePicker = new DateTimePicker({ el: dom }).render()
+		})
 
-    // SORTABLE
-    $('table').each((i, dom) => {
-      const sortable = new Sortable({ el: dom }).render()
-    })
-  },
+		// SORTABLE
+		$('table').each((i, dom) => {
+			const sortable = new Sortable({ el: dom }).render()
+		})
+	},
 
-  render: function() {
-    // Bind Popup triggers
-    handlePopup()
+	render: function() {
+		// Bind Popup triggers
+		handlePopup()
 
-    // Editor
-    $('.editor:not(.editor--rendered)').each((i, dom) => {
-      const editor = new Editor({ el: dom }).render()
-    })
+		// Editor
+		$('.editor:not(.editor--rendered)').each((i, dom) => {
+			const editor = new Editor({ el: dom }).render()
+		})
 
-    // Select
-    $('select').each((i, dom) => {
-      const select = new Select({ el: dom }).render()
-    })
+		$('.nav-dashboard__list').each((i, dom) => {
+			const select = new Dashboard({ el: dom }).render()
+		})
 
-    // SELECTAPI
-    $('.api-select').each((i, dom) => {
-      const selectApi = new SelectApi({ el: dom }).render()
-    })
+		// Select
+		$('select').each((i, dom) => {
+			const select = new Select({ el: dom }).render()
+		})
 
-    // SELECTASSET
-    $('.asset').each((i, dom) => {
-      if (!$(dom).find('input').hasClass('selectized')) {
-        const selectAsset = new SelectAsset({ el: dom }).render()
-      }
-    })
-  },
+		// SELECTAPI
+		$('.api-select').each((i, dom) => {
+			const selectApi = new SelectApi({ el: dom }).render()
+		})
+
+		// SELECTASSET
+		$('.asset').each((i, dom) => {
+			if (!$(dom).find('input').hasClass('selectized')) {
+				const selectAsset = new SelectAsset({ el: dom }).render()
+			}
+		})
+	},
 })
 
 export default App

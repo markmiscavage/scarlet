@@ -1,6 +1,7 @@
 .header-main {
   border-bottom: 1px solid $white;
-  padding: 45px 0;
+  padding: 45px 30px 0;
+  width: 100%;
 }
 
 .header-main__logo {
@@ -23,6 +24,8 @@
 
   p {
     margin-bottom: 10px;
+    @include raleway;
+    font-size: 15px;
   }
 
   strong {
@@ -31,6 +34,7 @@
 
   a {
     color: #000;
+    font-size: 12px;
 
     &:hover{
       color: $red;

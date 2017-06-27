@@ -1,8 +1,9 @@
 .nav-dashboard {
   justify-content: center;
   flex-direction: row;
+  width: 100%;
   max-width: $capped-width;
-  margin: 45px auto;
+  margin-bottom: 45px;
 }
 
 .nav-dashboard__list {
