@@ -7529,6 +7529,11 @@
       "integrity": "sha1-OS2LotDxw00e4tYw8V0O+2jhBIo=",
       "dev": true
     },
+    "wysihtml": {
+      "version": "0.6.0-beta1",
+      "resolved": "https://registry.npmjs.org/wysihtml/-/wysihtml-0.6.0-beta1.tgz",
+      "integrity": "sha1-j/oHO7Wi8i2NMH90liBboy3RW0Q="
+    },
     "xmlhttprequest-ssl": {
       "version": "1.5.3",
       "resolved": "https://registry.npmjs.org/xmlhttprequest-ssl/-/xmlhttprequest-ssl-1.5.3.tgz",

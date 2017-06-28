@@ -20,7 +20,8 @@
     "jquery-ui-timepicker-addon": "^1.6.3",
     "moment": "^2.18.1",
     "select2": "^4.0.3",
-    "selectize": "^0.12.4"
+    "selectize": "^0.12.4",
+    "wysihtml": "^0.6.0-beta1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.1",

@@ -1,5 +1,5 @@
 import { View } from 'backbone'
-import wysihtml5 from 'wysihtml5'
+import wysihtml5 from './lib/wysihtml'
 import editorRules from './rules'
 import insertAnnotation from './commands/insertAnnotation'
 import insertLink from './commands/insertLink'
@@ -11,13 +11,14 @@ const Editor = View.extend({
 	render: function(dom) {
 		this.$toolbar = this.$('.editor__toolbar')
 		this.$textarea = this.$('.editor__textarea')
+		console.log(wysihtml5.Editor)
 
 		this.setupEditor()
 		this.attachCommands()
 	},
 
 	setupEditor: function() {
-		console.log('EDITOR SET UP', id)
+		console.log('EDITOR SET UP')
 		var editor
 		var id = 'wysihtml5-' + ++guid
 		var textareaId = id + '-textarea'
@@ -25,13 +26,13 @@ const Editor = View.extend({
 
 		// TODO: improve -> access publicPath from webpack process.env
 		var envPath = process.env.NODE_ENV === 'development'
-			? 'http://10.0.6.29/'
+			? 'http://10.0.6.29:3030/'
 			: '/'
 
 		this.$toolbar.attr('id', toolbarId)
 		this.$textarea.attr('id', textareaId)
 
-		editor = new wysihtml5.Editor(textareaId, {
+		editor = new wysihtml.Editor(textareaId, {
 			parserRules: editorRules,
 			style: false,
 			toolbar: toolbarId,
