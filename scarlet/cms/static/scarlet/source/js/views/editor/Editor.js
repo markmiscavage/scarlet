@@ -12,8 +12,8 @@ const Editor = View.extend({
 		this.$toolbar = this.$('.editor__toolbar')
 		this.$textarea = this.$('.editor__textarea')
 		//
-		// this.setupEditor()
-		// this.attachCommands()
+		this.setupEditor()
+		this.attachCommands()
 	},
 
 	setupEditor: function() {
@@ -30,13 +30,12 @@ const Editor = View.extend({
 		this.$toolbar.attr('id', toolbarId)
 		this.$textarea.attr('id', textareaId)
 		console.log(this.$toolbar, this.$textarea)
-		editor = new wysihtml.Editor('id_textformformset-0-text_0', {
+		editor = new wysihtml.Editor(textareaId, {
 			parserRules: editorRules,
 			style: false,
 			toolbar: toolbarId,
 			stylesheets: envPath + 'build/css/main.css',
 			id: id,
-			class: 'editor',
 		})
 
 		editor.on(
