@@ -43,7 +43,6 @@ const Formset = View.extend({
 			placeholder: 'Add a Module',
 			options: this.formsetTypes,
 			onChange: function(value) {
-				console.log('SOME VALUE', value)
 				this.selectize[0].selectize.clear(true)
 				this.add(value)
 			}.bind(this),
@@ -63,7 +62,7 @@ const Formset = View.extend({
 	},
 
 	add: function(formsetType) {
-		console.log('FORM SET TYPE', formsetType)
+		debugger
 		var clone = $('<div>')
 			.addClass('formset__form added-with-js')
 			.attr('data-prefix', formsetType)

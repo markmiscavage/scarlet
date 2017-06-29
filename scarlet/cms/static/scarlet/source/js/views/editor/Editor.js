@@ -1,5 +1,5 @@
 import { View } from 'backbone'
-import wysihtml5 from './lib/wysihtml'
+import wysihtml from 'wysihtml'
 import editorRules from './rules'
 import insertAnnotation from './commands/insertAnnotation'
 import insertLink from './commands/insertLink'
@@ -11,16 +11,14 @@ const Editor = View.extend({
 	render: function(dom) {
 		this.$toolbar = this.$('.editor__toolbar')
 		this.$textarea = this.$('.editor__textarea')
-		console.log(wysihtml5.Editor)
-
-		this.setupEditor()
-		this.attachCommands()
+		//
+		// this.setupEditor()
+		// this.attachCommands()
 	},
 
 	setupEditor: function() {
-		console.log('EDITOR SET UP')
 		var editor
-		var id = 'wysihtml5-' + ++guid
+		var id = 'wysihtml-' + ++guid
 		var textareaId = id + '-textarea'
 		var toolbarId = id + '-toolbar'
 
@@ -31,20 +29,21 @@ const Editor = View.extend({
 
 		this.$toolbar.attr('id', toolbarId)
 		this.$textarea.attr('id', textareaId)
-
-		editor = new wysihtml.Editor(textareaId, {
+		console.log(this.$toolbar, this.$textarea)
+		editor = new wysihtml.Editor('id_textformformset-0-text_0', {
 			parserRules: editorRules,
 			style: false,
 			toolbar: toolbarId,
 			stylesheets: envPath + 'build/css/main.css',
 			id: id,
+			class: 'editor',
 		})
 
 		editor.on(
 			'load',
 			function() {
 				editor.id = id
-
+				console.log('EDITOR ON LOAD')
 				// load audio sources
 				this.$('audio').each(function() {
 					$(this)[0].load()
@@ -62,9 +61,9 @@ const Editor = View.extend({
 	},
 
 	attachCommands: function() {
-		wysihtml5.commands.insertAnnotation = insertAnnotation
-		wysihtml5.commands.insertLink = insertLink
-		wysihtml5.commands.insertMedia = insertMedia
+		wysihtml.commands.insertAnnotation = insertAnnotation
+		wysihtml.commands.insertLink = insertLink
+		wysihtml.commands.insertMedia = insertMedia
 	},
 
 	addListeners: function() {

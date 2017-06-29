@@ -95,7 +95,7 @@ const App = View.extend({
 		handlePopup()
 		console.log('APP RENDER')
 		// Editor
-		$('.editor:not(.editor--rendered)').each((i, dom) => {
+		$('.wysiwyg-textarea').each((i, dom) => {
 			const editor = new Editor({ el: dom }).render()
 		})
 
