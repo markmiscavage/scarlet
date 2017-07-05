@@ -23,13 +23,12 @@ const Editor = View.extend({
 		var toolbarId = id + '-toolbar'
 
 		// TODO: improve -> access publicPath from webpack process.env
-		var envPath = process.env.NODE_ENV === 'development'
-			? 'http://10.0.6.29:3030/'
-			: '/'
+		var envPath =
+			process.env.NODE_ENV === 'development' ? 'http://10.0.6.29:3030/' : '/'
 
 		this.$toolbar.attr('id', toolbarId)
 		this.$textarea.attr('id', textareaId)
-		console.log(this.$toolbar, this.$textarea)
+
 		editor = new wysihtml.Editor(textareaId, {
 			parserRules: editorRules,
 			style: false,
@@ -42,7 +41,7 @@ const Editor = View.extend({
 			'load',
 			function() {
 				editor.id = id
-				console.log('EDITOR ON LOAD')
+
 				// load audio sources
 				this.$('audio').each(function() {
 					$(this)[0].load()
@@ -115,12 +114,12 @@ const Editor = View.extend({
 	onShowDialog: function(data) {
 		var command = data.command
 		var $button = this.$toolbar.find(
-			'.editor__buttons a[data-wysihtml5-command=' + data.command + ']'
+			'.editor__buttons a[data-wysihtml-command=' + data.command + ']'
 		)
 
 		// force dialog to close if command is disabled
 		if ($button.hasClass('disabled')) {
-			$button.removeClass('wysihtml5-command-dialog-opened')
+			$button.removeClass('wysihtml-command-dialog-opened')
 			$(data.dialogContainer).hide()
 			return
 		}

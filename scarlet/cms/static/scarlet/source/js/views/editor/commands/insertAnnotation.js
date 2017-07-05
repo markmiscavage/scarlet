@@ -6,7 +6,11 @@ var dom = wysihtml5.dom
 var className = 'text--annotated'
 
 function _removeFormat(composer, anchors) {
-	var length = anchors.length, i = 0, anchor, codeElement, textContent
+	var length = anchors.length,
+		i = 0,
+		anchor,
+		codeElement,
+		textContent
 	for (; i < length; i++) {
 		anchor = anchors[i]
 		codeElement = dom.getParentElement(anchor, { nodeName: 'code' })
@@ -108,7 +112,7 @@ export default {
 		var range = composer.selection.getRange(),
 			element = document
 				.getElementById(composer.textarea.parent.id + '-toolbar')
-				.querySelector('[data-wysihtml5-command="insertAnnotation"]'),
+				.querySelector('[data-wysihtml-command="insertAnnotation"]'),
 			state = wysihtml5.commands.formatInline.state(
 				composer,
 				command,
