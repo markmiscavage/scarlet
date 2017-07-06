@@ -1,5 +1,4 @@
 import { View } from 'backbone'
-import wysihtml from 'wysihtml'
 import editorRules from './rules'
 import insertAnnotation from './commands/insertAnnotation'
 import insertLink from './commands/insertLink'
@@ -60,8 +59,8 @@ const Editor = View.extend({
 
 	attachCommands: function() {
 		wysihtml.commands.insertAnnotation = insertAnnotation
-		wysihtml.commands.insertLink = insertLink
-		wysihtml.commands.insertMedia = insertMedia
+		wysihtml.commands.createLink = insertLink
+		wysihtml.commands.insertImage = insertMedia
 	},
 
 	addListeners: function() {

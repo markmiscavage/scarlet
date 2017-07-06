@@ -62,7 +62,6 @@ const Formset = View.extend({
 	},
 
 	add: function(formsetType) {
-		debugger
 		var clone = $('<div>')
 			.addClass('formset__form added-with-js')
 			.attr('data-prefix', formsetType)

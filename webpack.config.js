@@ -19,6 +19,16 @@ const COPY_PATHS = [
 		context: PATHS.src,
 		from: 'images/**/*',
 	},
+	{
+		context: PATHS.src,
+		from: 'js/views/editor/lib/wysihtml.js',
+		to: `${PATHS.static}/js/libs`,
+	},
+	{
+		context: PATHS.src,
+		from: 'js/views/editor/lib/wysihtml.toolbar.js',
+		to: `${PATHS.static}/js/libs`,
+	},
 ]
 
 const AUTOPREFIXER_CONFIG = {
@@ -38,7 +48,9 @@ module.exports = {
 	entry: {
 		main: [
 			'babel-polyfill',
-			`font-awesome-sass-loader!${path.resolve('./webpack-font-awesome-sass.config.js')}`,
+			`font-awesome-sass-loader!${path.resolve(
+				'./webpack-font-awesome-sass.config.js'
+			)}`,
 			'eventsource-polyfill',
 			'./js/init',
 		],
@@ -136,14 +148,6 @@ function createWebpackLoaders() {
 				context: '/source/images',
 				name: 'images/[name].[ext]',
 			},
-		},
-		{
-			test: /wysihtml/,
-			loader: 'exports-loader?wysihtml',
-		},
-		{
-			test: require.resolve('wysihtml/dist/wysihtml.toolbar.js'),
-			loader: 'exports-loader?wysihtml.toolbar',
 		},
 	]
 
