@@ -5,8 +5,8 @@
 
 	{% block object_header %}{% endblock %}
 	{% block form_title %}{% endblock form_title %}
-	<div class="crop-info">
-		<h3>Edit Original</h3>
+	<div class="image-cropper">
+		<h2>Edit Original</h2>
 
 		<form data-form-id="edit" class="jcrop-container" action="" method="post">
 			{% csrf_token %}
@@ -21,11 +21,11 @@
 			//-->
 
 			<div class="jcrop">
-				<img class="original" src="{{ obj.image.file.url }}" alt="{{ obj.image.title }}" />
-				<div class="preview" data-scale-w="{{ obj.get_crop_config.width }}" data-scale-h="{{ obj.get_crop_config.height }}" data-zoom="out">
-					<h4>Preview <strong></strong></h4>
-					<div class="mask">
-						<img class="thumb" src="{{ obj.image.file.url }}" alt="{{ obj.image.title }}" />
+				<img class="image-cropper__original" src="{{ obj.image.file.url }}" alt="{{ obj.image.title }}" />
+				<div class="image-cropper__preview" data-scale-w="{{ obj.get_crop_config.width }}" data-scale-h="{{ obj.get_crop_config.height }}" data-zoom="out">
+					<h3>Preview <strong></strong></h3>
+					<div class="image-cropper__mask">
+						<img src="{{ obj.image.file.url }}" alt="{{ obj.image.title }}" />
 					</div>
 				</div>
 			</div>
@@ -35,8 +35,9 @@
 				<input type="hidden" name="y" id="id_y" value="{{ obj.y }}" data-property="y" />
 				<input type="hidden" name="x2" id="id_x2" value="{{ obj.x2 }}" data-property="x2" />
 				<input type="hidden" name="y2" id="id_y2" value="{{ obj.y2 }}" data-property="y2" />
+				<input type="hidden" name="crop_config" id="id_crop_config" value="{{ obj.get_crop_config }}" />
 
-				<ul class="crop-settings">
+				<ul class="image-cropper__settings">
 					<li>
 						<label class="">Width</label>
 						<div class="field pixels">
@@ -61,7 +62,10 @@
 			</fieldset>
 
 			{% block submit %}
-				<p class="submit-row"><a class="button close-popup" href="{{ cancel_url }}">Cancel</a><input class="big" type="submit" value="Save" /></p>
+        <div class="button-group button-group--submit">
+            <a class="button button--secondary close-popup" href="{{ cancel_url }} ">Cancel</a>
+            <input class="button button--primary" type="submit" value="Save" />
+        </div>
 			{% endblock submit %}
 		</form>
 	</div>
