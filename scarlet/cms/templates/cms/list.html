@@ -30,7 +30,6 @@
     {{ list.formset.management_form }}
   {% endif %}
 
-  {% if not list.empty %}
   <div class="button-group button-group--actions {% if not actions %}hidden{% endif %}">
       {% block add %}
       <div class="divider">
@@ -43,6 +42,7 @@
       </div>
       {% endblock %}
 
+      {% if not list.empty %}
       {% if actions %}
       <div class="divider">
         {% for url, option in actions %}
@@ -59,8 +59,8 @@
         </div>
       {% endif %}
       {% endblock %}
+      {% endif %}
   </div>
-  {% endif %}
   <table class="{% if list.empty %}is-empty{% endif %}">
     <thead>
     <tr>
