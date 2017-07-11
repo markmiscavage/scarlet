@@ -8,7 +8,8 @@ require.config({
 		"wysihtml5" : "libs/wysihtml5",
 		"text" : "libs/plugins/amd/text",
 		"rosy" : "libs/rosy/src",
-		"detailsShim" : "libs/details-shim"
+		"detailsShim" : "libs/details-shim",
+		"hotspot" : "libs/plugins/jquery/jquery.hotspot.js"
 	},
 
 	waitSeconds : 15,
@@ -38,6 +39,11 @@ require.config({
 
 		"Handlebars" : {
 			exports : "Handlebars"
+		},
+
+		"hotspot": {
+			exports: "Hotspot",
+			deps: ["$", "jQuery"]
 		}
 	}
 });
