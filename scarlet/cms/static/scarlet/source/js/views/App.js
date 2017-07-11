@@ -93,7 +93,6 @@ const App = View.extend({
 	render: function() {
 		// Bind Popup triggers
 		handlePopup()
-		console.log('APP RENDER')
 		// Editor
 		$('.editor:not(.editor--rendered)').each((i, dom) => {
 			const editor = new Editor({ el: dom }).render()

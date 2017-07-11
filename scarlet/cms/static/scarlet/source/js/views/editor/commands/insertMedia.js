@@ -1,4 +1,3 @@
-import wysihtml5 from 'wysihtml'
 import Modal from '../../../helpers/Modal'
 import WindowPopup from '../../../helpers/WindowPopup'
 

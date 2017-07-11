@@ -85,6 +85,7 @@ const Formset = View.extend({
 		}
 
 		this.enableSort()
+		debugger
 		pubsub.trigger('scarlet:render')
 	},
 
@@ -102,6 +103,7 @@ const Formset = View.extend({
 				update: this.resort.bind(this),
 				//change : this._resort,
 				stop: this.repairEditor.bind(this),
+				containment: $('#container'),
 			})
 			this.$('.formset__form').addClass('draggable')
 			this.isDraggable = true
@@ -142,7 +144,7 @@ const Formset = View.extend({
 		var $editor = $(elem.item[0]).find('.editor')
 
 		if ($editor.length) {
-			$('.wysihtml5-sandbox', $editor).remove()
+			$('.wysihtml-sandbox', $editor).remove()
 			var editor = new Editor({ el: $editor }).render()
 		}
 	},

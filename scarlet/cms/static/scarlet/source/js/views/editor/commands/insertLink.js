@@ -1,5 +1,3 @@
-import wysihtml5 from 'wysihtml'
-
 var nodeOptions = {
 	nodeName: 'A',
 	toggle: false,
