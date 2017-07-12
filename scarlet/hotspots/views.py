@@ -3,9 +3,8 @@ from django.views.generic import View
 from django.template.loader import render_to_string
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from ..common.views import RetrieveAPIViewCache
 
-from . import models, cms_forms, serializers, cache_groups
+from . import models, cms_forms
 
 
 class HotSpotsGetData(LoginRequiredMixin, View):
@@ -48,14 +47,3 @@ class HotSpotsGetData(LoginRequiredMixin, View):
         empty_fields = render_to_string('hotspots/fieldsets.html', {'form': cms_forms.HotSpotForm()})
 
         return JsonResponse({'hotspots': hotspots, 'fields': fields, 'emptyFields': empty_fields})
-
-
-class HotSpotModuleView(RetrieveAPIViewCache):
-    template_name = 'base.html'
-    queryset = models.HotSpotModule.objects.all()
-    serializer_class = serializers.HotSpotModuleSerializer
-    lookup_field = 'slug'
-    cache_key = cache_groups.CACHE_KEY
-    cache_val = cache_groups.HOTSPOT_MODULE_DETAIL
-    cache_time = 120
-    max_age = 120
