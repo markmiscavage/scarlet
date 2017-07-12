@@ -36,7 +36,7 @@ class HotSpot(models.Model):
     overlay_size_x = models.IntegerField()
     overlay_size_y = models.IntegerField()
 
-    title = OrderField()
+    order = OrderField(verbose_name='Title')
     # SVG field
     icon = AssetsFileField(type=Asset.UNKNOWN, blank=True, null=True, verbose_name='Icon')
     label = models.CharField(max_length=255, blank=True)
