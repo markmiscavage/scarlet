@@ -1,0 +1,90 @@
+{% extends base %} {% load cms %} {% block messages %} {% if message %}
+<ul class="messagelist">
+  <li class="{{ message_class }}">{{ message }}</li>
+</ul>
+{% endif %} {% endblock messages %} {% block main_content %}
+
+<form data-form-id="edit" action="{{ url }}" method="post">
+  {% csrf_token %}
+
+  <p>
+    <div id="img-hotspot">
+      <img src="{{ hotspot_module.image.url }}" id="img-hotspot-asset" />
+    </div>
+  </p>
+
+  <div id="div-scarlet-hotspot-form"></div>
+
+  <p class="submit-row">
+    <a class="button close-popup" href="{{ cancel_url }}">Cancel</a>
+    <input class="big" type="submit" value="Save" />
+  </p>
+  <input type="hidden" name="module-id" value="{{ hotspot_module.id }}" />
+  <input type="hidden" name="overlay-size" id= "overlay-size" value="" />
+</form>
+
+{% endblock %}
+
+{% block additional_js %}
+<link rel="stylesheet" href="{{ STATIC_URL }}scarlet_hotspot/css/jquery.hotspot.css" />
+
+
+<script type="text/javascript">
+
+requirejs(['$', '$ui', './admin/modules/AssetSelect', '$plugin!Hotspot'], function($, $ui, AssetSelect, hotspot) {
+
+    $.ajax({
+      url: "/hotspots/{{ hotspot_module.id }}/get-data/",
+      dataType: 'json'
+
+    }).done(function (result) {
+
+        $("#img-hotspot").hotspot({
+          data: result.hotspots,
+          formFields: result.fields,
+          emptyFields: result.emptyFields
+        });
+      }).fail(function(err) {
+        console.error('Error: ', err)
+      })
+
+
+    $(document).on("click", ".btnDelete", function (event) {
+      $('#' + $(this).attr("data")).remove();
+      $('#frm-' + $(this).attr("data")).remove();
+    });
+
+    $(document).on('click', 'form input:text', function (event) {
+      var thisId = this.id.split('label-input-')[1];
+      var spanNewColor = 'div#spot-' + thisId;
+      $(spanNewColor).removeClass('unselected-hotspot');
+      $(spanNewColor).addClass('selected-hotspot');
+    });
+
+    $(document).on('focusout', 'form input:text', function (event) {
+      var thisId = this.id.split('input-')[1];
+      var spanNewColor = 'div#spot-' + thisId;
+      $(spanNewColor).removeClass('selected-hotspot');
+      $(spanNewColor).addClass('unselected-hotspot');
+    });
+
+    // If a new hotspot is created then call to `select2`
+    document.addEventListener('hotspot-click', function (e) {
+      $(document.body).find(".widget-asset").each(function (i, dom) {
+        var picker = new AssetSelect($(dom));
+      });
+    }, false);
+
+    setTimeout(() => {
+      var overlayStyle = $('.HotspotPlugin_Overlay').attr('style');
+      var matched = overlayStyle.match(/height: (\d+)px; width: (\d+)px/);
+      $('#overlay-size').attr('value', matched[2] + '-' + matched[1]);
+    }, 1000)
+})
+
+
+
+</script>
+
+
+{% endblock %}

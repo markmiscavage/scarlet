@@ -1,0 +1,61 @@
+<fieldset id="frm-spot-{{ x }}-{{ y }}">
+  <legend id="legend-spot-{{ x }}-{{ y }}">Hotspot</legend>
+
+  <input type="hidden" name="x-coord" value="{{ x }}" id="x-spot-{{ x }}-{{ y }}" />
+  <input type="hidden" name="y-coord" value="{{ y }}" id="y-spot-{{ x }}-{{ y }}" />
+
+  <p class="{% if form.label.errors %}error-field{% endif %}">
+    <label class="{% if form.label.field.required %}required{% endif%}">{{ form.label.label }}</label>
+    {% if form.label.help_text %}<em class="help">{{ form.label.help_text|safe }}</em>{% endif %} {{ form.label }}
+  </p>
+  {{ form.label.errors }}
+
+  <p class="{% if form.order.errors %}error-field{% endif %}">
+    <label class="{% if form.order.field.required %}required{% endif%}">{{ form.order.label }}</label>
+    {% if form.order.help_text %}<em class="help">{{ form.order.help_text|safe }}</em>{% endif %} {{ form.order }}
+  </p>
+  {{ form.order.errors }}
+
+  <p class="{% if form.text.errors %}error-field{% endif %}">
+    <label class="{% if form.text.field.required %}required{% endif%}">{{ form.text.label }}</label>
+    {% if form.text.help_text %}<em class="help">{{ form.text.help_text|safe }}</em>{% endif %} {{ form.text }}
+  </p>
+  {{ form.text.errors }}
+
+  <p class="{% if form.video_json.errors %}error-field{% endif %}">
+    <label class="{% if form.video_json.field.required %}required{% endif%}">{{ form.video_json.label }}</label>
+    {% if form.video_json.help_text %}<em class="help">{{ form.video_json.help_text|safe }}</em>{% endif %} {{ form.video_json }}
+  </p>
+  {{ form.video_json.errors }}
+
+
+  <p class="{% if form.svg.errors %}error-field{% endif %}">
+    <label class="{% if form.svg.field.required %}required{% endif%}">{{ form.svg.label }}</label>
+    {% if form.svg.help_text %}<em class="help">{{ form.svg.help_text|safe }}</em>{% endif %}
+  </p>
+
+  <div class="widget-asset" data-api="/admin/assets/?type=choices&amp;ftype=unknown&amp;exclude=ftype" data-title="{{ form.instance.svg.user_filename }}" data-tags="{{ asset_tags }}">
+    <div class="widget-asset-preview" style="background-image:url({{ form.instance.svg.file.admin_url }})"></div>
+    <div class="widget-asset-actions">
+      <input type="hidden" name="svg" value="{{ form.instance.svg.id }}" id="svg-{{ x }}-{{ y }}" style="display: none;">
+      <a class="button" target="_blank" href="/admin/assets/add/?popup=1&amp;type=unknown">Upload New</a>
+    </div>
+  </div>
+
+  <p></p>
+
+  <p class="{% if form.image.errors %}error-field{% endif %}">
+    <label class="{% if form.image.field.required %}required{% endif%}">{{ form.image.label }}</label>
+    {% if form.image.help_text %}<em class="help">{{ form.image.help_text|safe }}</em>{% endif %}
+  </p>
+
+  <div class="widget-asset" data-api="/admin/assets/?type=choices&amp;ftype=image&amp;exclude=ftype" data-title="{{ form.instance.image.user_filename }}" data-tags="{{ asset_tags }}">
+    <div class="widget-asset-preview" style="background-image:url({{ form.instance.image.file.admin_url }})"></div>
+    <div class="widget-asset-actions">
+      <input type="hidden" name="image" value="{{ form.instance.image.id }}" id="image-{{ x }}-{{ y }}" style="display: none;">
+      <a class="button" target="_blank" href="/admin/assets/add/?popup=1&amp;type=image">Upload New</a>
+    </div>
+  </div>
+
+  <p class="p-delete"><a class="button btnDelete" data="spot-{{ x }}-{{ y }}">Delete hotspot</a></p>
+</fieldset>
