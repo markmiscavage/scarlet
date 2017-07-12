@@ -56,7 +56,7 @@ class HotSpotMainView(views.ListView):
                 if images_lst[idx] != u'':
                     obj.image = Asset.objects.get(pk=int(images_lst[idx]))
                 if svg_list[idx] != u'':
-                    obj.svg = Asset.objects.get(pk=int(svg_list[idx]))
+                    obj.icon = Asset.objects.get(pk=int(svg_list[idx]))
                 if images_lst[idx] != u'' or svg_list[idx] != u'':
                     obj.save()
             return self.render(
