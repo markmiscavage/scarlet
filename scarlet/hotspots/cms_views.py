@@ -29,7 +29,7 @@ class HotSpotMainView(views.ListView):
         images_lst = request.POST.getlist('image')
         text_lst = request.POST.getlist('text')
         video_lst = request.POST.getlist('video_json')
-        svg_list = request.POST.getlist('svg')
+        svg_list = request.POST.getlist('icon')
 
         module_id = request.POST.get('module-id')
 
