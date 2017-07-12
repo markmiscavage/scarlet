@@ -54,14 +54,14 @@ requirejs(['$', '$ui', './admin/modules/AssetSelect', '$plugin!Hotspot'], functi
       $('#frm-' + $(this).attr("data")).remove();
     });
 
-    $(document).on('click', 'form input:text', function (event) {
-      var thisId = this.id.split('label-input-')[1];
+    $(document).on('click', '.order-inp', function (event) {
+      var thisId = this.id.split('order-input-')[1];
       var spanNewColor = 'div#spot-' + thisId;
       $(spanNewColor).removeClass('unselected-hotspot');
       $(spanNewColor).addClass('selected-hotspot');
     });
 
-    $(document).on('focusout', 'form input:text', function (event) {
+    $(document).on('focusout', '.order-inp', function (event) {
       var thisId = this.id.split('input-')[1];
       var spanNewColor = 'div#spot-' + thisId;
       $(spanNewColor).removeClass('selected-hotspot');
