@@ -31,7 +31,7 @@
 
 <script type="text/javascript">
 
-requirejs(['$', '$ui', './admin/modules/AssetSelect', './admin/modules/wysiwyg/Wysiwyg', '$plugin!Hotspot'], function($, $ui, AssetSelect, Wysiwyg, hotspot) {
+requirejs(['$', '$ui', './admin/modules/AssetSelect', './admin/modules/wysiwyg/Wysiwyg', '$plugin!hotspot'], function($, $ui, AssetSelect, Wysiwyg, hotspot) {
 
     $.ajax({
       url: "/hotspots/{{ hotspot_module.id }}/get-data/",
