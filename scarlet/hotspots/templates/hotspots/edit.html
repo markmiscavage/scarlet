@@ -31,7 +31,7 @@
 
 <script type="text/javascript">
 
-requirejs(['$', '$ui', './admin/modules/AssetSelect', '$plugin!Hotspot'], function($, $ui, AssetSelect, hotspot) {
+requirejs(['$', '$ui', './admin/modules/AssetSelect', './admin/modules/wysiwyg/Wysiwyg', '$plugin!Hotspot'], function($, $ui, AssetSelect, Wysiwyg, hotspot) {
 
     $.ajax({
       url: "/hotspots/{{ hotspot_module.id }}/get-data/",
@@ -68,11 +68,19 @@ requirejs(['$', '$ui', './admin/modules/AssetSelect', '$plugin!Hotspot'], functi
       $(spanNewColor).addClass('unselected-hotspot');
     });
 
+
+
+
+
     // If a new hotspot is created then call to `select2`
     document.addEventListener('hotspot-click', function (e) {
       $(document.body).find(".widget-asset").each(function (i, dom) {
         var picker = new AssetSelect($(dom));
-      });
+      })
+      $(document.body).find('.widget-wysiwyg').each(function (i, textarea) {
+        var wysiwyg = new Wysiwyg($(textarea));
+      })
+
     }, false);
 
     setTimeout(() => {
