@@ -8,8 +8,6 @@ python setup.py sdist bdist_wheel
 
 twine upload dist/scarlet-${VERSION}.tar.gz
 
-git flow release finish $VERSION
-
 git tag $VERSION
 
 git push --tags
