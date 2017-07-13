@@ -34,6 +34,7 @@ const Editor = View.extend({
 			toolbar: toolbarId,
 			stylesheets: envPath + 'build/css/main.css',
 			id: id,
+			autoLink: false,
 		})
 
 		editor.on(

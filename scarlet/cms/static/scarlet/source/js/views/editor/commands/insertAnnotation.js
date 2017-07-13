@@ -43,7 +43,7 @@ function _format(composer, attributes) {
 		textContent,
 		whiteSpace,
 		j
-	wysihtml5.commands.formatInline.exec(
+	wysihtml.commands.formatInline.exec(
 		composer,
 		undef,
 		NODE_NAME,

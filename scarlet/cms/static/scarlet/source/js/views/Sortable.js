@@ -18,6 +18,13 @@ const Sortable = View.extend({
 				}
 			},
 			containment: 'parent',
+			grid: [0, 10],
+			iframeFix: true,
+			cursorAt: { left: -50 },
+			scroll: true,
+			snap: true,
+			snapMode: 'outer',
+			snapTolerance: 50,
 		})
 	},
 

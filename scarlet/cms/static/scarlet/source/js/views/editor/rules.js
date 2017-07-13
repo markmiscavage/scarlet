@@ -189,7 +189,7 @@ var wysihtmlParserRules = {
 		},
 		a: {
 			check_attributes: {
-				target: 'any',
+				// target: 'any',
 				href: 'href', // if you compiled master manually then change this from 'url' to 'href'
 			},
 			set_attributes: {

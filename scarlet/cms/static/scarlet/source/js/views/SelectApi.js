@@ -21,7 +21,6 @@ const SelectApi = View.extend({
 		this.isMultiple = input.is('[data-multiple]')
 		this.selectize = null
 		this.selected = this.gatherSelected()
-
 		if (!this.isMultiple) {
 			this.singleInput = $(input[0]).clone()
 		}
@@ -170,8 +169,30 @@ const SelectApi = View.extend({
    * @param  {object} event object
    */
 	openPopup: function(input) {
-		let url = this.addUrl + '&addInput=' + input
-		console.log(url)
+		const url = this.addUrl + '&addInput=' + input
+		const width = 1025
+		const height = 600
+		const left = screen.width ? (screen.width - width) / 2 : 0
+		const top = screen.height ? (screen.height - height) / 2 : 0
+		const pop = new WindowPopup(
+			url,
+			'addImage',
+			[
+				'width=' + width,
+				'height=' + height,
+				'top=' + top,
+				'left=' + left,
+				'scrollbars=yes',
+				'location=no',
+				'directories=no',
+				'status=no',
+				'menubar=no',
+				'toolbar=no',
+				'resizable=no',
+			].join(','),
+			cb
+		)
+		pop.request()
 
 		// // TODO(JM) use case for Modal
 		// let modal = new Modal(url, 'modal-add-' + this.name, false, (data) => {

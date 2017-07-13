@@ -85,7 +85,6 @@ const Formset = View.extend({
 		}
 
 		this.enableSort()
-		debugger
 		pubsub.trigger('scarlet:render')
 	},
 
@@ -114,6 +113,24 @@ const Formset = View.extend({
 	resort: function() {
 		var $helper = this.$('.ui-sortable-helper')
 		var $placeholder = this.$('.ui-sortable-placeholder')
+
+		$('.formset__form').each(function(index, value) {
+			if ($(this).data('prefix') === 'textformformset') {
+				$(this).find('.formset__field').each(function() {
+					const $editor = $(this)
+						.find('.wysihtml-sandbox')
+						.contents()
+						.find('body')
+						.html()
+					console.log($editor)
+					if ($editor) {
+						$(this).children('label').text(`Text: ${$editor.substr(0, 49)}...`)
+					}
+					$(this).children('.editor').hide()
+				})
+			}
+			$(value).css({ height: '100px' })
+		})
 
 		this.$forms.find('.formset__form').each(function(i) {
 			var $dom = $(this)

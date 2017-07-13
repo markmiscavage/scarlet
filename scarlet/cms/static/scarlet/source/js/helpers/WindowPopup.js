@@ -16,12 +16,14 @@ class WindowPopup {
 		this.cb = cb
 		this.name = name
 		this.newWin = null
+		debugger
 	}
 
 	/**
 	 * open window
 	 */
 	request() {
+		debugger
 		window[this.name] = data => {
 			this.cb(data)
 			this.newWin.close()
@@ -38,6 +40,7 @@ class WindowPopup {
  * @param  {object}
  */
 const respond = function(data) {
+	debugger
 	let name = window.name
 	if (
 		window.opener &&
@@ -87,7 +90,6 @@ const handlePopup = function() {
  */
 const clickOpenPopup = function(e, cb) {
 	e.preventDefault()
-	console.log('we got here.')
 	let url = $(e.currentTarget).attr('href')
 	let options =
 		'menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=500,width=800'
