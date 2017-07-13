@@ -55,8 +55,7 @@ class AssetFieldFile(FieldFile):
     def _get_url(self, version=None, cbversion=None):
         if not self:
             return ""
-
-        url = super(AssetFieldFile, self)._get_url()
+        url = super(AssetFieldFile, self).url
         if url:
             if version:
                 url_parts = list(urlparse.urlsplit(url))
@@ -87,6 +86,7 @@ class AssetRealFileField(models.FileField):
 class AssetsFileField(TaggedRelationField):
     default_form_class = AssetsFileFormField
     default_cache_field_class = AssetRealFileField
+
     def __init__(self, *args, **kwargs):
         if 'related_name' not in kwargs:
             kwargs['related_name'] = '+'

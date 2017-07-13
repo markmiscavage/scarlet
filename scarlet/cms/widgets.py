@@ -4,9 +4,9 @@ import urllib
 from django.forms import widgets
 from django.forms.utils import flatatt
 from django import forms
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_unicode, python_2_unicode_compatible, force_text
 from django.utils.safestring import mark_safe
-from django.utils.html import conditional_escape
+from django.utils.html import conditional_escape, html_safe, format_html
 from django.core.urlresolvers import reverse
 from django.utils.dateparse import parse_time
 from django.template.loader import render_to_string
@@ -18,28 +18,170 @@ from . import settings
 # NOT EVERYTHING IS SUPPORTED, I DON'T CARE.
 TRANSLATION_DICT = {
     # Day
-    'd' : 'dd',
-    'l' : 'DD',
-    'j' : 'oo',
+    'd': 'dd',
+    'l': 'DD',
+    'j': 'oo',
     # Month
-    'B' : 'MM',
-    'm' : 'mm',
-    'b' : 'M',
+    'B': 'MM',
+    'm': 'mm',
+    'b': 'M',
     # Year
-    'Y' : 'yy',
-    'y' : 'y',
+    'Y': 'yy',
+    'y': 'y',
     # Time
-    'p' : 'TT',
-    'I' : 'hh',
-    'H' : 'HH',
-    'M' : 'mm',
-    'S' : 'ss',
+    'p': 'TT',
+    'I': 'hh',
+    'H': 'HH',
+    'M': 'mm',
+    'S': 'ss',
 }
+
+
+@html_safe
+@python_2_unicode_compatible
+class SubWidget(object):
+    """
+    Some widgets are made of multiple HTML elements -- namely, RadioSelect.
+    This is a class that represents the "inner" HTML element of a widget.
+    """
+    def __init__(self, parent_widget, name, value, attrs, choices):
+        self.parent_widget = parent_widget
+        self.name, self.value = name, value
+        self.attrs, self.choices = attrs, choices
+
+    def __str__(self):
+        args = [self.name, self.value, self.attrs]
+        if self.choices:
+            args.append(self.choices)
+        return self.parent_widget.render(*args)
+
+
+@html_safe
+@python_2_unicode_compatible
+class ChoiceInput(SubWidget):
+    """
+    An object used by ChoiceFieldRenderer that represents a single
+    <input type='$input_type'>.
+    """
+    input_type = None  # Subclasses must define this
+
+    def __init__(self, name, value, attrs, choice, index):
+        self.name = name
+        self.value = value
+        self.attrs = attrs
+        self.choice_value = force_text(choice[0])
+        self.choice_label = force_text(choice[1])
+        self.index = index
+        if 'id' in self.attrs:
+            self.attrs['id'] += "_%d" % self.index
+
+    def __str__(self):
+        return self.render()
+
+    def render(self, name=None, value=None, attrs=None):
+        if self.id_for_label:
+            label_for = format_html(' for="{}"', self.id_for_label)
+        else:
+            label_for = ''
+        attrs = dict(self.attrs, **attrs) if attrs else self.attrs
+        return format_html(
+            '<label{}>{} {}</label>', label_for, self.tag(attrs), self.choice_label
+        )
+
+    def is_checked(self):
+        return self.value == self.choice_value
+
+    def tag(self, attrs=None):
+        attrs = attrs or self.attrs
+        final_attrs = dict(attrs, type=self.input_type, name=self.name, value=self.choice_value)
+        if self.is_checked():
+            final_attrs['checked'] = 'checked'
+        return format_html('<input{} />', flatatt(final_attrs))
+
+    @property
+    def id_for_label(self):
+        return self.attrs.get('id', '')
+
+
+class RadioChoiceInput(ChoiceInput):
+    input_type = 'radio'
+
+    def __init__(self, *args, **kwargs):
+        super(RadioChoiceInput, self).__init__(*args, **kwargs)
+        self.value = force_text(self.value)
+
+
+@html_safe
+@python_2_unicode_compatible
+class ChoiceFieldRenderer(object):
+    """
+    An object used by RadioSelect to enable customization of radio widgets.
+    """
+
+    choice_input_class = None
+    outer_html = '<ul{id_attr}>{content}</ul>'
+    inner_html = '<li>{choice_value}{sub_widgets}</li>'
+
+    def __init__(self, name, value, attrs, choices):
+        self.name = name
+        self.value = value
+        self.attrs = attrs
+        self.choices = choices
+
+    def __getitem__(self, idx):
+        return list(self)[idx]
+
+    def __iter__(self):
+        for idx, choice in enumerate(self.choices):
+            yield self.choice_input_class(self.name, self.value, self.attrs.copy(), choice, idx)
+
+    def __str__(self):
+        return self.render()
+
+    def render(self):
+        """
+        Outputs a <ul> for this set of choice fields.
+        If an id was given to the field, it is applied to the <ul> (each
+        item in the list will get an id of `$id_$i`).
+        """
+        id_ = self.attrs.get('id')
+        output = []
+        for i, choice in enumerate(self.choices):
+            choice_value, choice_label = choice
+            if isinstance(choice_label, (tuple, list)):
+                attrs_plus = self.attrs.copy()
+                if id_:
+                    attrs_plus['id'] += '_{}'.format(i)
+                sub_ul_renderer = self.__class__(
+                    name=self.name,
+                    value=self.value,
+                    attrs=attrs_plus,
+                    choices=choice_label,
+                )
+                sub_ul_renderer.choice_input_class = self.choice_input_class
+                output.append(format_html(
+                    self.inner_html, choice_value=choice_value,
+                    sub_widgets=sub_ul_renderer.render(),
+                ))
+            else:
+                w = self.choice_input_class(self.name, self.value, self.attrs.copy(), choice, i)
+                output.append(format_html(self.inner_html, choice_value=force_text(w), sub_widgets=''))
+        return format_html(
+            self.outer_html,
+            id_attr=format_html(' id="{}"', id_) if id_ else '',
+            content=mark_safe('\n'.join(output)),
+        )
+
+
+class RadioFieldRenderer(ChoiceFieldRenderer):
+    choice_input_class = RadioChoiceInput
+
 
 def translate_format(format_string):
     for k, v in TRANSLATION_DICT.items():
         format_string = format_string.replace('%{0}'.format(k), v)
     return format_string
+
 
 class DateWidget(widgets.DateInput):
     bc = 'date'
@@ -157,7 +299,7 @@ class SplitDateTime(widgets.SplitDateTimeWidget):
     Widget for datetime fields. Uses DateWidget, TimeChoiceWidget.
     """
 
-    def __init__(self, widgets=(DateWidget, TimeChoiceWidget),attrs=None):
+    def __init__(self, widgets=(DateWidget, TimeChoiceWidget), attrs=None):
         forms.MultiWidget.__init__(self, widgets, attrs)
 
     def format_output(self, rendered_widgets):
@@ -170,7 +312,7 @@ class SplitDateTime(widgets.SplitDateTimeWidget):
         return d
 
 
-class DateRadioInput(widgets.RadioChoiceInput):
+class DateRadioInput(RadioChoiceInput):
     label_text = "At a specific date and time"
 
     def render(self, name=None, value=None, attrs=None, choices=()):
@@ -195,13 +337,13 @@ class DateRadioInput(widgets.RadioChoiceInput):
         return mark_safe(u'<input%s />' % flatatt(final_attrs))
 
 
-class DateRenderer(widgets.RadioFieldRenderer):
+class DateRenderer(RadioFieldRenderer):
     def __init__(self, *args, **kwargs):
         self.date_widget = kwargs.pop('date_widget')
         super(DateRenderer, self).__init__(*args, **kwargs)
 
     def return_choice(self, choice, idx):
-        cls = widgets.RadioChoiceInput
+        cls = RadioChoiceInput
         attrs = self.attrs.copy()
         if choice[0] == RadioDateTimeWidget.DATE:
             cls = DateRadioInput
@@ -217,10 +359,9 @@ class DateRenderer(widgets.RadioFieldRenderer):
         choice = self.choices[idx]
         return self.return_choice(choice, idx)
 
-
     def render(self):
-        return mark_safe(u'<fieldset class="datetime">\n%s\n</fieldset>' % u'\n'.join([u'%s'
-                % force_unicode(w) for w in self]))
+        return mark_safe(u'<fieldset class="datetime">\n%s\n</fieldset>' % u'\n'.join([u'%s' % force_unicode(w) for w in self]))
+
 
 class RadioDateTimeWidget(widgets.RadioSelect):
     NOW = 'now'
@@ -252,6 +393,7 @@ class RadioDateTimeWidget(widgets.RadioSelect):
         else:
             widget = self.date_class()
             return widget.value_from_datadict(data, files, name)
+
 
 class APIChoiceWidget(widgets.Input):
     """
@@ -291,10 +433,8 @@ class APIChoiceWidget(widgets.Input):
     input_type = 'hidden'
     template = u'<div class="api-select" data-title="%(value)s" data-api="%(link)s" data-add="%(add_link)s">%(input)s</div>'
 
-    def __init__(self, rel, attrs=None, using=None,
-                        view="main", api_url='',
-                        add_view="add", add_url='',
-                        extra_query_kwargs=None):
+    def __init__(self, rel, attrs=None, using=None, view="main", api_url='',
+                 add_view="add", add_url='', extra_query_kwargs=None):
         super(APIChoiceWidget, self).__init__(attrs=attrs)
         self.rel = rel
         self.model = self.rel.to
@@ -308,14 +448,12 @@ class APIChoiceWidget(widgets.Input):
         self._api_link = api_url
         self._add_link = add_url
 
-
     def render(self, name, value, attrs=None, choices=()):
         data = {
-            'input': super(APIChoiceWidget, self).render(name, value,
-                                                          attrs=attrs),
+            'input': super(APIChoiceWidget, self).render(name, value, attrs=attrs),
             'value': conditional_escape(self.label_for_value(value)),
             'link': self.get_api_link(),
-            'add_link' : self.get_add_link()
+            'add_link': self.get_add_link()
         }
         return mark_safe(self.template % data)
 
@@ -329,7 +467,6 @@ class APIChoiceWidget(widgets.Input):
         that can be used in a query string and returned as
         a dictionary.
         """
-
         qs = url_params_from_lookup_dict(self.rel.limit_choices_to)
         if not qs:
             qs = {}
@@ -360,7 +497,6 @@ class APIChoiceWidget(widgets.Input):
         the bundle that is registered as the primary url for the model \
         that this foreign key points to.
         """
-
         if admin_site:
             bundle = admin_site.get_bundle_for_model(self.model)
 
@@ -377,7 +513,6 @@ class APIChoiceWidget(widgets.Input):
         arguments calculated by the `get_qs` method are then added to the
         url. It is up to the destination url to respect them as filters.
         """
-
         url = self._api_link
         if url:
             qs = self.get_qs()
@@ -394,7 +529,6 @@ class APIChoiceWidget(widgets.Input):
         Appends the popup=1 query string to the url so the
         destination url treats it as a popup.
         """
-
         url = self._add_link
         if url:
             return "%s?popup=1" % url
@@ -412,8 +546,7 @@ class APIChoiceWidget(widgets.Input):
 
         if value is not None:
             try:
-                obj = self.model._default_manager.using(self.db
-                                                         ).get(**{key: value})
+                obj = self.model._default_manager.using(self.db).get(**{key: value})
                 return force_unicode(obj)
             except (ValueError, self.model.DoesNotExist):
                 return ''
@@ -441,13 +574,10 @@ class APIModelChoiceWidget(APIChoiceWidget):
     :param add_url: The url for adding a new item. This is only used \
     if the automatic url discovery fails.
     """
-
     template = u'<div class="api-select" data-title="%(value)s" data-api="%(link)s" data-add="%(add_link)s">%(input)s</div>'
 
-    def __init__(self, model, attrs=None, using=None,
-                    limit_choices_to=None,
-                    view="main", api_url='',
-                    add_view="add", add_url=''):
+    def __init__(self, model, attrs=None, using=None, limit_choices_to=None,
+                 view="main", api_url='', add_view="add", add_url=''):
         super(APIChoiceWidget, self).__init__(attrs=attrs)
         self.limit_choices_to = limit_choices_to
         self.model = model
@@ -459,14 +589,11 @@ class APIModelChoiceWidget(APIChoiceWidget):
         self._api_link = api_url
         self._add_link = add_url
 
-
     def get_qs(self):
         return url_params_from_lookup_dict(self.limit_choices_to)
 
     def label_for_value(self, value):
-        return super(APIModelChoiceWidget,
-                        self).label_for_value(value, key='pk')
-
+        return super(APIModelChoiceWidget, self).label_for_value(value, key='pk')
 
 
 class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
@@ -494,10 +621,8 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
     template = u'<div class="api-select" data-api="%(api_link)s" data-add="%(add_link)s">%(options)s</div>'
     allow_multiple_selected = True
 
-    def __init__(self, model, attrs=None, using=None,
-                    limit_choices_to=None,
-                    view="main", api_url='',
-                    add_view="add", add_url=''):
+    def __init__(self, model, attrs=None, using=None, limit_choices_to=None,
+                 view="main", api_url='', add_view="add", add_url=''):
         super(APIChoiceWidget, self).__init__(attrs=attrs)
         self.limit_choices_to = limit_choices_to
         self.model = model
@@ -512,7 +637,6 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
     def get_qs(self):
         return url_params_from_lookup_dict(self.limit_choices_to)
 
-
     def update_links(self, request, admin_site=None):
         """
         Called to update the widget's urls. Tries to find the
@@ -526,7 +650,6 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
         the bundle that is registered as the primary url for the model \
         that this foreign key points to.
         """
-
         if admin_site:
             bundle = admin_site.get_bundle_for_model(self.model.to)
 
@@ -536,13 +659,12 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
                 self._add_link = self._get_bundle_link(bundle, self.add_view,
                                                        request.user)
 
-
     def render(self, name, value, attrs=None, choices=()):
-        final_attrs = self.build_attrs(attrs, name=name)
+        final_attrs = self.build_attrs(attrs, {name: name})
         data = {
             'api_link': self.get_api_link(),
-            'add_link' : self.get_add_link(),
-            'options' : self.get_options(value, name)
+            'add_link': self.get_add_link(),
+            'options': self.get_options(value, name)
         }
         data.update(final_attrs)
         return mark_safe(self.template % data)
@@ -557,12 +679,13 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
                 kwargs = {'{0}__in'.format(key): value}
                 if self.limit_choices_to:
                     kwargs.update(self.limit_choices_to)
-                objs = self.model.to._default_manager.using(self.db
-                                 ).filter(**kwargs)
+                objs = self.model.to._default_manager.using(self.db).filter(**kwargs)
                 for obj in objs:
-                    d = { 'text' : force_unicode(obj),
-                          'value' : getattr(obj, key),
-                          'name' : name }
+                    d = {
+                        'text': force_unicode(obj),
+                        'value': getattr(obj, key),
+                        'name': name
+                    }
                     line = '<input type="hidden" data-multiple data-title="%(text)s" name="%(name)s" value="%(value)s" />' % d
                     values.append(line)
             except ValueError:
@@ -640,8 +763,7 @@ class AnnotatedHTMLWidget(widgets.MultiWidget):
 
     def format_output(self, rendered_widgets):
         return mark_safe(u"<div class=\"widget-wysiwyg annotation\">{0} {1} {2}</div>".format(
-                    render_to_string(self.template),
-                    *rendered_widgets))
+            render_to_string(self.template), *rendered_widgets))
 
     def value_from_datadict(self, data, files, name):
         data = [

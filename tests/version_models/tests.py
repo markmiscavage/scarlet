@@ -11,6 +11,7 @@ from scarlet.versioning import manager
 
 import models
 
+
 class ModelStructureTests(unittest.TestCase):
 
     def testCopyAttrs(self):
@@ -75,6 +76,7 @@ class ModelStructureTests(unittest.TestCase):
         with self.assertRaises(TypeError):
             class BadBase(VersionView, models.BaseModel):
                 name = dbmodels.CharField(max_length=255)
+
 
 class ModelTests(TestCase):
     fixtures = ('test_data.json',)
@@ -192,8 +194,7 @@ class ModelTests(TestCase):
 
         bp.delete()
         with manager.SwitchSchema('public'):
-            self.assertFalse(models.Book.normal.filter(object_id=bd.object_id
-                             ).exists())
+            self.assertFalse(models.Book.normal.filter(object_id=bd.object_id).exists())
 
         self.assertEqual(models.Gallery.objects.all().count(), 0)
 
@@ -305,8 +306,7 @@ class ModelTests(TestCase):
 
     def testGetVersion(self):
         author = models.Author.objects.get(pk=1)
-        self.assertEqual(author.get_version(state=models.Author.PUBLISHED),
-                                             None)
+        self.assertEqual(author.get_version(state=models.Author.PUBLISHED), None)
 
     def testPublishBook(self):
         from django.contrib.auth.models import User
@@ -358,24 +358,21 @@ class ModelTests(TestCase):
         # publish the draft
         book.publish()
         self.assertEqual(klass.normal.all().count(), 2)
-        self.assertTrue(klass.normal.filter(
-                                state=models.Book.PUBLISHED).exists())
+        self.assertTrue(klass.normal.filter(state=models.Book.PUBLISHED).exists())
 
         # schedule the draft to be published in future
         book = models.Book.objects.get(vid=1)
         t = timezone.now() + datetime.timedelta(days=20)
         book.publish(when=t)
         self.assertEqual(klass.normal.all().count(), 3)
-        self.assertTrue(klass.normal.filter(
-                                state=models.Book.SCHEDULED).exists())
+        self.assertTrue(klass.normal.filter(state=models.Book.SCHEDULED).exists())
 
         # try publish the draft again; it will archive the item published above
         # and publish the current one
         book = models.Book.objects.get(vid=1)
         book.publish(when=timezone.now())
         self.assertEqual(klass.normal.all().count(), 4)
-        self.assertTrue(klass.normal.filter(
-                                    state=models.Book.ARCHIVED).exists())
+        self.assertTrue(klass.normal.filter(state=models.Book.ARCHIVED).exists())
 
     def testPublishWithScheduledOnly(self):
         book = models.Book.objects.get(vid=1)
@@ -386,8 +383,7 @@ class ModelTests(TestCase):
         t = timezone.now() + datetime.timedelta(days=7)
         book.publish(when=t)
         self.assertEqual(klass.normal.all().count(), 2)
-        self.assertTrue(klass.normal.filter(
-                                    state=models.Book.SCHEDULED).exists())
+        self.assertTrue(klass.normal.filter(state=models.Book.SCHEDULED).exists())
 
         # the time stamp info in draft and scheduled items are identical
         draft = models.Book.objects.get(vid=1)
@@ -399,28 +395,25 @@ class ModelTests(TestCase):
         # scheduled item above.
         draft.publish()
         self.assertEqual(klass.normal.all().count(), 2)
-        self.assertFalse(klass.normal.filter(
-                                    state=models.Book.PUBLISHED).exists())
+        self.assertFalse(klass.normal.filter(state=models.Book.PUBLISHED).exists())
 
         # if you want to really publish it. gotta provide "when"
         book = models.Book.objects.get(vid=1)
         book.publish(when=timezone.now())
-        self.assertTrue(klass.normal.filter(
-                                    state=models.Book.PUBLISHED).exists())
+        self.assertTrue(klass.normal.filter(state=models.Book.PUBLISHED).exists())
 
     def testMakeDraft(self):
         book = models.Book.objects.get(vid=1)
         self.assertEqual(book.name, 'Book1')
 
         # draft cannot make draft -- return nothing inside make_draft function.
-        with  self.assertRaises(AssertionError):
+        with self.assertRaises(AssertionError):
             book.make_draft()
 
         klass = book.get_version_class()
         book = klass.normal.get(vid=1)
         book.make_draft()
-        self.assertEqual(models.Book.objects.filter(
-                                        object_id=book.object_id).count(), 1)
+        self.assertEqual(models.Book.objects.filter(object_id=book.object_id).count(), 1)
 
         book = klass.normal.get(vid=1)
         book.publish()
@@ -484,17 +477,17 @@ class ModelTests(TestCase):
         with manager.SwitchSchema('public'):
             self.assertEqual(models.Book.normal.all().count(), 3)
             bp2 = models.Book.normal.get(object_id=obp.object_id,
-                                          state=models.Book.PUBLISHED)
+                                         state=models.Book.PUBLISHED)
             bd2 = models.Book.normal.get(object_id=obp.object_id,
-                                          state=models.Book.DRAFT)
+                                         state=models.Book.DRAFT)
             ba2 = models.Book.normal.get(object_id=obp.object_id,
-                                          state=models.Book.ARCHIVED)
+                                         state=models.Book.ARCHIVED)
 
         # old draft gets deleted,
         self.assertFalse(models.Book.objects.filter(vid=1).exists())
         # new draft generated
         self.assertEqual(bd2.name, 'Book1')
-        #other versions stay same
+        # other versions stay same
         self.assertEqual(bp2.name, 'Book1')
         self.assertEqual(ba2.name, 'Book1')
 
@@ -532,7 +525,7 @@ class ModelTests(TestCase):
         bp2 = klass.normal.get(object_id=obp.object_id,
                                state=models.Book.PUBLISHED)
         klass.normal.filter(object_id=obp.object_id,
-                               state=models.Book.DRAFT).exists()
+                            state=models.Book.DRAFT).exists()
         ba2 = klass.normal.get(object_id=obp.object_id,
                                state=models.Book.ARCHIVED)
         self.assertEqual(models.Gallery.objects.all().count(), 8)
@@ -607,7 +600,7 @@ class ModelTests(TestCase):
         draft.delete()
 
         self.assertTrue(klass.normal.filter(object_id=book.object_id,
-                         state=models.Book.PUBLISHED).exists())
+                        state=models.Book.PUBLISHED).exists())
         book.make_draft()
         self.assertEqual(klass.normal.all().count(), 2)
 
@@ -644,8 +637,8 @@ class ModelTests(TestCase):
         self.assertEqual(draft.last_save, draft.last_scheduled)
         self.assertFalse(draft.v_last_save)  # v_last_save empty
         status = "%s: %s" % ('Publish Scheduled',
-                    formats.date_format(draft.date_published,
-                                        "SHORT_DATE_FORMAT"))
+                             formats.date_format(draft.date_published,
+                                                 "SHORT_DATE_FORMAT"))
         self.assertEqual(status, draft.status_line())
 
         # publish it now. should get status as Published
@@ -657,8 +650,8 @@ class ModelTests(TestCase):
         self.assertEqual(draft2.last_save, draft2.last_scheduled)
         self.assertEqual(draft2.last_save, draft2.v_last_save)
         status = "%s: %s" % ('Published',
-                    formats.date_format(draft2.date_published,
-                                        "SHORT_DATE_FORMAT"))
+                             formats.date_format(draft2.date_published,
+                                                 "SHORT_DATE_FORMAT"))
         self.assertEqual(status, draft2.status_line())
         self.assertEqual(draft2.date_published, when)
 
@@ -669,8 +662,8 @@ class ModelTests(TestCase):
         self.assertEqual(draft.last_save, draft.last_scheduled)
         self.assertTrue(draft.last_scheduled > draft.v_last_save)
         status = "%s: %s" % ('Publish Scheduled',
-                    formats.date_format(draft.date_published,
-                                        "SHORT_DATE_FORMAT"))
+                             formats.date_format(draft.date_published,
+                                                 "SHORT_DATE_FORMAT"))
         self.assertEqual(status, draft.status_line())
 
     def testStatus2(self):
@@ -684,8 +677,8 @@ class ModelTests(TestCase):
         self.assertEqual(draft.last_save, draft.last_scheduled)
         self.assertEqual(draft.last_save, draft.v_last_save)
         status = "%s: %s" % ('Published',
-                    formats.date_format(draft.last_save,
-                                        "SHORT_DATE_FORMAT"))
+                             formats.date_format(draft.last_save,
+                                                 "SHORT_DATE_FORMAT"))
         self.assertEqual(status, book.status_line())
 
     def testSwitchSchema(self):
@@ -710,7 +703,7 @@ class ModelTests(TestCase):
 
         # should fail on second(duplicate) instance
         a2 = models.Author(name=a1.name)
-        with  self.assertRaises(ValidationError):
+        with self.assertRaises(ValidationError):
             a2.validate_unique()
 
         # multiple versions are not affected (can co-exists)
@@ -817,6 +810,7 @@ class TransactionSwitchTests(TestCase):
             self.assertEqual(models.Review.objects.all().count(), 0)
             self.assertEqual(models.Gallery.objects.all().count(), 0)
 
+
 class ManagerTests(TestCase):
     fixtures = ('test_data.json',)
 
@@ -831,8 +825,8 @@ class ManagerTests(TestCase):
 
         manager.activate('draft')
         self.assertFalse(models.Book.objects.filter(
-                                    state=models.Book.PUBLISHED,
-                                    object_id=book.object_id))
+            state=models.Book.PUBLISHED,
+            object_id=book.object_id))
         schema = manager.get_schema()
         self.assertEqual(schema, 'draft')
 
