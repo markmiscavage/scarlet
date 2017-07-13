@@ -4,11 +4,26 @@ from django.db import models
 from django.core.serializers.json import DjangoJSONEncoder
 
 
+class CastOnAssignDescriptor(object):
+    """
+    A property descriptor which ensures that `field.to_python()` is called on _every_ assignment to the field.
+    This used to be provided by the `django.db.models.subclassing.Creator` class, which in turn
+    was used by the deprecated-in-Django-1.10 `SubfieldBase` class, hence the reimplementation here.
+    """
+
+    def __init__(self, field):
+        self.field = field
+
+    def __get__(self, obj, type=None):
+        if obj is None:
+            return self
+        return obj.__dict__[self.field.name]
+
+    def __set__(self, obj, value):
+        obj.__dict__[self.field.name] = self.field.to_python(value)
+
+
 class JSONField(models.TextField):
-
-    # Used so to_python() is called
-    __metaclass__ = models.SubfieldBase
-
     def __init__(self, *args, **kwargs):
         self.dump_kwargs = kwargs.pop('dump_kwargs',
                                       {'cls': DjangoJSONEncoder})
@@ -30,15 +45,6 @@ class JSONField(models.TextField):
             return value
         return json.dumps(value, **self.dump_kwargs)
 
-    def south_field_triple(self):
-        "Returns a suitable description of this field for South."
-        # We'll just introspect the _actual_ field.
-        field_class = "django.db.models.fields.TextField"
-        try:
-            from south.modelsinspector import introspector
-            args, kwargs = introspector(self)
-        except ImportError:
-            args, kwargs = [], {}
-
-        # That's our definition!
-        return (field_class, args, kwargs)
+    def contribute_to_class(self, cls, name):
+        super(JSONField, self).contribute_to_class(cls, name)
+        setattr(cls, name, CastOnAssignDescriptor(self))

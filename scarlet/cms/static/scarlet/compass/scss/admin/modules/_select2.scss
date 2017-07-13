@@ -5,7 +5,7 @@
 
 			span {
 				display: block;
-				padding: $gridlet*2 $gridlet*11 $gridlet*2 $gridlet*3;
+				padding: $gridlet*2 $gridlet*23 $gridlet*2 $gridlet*3;
 				@include ellipsis;
 
 				&:after {
@@ -158,7 +158,7 @@
 	position: absolute;
 	top: 100%;
 	z-index: 10001;
-	width: 100%;
+	min-width: $gridlet*100;
 	margin-top: -1px;
 	border-radius: 0 0 4px 4px;
 	@include box-shadow(1px 4px 5px rgba($blue, 0.25));
@@ -177,7 +177,7 @@
 	white-space: nowrap;
 	z-index: 10000;
 	min-height: 26px;
-	width: 100%;
+	min-width: $gridlet*100;
 	margin: 0;
 	padding: $gridlet*2;
 
@@ -224,6 +224,7 @@
 /* results */
 
 .select2-results {
+	min-width: $gridlet*100;
 	margin: 0;
 	padding: 0;
 	position: relative;

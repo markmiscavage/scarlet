@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import os
 import sys
 import argparse
@@ -6,8 +7,6 @@ import imp
 
 import django
 from django.conf import settings
-
-
 
 
 def setup_test_environment(settings_overide, with_scarlet_blog=False):
@@ -28,12 +27,12 @@ def setup_test_environment(settings_overide, with_scarlet_blog=False):
         'scarlet.versioning',
         'scarlet.scheduling',
         'taggit',
-        'version_models',
-        'version_twomodels',
-        'cms_bundles',
+        'tests.version_models',
+        'tests.version_twomodels',
+        'tests.cms_bundles',
     ]
 
-    urls = 'cms_bundles.urls'
+    urls = 'tests.cms_bundles.urls'
     if with_scarlet_blog:
         apps.append('scarlet_blog.blog')
         apps.append('scarlet_blog.galleries')
@@ -60,7 +59,23 @@ def setup_test_environment(settings_overide, with_scarlet_blog=False):
             'django.contrib.sessions.middleware.SessionMiddleware',
             'django.contrib.auth.middleware.AuthenticationMiddleware',
             'django.contrib.messages.middleware.MessageMiddleware'
-        )
+        ),
+        'TEMPLATES': [{
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'APP_DIRS': True,
+            'OPTIONS': {
+                'context_processors': [
+                    'django.contrib.auth.context_processors.auth',
+                    'django.template.context_processors.debug',
+                    'django.template.context_processors.i18n',
+                    'django.template.context_processors.media',
+                    'django.template.context_processors.static',
+                    'django.contrib.messages.context_processors.messages',
+                    'django.template.context_processors.request',
+                ],
+                'debug': True,
+            },
+        }, ]
     }
 
     if settings_overide:
@@ -91,7 +106,7 @@ def runtests(settings_overide, test_args):
 
     with_scarlet_blog = False
     if not test_args:
-        test_args = ['cms_bundles', 'version_models', 'version_twomodels']
+        test_args = ['tests.cms_bundles', 'tests.version_models', 'tests.version_twomodels']
         try:
             imp.find_module('scarlet_blog')
             test_args.append('blog')
@@ -112,6 +127,7 @@ def runtests(settings_overide, test_args):
 
     failures = run_tests(test_args, verbosity=1, interactive=True)
     sys.exit(failures)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

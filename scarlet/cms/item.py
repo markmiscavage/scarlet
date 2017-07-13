@@ -193,7 +193,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
                     getattr(self.form_class.Meta, 'fields', None)):
                 fields = self.form_class.Meta.fields
             else:
-                fields = '__all__'
+                fields = []
 
         exclude = None
         if self.parent_field:
@@ -220,7 +220,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
                 except ValueError:
                     pass
 
-        params = {'fields': fields,
+        params = {'fields': fields or '__all__',
                   'exclude': exclude,
                   'formfield_callback': self.formfield_for_dbfield}
 
@@ -359,8 +359,14 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         should_add = False
         if self.parent_object:
             m2ms = [f.name for f in form.instance._meta.many_to_many]
-            m2ms.extend([f.field.rel.related_name for f in \
-                form.instance._meta.get_all_related_many_to_many_objects()])
+            m2ms.extend(
+                [f.field.rel.related_name for f in
+                    [
+                        f for f in form.instance._meta.get_fields(include_hidden=True)
+                        if f.many_to_many and f.auto_created
+                    ]
+                ]
+            )
 
             if self.parent_field in m2ms:
                 should_add = True
