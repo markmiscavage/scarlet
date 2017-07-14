@@ -8,7 +8,6 @@ const Sortable = View.extend({
 
 	render: function() {
 		let draggable = this.$el.find('tr[draggable]').parents('tbody')
-
 		draggable.sortable({
 			stop: function(e, ui) {
 				let inputs = $(ui.item.context.offsetParent).find(':text')

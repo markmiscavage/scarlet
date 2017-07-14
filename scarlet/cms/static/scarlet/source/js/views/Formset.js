@@ -8,6 +8,7 @@ import Editor from './editor/Editor'
 const Formset = View.extend({
 	events: {
 		'click .formset__button--delete': 'delete',
+		'click .sweet-btn': 'enableSort',
 		// 'click .button' : function(e){clickOpenPopup(e, (data) => console.log('thing', data));},
 		// 'clidk .crop-link' : function(e){clickOpenPopup(e, (data) => console.log('thing', data))}
 	},
@@ -17,15 +18,19 @@ const Formset = View.extend({
 		this.formsetTypes = []
 		this.isDraggable = false
 		this.didInitialize = true
+		this.sortMode = false
 	},
 
 	render: function() {
 		this.$forms = this.$('.formset__forms')
 		this.$controls = this.$el.next('.formset__controls')
 		this.prefix = this.$el.data('prefix')
-
+		this.$el.prepend(
+			'<button class="sweet-btn" type="button">Toggle sort</button>'
+		)
 		this.setFormsetTypes()
-		this.enableSort()
+		this.delegateEvents()
+		// this.enableSort()
 		this.bindControls()
 	},
 
@@ -97,40 +102,74 @@ const Formset = View.extend({
   ************************************/
 
 	enableSort: function() {
-		if (this.$forms.find('.formset__order').length) {
-			this.$forms.sortable({
-				update: this.resort.bind(this),
-				//change : this._resort,
-				stop: this.repairEditor.bind(this),
-				containment: $('#container'),
-			})
-			this.$('.formset__form').addClass('draggable')
-			this.isDraggable = true
+		if (!this.sortMode) {
+			if (this.$forms.find('.formset__order').length) {
+				this.$forms.sortable({
+					update: this.resort.bind(this),
+					//change : this._resort,
+					stop: this.repairEditor.bind(this),
+					containment: '#content',
+					iframeFix: true,
+					axis: 'y',
+					scroll: true,
+					snap: true,
+					snapMode: 'outer',
+					snapTolerance: -100,
+				})
+				this.$('.formset__form').addClass('draggable')
+				this.isDraggable = true
+			}
+			this.sortMode = true
+			this.resort()
+		} else {
+			this.$('.formset__form').removeClass('draggable')
+			this.sortMode = false
+			this.resort()
 		}
-		this.resort()
 	},
 
 	resort: function() {
 		var $helper = this.$('.ui-sortable-helper')
 		var $placeholder = this.$('.ui-sortable-placeholder')
-
-		$('.formset__form').each(function(index, value) {
-			if ($(this).data('prefix') === 'textformformset') {
-				$(this).find('.formset__field').each(function() {
-					const $editor = $(this)
-						.find('.wysihtml-sandbox')
-						.contents()
-						.find('body')
-						.html()
-					console.log($editor)
-					if ($editor) {
-						$(this).children('label').text(`Text: ${$editor.substr(0, 49)}...`)
-					}
-					$(this).children('.editor').hide()
-				})
-			}
-			$(value).css({ height: '100px' })
-		})
+		if (this.sortMode) {
+			console.log('going to sort mode')
+			$('.formset__form').each(function(index, value) {
+				if ($(this).data('prefix') === 'textformformset') {
+					$(this).find('.formset__field').each(function() {
+						const $editor = $(this)
+							.find('.wysihtml-sandbox')
+							.contents()
+							.find('body')
+							.html()
+						if ($editor) {
+							$(this)
+								.children('label')
+								.text(`Text: ${$editor.substr(0, 49)}...`)
+						}
+						$(this).children('.editor').hide()
+					})
+				}
+				$(value).css({ height: '100px' })
+			})
+		} else {
+			console.log('going from sorting to not')
+			$('.formset__form').each(function(index, value) {
+				if ($(this).data('prefix') === 'textformformset') {
+					$(this).find('.formset__field').each(function() {
+						const $editor = $(this)
+							.find('.wysihtml-sandbox')
+							.contents()
+							.find('body')
+							.html()
+						if ($editor) {
+							$(this).children('label').text(`Text:`)
+						}
+						$(this).children('.editor').show()
+					})
+				}
+				$(value).css({ height: 'auto' })
+			})
+		}
 
 		this.$forms.find('.formset__form').each(function(i) {
 			var $dom = $(this)
