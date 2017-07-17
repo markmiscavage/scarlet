@@ -28,7 +28,7 @@
     {% if not settings.TEMPLATE_DEBUG %}
       <link rel="stylesheet"  href="/static/scarlet/build/css/main.css" />
     {% else %}
-      {% render_bundle 'main' 'css' %}
+      <link rel="stylesheet"  href="/static/scarlet/build/css/main.css" />
     {% endif %}
 
     {# All JavaScript at the bottom, except for Modernizr. #}
@@ -147,7 +147,7 @@
       {% render_bundle 'main' 'js' %}
     {% else %} -->
       <script src="/static/scarlet/build/js/main.js"></script>
-    {% endif %}
+    <!-- {% endif %} -->
 
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: none">
       <defs>
