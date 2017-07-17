@@ -113,6 +113,7 @@ const SelectAsset = View.extend({
 		debugger
 		console.log(value, $item)
 		this.linkifyCrops()
+		console.log($item.attr('data-thumb'))
 		this.$preview.css(
 			'background-image',
 			'url(' + $item.attr('data-thumb') + ')'
