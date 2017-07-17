@@ -9,6 +9,10 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const UGLIFY_CONFIG = {
 	mangle: true,
 	comments: false,
+	compress: {
+		drop_debugger: false,
+	},
+	sourceMap: true,
 }
 
 function createWebpackLoaders() {
@@ -26,7 +30,7 @@ function createWebpackPlugins() {
 	return plugins
 }
 
-config.devtool = 'cheap-source-map'
+config.devtool = 'source-map' // 'cheap-source-map' doesn't work with uglify
 config.output.publicPath = '/static/scarlet/build/'
 config.module.rules.push(...createWebpackLoaders())
 config.plugins.push(...createWebpackPlugins())

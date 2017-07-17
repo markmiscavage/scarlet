@@ -141,6 +141,7 @@ const Formset = View.extend({
 							.contents()
 							.find('body')
 							.html()
+						console.log($editor)
 						debugger
 						if ($editor) {
 							$(this)
@@ -153,7 +154,6 @@ const Formset = View.extend({
 				$(value).css({ height: '100px' })
 			})
 		} else {
-			console.log('going from sorting to not')
 			$('.formset__form').each(function(index, value) {
 				if ($(this).data('prefix') === 'textformformset') {
 					$(this).find('.formset__field').each(function() {

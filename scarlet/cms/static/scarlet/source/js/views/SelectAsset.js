@@ -111,6 +111,7 @@ const SelectAsset = View.extend({
    */
 	onSelect: function(value, $item) {
 		debugger
+		console.log(value, $item)
 		this.linkifyCrops()
 		this.$preview.css(
 			'background-image',
