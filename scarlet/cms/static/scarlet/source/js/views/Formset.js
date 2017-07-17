@@ -141,6 +141,7 @@ const Formset = View.extend({
 							.contents()
 							.find('body')
 							.html()
+						debugger
 						if ($editor) {
 							$(this)
 								.children('label')
