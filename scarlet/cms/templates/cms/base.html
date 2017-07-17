@@ -26,7 +26,7 @@
 
     {# CSS: implied media="all" #}
     {% if not settings.TEMPLATE_DEBUG %}
-      <link rel="stylesheet"  href="{{ STATIC_URL }}css/bundle.css" />
+      <link rel="stylesheet"  href="/static/scarlet/build/css/main.css" />
     {% else %}
       {% render_bundle 'main' 'css' %}
     {% endif %}
@@ -139,14 +139,14 @@
         </p>
         {% endblock %}
     </footer>
-    <script src="{{ STATIC_URL }}js/libs/wysihtml.js"></script>
-    <script src="{{ STATIC_URL }}js/libs/wysihtml.toolbar.js"></script>
+    <script src="/static/scarlet/build/js/libs/wysihtml.js"></script>
+    <script src="/static/scarlet/build/js/libs/wysihtml.toolbar.js"></script>
     {% endblock popup_footer %}
 
-    {% if settings.TEMPLATE_DEBUG %}
+    <!-- {% if settings.TEMPLATE_DEBUG %}
       {% render_bundle 'main' 'js' %}
-    {% else %}
-      <script src="{{ STATIC_URL }}js/main.js"></script>
+    {% else %} -->
+      <script src="/static/scarlet/build/js/main.js"></script>
     {% endif %}
 
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: none">
