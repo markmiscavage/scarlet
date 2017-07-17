@@ -110,6 +110,7 @@ const SelectAsset = View.extend({
    * @param  {object}
    */
 	onSelect: function(value, $item) {
+		debugger
 		this.linkifyCrops()
 		this.$preview.css(
 			'background-image',
@@ -165,6 +166,7 @@ const SelectAsset = View.extend({
 	},
 
 	linkifyCrops: function() {
+		debugger
 		let guidLink =
 			this.baseLink + this.$cropsList.parent().find('[type=hidden]').val()
 		this.$cropsList.find('li').each(function(i, el) {
