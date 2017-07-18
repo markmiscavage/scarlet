@@ -1,35 +1,35 @@
-var path = require('path')
-var express = require('express')
-var webpack = require('webpack')
-var webpackDevMiddleware = require('webpack-dev-middleware')
-var config = require('./webpack.dev.config')
-const logger = require('morgan')
+const path = require('path');
+const express = require('express');
+const webpack = require('webpack');
+const webpackDevMiddleware = require('webpack-dev-middleware');
+const config = require('./webpack.dev.config');
+const logger = require('morgan');
 
-var app = express()
-var compiler = webpack(config)
+const app = express();
+const compiler = webpack(config);
 
-const HOST = '10.0.6.29'
-const PORT = '3030'
+const HOST = '10.0.6.29';
+const PORT = '3030';
 
-app.use(logger('combined'))
+app.use(logger('combined'));
 app.use(
-	webpackDevMiddleware(compiler, {
-		noInfo: true,
-		publicPath: config.output.publicPath,
-		stats: {
-			colors: true,
-		},
-		watch: true,
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-		},
-	})
-)
+  webpackDevMiddleware(compiler, {
+    noInfo: true,
+    publicPath: config.output.publicPath,
+    stats: {
+      colors: true,
+    },
+    watch: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+  }),
+);
 
-app.listen(PORT, HOST, function(err) {
-	if (err) {
-		console.log(err)
-		return
-	}
-	console.log(`Listening at http://${HOST}:${PORT}`)
-})
+app.listen(PORT, HOST, err => {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  console.log(`Listening at http://${HOST}:${PORT}`);
+});

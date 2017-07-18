@@ -1,37 +1,32 @@
-const webpack = require('webpack')
-const path = require('path')
-const config = require('./webpack.config')
+const webpack = require('webpack');
+const config = require('./webpack.config');
+const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 
-const ProgressBarPlugin = require('progress-bar-webpack-plugin')
-const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 
 const UGLIFY_CONFIG = {
-	mangle: true,
-	comments: false,
-	compress: {
-		drop_debugger: false,
-	},
-	sourceMap: true,
-}
+  mangle: true,
+  comments: false,
+  compress: {
+    drop_debugger: false,
+  },
+  sourceMap: true,
+};
 
 function createWebpackLoaders() {
-	const rules = []
+  const rules = [];
 
-	return rules
+  return rules;
 }
 
 function createWebpackPlugins() {
-	const plugins = [
-		new ProgressBarPlugin({ width: 60 }),
-		new UglifyJsPlugin(UGLIFY_CONFIG),
-	]
+  const plugins = [new ProgressBarPlugin({ width: 60 }), new UglifyJsPlugin(UGLIFY_CONFIG)];
 
-	return plugins
+  return plugins;
 }
 
-config.devtool = 'source-map' // 'cheap-source-map' doesn't work with uglify
-config.output.publicPath = '/static/scarlet/build/'
-config.module.rules.push(...createWebpackLoaders())
-config.plugins.push(...createWebpackPlugins())
-module.exports = config
+config.devtool = 'source-map'; // 'cheap-source-map' doesn't work with uglify
+config.output.publicPath = '/static/';
+config.module.rules.push(...createWebpackLoaders());
+config.plugins.push(...createWebpackPlugins());
+module.exports = config;
