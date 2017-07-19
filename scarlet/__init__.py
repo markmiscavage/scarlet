@@ -1,4 +1,4 @@
-VERSION = ('1', '2', '5')
+VERSION = ('1', '2', '6')
 __version__ = '.'.join(VERSION)
 
 if __name__ == '__main__':
