@@ -60,7 +60,7 @@ class RenderResponse(object):
             # items on `ListView`. `kwargs` contains `message` but that
             # one is not passing through redirection. That's the reason for using
             # directly `messages` and get message on result template
-            if kwargs.get('message'):
+            if kwargs.get('obj') is None:
                 messages.success(request, kwargs.get('message'))
             return self.redirect(request, redirect_url, **kwargs)
 
