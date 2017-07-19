@@ -129,7 +129,7 @@ const Formset = View.extend({
       console.log('going to sort mode');
       $('.formset__form').each(function findTextFields(index, value) {
         debugger;
-        if ($(this).data('prefix') === 'textformformset') {
+        if ($(this).data('prefix') === 'textmoduleformformset') {
           $(this).find('.formset__field').each(function textPreview() {
             const $editor = $(this).find('.wysihtml-sandbox').contents().find('body').html();
             debugger;
