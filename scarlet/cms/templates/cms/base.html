@@ -26,9 +26,9 @@
 
     {# CSS: implied media="all" #}
     {% if not settings.TEMPLATE_DEBUG %}
-      <link rel="stylesheet"  href="/static/scarlet/build/css/main.css" />
+      <link rel="stylesheet"  href="{{ STATIC_URL }}css/main.css" />
     {% else %}
-      <link rel="stylesheet"  href="/static/scarlet/build/css/main.css" />
+      <link rel="stylesheet"  href="{{ STATIC_URL }}css/main.css" />
     {% endif %}
 
     {# All JavaScript at the bottom, except for Modernizr. #}
@@ -139,9 +139,9 @@
         </p>
         {% endblock %}
     </footer>
-    <script src="/static/scarlet/build/js/libs/wysihtml.js"></script>
-    <script src="/static/scarlet/build/js/libs/wysihtml.toolbar.js"></script>
-    <script src="/static/scarlet/build/js/main.js"></script>
+    <script src="{{ STATIC_URL }}js/libs/wysihtml.js"></script>
+    <script src="{{ STATIC_URL }}js/libs/wysihtml.toolbar.js"></script>
+    <script src="{{ STATIC_URL }}js/main.js"></script>
     {% endblock popup_footer %}
 
     <!-- {% if settings.TEMPLATE_DEBUG %}

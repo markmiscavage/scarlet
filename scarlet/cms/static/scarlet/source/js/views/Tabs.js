@@ -1,69 +1,68 @@
-import { View } from 'backbone'
+import { View } from 'backbone';
 
 const Tabs = View.extend({
-
-	initialize: function () {
-		this.data = this.$el.data()
-		this.bindTabEvents()
-		this.autoSelectFirstTab()
-	},
-
-  bindTabEvents : function () {
-  	this.$container = $(this.data.tabsContainer)
-  	this.$tabs = this.$el.find('[data-tabs-content]')
-
-  	if (!this.$container.length) {
-  		return
-  	}
-
-  	this.$tabs.on('click', this.onTabClick.bind(this))
+  initialize() {
+    this.data = this.$el.data();
+    this.bindTabEvents();
+    this.autoSelectFirstTab();
   },
 
-  unbindTabEvents : function () {
-  	if (this.$tabs && this.$tabs.length) {
-  		this.$tabs.off()
-  	}
+  bindTabEvents() {
+    this.$container = $(this.data.tabsContainer);
+    this.$tabs = this.$el.find('[data-tabs-content]');
+
+    if (!this.$container.length) {
+      return;
+    }
+
+    this.$tabs.on('click', this.onTabClick.bind(this));
   },
 
-  onTabClick : function (e) {
-  	e.preventDefault()
-
-  	let $tab = $(e.currentTarget)
-
-  	this.highlightTab($tab)
-  	this.selectTab($tab.data('tabsContent'))
+  unbindTabEvents() {
+    if (this.$tabs && this.$tabs.length) {
+      this.$tabs.off();
+    }
   },
 
-  highlightTab : function ($tab) {
-  	this.$tabs.removeClass('active')
-  	$tab.addClass('active')
+  onTabClick(e) {
+    e.preventDefault();
+
+    const $tab = $(e.currentTarget);
+
+    this.highlightTab($tab);
+    this.selectTab($tab.data('tabsContent'));
   },
 
-  selectTab : function (selector) {
-  	let $content = this.$container.find(selector)
-
-  	if (!$content.length) {
-  		return
-  	}
-
-  	this.hideTabContent()
-  	$content.show()
+  highlightTab($tab) {
+    this.$tabs.removeClass('active');
+    $tab.addClass('active');
   },
 
-  hideTabContent : function () {
-  	this.$container.children().hide()
+  selectTab(selector) {
+    const $content = this.$container.find(selector);
+
+    if (!$content.length) {
+      return;
+    }
+
+    this.hideTabContent();
+    $content.show();
   },
 
-  autoSelectFirstTab : function () {
-  	let $firstTab = this.$tabs.eq(0)
-  	this.highlightTab($firstTab)
-  	this.selectTab($firstTab.data('tabsContent'))
+  hideTabContent() {
+    this.$container.children().hide();
   },
 
-  destroy : function () {
-  	this.unbindTabEvents()
-  	this.sup()
-  }
-})
+  autoSelectFirstTab() {
+    const $firstTab = this.$tabs.eq(0);
+    this.highlightTab($firstTab);
+    this.selectTab($firstTab.data('tabsContent'));
+  },
 
-export default Tabs
+  destroy() {
+    this.unbindTabEvents();
+    this.sup();
+  },
+});
+
+export default Tabs;
