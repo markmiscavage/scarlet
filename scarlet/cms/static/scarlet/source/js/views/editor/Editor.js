@@ -1,188 +1,164 @@
-import { View } from 'backbone'
-import editorRules from './rules'
-import insertAnnotation from './commands/insertAnnotation'
-import insertLink from './commands/insertLink'
-import insertMedia from './commands/insertMedia'
+import { View } from 'backbone';
+import editorRules from './rules';
+// import insertAnnotation from './commands/insertAnnotation';
+import insertLink from './commands/insertLink';
+import insertMedia from './commands/insertMedia';
 
-let guid = 0
+let guid = 0;
 
 const Editor = View.extend({
-	render: function(dom) {
-		this.$toolbar = this.$('.editor__toolbar')
-		this.$textarea = this.$('.editor__textarea')
-		//
-		this.setupEditor()
-		// this.attachCommands()
-	},
+  render(dom) {
+    this.$toolbar = this.$('.editor__toolbar');
+    this.$textarea = this.$('.editor__textarea');
+    //
+    this.setupEditor();
+    this.attachCommands();
+  },
 
-	setupEditor: function() {
-		var editor
-		var id = 'wysihtml-' + ++guid
-		var textareaId = id + '-textarea'
-		var toolbarId = id + '-toolbar'
+  setupEditor() {
+    let editor;
+    const id = `wysihtml-${++guid}`;
+    const textareaId = `${id}-textarea`;
+    const toolbarId = `${id}-toolbar`;
 
-		// TODO: improve -> access publicPath from webpack process.env
-		var envPath =
-			process.env.NODE_ENV === 'development' ? 'http://10.0.6.29:3030/' : '/'
+    // TODO: improve -> access publicPath from webpack process.env
+    const envPath = '/';
 
-		this.$toolbar.attr('id', toolbarId)
-		this.$textarea.attr('id', textareaId)
+    this.$toolbar.attr('id', toolbarId);
+    this.$textarea.attr('id', textareaId);
 
-		editor = new wysihtml.Editor(textareaId, {
-			parserRules: editorRules,
-			style: false,
-			toolbar: toolbarId,
-			stylesheets: envPath + 'build/css/main.css',
-			id: id,
-			autoLink: false,
-		})
+    editor = new wysihtml.Editor(textareaId, {
+      parserRules: editorRules,
+      style: false,
+      toolbar: toolbarId,
+      stylesheets: `${envPath}static/css/main.css`,
+      id,
+      autoLink: false,
+    });
 
-		editor.on(
-			'load',
-			function() {
-				editor.id = id
+    editor.on('load', () => {
+      editor.id = id;
 
-				// load audio sources
-				// this.$('audio').each(function() {
-				// 	$(this)[0].load()
-				// })
-				//
-				// if (this.$el.hasClass('editor--annotations')) {
-				// 	this.addListeners()
-				// }
+      // load audio sources
+      this.$('audio').each(function() {
+        $(this)[0].load();
+      });
 
-				this.$el.addClass('editor--rendered')
-			}.bind(this)
-		)
+      if (this.$el.hasClass('editor--annotations')) {
+        this.addListeners();
+      }
 
-		this.editor = editor
-	},
+      this.$el.addClass('editor--rendered');
+    });
 
-	attachCommands: function() {
-		// wysihtml.commands.insertAnnotation = insertAnnotation
-		wysihtml.commands.createLink = insertLink
-		wysihtml.commands.insertImage = insertMedia
-	},
+    this.editor = editor;
+  },
 
-	// addListeners: function() {
-	// 	// this.editor.on('show:dialog', this.onShowDialog.bind(this))
-	// 	this.editor.on('save:dialog', this.onSaveDialog.bind(this))
-	// 	// this.editor.on('update:dialog', this.onUpdateDialog.bind(this))
-	// 	this.editor.on('cancel:dialog', this.onCancelDialog.bind(this))
-	//
-	// 	$('form[data-form-id=edit]').on('submit', this.onSubmit.bind(this))
-	// },
+  attachCommands() {
+    // wysihtml.commands.insertAnnotation = insertAnnotation
+    // wysihtml.commands.createLink = insertLink;
+    wysihtml.commands.insertImage = insertMedia;
+  },
 
-	enableEditor: function() {
-		// $(this.editor.composer.sandbox.getDocument())
-		// 	.find('a')
-		// 	.off('click', this.preventClick)
-		this.editor.composer.enable()
-	},
+  addListeners() {
+    this.editor.on('show:dialog', this.onShowDialog.bind(this));
+    this.editor.on('save:dialog', this.onSaveDialog.bind(this));
+    this.editor.on('update:dialog', this.onUpdateDialog.bind(this));
+    this.editor.on('cancel:dialog', this.onCancelDialog.bind(this));
 
-	disableEditor: function() {
-		$(this.editor.composer.sandbox.getDocument())
-			.find('a')
-			.on('click', this.preventClick)
-		this.editor.composer.disable()
-	},
-	//
-	onSubmit: function() {
-		var $editor = $(document.createElement('div')).html(
-			this.editor.composer.getValue()
-		)
-		var $annotations = $(document.createElement('div')).html(
-			this.$('.editor__annotations').val()
-		)
-		var $this
+    $('form[data-form-id=edit]').on('submit', this.onSubmit.bind(this));
+  },
 
-		$annotations.find('span').each(function() {
-			$this = $(this)
+  enableEditor() {
+    $(this.editor.composer.sandbox.getDocument()).find('a').off('click', this.preventClick);
+    this.editor.composer.enable();
+  },
 
-			if (
-				$editor.find('[data-annotation-id=' + $this.attr('id') + ']').length ===
-				0
-			) {
-				$this.remove()
-			}
-		})
+  disableEditor() {
+    $(this.editor.composer.sandbox.getDocument()).find('a').on('click', this.preventClick);
+    this.editor.composer.disable();
+  },
+  //
+  onSubmit() {
+    const $editor = $(document.createElement('div')).html(this.editor.composer.getValue());
+    const $annotations = $(document.createElement('div')).html(
+      this.$('.editor__annotations').val(),
+    );
+    let $this;
 
-		this.$('.editor__annotations').val($annotations.html())
-		this.enableEditor()
-	},
+    $annotations.find('span').each(function() {
+      $this = $(this);
 
-	// onShowDialog: function(data) {
-	// 	var command = data.command
-	// 	var $button = this.$toolbar.find(
-	// 		'.editor__buttons a[data-wysihtml-command=' + data.command + ']'
-	// 	)
-	//
-	// 	// force dialog to close if command is disabled
-	// 	if ($button.hasClass('disabled')) {
-	// 		$button.removeClass('wysihtml-command-dialog-opened')
-	// 		$(data.dialogContainer).hide()
-	// 		return
-	// 	}
-	//
-	// 	var annotationId = $(
-	// 		this.editor.composer.selection.getSelection().nativeSelection.anchorNode
-	// 			.parentNode
-	// 	).attr('data-annotation-id')
-	// 	var annotationsHtml = this.$('.editor__annotations').val()
-	// 	var $annotationTextarea = $(data.dialogContainer).find('textarea')
-	// 	var $annotation = $(document.createElement('div'))
-	// 		.html(annotationsHtml)
-	// 		.find('#' + annotationId)
-	//
-	// 	if ($annotation) {
-	// 		$annotationTextarea.val($annotation.html())
-	// 	} else {
-	// 		$annotationTextarea.val('')
-	// 	}
-	// 	this.disableEditor()
-	// },
-	//
-	// onSaveDialog: function(data) {
-	// 	var annotationId = $(
-	// 		this.editor.composer.selection.getSelection().nativeSelection.anchorNode
-	// 			.parentNode
-	// 	).attr('data-annotation-id')
-	// 	var annotationsEl = this.$('.editor__annotations')
-	// 	var annotationHtml =
-	// 		'<span id="' +
-	// 		annotationId +
-	// 		'">' +
-	// 		$(data.dialogContainer).find('textarea').val() +
-	// 		'</span>'
-	//
-	// 	annotationsEl.val(annotationsEl.val() + annotationHtml)
-	// 	this.enableEditor()
-	// },
-	//
-	// onUpdateDialog: function(data) {
-	// 	var annotationId = $(
-	// 		this.editor.composer.selection.getSelection().nativeSelection.anchorNode
-	// 			.parentNode
-	// 	).attr('data-annotation-id')
-	// 	var annotationsHtml = this.$('.editor__annotations').val()
-	// 	var annotationHtml = $(data.dialogContainer).find('textarea').val()
-	// 	var tempEl = $(document.createElement('div'))
-	//
-	// 	$(tempEl)
-	// 		.html(annotationsHtml)
-	// 		.find('#' + annotationId)
-	// 		.html(annotationHtml)
-	// 	this.$('.editor__annotations').val($(tempEl).html())
-	// 	this.enableEditor()
-	// },
-	//
-	// onCancelDialog: function(data) {
-	// 	this.enableEditor()
-	// },
-	//
-	// preventClick: function(e) {
-	// 	e.preventDefault()
-	// },
-})
+      if ($editor.find(`[data-annotation-id=${$this.attr('id')}]`).length === 0) {
+        $this.remove();
+      }
+    });
 
-export default Editor
+    this.$('.editor__annotations').val($annotations.html());
+    this.enableEditor();
+  },
+
+  onShowDialog(data) {
+    const command = data.command;
+    const $button = this.$toolbar.find(`.editor__buttons a[data-wysihtml-command=${data.command}]`);
+
+    // force dialog to close if command is disabled
+    if ($button.hasClass('disabled')) {
+      $button.removeClass('wysihtml-command-dialog-opened');
+      $(data.dialogContainer).hide();
+      return;
+    }
+
+    const annotationId = $(
+      this.editor.composer.selection.getSelection().nativeSelection.anchorNode.parentNode,
+    ).attr('data-annotation-id');
+    const annotationsHtml = this.$('.editor__annotations').val();
+    const $annotationTextarea = $(data.dialogContainer).find('textarea');
+    const $annotation = $(document.createElement('div'))
+      .html(annotationsHtml)
+      .find(`#${annotationId}`);
+
+    if ($annotation) {
+      $annotationTextarea.val($annotation.html());
+    } else {
+      $annotationTextarea.val('');
+    }
+    this.disableEditor();
+  },
+
+  onSaveDialog(data) {
+    const annotationId = $(
+      this.editor.composer.selection.getSelection().nativeSelection.anchorNode.parentNode,
+    ).attr('data-annotation-id');
+    const annotationsEl = this.$('.editor__annotations');
+    const annotationHtml = `<span id="${annotationId}">${$(data.dialogContainer)
+      .find('textarea')
+      .val()}</span>`;
+
+    annotationsEl.val(annotationsEl.val() + annotationHtml);
+    this.enableEditor();
+  },
+
+  onUpdateDialog(data) {
+    const annotationId = $(
+      this.editor.composer.selection.getSelection().nativeSelection.anchorNode.parentNode,
+    ).attr('data-annotation-id');
+    const annotationsHtml = this.$('.editor__annotations').val();
+    const annotationHtml = $(data.dialogContainer).find('textarea').val();
+    const tempEl = $(document.createElement('div'));
+
+    $(tempEl).html(annotationsHtml).find(`#${annotationId}`).html(annotationHtml);
+    this.$('.editor__annotations').val($(tempEl).html());
+    this.enableEditor();
+  },
+
+  onCancelDialog(data) {
+    this.enableEditor();
+  },
+
+  preventClick(e) {
+    e.preventDefault();
+  },
+});
+
+export default Editor;

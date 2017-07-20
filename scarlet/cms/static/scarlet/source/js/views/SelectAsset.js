@@ -243,7 +243,7 @@ const SelectAsset = View.extend({
 
   handlePopup(e) {
     console.log('handlin pop ups');
-    e.preventDefault();
+    // e.preventDefault();
     // clickOpenModal(e, 'modal-add-asset', this.setSelected.bind(this), this.autoTags)
     clickOpenPopup(e, this.setSelected.bind(this));
 

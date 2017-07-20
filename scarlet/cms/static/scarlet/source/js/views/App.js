@@ -126,6 +126,12 @@ const App = View.extend({
       }).render();
     });
 
+    $('.image-cropper').each((i, dom) => {
+      const imageCropper = new ImageCropper({
+        el: dom,
+      }).render();
+    });
+
     // Select
     $('select').each((i, dom) => {
       const select = new Select({

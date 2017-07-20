@@ -128,11 +128,11 @@ const Formset = View.extend({
     if (this.sortMode) {
       console.log('going to sort mode');
       $('.formset__form').each(function findTextFields(index, value) {
-        debugger;
+        ;
         if ($(this).data('prefix') === 'textmoduleformformset') {
           $(this).find('.formset__field').each(function textPreview() {
             const $editor = $(this).find('.wysihtml-sandbox').contents().find('body').html();
-            debugger;
+            ;
             if ($editor) {
               $(this).children('label').text(`Text: ${$editor.substr(0, 49)}...`);
             }
