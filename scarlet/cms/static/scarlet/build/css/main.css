@@ -2206,8 +2206,7 @@ svg {
   margin-bottom: 10px;
   position: relative; }
   .asset__select input {
-    position: absolute;
-    visibility: hidden; }
+    position: absolute; }
   .asset__select .selectize-control {
     -webkit-box-flex: 1;
         -ms-flex: 1;

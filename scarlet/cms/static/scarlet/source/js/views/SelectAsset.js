@@ -29,25 +29,15 @@ const SelectAsset = View.extend({
       placeholder: 'Choose an asset',
       valueField: 'id',
       labelField: 'text',
-      searchField: 'text',
-      create: false,
-      load: this.load.bind(this),
-      preload: 'focus',
       maxItems: 1,
+      load: this.load.bind(this),
+      preload: true,
       render: this.renderOption(),
       onItemAdd: this.onSelect.bind(this),
       onInitialize: this.initSelections.bind(this),
       onChange: this.onChange.bind(this),
-      score: search => {
-        // const score = this.getScoreFunction(search);
-        // console.log(score);
-        console.log(search);
-
-        return () => {};
-      },
     };
-    this.$selectizeInput.selectize(options).setValue;
-    debugger;
+    this.$selectizeInput.selectize(options);
     this.tag();
     this.autoTag();
     this.linkifyCrops();
