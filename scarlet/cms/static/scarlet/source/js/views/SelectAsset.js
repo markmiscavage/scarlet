@@ -38,8 +38,16 @@ const SelectAsset = View.extend({
       onItemAdd: this.onSelect.bind(this),
       onInitialize: this.initSelections.bind(this),
       onChange: this.onChange.bind(this),
+      score: search => {
+        // const score = this.getScoreFunction(search);
+        // console.log(score);
+        console.log(search);
+
+        return () => {};
+      },
     };
     this.$selectizeInput.selectize(options).setValue;
+    debugger;
     this.tag();
     this.autoTag();
     this.linkifyCrops();
@@ -95,7 +103,6 @@ const SelectAsset = View.extend({
     for (const field in response.fields) {
       this.fields.push(field);
     }
-
     return response.results.map(item => {
       item.text = item.user_filename;
       return item;
@@ -108,9 +115,7 @@ const SelectAsset = View.extend({
    * @param  {object}
    */
   onSelect(value, $item) {
-    console.log(value, $item);
     this.linkifyCrops();
-    console.log($item.attr('data-thumb'));
     this.$preview.css('background-image', `url(${$item.attr('data-thumb')})`);
     if ($item.attr('data-src')) {
       this.$input.attr('data-src', $item.attr('data-src'));

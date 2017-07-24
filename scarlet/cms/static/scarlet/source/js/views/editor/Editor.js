@@ -33,7 +33,7 @@ const Editor = View.extend({
       toolbar: toolbarId,
       stylesheets: `${envPath}static/css/main.css`,
       id,
-      autoLink: false,
+      // autoLink: false,
     });
 
     editor.on('load', () => {
@@ -56,7 +56,7 @@ const Editor = View.extend({
 
   attachCommands() {
     // wysihtml.commands.insertAnnotation = insertAnnotation
-    // wysihtml.commands.createLink = insertLink;
+    wysihtml.commands.createLink = insertLink;
     wysihtml.commands.insertImage = insertMedia;
   },
 
@@ -71,6 +71,7 @@ const Editor = View.extend({
 
   enableEditor() {
     $(this.editor.composer.sandbox.getDocument()).find('a').off('click', this.preventClick);
+    debugger;
     this.editor.composer.enable();
   },
 
@@ -78,9 +79,10 @@ const Editor = View.extend({
     $(this.editor.composer.sandbox.getDocument()).find('a').on('click', this.preventClick);
     this.editor.composer.disable();
   },
-  //
+
   onSubmit() {
     const $editor = $(document.createElement('div')).html(this.editor.composer.getValue());
+    debugger;
     const $annotations = $(document.createElement('div')).html(
       this.$('.editor__annotations').val(),
     );

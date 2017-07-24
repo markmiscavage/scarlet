@@ -5,8 +5,8 @@ const AutoSlug = View.extend({
   render() {
     this.slugNode = this.$el.find('input');
     this.sourceNode = this.$el
-			.parents('fieldset')
-			.find(`[name=${this.$el.data('input-data-source-fields')}]`);
+      .parents('fieldset')
+      .find(`[name=${this.$el.data('input-data-source-fields')}]`);
     this.bindListeners();
   },
 
@@ -16,7 +16,7 @@ const AutoSlug = View.extend({
   },
 
   setSlugFromSelf(e) {
-		// disable value matching from sourceNode if values diverge
+    // disable value matching from sourceNode if values diverge
     if (!this.shouldEnableMatching()) {
       this.sourceNode.off('keyup');
     }

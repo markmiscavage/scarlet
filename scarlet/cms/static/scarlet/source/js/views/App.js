@@ -55,6 +55,7 @@ const App = View.extend({
 
     // ImageCropper
     $('.image-cropper').each((i, dom) => {
+      debugger;
       const imageCropper = new ImageCropper({
         el: dom,
       }).render();
@@ -122,12 +123,6 @@ const App = View.extend({
     // Editor
     $('.editor:not(.editor--rendered)').each((i, dom) => {
       const editor = new Editor({
-        el: dom,
-      }).render();
-    });
-
-    $('.image-cropper').each((i, dom) => {
-      const imageCropper = new ImageCropper({
         el: dom,
       }).render();
     });

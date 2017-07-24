@@ -8,8 +8,8 @@ const Select = View.extend({
       onChange() {
         const $parentForm = this.$input.parents('form');
 
-				// NOTE: hacky workaround to submit filter value on dashboard...
-				// ...could not modify form field (select) to reflect this config
+        // NOTE: hacky workaround to submit filter value on dashboard...
+        // ...could not modify form field (select) to reflect this config
         if ($parentForm && $parentForm.hasClass('js-submit-on-change')) {
           this.$input.parents('form').submit();
         }

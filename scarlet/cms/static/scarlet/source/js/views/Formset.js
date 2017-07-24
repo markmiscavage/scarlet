@@ -28,8 +28,13 @@ const Formset = View.extend({
     this.$el.prepend('<button class="sweet-btn" type="button">Toggle sort</button>');
     this.setFormsetTypes();
     this.delegateEvents();
-    // this.enableSort()
+    // this.enableSort();
     this.bindControls();
+    const $editor = $(this).find('.wysihtml-sandbox').contents().find('body');
+    console.log('EDITOR', $editor);
+    $editor.keypress(e => {
+      console.log('keypress', e);
+    });
   },
 
   bindControls() {
@@ -125,36 +130,39 @@ const Formset = View.extend({
   resort() {
     const $helper = this.$('.ui-sortable-helper');
     const $placeholder = this.$('.ui-sortable-placeholder');
-    if (this.sortMode) {
-      console.log('going to sort mode');
-      $('.formset__form').each(function findTextFields(index, value) {
-        ;
-        if ($(this).data('prefix') === 'textmoduleformformset') {
-          $(this).find('.formset__field').each(function textPreview() {
-            const $editor = $(this).find('.wysihtml-sandbox').contents().find('body').html();
-            ;
-            if ($editor) {
-              $(this).children('label').text(`Text: ${$editor.substr(0, 49)}...`);
-            }
-            $(this).children('.editor').hide();
-          });
-        }
-        $(value).css({ height: '100px' });
-      });
-    } else {
-      $('.formset__form').each(function(index, value) {
-        if ($(this).data('prefix') === 'textformformset') {
-          $(this).find('.formset__field').each(function() {
-            const $editor = $(this).find('.wysihtml-sandbox').contents().find('body').html();
-            if ($editor) {
-              $(this).children('label').text('Text:');
-            }
-            $(this).children('.editor').show();
-          });
-        }
-        $(value).css({ height: 'auto' });
-      });
-    }
+    // if (this.sortMode) {
+    //   console.log('going to sort mode');
+    //   $('.formset__form').each(function findTextFields(index, value) {
+    //     if ($(this).data('prefix') === 'textmoduleformformset') {
+    //       $(this).find('.formset__field').each(function textPreview() {
+    //         const $editor = $(this).find('.wysihtml-sandbox').contents().find('body').html();
+    //         const $editors = $(this).find('.wysihtml-sandbox').contents().find('body');
+    //         console.log($editors);
+    //         if ($editor) {
+    //           $editors.keypress(e => {
+    //             console.log('keypress', e);
+    //           });
+    //           $(this).children('label').text(`Text: ${$editor.substr(0, 49)}...`);
+    //         }
+    //         $(this).children('.editor').hide();
+    //       });
+    //     }
+    //     $(value).css({ height: '100px' });
+    //   });
+    // } else {
+    //   $('.formset__form').each(function(index, value) {
+    //     if ($(this).data('prefix') === 'textmoduleformformset') {
+    //       $(this).find('.formset__field').each(function() {
+    //         const $editor = $(this).find('.wysihtml-sandbox').contents().find('body').html();
+    //         if ($editor) {
+    //           $(this).children('label').text('Text:');
+    //         }
+    //         $(this).children('.editor').show();
+    //       });
+    //     }
+    //     $(value).css({ height: 'auto' });
+    //   });
+    // }
 
     this.$forms.find('.formset__form').each(function(i) {
       const $dom = $(this);

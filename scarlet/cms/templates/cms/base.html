@@ -141,13 +141,16 @@
     </footer>
     <script src="{{ STATIC_URL }}js/libs/wysihtml.js"></script>
     <script src="{{ STATIC_URL }}js/libs/wysihtml.toolbar.js"></script>
-    <script src="{{ STATIC_URL }}js/main.js"></script>
+
+
     {% endblock popup_footer %}
 
-    <!-- {% if settings.TEMPLATE_DEBUG %}
+    {% if settings.TEMPLATE_DEBUG %}
       {% render_bundle 'main' 'js' %}
-    {% else %} -->
-    <!-- {% endif %} -->
+    {% else %}
+        <script src="{{ STATIC_URL }}js/main.js"></script>
+    {% endif %}
+      <script src="{{ STATIC_URL }}js/main.js"></script>
 
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: none">
       <defs>

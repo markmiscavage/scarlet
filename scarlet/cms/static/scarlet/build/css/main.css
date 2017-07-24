@@ -3095,8 +3095,10 @@ th:nth-child(1) {
   background-color: #eee;
   padding: 10px; }
   .editor__textarea body {
-    font: 18px/1 AvenirRoman;
-    color: #0084ff; }
+    font-size: 22px;
+    font-family: AvenirRoman;
+    color: #0084ff;
+    line-height: 1.2; }
   .editor__textarea h1 {
     font-size: 48px; }
   .editor__textarea h2 {
@@ -3235,7 +3237,10 @@ th:nth-child(1) {
   -webkit-transition: opacity 200ms, position 300ms 350ms, -webkit-transform 300ms;
   transition: opacity 200ms, position 300ms 350ms, -webkit-transform 300ms;
   transition: opacity 200ms, transform 300ms, position 300ms 350ms;
-  transition: opacity 200ms, transform 300ms, position 300ms 350ms, -webkit-transform 300ms; }
+  transition: opacity 200ms, transform 300ms, position 300ms 350ms, -webkit-transform 300ms;
+  border: 1px dashed #7f7f7f;
+  border-radius: 3px;
+  padding: 30px 30px 0; }
 
 .formset__form--is-deleted {
   display: none; }
@@ -3287,6 +3292,9 @@ th:nth-child(1) {
         -ms-flex-positive: 0;
             flex-grow: 0;
     text-transform: capitalize; }
+
+.sweet-btn {
+  margin-bottom: 30px; }
 
 .ui-dialog {
   padding: 10px;
