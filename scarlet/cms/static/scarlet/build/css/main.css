@@ -2099,14 +2099,13 @@ header {
   .draggable:before {
     cursor: move;
     content: "";
-    background-color: #eee;
-    border-right: 12px solid white;
+    background-color: #c0c0c0;
     display: block;
     width: 13px;
     height: calc(100% + 2px);
     position: absolute;
     top: -1px;
-    left: -25px;
+    left: -1px;
     -webkit-transition: background-color 100ms;
     transition: background-color 100ms; }
   .draggable:after {
@@ -2117,7 +2116,7 @@ header {
     font-size: 24px;
     position: absolute;
     top: 50%;
-    left: -31px;
+    left: -7px;
     -webkit-transform: translateY(-50%);
             transform: translateY(-50%); }
   .draggable:active {
@@ -3230,7 +3229,6 @@ th:nth-child(1) {
   width: 100%; }
 
 .formset__form {
-  padding-top: 40px;
   margin-bottom: 40px;
   opacity: 1;
   -webkit-transition: opacity 200ms, position 300ms 350ms, -webkit-transform 300ms;
@@ -3239,7 +3237,77 @@ th:nth-child(1) {
   transition: opacity 200ms, transform 300ms, position 300ms 350ms, -webkit-transform 300ms;
   border: 1px dashed #7f7f7f;
   border-radius: 3px;
-  padding: 30px 30px 0; }
+  padding: 60px 30px 0px;
+  position: relative; }
+  .formset__form h3 {
+    margin-bottom: 0;
+    -webkit-box-ordinal-group: 2;
+        -ms-flex-order: 1;
+            order: 1;
+    margin-left: 13px; }
+  .formset__form h3 > .fa {
+    margin-right: 10px; }
+  .formset__form--edit {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    padding: 0 30px;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between; }
+    .formset__form--edit .formset__button--delete {
+      position: relative;
+      -webkit-box-ordinal-group: 3;
+          -ms-flex-order: 2;
+              order: 2;
+      top: 0;
+      right: 0; }
+
+.formset__reorder {
+  display: none; }
+  .formset__reorder-btn-group {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: end;
+        -ms-flex-pack: end;
+            justify-content: flex-end;
+    margin-bottom: 15px;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center; }
+  .formset__reorder + .formset__toggle-switch {
+    background: #ddd;
+    border-radius: 10px;
+    border: 1px solid #bbb;
+    padding: 2px;
+    -webkit-transition: all .4s ease;
+    transition: all .4s ease;
+    width: 40px;
+    height: 20px;
+    cursor: pointer;
+    position: relative;
+    outline: 0;
+    margin-left: 15px;
+    margin-bottom: 10px; }
+    .formset__reorder + .formset__toggle-switch:after {
+      border-radius: 50%;
+      background: #fff;
+      -webkit-transition: all .2s ease;
+      transition: all .2s ease;
+      content: '';
+      width: 50%;
+      height: 100%;
+      position: relative;
+      left: 0;
+      display: block; }
+  .formset__reorder:checked + .formset__toggle-switch {
+    background: #0084ff; }
+  .formset__reorder:checked + .formset__toggle-switch:after {
+    left: 50%; }
 
 .formset__form--is-deleted {
   display: none; }
@@ -3256,8 +3324,8 @@ th:nth-child(1) {
 .formset__button--delete {
   cursor: pointer;
   position: absolute;
-  top: 0;
-  right: 0; }
+  right: 15px;
+  top: 15px; }
   .formset__button--delete .fa {
     font-size: 26px; }
   .formset__button--delete input {
