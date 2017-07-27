@@ -7,7 +7,7 @@
 		<h2>Crops</h2>
 		<ul class="asset__crop-list">
 			{% for crop in crops %}
-				<li class="row">
+				<li class="row" data-width={{crop.width}} data.height={{crop.height}} data-x={{crop.x}} data-y={{crop.y}}  data-x2={{crop.x2}} data-y2={{crop.y2}}>
 					<div class="col">{{ crop.name }}</div>
 					<div class="col">{{ crop.width }}x{{ crop.height }} (px)</div>
 					<div class="col">

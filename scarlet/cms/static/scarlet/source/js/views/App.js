@@ -57,7 +57,6 @@ const App = View.extend({
 
     // ImageCropper
     $('.image-cropper').each((i, dom) => {
-      debugger;
       const imageCropper = new ImageCropper({
         el: dom,
       }).render();
