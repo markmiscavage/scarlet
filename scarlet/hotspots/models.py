@@ -12,6 +12,7 @@ class HotSpotModule(models.Model):
     name = models.CharField(max_length=255)
     image = AssetsFileField(type=Asset.IMAGE)
     slug = models.SlugField(blank=True)
+    intro_copy = models.TextField(blank=True)
 
     class Meta:
         verbose_name = 'Hotspot module'
@@ -36,10 +37,10 @@ class HotSpot(models.Model):
     overlay_size_x = models.IntegerField()
     overlay_size_y = models.IntegerField()
 
-    order = OrderField(verbose_name='Title')
+    order = OrderField(verbose_name='Pin number')
     # SVG field
     icon = AssetsFileField(type=Asset.UNKNOWN, blank=True, null=True, verbose_name='Icon')
-    label = models.CharField(max_length=255, blank=True)
+    label = models.CharField(max_length=255, blank=True, verbose_name='Pin title')
     text = HTMLTextField(blank=True)
     image = AssetsFileField(type=Asset.IMAGE, blank=True, null=True)
     video_json = models.TextField(blank=True)

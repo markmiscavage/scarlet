@@ -3,10 +3,19 @@ from rest_framework import serializers
 from . import models
 
 
-class HotSpotSerializser(serializers.ModelSerializer):
+class HotSpotSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
     x = serializers.SerializerMethodField()
     y = serializers.SerializerMethodField()
+    pin_number = serializers.SerializerMethodField()
+    pin_title = serializers.SerializerMethodField()
+    icon = serializers.SerializerMethodField()
+
+    def get_pin_number(self, obj):
+        return obj.order
+
+    def get_pin_title(self, obj):
+        return obj.label
 
     def get_x(self, obj):
         # This value is relative to image size, returning %
@@ -21,9 +30,17 @@ class HotSpotSerializser(serializers.ModelSerializer):
             return obj.image_cache.url
         return ''
 
+    def get_icon(self, obj):
+        if obj.icon:
+            return obj.icon_cache.url
+        return ''
+
     class Meta:
         model = models.HotSpot
-        fields = ('label', 'image', 'text', 'x', 'y')
+        fields = (
+            'pin_title', 'pin_number', 'image', 'text', 'x', 'y', 'icon',
+            'video_json',
+        )
 
 
 class HotSpotModuleSerializer(serializers.ModelSerializer):
@@ -31,7 +48,7 @@ class HotSpotModuleSerializer(serializers.ModelSerializer):
     hotspots = serializers.SerializerMethodField()
 
     def get_hotspots(self, obj):
-        return [HotSpotSerializser(item).data for item in obj.hotspots.all().order_by('order')]
+        return [HotSpotSerializer(item).data for item in obj.hotspots.all().order_by('order')]
 
     def get_image(self, obj):
         if obj.image:
@@ -40,4 +57,4 @@ class HotSpotModuleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.HotSpotModule
-        fields = ('image', 'hotspots')
+        fields = ('image', 'name', 'intro_copy', 'hotspots')

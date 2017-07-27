@@ -14,6 +14,10 @@ class HotSpotForm(forms.ModelForm):
 
 
 class HotSpotModuleForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(HotSpotModuleForm, self).__init__(*args, **kwargs)
+        self.fields['intro_copy'].widget = forms.Textarea()
+
     class Meta:
         model = models.HotSpotModule
-        fields = ('name', 'image', )
+        fields = ('name', 'image', 'intro_copy')
