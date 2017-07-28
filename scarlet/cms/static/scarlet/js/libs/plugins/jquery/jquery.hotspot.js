@@ -123,7 +123,7 @@
     var offsetYPos = parseInt(ui.offset.top);
 
     var originalFieldset = '#frm-spot-' + ui.originalPosition.left + '-' + ui.originalPosition.top;
-    $(originalFieldset).attr('id', 'frm-spot-' + ui.position.left + '-' + ui.position.top)
+    $(originalFieldset).attr('id', 'frm-spot-' + ui.position.left + '-' + ui.position.top);
 
     var xSpot = '#x-spot-' + ui.originalPosition.left + '-' + ui.originalPosition.top;
     var ySpot = '#y-spot-' + ui.originalPosition.left + '-' + ui.originalPosition.top;
@@ -177,11 +177,12 @@
     var event = new Event('hotspot-click');
 
     if (newItem) {
-      this.config.emptyFields = this.config.emptyFields.replace(/--/g, '-' + x + '-'+ y);
-      this.config.emptyFields = this.config.emptyFields.replace(/name="x-coord" value=""/g, 'name="x-coord" value="' + x + '"');
-      this.config.emptyFields = this.config.emptyFields.replace(/name="y-coord" value=""/g, 'name="y-coord" value="' + y + '"');
+      var newEmptyFields = this.config.emptyFields;
+      newEmptyFields= this.config.emptyFields.replace(/--/g, '-' + x + '-'+ y);
+      newEmptyFields = newEmptyFields.replace(/name="x-coord" value=""/g, 'name="x-coord" value="' + x + '"');
+      newEmptyFields = newEmptyFields.replace(/name="y-coord" value=""/g, 'name="y-coord" value="' + y + '"');
 
-      $('#div-scarlet-hotspot-form').append(this.config.emptyFields);
+      $('#div-scarlet-hotspot-form').append(newEmptyFields);
 
       document.dispatchEvent(event);
     }
