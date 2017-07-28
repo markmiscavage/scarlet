@@ -7,7 +7,11 @@ import insertMedia from './commands/insertMedia';
 let guid = 0;
 
 const Editor = View.extend({
-  render(dom) {
+  events: {
+    'click .remove-link': 'onRemoveLink',
+  },
+
+  render() {
     this.$toolbar = this.$('.editor__toolbar');
     this.$textarea = this.$('.editor__textarea');
     //
