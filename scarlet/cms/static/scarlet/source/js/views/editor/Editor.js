@@ -8,7 +8,7 @@ let guid = 0;
 
 const Editor = View.extend({
   events: {
-    'click .remove-link': 'onRemoveLink',
+    'click .unlink': 'onRemoveLink',
   },
 
   render() {
@@ -160,6 +160,11 @@ const Editor = View.extend({
 
   onCancelDialog(data) {
     this.enableEditor();
+  },
+
+  onRemoveLink() {
+    console.log('removing link');
+    this.editor.composer.commands.exec('removeLink');
   },
 
   preventClick(e) {
