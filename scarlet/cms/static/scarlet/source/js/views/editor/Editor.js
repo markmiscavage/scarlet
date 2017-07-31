@@ -36,8 +36,9 @@ const Editor = View.extend({
       style: false,
       toolbar: toolbarId,
       stylesheets: `${envPath}static/css/main.css`,
+      showToolbarDialogsOnSelection: false,
       id,
-      // autoLink: false,
+      useLineBreaks: false,
     });
 
     editor.on('load', () => {
@@ -75,7 +76,6 @@ const Editor = View.extend({
 
   enableEditor() {
     $(this.editor.composer.sandbox.getDocument()).find('a').off('click', this.preventClick);
-    debugger;
     this.editor.composer.enable();
   },
 

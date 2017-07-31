@@ -1407,6 +1407,11 @@
       "integrity": "sha1-rLniIaThe9sHbpBlfEK5PjcmzwY=",
       "dev": true
     },
+    "cropper": {
+      "version": "3.0.0-rc.3",
+      "resolved": "https://registry.npmjs.org/cropper/-/cropper-3.0.0-rc.3.tgz",
+      "integrity": "sha512-UXNDNWmKxicgQ9M4xkE2j4QCDHyR6QN2ppRyhDWjINcHIDgUjeTGc122NR/nScHHqWPpGAcXRNotk/gJ0drh4A=="
+    },
     "cross-env": {
       "version": "5.0.1",
       "resolved": "https://registry.npmjs.org/cross-env/-/cross-env-5.0.1.tgz",
