@@ -2,6 +2,7 @@ import { View } from 'backbone';
 import pubsub from 'helpers/pubsub';
 import AutoSlug from 'views/AutoSlug';
 import BatchActions from 'views/BatchActions';
+import CropList from 'views/CropList';
 import Dashboard from 'views/Dashboard';
 import DatePicker from 'views/DatePicker';
 import DateTimePicker from 'views/DateTimePicker';
@@ -15,6 +16,7 @@ import InsertAudio from 'views/InsertAudio';
 import Select from 'views/Select';
 import SelectApi from 'views/SelectApi';
 import SelectAsset from 'views/SelectAsset';
+import SelectTags from 'views/SelectTags';
 import Sortable from 'views/Sortable';
 import Tabs from 'views/Tabs';
 import { handlePopup } from 'helpers/WindowPopup';
@@ -147,6 +149,20 @@ const App = View.extend({
           el: dom,
         }).render();
       }
+    });
+
+    // tags
+    $('.widget-tags').each((i, dom) => {
+      const selectTags = new SelectTags({
+        el: dom,
+      }).render();
+    });
+
+    // cropsList
+    $('.crop-info').each((i, dom) => {
+      const cropList = new CropList({
+        el: dom,
+      }).render();
     });
   },
 });

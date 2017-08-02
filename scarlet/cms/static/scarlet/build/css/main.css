@@ -2099,14 +2099,13 @@ header {
   .draggable:before {
     cursor: move;
     content: "";
-    background-color: #eee;
-    border-right: 12px solid white;
+    background-color: #c0c0c0;
     display: block;
     width: 13px;
     height: calc(100% + 2px);
     position: absolute;
     top: -1px;
-    left: -25px;
+    left: -1px;
     -webkit-transition: background-color 100ms;
     transition: background-color 100ms; }
   .draggable:after {
@@ -2117,7 +2116,7 @@ header {
     font-size: 24px;
     position: absolute;
     top: 50%;
-    left: -31px;
+    left: -7px;
     -webkit-transform: translateY(-50%);
             transform: translateY(-50%); }
   .draggable:active {
@@ -2206,8 +2205,7 @@ svg {
   margin-bottom: 10px;
   position: relative; }
   .asset__select input {
-    position: absolute;
-    visibility: hidden; }
+    position: absolute; }
   .asset__select .selectize-control {
     -webkit-box-flex: 1;
         -ms-flex: 1;
@@ -2351,7 +2349,40 @@ input[type=number] {
   margin-top: 10px; }
 
 input[type=file] {
-  padding: 12px; }
+  padding: 12px;
+  line-height: 1;
+  text-indent: 0;
+  outline: none; }
+
+input[type=radio] {
+  display: none; }
+  input[type=radio] + label {
+    position: relative;
+    padding-left: 30px;
+    color: #191919;
+    font-weight: 200;
+    font-size: 16px;
+    margin-top: 3px; }
+  input[type=radio] + label:before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+    border-radius: 50%;
+    border: 2px solid #191919;
+    width: 14px;
+    height: 14px;
+    margin-right: 30px; }
+  input[type=radio]:checked + label:after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+    width: 18px;
+    height: 18px;
+    background-color: #0084ff;
+    border-radius: 50%;
+    margin-right: 30px; }
 
 legend {
   font-family: "Raleway", sans-serif;
@@ -2382,6 +2413,9 @@ fieldset > div:not(:last-of-type) {
 
 .field-row {
   margin-bottom: 25px; }
+  .field-row em {
+    margin-bottom: 10px;
+    display: inline-block; }
 
 .object-name {
   font-weight: bold; }
@@ -2884,16 +2918,6 @@ button,
   overflow: hidden; }
   .nav-main__item-title span {
     position: relative; }
-    .nav-main__item-title span:before {
-      background-color: #f00;
-      content: '';
-      position: absolute;
-      top: 37px;
-      left: 0;
-      width: 100%;
-      height: 6px;
-      -webkit-transition: top 200ms;
-      transition: top 200ms; }
     .nav-main__item:active .nav-main__item-title span:before {
       top: 34px; }
 
@@ -3025,9 +3049,18 @@ th:nth-child(1) {
   .dashboard-history__filter .button {
     display: none; }
 
+.widget-asset br {
+  height: 10px; }
+
 .widget-asset-preview {
   width: 100px;
   height: 100px; }
+
+.widget-asset-simple-preview {
+  height: 100px;
+  width: 100px;
+  display: block;
+  margin-bottom: 10px; }
 
 .login {
   background-color: #191919;
@@ -3081,6 +3114,14 @@ th:nth-child(1) {
     text-indent: 45px;
     text-align: center; }
 
+.crop-list__name {
+  display: block; }
+
+.crop-list__dimensions {
+  color: #b8b8b8;
+  font-size: 12px;
+  display: block; }
+
 .wysihtml5-sandbox {
   color: #0084ff;
   font-size: 18px;
@@ -3095,8 +3136,10 @@ th:nth-child(1) {
   background-color: #eee;
   padding: 10px; }
   .editor__textarea body {
-    font: 18px/1 AvenirRoman;
-    color: #0084ff; }
+    font-size: 22px;
+    font-family: AvenirRoman;
+    color: #0084ff;
+    line-height: 1.2; }
   .editor__textarea h1 {
     font-size: 48px; }
   .editor__textarea h2 {
@@ -3229,13 +3272,85 @@ th:nth-child(1) {
   width: 100%; }
 
 .formset__form {
-  padding-top: 40px;
   margin-bottom: 40px;
   opacity: 1;
   -webkit-transition: opacity 200ms, position 300ms 350ms, -webkit-transform 300ms;
   transition: opacity 200ms, position 300ms 350ms, -webkit-transform 300ms;
   transition: opacity 200ms, transform 300ms, position 300ms 350ms;
-  transition: opacity 200ms, transform 300ms, position 300ms 350ms, -webkit-transform 300ms; }
+  transition: opacity 200ms, transform 300ms, position 300ms 350ms, -webkit-transform 300ms;
+  border: 1px dashed #7f7f7f;
+  border-radius: 3px;
+  padding: 60px 30px 0px;
+  position: relative; }
+  .formset__form h3 {
+    margin-bottom: 0;
+    -webkit-box-ordinal-group: 2;
+        -ms-flex-order: 1;
+            order: 1;
+    margin-left: 13px; }
+  .formset__form h3 > .fa {
+    margin-right: 10px; }
+  .formset__form--edit {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    padding: 0 30px;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between; }
+    .formset__form--edit .formset__button--delete {
+      position: relative;
+      -webkit-box-ordinal-group: 3;
+          -ms-flex-order: 2;
+              order: 2;
+      top: 0;
+      right: 0; }
+
+.formset__reorder {
+  display: none; }
+  .formset__reorder-btn-group {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: end;
+        -ms-flex-pack: end;
+            justify-content: flex-end;
+    margin-bottom: 15px;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center; }
+  .formset__reorder + .formset__toggle-switch {
+    background: #ddd;
+    border-radius: 10px;
+    border: 1px solid #bbb;
+    padding: 2px;
+    -webkit-transition: all .4s ease;
+    transition: all .4s ease;
+    width: 40px;
+    height: 20px;
+    cursor: pointer;
+    position: relative;
+    outline: 0;
+    margin-left: 15px;
+    margin-bottom: 10px; }
+    .formset__reorder + .formset__toggle-switch:after {
+      border-radius: 50%;
+      background: #fff;
+      -webkit-transition: all .2s ease;
+      transition: all .2s ease;
+      content: '';
+      width: 50%;
+      height: 100%;
+      position: relative;
+      left: 0;
+      display: block; }
+  .formset__reorder:checked + .formset__toggle-switch {
+    background: #0084ff; }
+  .formset__reorder:checked + .formset__toggle-switch:after {
+    left: 50%; }
 
 .formset__form--is-deleted {
   display: none; }
@@ -3252,8 +3367,8 @@ th:nth-child(1) {
 .formset__button--delete {
   cursor: pointer;
   position: absolute;
-  top: 0;
-  right: 0; }
+  right: 15px;
+  top: 15px; }
   .formset__button--delete .fa {
     font-size: 26px; }
   .formset__button--delete input {
@@ -3287,6 +3402,9 @@ th:nth-child(1) {
         -ms-flex-positive: 0;
             flex-grow: 0;
     text-transform: capitalize; }
+
+.sweet-btn {
+  margin-bottom: 30px; }
 
 .ui-dialog {
   padding: 10px;

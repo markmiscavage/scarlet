@@ -8,7 +8,7 @@ import Editor from './editor/Editor';
 const Formset = View.extend({
   events: {
     'click .formset__button--delete': 'delete',
-    'click .sweet-btn': 'enableSort',
+    'click .formset__reorder': 'minimize',
     // 'click .button' : function(e){clickOpenPopup(e, (data) => console.log('thing', data));},
     // 'clidk .crop-link' : function(e){clickOpenPopup(e, (data) => console.log('thing', data))}
   },
@@ -19,17 +19,29 @@ const Formset = View.extend({
     this.isDraggable = false;
     this.didInitialize = true;
     this.sortMode = false;
+    this.iconMap = {
+      image: 'fa-picture-o',
+      text: 'fa-file-text-o',
+      video: 'fa-video-camera',
+    };
   },
 
   render() {
     this.$forms = this.$('.formset__forms');
     this.$controls = this.$el.next('.formset__controls');
     this.prefix = this.$el.data('prefix');
-    this.$el.prepend('<button class="sweet-btn" type="button">Toggle sort</button>');
+    this.$el.prepend(
+      '<span class="formset__reorder-btn-group"><h4>re-order: </h4><input class="formset__reorder" id="reorder" type="checkbox" /><label for="reorder" class="formset__toggle-switch" /></span>',
+    );
     this.setFormsetTypes();
     this.delegateEvents();
-    // this.enableSort()
+    // this.enableSort();
     this.bindControls();
+    const $editor = $(this).find('.wysihtml-sandbox').contents().find('body');
+    console.log('EDITOR', $editor);
+    $editor.keypress(e => {
+      console.log('keypress', e);
+    });
   },
 
   bindControls() {
@@ -93,14 +105,14 @@ const Formset = View.extend({
 
   /** **********************************
   Sorting
-  ************************************/
+  *********************************** */
 
   enableSort() {
     if (!this.sortMode) {
       if (this.$forms.find('.formset__order').length) {
         this.$forms.sortable({
           update: this.resort.bind(this),
-          // change : this._resort,
+          change: this._resort,
           stop: this.repairEditor.bind(this),
           containment: '#content',
           iframeFix: true,
@@ -125,36 +137,6 @@ const Formset = View.extend({
   resort() {
     const $helper = this.$('.ui-sortable-helper');
     const $placeholder = this.$('.ui-sortable-placeholder');
-    if (this.sortMode) {
-      console.log('going to sort mode');
-      $('.formset__form').each(function findTextFields(index, value) {
-        debugger;
-        if ($(this).data('prefix') === 'textmoduleformformset') {
-          $(this).find('.formset__field').each(function textPreview() {
-            const $editor = $(this).find('.wysihtml-sandbox').contents().find('body').html();
-            debugger;
-            if ($editor) {
-              $(this).children('label').text(`Text: ${$editor.substr(0, 49)}...`);
-            }
-            $(this).children('.editor').hide();
-          });
-        }
-        $(value).css({ height: '100px' });
-      });
-    } else {
-      $('.formset__form').each(function(index, value) {
-        if ($(this).data('prefix') === 'textformformset') {
-          $(this).find('.formset__field').each(function() {
-            const $editor = $(this).find('.wysihtml-sandbox').contents().find('body').html();
-            if ($editor) {
-              $(this).children('label').text('Text:');
-            }
-            $(this).children('.editor').show();
-          });
-        }
-        $(value).css({ height: 'auto' });
-      });
-    }
 
     this.$forms.find('.formset__form').each(function(i) {
       const $dom = $(this);
@@ -181,6 +163,40 @@ const Formset = View.extend({
     this.updateMetadata();
   },
 
+  minimize() {
+    const self = this;
+    const testString = /'moduleformformset'/;
+    this.enableSort();
+    if (this.sortMode) {
+      $('.formset__form').each(function(index, value) {
+        $(this).addClass('formset__form--edit');
+        $(this).css({ height: '100px' });
+        const prefix = $(this).data('prefix');
+        const newString = prefix.replace('moduleformformset', '');
+        $(this).append(
+          `<h3><i class="fa ${self.iconMap[newString]} " aria-hidden="true"></i>${newString}</h3>`,
+        );
+
+        $(this).children().each(function() {
+          if ($(this).hasClass('formset__field')) {
+            $(this).css({ display: 'none' });
+          }
+        });
+      });
+    } else {
+      $('.formset__form').each(function(index, value) {
+        $(this).css({ height: 'auto' });
+        $('h3').remove();
+        $(this).removeClass('formset__form--edit');
+        $(this).children().each(function() {
+          if ($(this).hasClass('formset__field')) {
+            $(this).css({ display: 'block' });
+          }
+        });
+      });
+    }
+  },
+
   repairEditor(e, elem) {
     const $editor = $(elem.item[0]).find('.editor');
 
@@ -192,7 +208,7 @@ const Formset = View.extend({
 
   /** **********************************
   Metadata
-  ************************************/
+  *********************************** */
 
   setFormsetTypes() {
     $('.formset__type').each((i, el) => {

@@ -43,7 +43,6 @@ const ImageCropper = View.extend({
       boxWidth: this.$el.width() * 0.75,
       minSize: [20, 20],
     })
-
     if (this._jcrop) {
       this._jcrop.destroy()
     }

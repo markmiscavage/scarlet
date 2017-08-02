@@ -1,12 +1,10 @@
-
-
 import { View } from 'backbone';
 import selectize from 'selectize';
 import Modal from 'helpers/Modal';
 import WindowPopup from 'helpers/WindowPopup';
 
 const SelectApi = View.extend({
-	/**
+  /**
    * Backbone Init Setter
    */
   initialize() {
@@ -30,7 +28,7 @@ const SelectApi = View.extend({
     }
   },
 
-	/**
+  /**
    * Render Views
    */
   render() {
@@ -61,7 +59,7 @@ const SelectApi = View.extend({
     this.$el.selectize(opts);
   },
 
-	/**
+  /**
    * Set selections based on server rendered data
    */
   initSelections() {
@@ -75,7 +73,7 @@ const SelectApi = View.extend({
     }
   },
 
-	/**
+  /**
    * Prepare Selectize options
    * @return {object}
    */
@@ -88,18 +86,14 @@ const SelectApi = View.extend({
         return `<div data-id=${item.id}>${escape(item.text)}</div>`;
       },
       option_create: (item, escape) => {
-        return (
-					`<div class="create create--hide"><strong>Add${
-					escape('+')
-					}</strong> ${
-					escape(this.name)
-					}</div>`
-        );
+        return `<div class="create create--hide"><strong>Add${escape('+')}</strong> ${escape(
+          this.name,
+        )}</div>`;
       },
     };
   },
 
-	/**
+  /**
    * On create new select option
    * @param  {string}
    * @param  {function}
@@ -108,7 +102,7 @@ const SelectApi = View.extend({
     this.openPopup(input);
   },
 
-	/**
+  /**
    * Load Data
    * @param  {string}  input query
    * @param  {Function}  callback function
@@ -135,7 +129,7 @@ const SelectApi = View.extend({
     });
   },
 
-	/**
+  /**
    * On Add New Item to multi select
    * @param {string}
    * @param {object}
@@ -143,17 +137,19 @@ const SelectApi = View.extend({
   addItem(value, $item) {
     if (this.isMultiple) {
       this.selectize.$input.after(
-				$('<input />', {
-  name: this.name,
-  value: $item.attr('data-id'),
-  'data-title': $item.attr('data-value'),
-  type: 'hidden',
-}),
-			);
-    } else if ($item.attr('data-id') !== this.singleInput.val()) { this.singleInput.val($item.attr('data-id')); }
+        $('<input />', {
+          name: this.name,
+          value: $item.attr('data-id'),
+          'data-title': $item.attr('data-value'),
+          type: 'hidden',
+        }),
+      );
+    } else if ($item.attr('data-id') !== this.singleInput.val()) {
+      this.singleInput.val($item.attr('data-id'));
+    }
   },
 
-	/**
+  /**
    * Window open trigger
    * @param  {object} event object
    */
@@ -164,44 +160,44 @@ const SelectApi = View.extend({
     const left = screen.width ? (screen.width - width) / 2 : 0;
     const top = screen.height ? (screen.height - height) / 2 : 0;
     const pop = new WindowPopup(
-			url,
-			'addImage',
-[
-  `width=${width}`,
-  `height=${height}`,
-  `top=${top}`,
-  `left=${left}`,
-  'scrollbars=yes',
-  'location=no',
-  'directories=no',
-  'status=no',
-  'menubar=no',
-  'toolbar=no',
-  'resizable=no',
-].join(','),
-			cb,
-		);
+      url,
+      'addImage',
+      [
+        `width=${width}`,
+        `height=${height}`,
+        `top=${top}`,
+        `left=${left}`,
+        'scrollbars=yes',
+        'location=no',
+        'directories=no',
+        'status=no',
+        'menubar=no',
+        'toolbar=no',
+        'resizable=no',
+      ].join(','),
+      cb,
+    );
     pop.request();
 
-		// // TODO(JM) use case for Modal
-		// let modal = new Modal(url, 'modal-add-' + this.name, false, (data) => {
-		//   let item = {
-		//     id: data.id,
-		//     text: data.text,
-		//     value: data.text
-		//   }
-		//   this.selectize.addOption(item)
-		//   this.selectize.addItem(item.value, false)
-		// },(data) => {
-		//   this.selectize.unlock()
-		// })
-		//
-		// modal.open()
-		//
-		// return false
+    // // TODO(JM) use case for Modal
+    // let modal = new Modal(url, 'modal-add-' + this.name, false, (data) => {
+    //   let item = {
+    //     id: data.id,
+    //     text: data.text,
+    //     value: data.text
+    //   }
+    //   this.selectize.addOption(item)
+    //   this.selectize.addItem(item.value, false)
+    // },(data) => {
+    //   this.selectize.unlock()
+    // })
+    //
+    // modal.open()
+    //
+    // return false
   },
 
-	/**
+  /**
    * On Removing selected item in multi select
    * @param  {string}
    */
@@ -209,7 +205,7 @@ const SelectApi = View.extend({
     this.selectize.$input.siblings(`[data-title=${value}]`).remove();
   },
 
-	/**
+  /**
    * Trasnform Response Data
    * @param  {object}
    * @return {object}
@@ -236,7 +232,7 @@ const SelectApi = View.extend({
     });
   },
 
-	/**
+  /**
    * Built text field from all fields
    * @param  {object}
    * @param  {array}
@@ -252,21 +248,21 @@ const SelectApi = View.extend({
     return text.join(' - ');
   },
 
-	/**
+  /**
    * Append 'Add' button to create object in popup
    */
   createAddButton() {
     const url = this.$el.data('add');
     const add = $('<a>')
-			.attr('href', url)
-			.addClass('button button--primary')
-			.html(`<i class="fa fa-plus-circle" aria-hidden="true"></i>Add ${this.name}`);
+      .attr('href', url)
+      .addClass('button button--primary')
+      .html(`<i class="fa fa-plus-circle" aria-hidden="true"></i>Add ${this.name}`);
 
     this.$el.after(add).parent().addClass('formset__field--has-add-button');
     add.on('click', this.openPopup.bind(this));
   },
 
-	/**
+  /**
    * Gather preselected from server rendered data
    * @return {Array}
    */

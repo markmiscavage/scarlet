@@ -29,17 +29,15 @@ const SelectAsset = View.extend({
       placeholder: 'Choose an asset',
       valueField: 'id',
       labelField: 'text',
-      searchField: 'text',
-      create: false,
-      load: this.load.bind(this),
-      preload: 'focus',
       maxItems: 1,
+      load: this.load.bind(this),
+      preload: true,
       render: this.renderOption(),
       onItemAdd: this.onSelect.bind(this),
       onInitialize: this.initSelections.bind(this),
       onChange: this.onChange.bind(this),
     };
-    this.$selectizeInput.selectize(options).setValue;
+    this.$selectizeInput.selectize(options);
     this.tag();
     this.autoTag();
     this.linkifyCrops();
@@ -95,7 +93,6 @@ const SelectAsset = View.extend({
     for (const field in response.fields) {
       this.fields.push(field);
     }
-
     return response.results.map(item => {
       item.text = item.user_filename;
       return item;
@@ -108,9 +105,7 @@ const SelectAsset = View.extend({
    * @param  {object}
    */
   onSelect(value, $item) {
-    console.log(value, $item);
     this.linkifyCrops();
-    console.log($item.attr('data-thumb'));
     this.$preview.css('background-image', `url(${$item.attr('data-thumb')})`);
     if ($item.attr('data-src')) {
       this.$input.attr('data-src', $item.attr('data-src'));
@@ -243,7 +238,7 @@ const SelectAsset = View.extend({
 
   handlePopup(e) {
     console.log('handlin pop ups');
-    e.preventDefault();
+    // e.preventDefault();
     // clickOpenModal(e, 'modal-add-asset', this.setSelected.bind(this), this.autoTags)
     clickOpenPopup(e, this.setSelected.bind(this));
 

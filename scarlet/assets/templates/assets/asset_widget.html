@@ -2,7 +2,6 @@
 
 <div class="asset" data-api="{{ link|safe }}" data-title="{{ object.user_filename }}" data-tags="{{ asset_tags }}">
 	<div class="asset__preview" style="background-image:url({{ object.file.admin_url }})" data-src="{{ object.file.admin_url }}"></div>
-
     <div class="asset__actions">
         <div class="asset__select">
             {{ hidden_input }}
@@ -13,10 +12,11 @@
             </a>
             {% endif %}
         </div>
-        {% if sizes %}
+        {% if sizes and show_crops %}
             <ul class="asset__crop-list" data-base-link="{{ base_api_link }}" >
             {% for each in sizes %}
-                <li class="asset__crop-item" data-crop-link="{{ each.post_link }}">
+                <li class="asset__crop-item" data-crop-link="{{ each.post_link }}" >
+
                     <span class="asset__crop-label">{{ each.name }} {% if each.width %}{{ each.width }}{% else %}??{% endif %}x{% if each.height %}{{ each.height }}{% else %}??{% endif %}px</span>
                     <a href="#" class="button asset__crop-link">Edit Crop</a>
                 </li>

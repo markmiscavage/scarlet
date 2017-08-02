@@ -23,7 +23,7 @@
     <meta name="viewport" content="width=1024" />
 
     {# Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons #}
-
+<link rel="stylesheet"  href="{{ STATIC_URL }}css/main.css" />
     {# CSS: implied media="all" #}
     {% if not settings.TEMPLATE_DEBUG %}
       <link rel="stylesheet"  href="{{ STATIC_URL }}css/bundle.css" />
@@ -115,12 +115,17 @@
           <polygon class="bar" points="1.7,20.7 6.9,20.7 15.4,8.5 11.9,6  "/>
         </g>
         <g id="logo-red">
-          <path class="type" d="M47.6,6.8L47.6,6.8c0-2-0.6-3.5-1.7-4.6C44.6,0.8,42.5,0,39.5,0h-9.3v19.7h5.5v-6H38H38l4,6h6.3l-4.7-6.9
-            C46,11.8,47.6,9.8,47.6,6.8z M42.1,7.1c0,1.4-1.1,2.3-2.9,2.3h-3.6V4.7h3.6C41,4.7,42.1,5.5,42.1,7.1L42.1,7.1z" fill="#eee"/>
-          <polygon class="type" points="54.7,11.9 64.1,11.9 64.1,7.6 54.7,7.6 54.7,4.6 65.1,4.6 65.1,0 49.3,0 49.3,19.7 65.2,19.7
-            65.2,15.1 54.7,15.1   " fill="#eee"/>
-          <path class="type" d="M74.5,0h-7.6v19.7h7.5c7.1,0,11.2-4.2,11.2-9.9V9.7C85.6,4.1,81.5,0,74.5,0z M80,9.9c0,3.2-2.2,5-5.4,5h-2.2
-            v-10h2.2C77.9,4.8,80,6.7,80,9.9L80,9.9z" fill="#eee" stroke="#eee" />
+          <defs>
+            <style>
+          .type{fill:#f2f2f2;}.bar{fill:red;}
+          </style>
+        </defs>
+          <path class="text" d="M47.6,6.8L47.6,6.8c0-2-0.6-3.5-1.7-4.6C44.6,0.8,42.5,0,39.5,0h-9.3v19.7h5.5v-6H38H38l4,6h6.3l-4.7-6.9
+            C46,11.8,47.6,9.8,47.6,6.8z M42.1,7.1c0,1.4-1.1,2.3-2.9,2.3h-3.6V4.7h3.6C41,4.7,42.1,5.5,42.1,7.1L42.1,7.1z" fill="#f2f2f2"/>
+          <polygon class="text" points="54.7,11.9 64.1,11.9 64.1,7.6 54.7,7.6 54.7,4.6 65.1,4.6 65.1,0 49.3,0 49.3,19.7 65.2,19.7
+            65.2,15.1 54.7,15.1   " fill="#f2f2f2"/>
+          <path class="text" d="M74.5,0h-7.6v19.7h7.5c7.1,0,11.2-4.2,11.2-9.9V9.7C85.6,4.1,81.5,0,74.5,0z M80,9.9c0,3.2-2.2,5-5.4,5h-2.2
+            v-10h2.2C77.9,4.8,80,6.7,80,9.9L80,9.9z" fill="#f2f2f2"/>
           <polygon class="bar" points="0,19.7 16,19.7 12.7,15 4.7,15 4.7,4.7 20.7,4.7 20.7,19.7 25.4,19.7 25.4,0 0,0  "/>
         </g>
       </defs>

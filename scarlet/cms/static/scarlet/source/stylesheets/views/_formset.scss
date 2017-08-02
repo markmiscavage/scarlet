@@ -1,8 +1,81 @@
 .formset__form {
-	padding-top: 40px;
 	margin-bottom: 40px;
 	opacity: 1;
 	transition: opacity 200ms, transform 300ms, position 300ms 350ms;
+	border: 1px dashed #7f7f7f;
+	border-radius: 3px;
+	padding: 60px 30px 0px;
+	position: relative;
+
+	h3 {
+		margin-bottom: 0;
+		order: 1;
+		margin-left: 13px;
+	}
+
+	h3 > .fa {
+		margin-right: 10px;
+	}
+
+	&--edit {
+		display: flex;
+		padding: 0 30px;
+		align-items: center;
+		justify-content: space-between;
+
+		.formset__button--delete {
+			position: relative;
+			order: 2;
+			top: 0;
+			right: 0;
+		}
+	}
+}
+
+.formset__reorder {
+	display: none;
+
+	&-btn-group {
+		display: flex;
+		justify-content: flex-end;
+		margin-bottom: 15px;
+		align-items: center;
+	}
+
+	& + .formset__toggle-switch {
+		background: #ddd;
+		border-radius: 10px;
+		border: 1px solid #bbb;
+		padding: 2px;
+		transition: all .4s ease;
+		width: 40px;
+		height: 20px;
+		cursor: pointer;
+		position: relative;
+		outline: 0;
+		margin-left: 15px;
+		margin-bottom: 10px;
+
+		&:after {
+			border-radius: 50%;
+			background: #fff;
+			transition: all .2s ease;
+			content: '';
+			width: 50%;
+			height: 100%;
+			position: relative;
+			left: 0;
+			display: block;
+		}
+	}
+
+	&:checked + .formset__toggle-switch {
+		background: #0084ff;
+	}
+
+	&:checked + .formset__toggle-switch:after {
+		left: 50%;
+	}
 }
 
 .formset__form--is-deleted {
@@ -25,9 +98,10 @@
 
 .formset__button--delete {
 	cursor: pointer;
+	// display: none;
 	position: absolute;
-	top: 0;
-	right: 0;
+	right: 15px;
+	top: 15px;
 
 	.fa {
 		font-size: 26px;
@@ -55,4 +129,8 @@
 		flex-grow: 0;
 		text-transform: capitalize;
 	}
+}
+
+.sweet-btn {
+	margin-bottom: 30px;
 }
