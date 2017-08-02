@@ -1,47 +1,49 @@
-@import '../vendor/jcrop';
+@import '../vendor/cropper';
 
 .image-cropper {
-
-  h3 {
-
-    strong {
-      text-transform: none;
-    }
-  }
+	img {
+		max-width: 100%;
+	}
+	h3 {
+		strong {
+			text-transform: none;
+		}
+	}
 }
-
-.image-cropper__original,
-.image-cropper__mask {
-  @include box-shadow;
-}
-
-.image-cropper__original {
-  margin: auto;
-  text-align: center;
-
-  > div {
-    display: inline-block;
-  }
-}
-
+//
+// .image-cropper__original,
+// .image-cropper__mask {
+// 	@include box-shadow;
+// }
+//
+// .image-cropper__original {
+// 	margin: auto;
+// 	text-align: center;
+//
+// 	> div {
+// 		display: inline-block;
+// 	}
+// }
+//
 .image-cropper__preview {
-  margin: 50px 0 0;
-  padding: 0;
+	overflow: hidden;
+	padding: 0;
+	width: 600px;
+	height: auto;
 }
-
-.image-cropper__mask {
-  @include box-shadow;
-  width: 400px;
-  height: 250px;
-  overflow: hidden;
-  opacity: 0;
-
-  &.active {
-    opacity: 1;
-  }
-}
-
-.image-cropper__settings {
-  @include hide-block;
-}
-
+//
+// .image-cropper__mask {
+// 	@include box-shadow;
+// 	width: 400px;
+// 	height: 250px;
+// 	overflow: hidden;
+// 	opacity: 0;
+//
+// 	&.active {
+// 		opacity: 1;
+// 	}
+// }
+//
+// .image-cropper__settings {
+// 	@include hide-block;
+// }

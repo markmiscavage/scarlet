@@ -164,6 +164,12 @@ const App = View.extend({
         el: dom,
       }).render();
     });
+
+    $('.image-cropper').each((i, dom) => {
+      const imageCropper = new ImageCropper({
+        el: dom,
+      }).render();
+    });
   },
 });
 

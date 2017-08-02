@@ -1,5 +1,5 @@
 import { View } from 'backbone';
-import Jcrop from 'jcrop';
+import cropper from 'cropper';
 import imagesready from 'imagesready';
 
 const ImageCropper = View.extend({
@@ -23,41 +23,70 @@ const ImageCropper = View.extend({
 
   onReady() {
     this.setConstraints();
-    this.setupPreview();
-    this.setupJcrop();
+    // this.setupPreview();
+    this.setupCropper();
   },
 
-  onError(error) {
-    console.log('ERROR', error);
-  },
-
-  setupJcrop() {
-    const self = this;
-    const options = $.extend({}, this.options, {
-      onSelect: this.updateCropArea.bind(this),
-      onChange: this.updateCropArea.bind(this),
-      aspectRatio: this.constrainRatio ? this.cropScale.w / this.cropScale.h : 0,
-      allowSelect: !!this.constrainRatio,
-      boxWidth: this.$el.width() * 0.75,
-      minSize: [20, 20],
+  setupCropper() {
+    this.$original.cropper({
+      data: this.setInitialCroparea(),
+      ready: this.cropperReady.bind(this),
+      crop: this.cropperClone.bind(this),
+      cropmove: this.updateCropArea.bind(this),
+      aspectRatio: this.cropScale.w / this.cropScale.h,
+      autoCropArea: 1,
+      background: true,
+      cropBoxMovable: true,
+      cropBoxResizable: true,
+      dragMode: 'crop',
+      guides: true,
+      highlight: true,
+      modal: false,
+      responsive: true,
+      restore: true,
+      viewMode: 3,
     });
-    if (this._jcrop) {
-      this._jcrop.destroy();
-    }
+  },
 
-    this.$original.Jcrop(options, function() {
-      self._jcrop = this;
-      self.setInitialCroparea();
+  cropperReady() {
+    const $clone = this.$original.clone().removeClass('cropper-hidden');
+    $clone.css({
+      display: 'block',
+      width: '100%',
+      minWidth: 0,
+      minHeight: 0,
+      maxWidth: 'none',
+      maxHeight: 'none',
+    });
+    this.$preview
+      .css({
+        width: '300px',
+        overflow: 'hidden',
+      })
+      .html($clone);
+  },
+
+  cropperClone(e) {
+    const imageData = this.$original.cropper('getImageData');
+    const previewAspectRatio = e.width / e.height;
+    const previewWidth = this.$preview.width();
+    const previewHeight = previewWidth / previewAspectRatio;
+    const imageScaledRatio = e.width / previewWidth;
+    this.$preview.height(previewHeight).find('img').css({
+      width: imageData.naturalWidth / imageScaledRatio,
+      height: imageData.naturalHeight / imageScaledRatio,
+      marginLeft: -e.x / imageScaledRatio,
+      marginTop: -e.y / imageScaledRatio,
     });
   },
 
   // iterate over coordinate property keys
   loopCoordProps(cb) {
-    let props = ['x', 'y', 'x2', 'y2', 'w', 'h'],
-      i = props.length - 1,
-      prop;
+    const props = ['x', 'y', 'x2', 'y2', 'w', 'h'];
+    let i = props.length - 1;
+    let prop;
 
-    for (i; i >= 0; i--) {
+    for (i; i >= 0; i -= 1) {
       prop = props[i];
       cb.call(this, prop);
     }
@@ -65,26 +94,35 @@ const ImageCropper = View.extend({
 
   // set initial croparea from (x,y,x2,y2) field values
   setInitialCroparea() {
-    this.loopCoordProps(function(prop) {
-      const $coord = $(`input[data-property="${prop}"]`);
+    const { x, y, x2, y2, width, height } = $('.crop-list__item').data();
+    const data = $('.crop-list__item').data();
+    const coords = this.buildMap(data);
 
-      if ($coord.length) {
-        this.cropCoords[prop] = $coord.val();
-      }
+    for (const [key, value] in coords) {
+      this.cropCoords[key] = value;
+    }
+    return {
+      x,
+      y,
+      x2,
+      y2,
+      width,
+      height,
+      ...this.getScale(),
+    };
+  },
+
+  buildMap(obj) {
+    const map = new Map();
+    Object.keys(obj).forEach(key => {
+      map.set(key, obj[key]);
     });
-
-    // set jcrop selection
-    this._jcrop.setSelect([
-      this.cropCoords.x,
-      this.cropCoords.y,
-      this.cropCoords.x2,
-      this.cropCoords.y2,
-    ]);
+    return map;
   },
 
   // store current crop coordinates as field values
   updateCoords() {
-    this.loopCoordProps(function(prop) {
+    this.loopCoordProps(prop => {
       const $coord = $(`input[data-property="${prop}"]`);
 
       if ($coord.length) {
@@ -119,9 +157,10 @@ const ImageCropper = View.extend({
   },
 
   updateCropArea(coords) {
+    const data = this.$original.cropper('getData');
     clearTimeout(this.refreshTimeout);
 
-    if (parseInt(coords.w, 10) < 0) {
+    if (parseInt(data.width, 10) < 0) {
       return;
     }
 
@@ -132,7 +171,7 @@ const ImageCropper = View.extend({
     if (!this.constrainRatio) {
       if (this.constrainHeight) {
         // update preview width
-        width = Math.round(scale.scaleY * coords.w);
+        width = Math.round(scale.scaleY * data.width);
 
         this.$preview
           .find('.mask')
@@ -144,7 +183,7 @@ const ImageCropper = View.extend({
           .text(`${width} x ${this.cropScale.h}`);
       } else if (this.constrainWidth) {
         // update preview height
-        height = Math.round(scale.scaleX * coords.h);
+        height = Math.round(scale.scaleX * data.height);
 
         this.$mask
           .css({
@@ -155,8 +194,8 @@ const ImageCropper = View.extend({
           .text(`${this.cropScale.w} x ${height}`);
       } else {
         // update preview height and width
-        height = Math.round(scale.scaleY * coords.h);
-        width = Math.round(scale.scaleX * coords.w);
+        height = Math.round(scale.scaleY * data.height);
+        width = Math.round(scale.scaleX * data.width);
 
         this.$mask
           .css({
@@ -169,15 +208,7 @@ const ImageCropper = View.extend({
       }
     }
 
-    // update preview img
-    this.$thumb.css({
-      width: `${Math.round(scale.scaleX * this.$original[0].naturalWidth)}px`,
-      height: `${Math.round(scale.scaleY * this.$original[0].naturalHeight)}px`,
-      marginLeft: `-${Math.round(scale.scaleX * coords.x)}px`,
-      marginTop: `-${Math.round(scale.scaleY * coords.y)}px`,
-    });
-
-    this.setCropCoords(coords);
+    this.setCropCoords(data);
 
     // debounce update of coord values (form fields) after interaction
     this.refreshTimeout = setTimeout(this.updateCoords.bind(this), 250);
@@ -187,8 +218,8 @@ const ImageCropper = View.extend({
     this.cropCoords = Object.assign({}, coords, {
       x: Math.round(coords.x),
       y: Math.round(coords.y),
-      x2: Math.round(coords.x2),
-      y2: Math.round(coords.y2),
+      x2: Math.round(coords.x + coords.width),
+      y2: Math.round(coords.y + coords.height),
     });
   },
 

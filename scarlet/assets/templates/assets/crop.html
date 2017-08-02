@@ -19,16 +19,13 @@
 				</ul>
 			</nav>
 			//-->
-
-			<div class="jcrop">
+        <div>
 				<img class="image-cropper__original" src="{{ obj.image.file.url }}" alt="{{ obj.image.title }}" />
+      </div>
 				<div class="image-cropper__preview" data-scale-w="{{ obj.get_crop_config.width }}" data-scale-h="{{ obj.get_crop_config.height }}" data-zoom="out">
-					<!-- <h3>Preview <strong></strong></h3>
-					<div class="image-cropper__mask">
+					<h3>Preview <strong></strong></h3>
 						<img src="{{ obj.image.file.url }}" alt="{{ obj.image.title }}" />
-					</div> -->
 				</div>
-			</div>
 
 			<fieldset>
 				<input type="hidden" name="x" id="id_x" value="{{ obj.x }}" data-property="x" />
@@ -37,7 +34,7 @@
 				<input type="hidden" name="y2" id="id_y2" value="{{ obj.y2 }}" data-property="y2" />
 				<input type="hidden" name="crop_config" id="id_crop_config" value="{{ obj.get_crop_config }}" />
 
-				<ul class="image-cropper__settings">
+				<!-- <ul class="image-cropper__settings">
 					<li>
 						<label class="">Width</label>
 						<div class="field pixels">
@@ -58,7 +55,7 @@
 							<input type="checkbox" id="constrain"/>
 						</div>
 					</li>
-				</ul>
+				</ul> -->
 			</fieldset>
 
 			{% block submit %}

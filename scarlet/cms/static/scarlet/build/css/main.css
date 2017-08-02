@@ -3494,195 +3494,248 @@ body.modal__body {
   body.modal__body #container {
     padding-bottom: 0; }
 
-.jcrop-holder {
-  direction: ltr;
-  text-align: left; }
+:root {
+  --blue: #39f; }
 
-/* Selection Border */
-.jcrop-vline,
-.jcrop-hline {
-  background: #ffffff;
+.cropper-container {
   font-size: 0;
-  position: absolute; }
+  line-height: 0;
+  position: relative;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  direction: ltr;
+  -ms-touch-action: none;
+      touch-action: none; }
+  .cropper-container img {
+    /* Avoid margin top issue (Occur only when margin-top <= -height) */
+    display: block;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    width: 100%;
+    height: 100%;
+    image-orientation: 0deg; }
 
-.jcrop-vline {
-  height: 100%;
-  width: 1px !important; }
+.cropper-wrap-box,
+.cropper-canvas,
+.cropper-drag-box,
+.cropper-crop-box,
+.cropper-modal {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0; }
 
-.jcrop-vline.right {
-  right: 0; }
+.cropper-wrap-box {
+  overflow: hidden; }
 
-.jcrop-hline {
-  height: 1px !important;
-  width: 100%; }
+.cropper-drag-box {
+  opacity: 0;
+  background-color: #fff; }
 
-.jcrop-hline.bottom {
-  bottom: 0; }
+.cropper-modal {
+  opacity: .5;
+  background-color: #000; }
 
-/* Invisible click targets */
-.jcrop-tracker {
-  height: 100%;
+.cropper-view-box {
+  display: block;
+  overflow: hidden;
   width: 100%;
-  /* "turn off" link highlight */
-  -webkit-tap-highlight-color: transparent;
-  /* disable callout, image save panel */
-  -webkit-touch-callout: none;
-  /* disable cut copy paste */
-  -webkit-user-select: none; }
-
-/* Selection Handles */
-.jcrop-handle {
-  background-color: #333333;
-  border: 1px #eeeeee solid;
-  width: 7px;
-  height: 7px;
-  font-size: 1px; }
-
-.jcrop-handle.ord-n {
-  left: 50%;
-  margin-left: -4px;
-  margin-top: -4px;
-  top: 0; }
-
-.jcrop-handle.ord-s {
-  bottom: 0;
-  left: 50%;
-  margin-bottom: -4px;
-  margin-left: -4px; }
-
-.jcrop-handle.ord-e {
-  margin-right: -4px;
-  margin-top: -4px;
-  right: 0;
-  top: 50%; }
-
-.jcrop-handle.ord-w {
-  left: 0;
-  margin-left: -4px;
-  margin-top: -4px;
-  top: 50%; }
-
-.jcrop-handle.ord-nw {
-  left: 0;
-  margin-left: -4px;
-  margin-top: -4px;
-  top: 0; }
-
-.jcrop-handle.ord-ne {
-  margin-right: -4px;
-  margin-top: -4px;
-  right: 0;
-  top: 0; }
-
-.jcrop-handle.ord-se {
-  bottom: 0;
-  margin-bottom: -4px;
-  margin-right: -4px;
-  right: 0; }
-
-.jcrop-handle.ord-sw {
-  bottom: 0;
-  left: 0;
-  margin-bottom: -4px;
-  margin-left: -4px; }
-
-/* Dragbars */
-.jcrop-dragbar.ord-n,
-.jcrop-dragbar.ord-s {
-  height: 7px;
-  width: 100%; }
-
-.jcrop-dragbar.ord-e,
-.jcrop-dragbar.ord-w {
   height: 100%;
-  width: 7px; }
+  outline: 1px solid var(--blue);
+  outline-color: color(var(--blue) opacity(75%)); }
 
-.jcrop-dragbar.ord-n {
-  margin-top: -4px; }
+.cropper-dashed {
+  position: absolute;
+  display: block;
+  opacity: .5;
+  border: 0 dashed #eee; }
+  .cropper-dashed.dashed-h {
+    top: 33.33333333%;
+    left: 0;
+    width: 100%;
+    height: 33.33333333%;
+    border-top-width: 1px;
+    border-bottom-width: 1px; }
+  .cropper-dashed.dashed-v {
+    top: 0;
+    left: 33.33333333%;
+    width: 33.33333333%;
+    height: 100%;
+    border-right-width: 1px;
+    border-left-width: 1px; }
 
-.jcrop-dragbar.ord-s {
-  bottom: 0;
-  margin-bottom: -4px; }
+.cropper-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: 0;
+  height: 0;
+  opacity: .75; }
+  .cropper-center:before, .cropper-center:after {
+    position: absolute;
+    display: block;
+    content: ' ';
+    background-color: #eee; }
+  .cropper-center:before {
+    top: 0;
+    left: -3px;
+    width: 7px;
+    height: 1px; }
+  .cropper-center:after {
+    top: -3px;
+    left: 0;
+    width: 1px;
+    height: 7px; }
 
-.jcrop-dragbar.ord-e {
-  margin-right: -4px;
-  right: 0; }
+.cropper-face,
+.cropper-line,
+.cropper-point {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: .1; }
 
-.jcrop-dragbar.ord-w {
-  margin-left: -4px; }
+.cropper-face {
+  top: 0;
+  left: 0;
+  background-color: #fff; }
 
-/* The "jcrop-light" class/extension */
-.jcrop-light .jcrop-vline,
-.jcrop-light .jcrop-hline {
-  background: #ffffff;
-  filter: alpha(opacity=70) !important;
-  opacity: 0.7 !important; }
+.cropper-line {
+  background-color: var(--blue); }
+  .cropper-line.line-e {
+    top: 0;
+    right: -3px;
+    width: 5px;
+    cursor: e-resize; }
+  .cropper-line.line-n {
+    top: -3px;
+    left: 0;
+    height: 5px;
+    cursor: n-resize; }
+  .cropper-line.line-w {
+    top: 0;
+    left: -3px;
+    width: 5px;
+    cursor: w-resize; }
+  .cropper-line.line-s {
+    bottom: -3px;
+    left: 0;
+    height: 5px;
+    cursor: s-resize; }
 
-.jcrop-light .jcrop-handle {
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  background-color: #000000;
-  border-color: #ffffff;
-  border-radius: 3px; }
+.cropper-point {
+  width: 5px;
+  height: 5px;
+  opacity: .75;
+  background-color: var(--blue); }
+  .cropper-point.point-e {
+    top: 50%;
+    right: -3px;
+    margin-top: -3px;
+    cursor: e-resize; }
+  .cropper-point.point-n {
+    top: -3px;
+    left: 50%;
+    margin-left: -3px;
+    cursor: n-resize; }
+  .cropper-point.point-w {
+    top: 50%;
+    left: -3px;
+    margin-top: -3px;
+    cursor: w-resize; }
+  .cropper-point.point-s {
+    bottom: -3px;
+    left: 50%;
+    margin-left: -3px;
+    cursor: s-resize; }
+  .cropper-point.point-ne {
+    top: -3px;
+    right: -3px;
+    cursor: ne-resize; }
+  .cropper-point.point-nw {
+    top: -3px;
+    left: -3px;
+    cursor: nw-resize; }
+  .cropper-point.point-sw {
+    bottom: -3px;
+    left: -3px;
+    cursor: sw-resize; }
+  .cropper-point.point-se {
+    right: -3px;
+    bottom: -3px;
+    width: 20px;
+    height: 20px;
+    cursor: se-resize;
+    opacity: 1; }
+    @media (min-width: 768px) {
+      .cropper-point.point-se {
+        width: 15px;
+        height: 15px; } }
+    @media (min-width: 992px) {
+      .cropper-point.point-se {
+        width: 10px;
+        height: 10px; } }
+    @media (min-width: 1200px) {
+      .cropper-point.point-se {
+        width: 5px;
+        height: 5px;
+        opacity: .75; } }
+  .cropper-point.point-se:before {
+    position: absolute;
+    right: -50%;
+    bottom: -50%;
+    display: block;
+    width: 200%;
+    height: 200%;
+    content: ' ';
+    opacity: 0;
+    background-color: var(--blue); }
 
-/* The "jcrop-dark" class/extension */
-.jcrop-dark .jcrop-vline,
-.jcrop-dark .jcrop-hline {
-  background: #000000;
-  filter: alpha(opacity=70) !important;
-  opacity: 0.7 !important; }
+.cropper-invisible {
+  opacity: 0; }
 
-.jcrop-dark .jcrop-handle {
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  background-color: #ffffff;
-  border-color: #000000;
-  border-radius: 3px; }
+.cropper-bg {
+  background-image: inline("../images/bg.png"); }
 
-/* Simple macro to turn off the antlines */
-.solid-line .jcrop-vline,
-.solid-line .jcrop-hline {
-  background: #ffffff; }
+.cropper-hide {
+  position: absolute;
+  display: block;
+  width: 0;
+  height: 0; }
 
-/* Fix for twitter bootstrap et al. */
-.jcrop-holder img,
-img.jcrop-preview {
-  max-width: none; }
+.cropper-hidden {
+  display: none !important; }
+
+.cropper-move {
+  cursor: move; }
+
+.cropper-crop {
+  cursor: crosshair; }
+
+.cropper-disabled .cropper-drag-box,
+.cropper-disabled .cropper-face,
+.cropper-disabled .cropper-line,
+.cropper-disabled .cropper-point {
+  cursor: not-allowed; }
+
+.image-cropper img {
+  max-width: 100%; }
 
 .image-cropper h3 strong {
   text-transform: none; }
 
-.image-cropper__original,
-.image-cropper__mask {
-  -webkit-box-shadow: 0px 10px 40px -10px #c4c4c4;
-          box-shadow: 0px 10px 40px -10px #c4c4c4; }
-
-.image-cropper__original {
-  margin: auto;
-  text-align: center; }
-  .image-cropper__original > div {
-    display: inline-block; }
-
 .image-cropper__preview {
-  margin: 50px 0 0;
-  padding: 0; }
-
-.image-cropper__mask {
-  -webkit-box-shadow: 0px 10px 40px -10px #c4c4c4;
-          box-shadow: 0px 10px 40px -10px #c4c4c4;
-  width: 400px;
-  height: 250px;
   overflow: hidden;
-  opacity: 0; }
-  .image-cropper__mask.active {
-    opacity: 1; }
-
-.image-cropper__settings {
-  position: absolute;
-  z-index: -2;
-  opacity: 0;
-  width: 0;
-  height: 0; }
+  padding: 0;
+  width: 600px;
+  height: auto; }
 
 .selectize-control.single .selectize-input:after,
 .selectize-control.single .selectize-input.dropdown-active:after {
