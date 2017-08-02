@@ -75,6 +75,7 @@ const CropList = View.extend({
 
   edit(value, $item) {
     // window.location.href = value;
+    $('.image-cropper').detach();
     $('.crop-info').append(
       `<div class="image-cropper">
       <img class="image-cropper__original" src="${this.url}" />

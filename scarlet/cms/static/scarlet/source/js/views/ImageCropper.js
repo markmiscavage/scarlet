@@ -94,20 +94,21 @@ const ImageCropper = View.extend({
 
   // set initial croparea from (x,y,x2,y2) field values
   setInitialCroparea() {
-    const { x, y, x2, y2, width, height } = $('.crop-list__item').data();
     const data = $('.crop-list__item').data();
     const coords = this.buildMap(data);
 
     for (const [key, value] in coords) {
       this.cropCoords[key] = value;
     }
+
+    // this.$original.css({ width: coords.get('width') });
     return {
-      x,
-      y,
-      x2,
-      y2,
-      width,
-      height,
+      x: coords.get('x'),
+      y: coords.get('y'),
+      x2: coords.get('x2'),
+      y2: coords.get('y2'),
+      width: coords.get('width'),
+      height: coords.get('height'),
       ...this.getScale(),
     };
   },
@@ -158,6 +159,7 @@ const ImageCropper = View.extend({
 
   updateCropArea(coords) {
     const data = this.$original.cropper('getData');
+    console.log('DATA --->', data);
     clearTimeout(this.refreshTimeout);
 
     if (parseInt(data.width, 10) < 0) {
@@ -225,7 +227,6 @@ const ImageCropper = View.extend({
 
   setConstraints() {
     const data = this.$preview.data();
-
     this.constrainHeight = data.scaleH !== 'None';
     this.constrainWidth = data.scaleW !== 'None';
     this.constrainRatio = this.constrainHeight && this.constrainWidth;
