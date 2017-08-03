@@ -1,5 +1,5 @@
-const dasherize = (text) => {
-  return text.replace(/\s+/g, '-').toLowerCase()
+const dasherize = text => {
+	return text.replace(/\s+/g, '-').toLowerCase()
 }
 
 export { dasherize }

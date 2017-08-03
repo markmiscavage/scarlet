@@ -1,77 +1,79 @@
-import { View } from 'backbone';
-import Jcrop from 'jcrop';
-import imagesready from 'imagesready';
+import { View } from 'backbone'
+import Jcrop from 'jcrop'
+import imagesready from 'imagesready'
 
 const ImageCropper = View.extend({
   classPrefix: '.image-cropper__',
 
   initialize() {
-    this.cropCoords = {};
+    this.cropCoords = {}
     this.options = {
       aspectRatio: 0,
-    };
+    }
   },
 
   render() {
-    this.$original = this.$(`${this.classPrefix}original`);
-    this.$preview = this.$(`${this.classPrefix}preview`);
-    this.$mask = this.$(`${this.classPrefix}mask`);
-    this.$thumb = this.$preview.find('img');
+    this.$original = this.$(`${this.classPrefix}original`)
+    this.$preview = this.$(`${this.classPrefix}preview`)
+    this.$mask = this.$(`${this.classPrefix}mask`)
+    this.$thumb = this.$preview.find('img')
 
-    this.$original.imagesReady().then(this.onReady.bind(this), this.onError);
+    this.$original.imagesReady().then(this.onReady.bind(this), this.onError)
   },
 
   onReady() {
-    this.setConstraints();
-    this.setupPreview();
-    this.setupJcrop();
+    this.setConstraints()
+    this.setupPreview()
+    this.setupJcrop()
   },
 
   onError(error) {
-    console.log('ERROR', error);
+    console.log('ERROR', error)
   },
 
   setupJcrop() {
-    const self = this;
+    const self = this
     const options = $.extend({}, this.options, {
       onSelect: this.updateCropArea.bind(this),
       onChange: this.updateCropArea.bind(this),
-      aspectRatio: this.constrainRatio ? this.cropScale.w / this.cropScale.h : 0,
+      aspectRatio: this.constrainRatio
+        ? this.cropScale.w / this.cropScale.h
+        : 0,
       allowSelect: !!this.constrainRatio,
       boxWidth: this.$el.width() * 0.75,
       minSize: [20, 20],
-    });
+    })
     if (this._jcrop) {
-      this._jcrop.destroy();
+      this._jcrop.destroy()
     }
 
     this.$original.Jcrop(options, function() {
-      self._jcrop = this;
-      self.setInitialCroparea();
-    });
+      self._jcrop = this
+      self.setInitialCroparea()
+    })
   },
 
   // iterate over coordinate property keys
   loopCoordProps(cb) {
     let props = ['x', 'y', 'x2', 'y2', 'w', 'h'],
       i = props.length - 1,
-      prop;
+      prop
 
     for (i; i >= 0; i--) {
-      prop = props[i];
-      cb.call(this, prop);
+      prop = props[i]
+      cb.call(this, prop)
     }
   },
 
   // set initial croparea from (x,y,x2,y2) field values
   setInitialCroparea() {
     this.loopCoordProps(function(prop) {
-      const $coord = $(`input[data-property="${prop}"]`);
+      const $coord = $(`input[data-property="${prop}"]`)
 
       if ($coord.length) {
-        this.cropCoords[prop] = $coord.val();
+        this.cropCoords[prop] = $coord.val()
       }
-    });
+    })
 
     // set jcrop selection
     this._jcrop.setSelect([
@@ -79,60 +81,60 @@ const ImageCropper = View.extend({
       this.cropCoords.y,
       this.cropCoords.x2,
       this.cropCoords.y2,
-    ]);
+    ])
   },
 
   // store current crop coordinates as field values
   updateCoords() {
     this.loopCoordProps(function(prop) {
-      const $coord = $(`input[data-property="${prop}"]`);
+      const $coord = $(`input[data-property="${prop}"]`)
 
       if ($coord.length) {
         // sync field val
-        $coord.attr('value', this.cropCoords[prop]);
+        $coord.attr('value', this.cropCoords[prop])
       }
-    });
+    })
   },
 
   getScale() {
-    let scaleX, scaleY;
+    let scaleX, scaleY
 
     if (this.constrainRatio) {
-      scaleX = this.cropScale.w / this.cropCoords.w;
-      scaleY = this.cropScale.h / this.cropCoords.h;
+      scaleX = this.cropScale.w / this.cropCoords.w
+      scaleY = this.cropScale.h / this.cropCoords.h
     } else if (this.constrainHeight) {
       // set equal scaling ratio (to prevent distortion)
-      scaleX = scaleY = this.cropScale.h / this.cropCoords.h;
+      scaleX = scaleY = this.cropScale.h / this.cropCoords.h
     } else if (this.constrainWidth) {
-      scaleX = scaleY = this.cropScale.w / this.cropCoords.w;
+      scaleX = scaleY = this.cropScale.w / this.cropCoords.w
     } else {
       scaleX = scaleY =
         this.$original[0].naturalWidth /
         this.cropCoords.w /
-        (this.$original[0].naturalHeight / this.cropCoords.h);
+        (this.$original[0].naturalHeight / this.cropCoords.h)
     }
 
     return {
       scaleX,
       scaleY,
-    };
+    }
   },
 
   updateCropArea(coords) {
-    clearTimeout(this.refreshTimeout);
+    clearTimeout(this.refreshTimeout)
 
     if (parseInt(coords.w, 10) < 0) {
-      return;
+      return
     }
 
     let scale = this.getScale(),
       width,
-      height;
+      height
 
     if (!this.constrainRatio) {
       if (this.constrainHeight) {
         // update preview width
-        width = Math.round(scale.scaleY * coords.w);
+        width = Math.round(scale.scaleY * coords.w)
 
         this.$preview
           .find('.mask')
@@ -141,10 +143,10 @@ const ImageCropper = View.extend({
           })
           .end()
           .find('strong')
-          .text(`${width} x ${this.cropScale.h}`);
+          .text(`${width} x ${this.cropScale.h}`)
       } else if (this.constrainWidth) {
         // update preview height
-        height = Math.round(scale.scaleX * coords.h);
+        height = Math.round(scale.scaleX * coords.h)
 
         this.$mask
           .css({
@@ -152,11 +154,11 @@ const ImageCropper = View.extend({
           })
           .end()
           .find('strong')
-          .text(`${this.cropScale.w} x ${height}`);
+          .text(`${this.cropScale.w} x ${height}`)
       } else {
         // update preview height and width
-        height = Math.round(scale.scaleY * coords.h);
-        width = Math.round(scale.scaleX * coords.w);
+        height = Math.round(scale.scaleY * coords.h)
+        width = Math.round(scale.scaleX * coords.w)
 
         this.$mask
           .css({
@@ -165,7 +167,7 @@ const ImageCropper = View.extend({
           })
           .end()
           .find('strong')
-          .text(`${width} x ${height}`);
+          .text(`${width} x ${height}`)
       }
     }
 
@@ -175,12 +177,12 @@ const ImageCropper = View.extend({
       height: `${Math.round(scale.scaleY * this.$original[0].naturalHeight)}px`,
       marginLeft: `-${Math.round(scale.scaleX * coords.x)}px`,
       marginTop: `-${Math.round(scale.scaleY * coords.y)}px`,
-    });
+    })
 
-    this.setCropCoords(coords);
+    this.setCropCoords(coords)
 
     // debounce update of coord values (form fields) after interaction
-    this.refreshTimeout = setTimeout(this.updateCoords.bind(this), 250);
+    this.refreshTimeout = setTimeout(this.updateCoords.bind(this), 250)
   },
 
   setCropCoords(coords) {
@@ -189,22 +191,22 @@ const ImageCropper = View.extend({
       y: Math.round(coords.y),
       x2: Math.round(coords.x2),
       y2: Math.round(coords.y2),
-    });
+    })
   },
 
   setConstraints() {
-    const data = this.$preview.data();
+    const data = this.$preview.data()
 
-    this.constrainHeight = data.scaleH !== 'None';
-    this.constrainWidth = data.scaleW !== 'None';
-    this.constrainRatio = this.constrainHeight && this.constrainWidth;
+    this.constrainHeight = data.scaleH !== 'None'
+    this.constrainWidth = data.scaleW !== 'None'
+    this.constrainRatio = this.constrainHeight && this.constrainWidth
 
     // set aspect ratio for crop
     // also defines .mask box size
     this.cropScale = {
       w: this.constrainWidth ? data.scaleW : this.$original[0].naturalWidth,
       h: this.constrainHeight ? data.scaleH : this.$original[0].naturalHeight,
-    };
+    }
   },
 
   setupPreview() {
@@ -213,12 +215,14 @@ const ImageCropper = View.extend({
         width: this.cropScale.w,
         height: this.cropScale.h,
       })
-      .addClass('active');
+      .addClass('active')
 
     if (this.constrainRatio) {
-      this.$preview.find('strong').text(`${this.cropScale.w} x ${this.cropScale.h}`);
+      this.$preview
+        .find('strong')
+        .text(`${this.cropScale.w} x ${this.cropScale.h}`)
     }
   },
-});
+})
 
-export default ImageCropper;
+export default ImageCropper
