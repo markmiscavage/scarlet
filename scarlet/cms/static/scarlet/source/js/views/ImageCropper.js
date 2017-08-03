@@ -102,7 +102,7 @@ const ImageCropper = View.extend({
     }
 
     // this.$original.css({ width: coords.get('width') });
-    return {
+    const obj = {
       x: coords.get('x'),
       y: coords.get('y'),
       x2: coords.get('x2'),
@@ -111,6 +111,8 @@ const ImageCropper = View.extend({
       height: coords.get('height'),
       ...this.getScale(),
     };
+    console.log('OBJ', obj);
+    return obj;
   },
 
   buildMap(obj) {
