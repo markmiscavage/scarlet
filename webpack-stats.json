@@ -1,1 +1,0 @@
-{"status":"error","publicPath":"/static/","error":"ModuleBuildError","message":"Module build failed: SyntaxError: Unexpected token (5:0)\n\n  3 | \n  4 | const AutoSlug = View.extend({\n> 5 | <<<<<<< HEAD\n    | ^\n  6 | \trender: function() {\n  7 | \t\tthis.slugNode = this.$el.find('input')\n  8 | \t\tthis.sourceNode = this.$el\n"}
