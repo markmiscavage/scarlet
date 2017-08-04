@@ -9,6 +9,7 @@ const Formset = View.extend({
   events: {
     'click .formset__button--delete': 'delete',
     'click .formset__reorder': 'minimize',
+    'click .formset__button--minimize': 'collapseSingle',
     // 'click .button' : function(e){clickOpenPopup(e, (data) => console.log('thing', data));},
     // 'clidk .crop-link' : function(e){clickOpenPopup(e, (data) => console.log('thing', data))}
   },
@@ -31,7 +32,7 @@ const Formset = View.extend({
     this.$controls = this.$el.next('.formset__controls');
     this.prefix = this.$el.data('prefix');
     this.$el.prepend(
-      '<span class="formset__reorder-btn-group"><h4>re-order: </h4><input class="formset__reorder" id="reorder" type="checkbox" /><label for="reorder" class="formset__toggle-switch" /></span>',
+      '<span class="formset__reorder-btn-group"><h4>collapse all: </h4><input class="formset__reorder" id="reorder" type="checkbox" /><label for="reorder" class="formset__toggle-switch" /></span>',
     );
     this.setFormsetTypes();
     this.delegateEvents();
@@ -165,23 +166,26 @@ const Formset = View.extend({
 
   minimize() {
     const self = this;
-    const testString = /'moduleformformset'/;
     this.enableSort();
     if (this.sortMode) {
       $('.formset__form').each(function(index, value) {
-        $(this).addClass('formset__form--edit');
-        $(this).css({ height: '100px' });
-        const prefix = $(this).data('prefix');
-        const newString = prefix.replace('moduleformformset', '');
-        $(this).append(
-          `<h3><i class="fa ${self.iconMap[newString]} " aria-hidden="true"></i>${newString}</h3>`,
-        );
+        if (!$(this).hasClass('formset__form--edit')) {
+          $(this).addClass('formset__form--edit');
+          $(this).css({ height: '100px' });
+          const prefix = $(this).data('prefix');
+          const newString = prefix.replace('moduleformformset', '');
+          $(this).append(
+            `<h3><i class="fa ${self.iconMap[
+              newString
+            ]} " aria-hidden="true"></i>${newString}</h3>`,
+          );
 
-        $(this).children().each(function() {
-          if ($(this).hasClass('formset__field')) {
-            $(this).css({ display: 'none' });
-          }
-        });
+          $(this).children().each(function() {
+            if ($(this).hasClass('formset__field')) {
+              $(this).css({ display: 'none' });
+            }
+          });
+        }
       });
     } else {
       $('.formset__form').each(function(index, value) {
@@ -194,6 +198,40 @@ const Formset = View.extend({
           }
         });
       });
+    }
+  },
+
+  collapseSingle(e) {
+    const $formset = $(e.currentTarget).closest('.formset__form');
+    const prefix = $formset.data('prefix');
+    const newString = prefix.replace('moduleformformset', '');
+
+    if (!$($formset).hasClass('formset__form--edit')) {
+      $(e.target).removeClass('fa-minus').addClass('fa-plus');
+      $formset
+        .addClass('formset__form--edit')
+        .css({ height: '100px' })
+        .append(
+          `<h3><i class="fa ${this.iconMap[newString]} " aria-hidden="true"></i>${newString}</h3>`,
+        )
+        .children()
+        .each((i, dom) => {
+          if ($(dom).hasClass('formset__field')) {
+            $(dom).css({ display: 'none' });
+          }
+        });
+    } else {
+      $(e.target).removeClass('fa-plus').addClass('fa-minus');
+      $formset.find('h3').remove();
+      $formset
+        .removeClass('formset__form--edit')
+        .css({ height: 'auto' })
+        .children()
+        .each((i, dom) => {
+          if ($(dom).hasClass('formset__field')) {
+            $(dom).css({ display: 'block' });
+          }
+        });
     }
   },
 

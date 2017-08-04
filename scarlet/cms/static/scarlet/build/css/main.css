@@ -3365,14 +3365,21 @@ th:nth-child(1) {
   height: 0; }
 
 .formset__button--delete {
-  cursor: pointer;
-  position: absolute;
-  right: 15px;
-  top: 15px; }
+  cursor: pointer; }
   .formset__button--delete .fa {
     font-size: 26px; }
   .formset__button--delete input {
     display: none; }
+
+.formset__button--minimize {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  cursor: pointer;
+  margin-right: 15px; }
 
 .formset__field--has-add-button {
   display: -webkit-box;
@@ -3405,6 +3412,17 @@ th:nth-child(1) {
 
 .sweet-btn {
   margin-bottom: 30px; }
+
+.formset__actions {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  position: absolute;
+  right: 15px;
+  top: 15px; }
 
 .ui-dialog {
   padding: 10px;

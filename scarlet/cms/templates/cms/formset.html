@@ -1,11 +1,16 @@
 {{ form.non_field_errors }}
 
-{% if formset.can_delete %}
-	<div class="formset__button--delete">
-		<i class="fa fa-trash-o" aria-hidden="true"></i>
-		{{ form.DELETE }}
-	</div>
-{% endif %}
+<div class="formset__actions">
+  <div class="formset__button--minimize">
+    <i class="fa fa-minus" aria-hidden="true"></i>
+  </div>
+  {% if formset.can_delete %}
+    <div class="formset__button--delete">
+      <i class="fa fa-trash-o" aria-hidden="true"></i>
+      {{ form.DELETE }}
+    </div>
+  {% endif %}
+</div>
 {% for field in form %}
 	{% if field.name != 'DELETE' %}
 		{% if field.field.is_order_field %}

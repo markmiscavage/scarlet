@@ -98,10 +98,6 @@
 
 .formset__button--delete {
 	cursor: pointer;
-	// display: none;
-	position: absolute;
-	right: 15px;
-	top: 15px;
 
 	.fa {
 		font-size: 26px;
@@ -110,6 +106,13 @@
 	input {
 		display: none;
 	}
+}
+
+.formset__button--minimize {
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+	margin-right: 15px;
 }
 
 .formset__field--has-add-button {
@@ -133,4 +136,12 @@
 
 .sweet-btn {
 	margin-bottom: 30px;
+}
+
+.formset__actions {
+	display: flex;
+	justify-content: flex-end;
+	position: absolute;
+	right: 15px;
+	top: 15px;
 }

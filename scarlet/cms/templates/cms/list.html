@@ -65,8 +65,8 @@
     <thead>
     <tr>
       {% if actions and not list.empty %}
-        <th></th>
         <th><input type="checkbox" data-type="batch-check-all" /></th>
+        <th>ACTIONS</th>
       {% endif %}
           {% if not list.empty %}
             {% for f in list.labels %}
@@ -98,6 +98,11 @@
     {% endif %}
 
     <tr{% if list.auto_sort %} draggable="true"{% endif %}>
+    {% if actions %}
+    <td class="checkbox">
+      <input type="checkbox" data-type="batch-check-row" name ="{{ checkbox_name }}" value="{{ row.instance.pk }}" />
+    </td>
+    {% endif %}
       <td class="actions {% if list.auto_sort %}draggable{% endif %}">
       {% for action_link in action_links %}
         {% bundle_url bundle action_link.0 object=row.instance follow_parent=False as url %}
@@ -126,11 +131,7 @@
       {% endif %}
       {% endwith %}
       </td>
-      {% if actions %}
-      <td class="checkbox">
-        <input type="checkbox" data-type="batch-check-row" name ="{{ checkbox_name }}" value="{{ row.instance.pk }}" />
-      </td>
-      {% endif %}
+
 
       {% for elem in row %}
         {% bundle_url bundle "edit" object=row.instance follow_parent=False as edit_url %}
