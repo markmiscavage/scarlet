@@ -3310,9 +3310,6 @@ th:nth-child(1) {
             justify-content: space-between; }
     .formset__form--edit .formset__button--delete {
       position: relative;
-      -webkit-box-ordinal-group: 3;
-          -ms-flex-order: 2;
-              order: 2;
       top: 0;
       right: 0; }
 
@@ -3372,7 +3369,10 @@ th:nth-child(1) {
   height: 0; }
 
 .formset__button--delete {
-  cursor: pointer; }
+  cursor: pointer;
+  -webkit-box-ordinal-group: 3;
+      -ms-flex-order: 2;
+          order: 2; }
   .formset__button--delete .fa {
     font-size: 26px; }
   .formset__button--delete input {

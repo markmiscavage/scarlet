@@ -24,6 +24,15 @@ const Formset = View.extend({
       image: 'fa-picture-o',
       text: 'fa-file-text-o',
       video: 'fa-video-camera',
+      link: 'fa-link',
+      social: 'fa-users',
+      promo: 'fa-bullhorn',
+      newsletter: 'fa-newspaper-o',
+      audio: 'fa-headphones',
+      quote: 'fa-quote-left',
+      quiz: 'fa-question',
+      poll: 'fa-bar-chart',
+      seo: 'fa-search',
     };
   },
 
@@ -172,12 +181,11 @@ const Formset = View.extend({
         if (!$(this).hasClass('formset__form--edit')) {
           $(this).addClass('formset__form--edit');
           $(this).css({ height: '100px' });
-          const prefix = $(this).data('prefix');
-          const newString = prefix.replace('moduleformformset', '');
+          const name = $(this).data('module-name');
+          const type = $(this).data('module-type');
+
           $(this).append(
-            `<h3><i class="fa ${self.iconMap[
-              newString
-            ]} " aria-hidden="true"></i>${newString}</h3>`,
+            `<h3><i class="fa ${self.iconMap[type]} " aria-hidden="true"></i>${name}</h3>`,
           );
 
           $(this).children().each(function() {
@@ -203,17 +211,15 @@ const Formset = View.extend({
 
   collapseSingle(e) {
     const $formset = $(e.currentTarget).closest('.formset__form');
-    const prefix = $formset.data('prefix');
-    const newString = prefix.replace('moduleformformset', '');
+    const name = $formset.data('module-name');
+    const type = $formset.data('module-type');
 
     if (!$($formset).hasClass('formset__form--edit')) {
       $(e.target).removeClass('fa-minus').addClass('fa-plus');
       $formset
         .addClass('formset__form--edit')
         .css({ height: '100px' })
-        .append(
-          `<h3><i class="fa ${this.iconMap[newString]} " aria-hidden="true"></i>${newString}</h3>`,
-        )
+        .append(`<h3><i class="fa ${this.iconMap[type]} " aria-hidden="true"></i>${name}</h3>`)
         .children()
         .each((i, dom) => {
           if ($(dom).hasClass('formset__field')) {
