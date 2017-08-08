@@ -21,6 +21,15 @@ $margin: 10px;
 	flex-grow: 1;
 }
 
+.asset__edit-link {
+	margin-left: 10px;
+}
+
+.asset__buttons {
+	width: 100%;
+	padding-top: 10px;
+}
+
 .asset__select,
 .asset__crop-item {
 	@include flex-container;

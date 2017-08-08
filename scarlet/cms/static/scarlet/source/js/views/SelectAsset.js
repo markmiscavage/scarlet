@@ -12,13 +12,15 @@ const SelectAsset = View.extend({
     this.baseLink = this.$cropsList.data('base-link');
     this.url = this.$el.data('api');
     this.addOpen = false;
+    this.id = this.$input[0].defaultValue;
+    this.baseUrl = $('.asset__edit-link').data().base;
   },
 
   /**
    * Backbone Events Object
    */
   events: {
-    'click .button, .asset__crop-link': 'handlePopup',
+    'click .button, .asset__edit-link': 'handlePopup',
   },
 
   /**
@@ -41,6 +43,7 @@ const SelectAsset = View.extend({
     this.tag();
     this.autoTag();
     this.linkifyCrops();
+    $('.asset__edit-link').attr('href', `${this.baseUrl}${this.id}/edit`);
   },
 
   /**
@@ -105,6 +108,7 @@ const SelectAsset = View.extend({
    * @param  {object}
    */
   onSelect(value, $item) {
+    $('.asset__edit-link').attr('href', `${this.baseUrl}${value}/edit`);
     this.linkifyCrops();
     this.$preview.css('background-image', `url(${$item.attr('data-thumb')})`);
     if ($item.attr('data-src')) {
@@ -237,7 +241,6 @@ const SelectAsset = View.extend({
   },
 
   handlePopup(e) {
-    console.log('handlin pop ups');
     // e.preventDefault();
     // clickOpenModal(e, 'modal-add-asset', this.setSelected.bind(this), this.autoTags)
     clickOpenPopup(e, this.setSelected.bind(this));

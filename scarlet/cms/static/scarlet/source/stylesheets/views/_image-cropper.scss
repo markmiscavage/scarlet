@@ -1,6 +1,8 @@
 @import '../vendor/cropper';
 
 .image-cropper {
+	margin-top: 30px;
+	height: 60vh;
 	img {
 		max-width: 100%;
 	}
@@ -9,7 +11,12 @@
 			text-transform: none;
 		}
 	}
+
+	&__container {
+		height: 60vh;
+	}
 }
+
 //
 // .image-cropper__original,
 // .image-cropper__mask {

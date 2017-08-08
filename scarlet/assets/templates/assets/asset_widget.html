@@ -5,12 +5,16 @@
     <div class="asset__actions">
         <div class="asset__select">
             {{ hidden_input }}
-            {% if add_link %}
-            <a class="button button--primary asset__add-link" target="_blank" href="{{ add_link }}">
-                <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                Upload New
-            </a>
-            {% endif %}
+
+            <div class="asset__buttons">
+              {% if add_link %}
+              <a class="button button--primary asset__add-link" target="_blank" href="{{ add_link }}">
+                  <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                  Upload New
+              </a>
+              {% endif %}
+            <a class="button button--secondary asset__edit-link" data-base="{{ base_api_link }}" href="#">Edit Crop</a>
+          </div>
         </div>
         {% if sizes and show_crops %}
             <ul class="asset__crop-list" data-base-link="{{ base_api_link }}" >

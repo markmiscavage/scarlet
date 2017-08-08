@@ -19,12 +19,12 @@
 				</ul>
 			</nav>
 			//-->
-        <div>
-				<img class="image-cropper__original" src="{{ obj.image.file.url }}" alt="{{ obj.image.title }}" />
-      </div>
-				<div class="image-cropper__preview" data-scale-w="{{ obj.get_crop_config.width }}" data-scale-h="{{ obj.get_crop_config.height }}" data-zoom="out">
+        <div class="image-cropper__container">
+  				<img class="image-cropper__original" src="{{ obj.image.file.url }}" alt="{{ obj.image.title }}" />
+        </div>
+				<!-- <div class="image-cropper__preview" data-scale-w="{{ obj.get_crop_config.width }}" data-scale-h="{{ obj.get_crop_config.height }}" data-zoom="out">
 					<h3>Preview <strong></strong></h3>
-						<img src="{{ obj.image.file.url }}" alt="{{ obj.image.title }}" />
+						<img src="{{ obj.image.file.url }}" alt="{{ obj.image.title }}" /> -->
 				</div>
 
 			<fieldset>

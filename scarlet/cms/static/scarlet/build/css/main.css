@@ -2186,6 +2186,13 @@ svg {
       -ms-flex-positive: 1;
           flex-grow: 1; }
 
+.asset__edit-link {
+  margin-left: 10px; }
+
+.asset__buttons {
+  width: 100%;
+  padding-top: 10px; }
+
 .asset__select,
 .asset__crop-item {
   display: -webkit-box;
@@ -3743,11 +3750,15 @@ body.modal__body {
 .cropper-disabled .cropper-point {
   cursor: not-allowed; }
 
-.image-cropper img {
-  max-width: 100%; }
-
-.image-cropper h3 strong {
-  text-transform: none; }
+.image-cropper {
+  margin-top: 30px;
+  height: 60vh; }
+  .image-cropper img {
+    max-width: 100%; }
+  .image-cropper h3 strong {
+    text-transform: none; }
+  .image-cropper__container {
+    height: 60vh; }
 
 .image-cropper__preview {
   overflow: hidden;

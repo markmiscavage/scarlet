@@ -30,8 +30,8 @@ const ImageCropper = View.extend({
   setupCropper() {
     this.$original.cropper({
       data: this.setInitialCroparea(),
-      ready: this.cropperReady.bind(this),
-      crop: this.cropperClone.bind(this),
+      // ready: this.cropperReady.bind(this),
+      // crop: this.cropperClone.bind(this),
       cropmove: this.updateCropArea.bind(this),
       aspectRatio: this.cropScale.w / this.cropScale.h,
       autoCropArea: 1,
@@ -44,7 +44,8 @@ const ImageCropper = View.extend({
       modal: false,
       responsive: true,
       restore: true,
-      viewMode: 3,
+      viewMode: 1,
+      zoomable: false,
     });
   },
 
@@ -96,22 +97,21 @@ const ImageCropper = View.extend({
   setInitialCroparea() {
     const data = $('.crop-list__item').data();
     const coords = this.buildMap(data);
-
-    for (const [key, value] in coords) {
+    console.log(coords);
+    for (const [key, value] of coords) {
       this.cropCoords[key] = value;
     }
-
+    console.log('COORS', this.cropCoords);
+    console.log('get scale', this.getScale());
     // this.$original.css({ width: coords.get('width') });
     const obj = {
       x: coords.get('x'),
       y: coords.get('y'),
-      x2: coords.get('x2'),
-      y2: coords.get('y2'),
       width: coords.get('width'),
       height: coords.get('height'),
       ...this.getScale(),
     };
-    console.log('OBJ', obj);
+    console.log('OBJECT', obj);
     return obj;
   },
 
@@ -139,18 +139,18 @@ const ImageCropper = View.extend({
     let scaleX, scaleY;
 
     if (this.constrainRatio) {
-      scaleX = this.cropScale.w / this.cropCoords.w;
-      scaleY = this.cropScale.h / this.cropCoords.h;
+      scaleX = this.cropScale.w / this.cropCoords.width;
+      scaleY = this.cropScale.h / this.cropCoords.height;
     } else if (this.constrainHeight) {
       // set equal scaling ratio (to prevent distortion)
-      scaleX = scaleY = this.cropScale.h / this.cropCoords.h;
+      scaleX = scaleY = this.cropScale.h / this.cropCoords.height;
     } else if (this.constrainWidth) {
-      scaleX = scaleY = this.cropScale.w / this.cropCoords.w;
+      scaleX = scaleY = this.cropScale.w / this.cropCoords.width;
     } else {
       scaleX = scaleY =
         this.$original[0].naturalWidth /
-        this.cropCoords.w /
-        (this.$original[0].naturalHeight / this.cropCoords.h);
+        this.cropCoords.width /
+        (this.$original[0].naturalHeight / this.cropCoords.height);
     }
 
     return {
@@ -161,7 +161,6 @@ const ImageCropper = View.extend({
 
   updateCropArea(coords) {
     const data = this.$original.cropper('getData');
-    console.log('DATA --->', data);
     clearTimeout(this.refreshTimeout);
 
     if (parseInt(data.width, 10) < 0) {
@@ -229,15 +228,15 @@ const ImageCropper = View.extend({
 
   setConstraints() {
     const data = this.$preview.data();
-    this.constrainHeight = data.scaleH !== 'None';
-    this.constrainWidth = data.scaleW !== 'None';
+    this.constrainHeight = data.scaleh !== 'None';
+    this.constrainWidth = data.scalew !== 'None';
     this.constrainRatio = this.constrainHeight && this.constrainWidth;
 
     // set aspect ratio for crop
     // also defines .mask box size
     this.cropScale = {
-      w: this.constrainWidth ? data.scaleW : this.$original[0].naturalWidth,
-      h: this.constrainHeight ? data.scaleH : this.$original[0].naturalHeight,
+      w: this.constrainWidth ? data.scalew : this.$original[0].naturalWidth,
+      h: this.constrainHeight ? data.scaleh : this.$original[0].naturalHeight,
     };
   },
 
