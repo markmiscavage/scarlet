@@ -130,6 +130,12 @@ class AssetFormView(views.FormView):
 
         asset_tags = self.request.GET.get('tags', None)
         if asset_tags:
+            # If `asset_tags` contains only one tag followed by `,` then a blank
+            # space will be displayed. We're going to avoid that:
+            asset_tags_lst = asset_tags.split(',')
+            if len(asset_tags_lst) == 2:
+                asset_tags = asset_tags_lst[0]
+
             initial['tags'] = asset_tags
 
         if len(initial):
