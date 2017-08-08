@@ -74,13 +74,13 @@
           <div class="formset__forms">
             {% if formset.combined %}
               {% for form, fset in formset %}
-                <div class="formset__form" data-prefix="{{ fset.prefix }}">
+                <div class="formset__form" data-prefix="{{ fset.prefix }}" data-module-type="{{ form.instance.icon_kind }}" data-module-name="{{ form.instance.name }}" >
                   {% include "cms/formset.html" with form=form formset=fset %}
                 </div>
               {% endfor %}
             {% else %}
               {% for form in formset %}
-                <div class="formset__form" data-prefix="{{ formset.prefix }}">
+                <div class="formset__form" data-prefix="{{ formset.prefix }}" data-module-type="{{ form.instance.icon_kind }}" data-module-name="{{ form.instance.name }}" >
                   {% include "cms/formset.html" with form=form formset=formset %}
                 </div>
               {% endfor %}

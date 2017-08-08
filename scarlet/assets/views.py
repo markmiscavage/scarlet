@@ -130,7 +130,8 @@ class AssetFormView(views.FormView):
 
         asset_tags = self.request.GET.get('tags', None)
         if asset_tags:
-            initial['tags'] = asset_tags
+            # Making sure blank spaces tags are not displayed
+            initial['tags'] = ','.join([item for item in asset_tags.split(',') if item != u''])
 
         if len(initial):
             kwargs['initial'].update(initial)
