@@ -1,0 +1,49 @@
+.tabs {
+  @include microfix;
+  margin: 0 0 0 10px;
+  padding: 0;
+  white-space: nowrap;
+  overflow: auto;
+  border-bottom: 1px solid $gray-light;
+
+  > li {
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  .button {
+    color: $white;
+    background-color: $gray;
+
+    &.active,
+    &:hover {
+      color: $white;
+      background-color: #0084ff;
+    }
+  }
+}
+
+.sub-tabs {
+    margin: 0 0 40px;
+    padding: 0;
+    border-bottom: none;
+
+    > li  {
+      display: inline-block;
+      margin-right: 10px;
+
+      &:not(:last-of-type) {
+        @include divider($size: 30px);
+      }
+    }
+
+    a {
+      display: block;
+      padding: 10px;
+
+      &.active {
+        color: $white;
+        background-color: $gray;
+      }
+    }
+}

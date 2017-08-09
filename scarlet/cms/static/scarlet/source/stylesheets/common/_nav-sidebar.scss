@@ -1,0 +1,35 @@
+.nav-sidebar {
+  float: left;
+  width: 20%;
+}
+
+.nav-sidebar + .content {
+  float: right;
+  width: 79%;
+  padding-left: 20px;
+
+  &:before {
+    content: '';
+    width: 1px;
+    background-color: $gray-light;
+    position: absolute;
+    height: 100%;
+    top: -50px;
+
+    // negate margin-left instead of left so bar stays next to content
+    margin-left: -30px;
+  }
+}
+
+.nav-sidebar__link {
+  color: $black;
+  display: block;
+  padding: 12px 0 12px 15px;
+  text-transform: uppercase;
+
+  // TODO: add class to active page (backend)
+  &:active {
+    color: $white;
+    background-color: $red;
+  }
+}

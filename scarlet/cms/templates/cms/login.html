@@ -1,38 +1,136 @@
-{% extends "cms/base_site.html" %}
-{% load i18n %}
+{% load i18n %}{% load cms %}
+{% load render_bundle from webpack_loader %}
+{% spaceless %}
+<!doctype html>
+{# paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ #}
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}><![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8" lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}><![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}><![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}><!--<![endif]-->
+  <head>
+    <meta charset="utf-8" />
 
+    {# Use the .htaccess and remove these lines to avoid edge case issues. More info: h5bp.com/b/378 #}
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-{% block content %}
-{% if form.errors and not form.non_field_errors and not form.this_is_the_login_form.errors %}
-<p class="errornote">
-{% blocktrans count counter=form.errors.items|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
-</p>
-{% endif %}
+    <title>{% block title %}{{ title }}{% endblock title %}</title>
 
-{% if form.non_field_errors or form.this_is_the_login_form.errors %}
-{% for error in form.non_field_errors|add:form.this_is_the_login_form.errors %}
-<p class="errornote">
-    {{ error }}
-</p>
-{% endfor %}
-{% endif %}
+    <meta name="description" content="{% block meta_description %}{{ page.description }}{% endblock %}" />
+    <meta name="keywords" content="{% block meta_keywords %}{{ page.keywords }}{% endblock %}" />
+    <meta name="author" content="RED Interactive Agency" />
 
-<div id="content-main">
-<form action="" method="post" id="login-form">{% csrf_token %}
-  <div class="form-row">
-    {% if not form.this_is_the_login_form.errors %}{{ form.username.errors }}{% endif %}
-    <label for="id_username" class="required">{% trans 'Username:' %}</label> {{ form.username }}
-  </div>
-  <div class="form-row">
-    {% if not form.this_is_the_login_form.errors %}{{ form.password.errors }}{% endif %}
-    <label for="id_password" class="required">{% trans 'Password:' %}</label> {{ form.password }}
-    <input type="hidden" name="this_is_the_login_form" value="1" />
-    <input type="hidden" name="next" value="{{ next }}" />
-  </div>
-  <div class="submit-row">
-    <label>&nbsp;</label><input type="submit" value="{% trans 'Log in' %}" />
-  </div>
-</form>
+    {# Mobile viewport optimized: j.mp/bplateviewport #}
+    <meta name="viewport" content="width=1024" />
 
-</div>
-{% endblock %}
+    {# Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons #}
+<link rel="stylesheet"  href="{{ STATIC_URL }}css/main.css" />
+    {# CSS: implied media="all" #}
+    {% if not settings.TEMPLATE_DEBUG %}
+      <link rel="stylesheet"  href="{{ STATIC_URL }}css/bundle.css" />
+    {% else %}
+      {% render_bundle 'main' 'css' %}
+    {% endif %}
+
+    {# All JavaScript at the bottom, except for Modernizr. #}
+    {# Modernizr enables HTML5 elements & feature detects; For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ #}
+    <!-- <script src="{{ STATIC_URL }}scarlet/legacy/js/libs/modernizr.js"></script> -->
+    {% block extrastyle %}{% endblock %}
+    {% block extrahead %}{% endblock %}
+  </head>
+
+  <body>
+    <div class="login">
+      <img src="{{ STATIC_URL }}images/logo-scarlet-2.png" class="login__logo--main" />
+    {% if form.errors and not form.non_field_errors and not form.this_is_the_login_form.errors %}
+    <p class="errornote">
+    {% blocktrans count counter=form.errors.items|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
+    </p>
+    {% endif %}
+
+    {% if form.non_field_errors or form.this_is_the_login_form.errors %}
+    {% for error in form.non_field_errors|add:form.this_is_the_login_form.errors %}
+    <p class="errornote">
+        {{ error }}
+    </p>
+    {% endfor %}
+    {% endif %}
+
+      <form action="" method="post" id="login-form" class="login__form">{% csrf_token %}
+        <div class="field-row">
+          {% if not form.this_is_the_login_form.errors %}{{ form.username.errors }}{% endif %}
+          <label for="id_username" class="required">{% trans 'Username:' %}</label> {{ form.username }}
+        </div>
+        <div class="field-row">
+          {% if not form.this_is_the_login_form.errors %}{{ form.password.errors }}{% endif %}
+          <label for="id_password" class="required">{% trans 'Password:' %}</label> {{ form.password }}
+          <input type="hidden" name="this_is_the_login_form" value="1" />
+          <input type="hidden" name="next" value="{{ next }}" />
+        </div>
+        <div class="button-group button-group--submit">
+          <input class="button button--primary" type="submit" value="{% trans 'Log in' %}" />
+        </div>
+      </form>
+      <footer class="login__footer">
+        {% block footer %}
+          <p class="footer-main__logo footer-main__logo--scarlet"><strong>Powered by</strong>
+            <a href="{% url 'admin:cms_index' %}">
+              <svg viewBox="0 0 85.7 20.7">
+                <use xlink:href="#logo-scarlet">
+                  Scarlet
+                </use>
+              </svg>
+            </a>
+          </p>
+          <p class="footer-main__logo footer-main__logo--red"><strong>Developed by</strong>
+            <a href="//ff0000.com" target="_blank">
+              <svg viewBox="0 0 85.7 20.7">
+                <use xlink:href="#logo-red">
+                  RED Interactive Agency
+                </use>
+              </svg>
+            </a>
+          </p>
+          {% endblock %}
+      </footer>
+    </div>
+
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: none">
+      <defs>
+        <!-- NOTE: create .svg from source and add it to these defs with ID (static or dynamic, e.g. client logo) -->
+        <g id="logo-scarlet" >
+          <path class="type" d="M24.5,10c-2.4-0.5-2.9-1.1-2.9-2.2v0c0-1,1-1.9,2.4-1.9c1.1,0,2,0.3,3,1.1l0.5-0.6c-1-0.8-2-1.2-3.4-1.2
+            c-1.9,0-3.2,1.1-3.2,2.6v0c0,1.5,1,2.3,3.4,2.8c2.3,0.5,2.8,1.1,2.8,2.1v0c0,1.1-1,2-2.5,2c-1.5,0-2.5-0.5-3.6-1.5l-0.5,0.6
+            c1.2,1.1,2.4,1.6,4,1.6c1.9,0,3.3-1.1,3.3-2.7v0C27.8,11.3,26.8,10.4,24.5,10z" stroke="#eee"/>
+          <path class="type" d="M34.3,14.8c-2.4,0-4.2-2-4.2-4.5v0c0-2.5,1.8-4.5,4.2-4.5c1.5,0,2.5,0.6,3.4,1.5l0.5-0.5
+            c-1-0.9-2.1-1.6-3.9-1.6c-2.9,0-5,2.3-5,5.2v0c0,2.9,2.1,5.1,5,5.1c1.8,0,2.9-0.7,4-1.7l-0.5-0.5C36.7,14.3,35.7,14.8,34.3,14.8z"
+            stroke="#eee" />
+          <path class="type" d="M43.9,5.3l-4.7,10.1H40l1.3-2.8h5.9l1.3,2.8h0.8L44.6,5.3H43.9z M41.6,11.9l2.6-5.8l2.6,5.8H41.6z" stroke="#eee"/>
+          <path class="type" d="M58.7,8.2L58.7,8.2c0-0.7-0.3-1.4-0.8-1.9c-0.6-0.6-1.6-1-2.8-1H51v10h0.7v-4.1h3.2h0l3.2,4.1h0.9l-3.3-4.3
+            C57.5,10.8,58.7,9.9,58.7,8.2z M51.7,10.5V6h3.4C56.9,6,58,6.9,58,8.2v0c0,1.4-1.2,2.3-2.9,2.3H51.7z" stroke="#eee"/>
+          <polygon class="type" points="61.7,5.3 61,5.3 61,15.3 67.6,15.3 67.6,14.6 61.7,14.6  " stroke="#eee"/>
+          <polygon class="type" points="70.1,10.6 75.8,10.6 75.8,9.9 70.1,9.9 70.1,6 76.4,6 76.4,5.3 69.3,5.3 69.3,15.3 76.5,15.3
+            76.5,14.6 70.1,14.6   " stroke="#eee"/>
+          <polygon class="type" points="78,5.3 78,6 81.5,6 81.5,15.3 82.2,15.3 82.2,6 85.7,6 85.7,5.3  " stroke="#eee"/>
+          <polygon class="bar" points="13.7,0 8.5,0 0,12.2 3.5,14.6   "/>
+          <polygon class="bar" points="1.7,20.7 6.9,20.7 15.4,8.5 11.9,6  "/>
+        </g>
+        <g id="logo-red">
+          <defs>
+            <style>
+          .type{fill:#f2f2f2;}.bar{fill:red;}
+          </style>
+        </defs>
+          <path class="text" d="M47.6,6.8L47.6,6.8c0-2-0.6-3.5-1.7-4.6C44.6,0.8,42.5,0,39.5,0h-9.3v19.7h5.5v-6H38H38l4,6h6.3l-4.7-6.9
+            C46,11.8,47.6,9.8,47.6,6.8z M42.1,7.1c0,1.4-1.1,2.3-2.9,2.3h-3.6V4.7h3.6C41,4.7,42.1,5.5,42.1,7.1L42.1,7.1z" fill="#f2f2f2"/>
+          <polygon class="text" points="54.7,11.9 64.1,11.9 64.1,7.6 54.7,7.6 54.7,4.6 65.1,4.6 65.1,0 49.3,0 49.3,19.7 65.2,19.7
+            65.2,15.1 54.7,15.1   " fill="#f2f2f2"/>
+          <path class="text" d="M74.5,0h-7.6v19.7h7.5c7.1,0,11.2-4.2,11.2-9.9V9.7C85.6,4.1,81.5,0,74.5,0z M80,9.9c0,3.2-2.2,5-5.4,5h-2.2
+            v-10h2.2C77.9,4.8,80,6.7,80,9.9L80,9.9z" fill="#f2f2f2"/>
+          <polygon class="bar" points="0,19.7 16,19.7 12.7,15 4.7,15 4.7,4.7 20.7,4.7 20.7,19.7 25.4,19.7 25.4,0 0,0  "/>
+        </g>
+      </defs>
+    </svg>
+  </body>
+</html>
+
+{% endspaceless %}

@@ -1,0 +1,67 @@
+@import '../helpers/_vars';
+
+.login {
+	background-color: #191919;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-flow: column;
+	@include raleway;
+	position: relative;
+
+	strong {
+		color: $gray-light;
+		font-size: 9px;
+	}
+
+	label {
+		color: $gray;
+		font-size: 18px;
+		font-weight: 300;
+		margin-bottom: 10px;
+	}
+
+	svg {
+		color: #fff;
+		height: 20px;
+
+		.bar {
+			fill: $red;
+		}
+
+		.type {
+			stroke: $gray-light;
+		}
+	}
+
+	&__logo--main {
+		width: 200px;
+		margin-bottom: 80px;
+	}
+
+	&__form {
+		width: 255px;
+	}
+
+	& .button-group--submit {
+		border-top: none;
+		margin: 0 auto;
+		text-align: center;
+		padding-top: 5px;
+	}
+
+	&__footer {
+		position: absolute;
+		bottom: 0;
+	}
+
+	& .footer-main__logo--scarlet strong {
+		text-indent: 61px;
+	}
+
+	& .footer-main__logo--red strong {
+		text-indent: 45px;
+		text-align: center;
+	}
+}

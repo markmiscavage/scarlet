@@ -1,0 +1,56 @@
+.footer-main {
+  @include microfix;
+  @include width-wrapper;
+  padding: 50px 60px;
+}
+
+.footer-main__logo {
+  font-family: $open-sans;
+  font-size: 12px;
+  float: left;
+  width: 50%;
+
+  p {
+
+    &:last-of-type {
+      float: right;
+      text-align: right;
+    }
+  }
+
+  strong {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  a {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+}
+
+.footer-main__logo--red {
+
+  a {
+    width: 141px;
+    height: 31px;
+    float: right;
+  }
+
+  strong {
+    text-align: right;
+  }
+}
+
+.footer-main__logo--scarlet {
+
+  a {
+    width: 166px;
+    height: 33px;
+  }
+
+  strong {
+    text-indent: 40px;
+  }
+}

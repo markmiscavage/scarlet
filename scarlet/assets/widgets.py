@@ -45,7 +45,7 @@ class AssetsFileWidget(TaggedRelationWidget):
 
     def render(self, name, value, attrs=None):
         obj = self.obj_for_value(value)
-
+        print(dir(obj.file))
         # Go directly to parent of APIChoiceWidget to get input
         hidden_input = super(APIChoiceWidget, self).render(
             name, value, attrs=attrs)

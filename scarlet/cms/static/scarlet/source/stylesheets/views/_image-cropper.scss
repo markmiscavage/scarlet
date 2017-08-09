@@ -1,0 +1,56 @@
+@import '../vendor/cropper';
+
+.image-cropper {
+	margin-top: 30px;
+	height: 60vh;
+	img {
+		max-width: 100%;
+	}
+	h3 {
+		strong {
+			text-transform: none;
+		}
+	}
+
+	&__container {
+		height: 60vh;
+	}
+}
+
+//
+// .image-cropper__original,
+// .image-cropper__mask {
+// 	@include box-shadow;
+// }
+//
+// .image-cropper__original {
+// 	margin: auto;
+// 	text-align: center;
+//
+// 	> div {
+// 		display: inline-block;
+// 	}
+// }
+//
+.image-cropper__preview {
+	overflow: hidden;
+	padding: 0;
+	width: 600px;
+	height: auto;
+}
+//
+// .image-cropper__mask {
+// 	@include box-shadow;
+// 	width: 400px;
+// 	height: 250px;
+// 	overflow: hidden;
+// 	opacity: 0;
+//
+// 	&.active {
+// 		opacity: 1;
+// 	}
+// }
+//
+// .image-cropper__settings {
+// 	@include hide-block;
+// }

@@ -1,0 +1,31 @@
+.pagination {
+  background-color: #fff;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.pagination__links {
+  text-transform: uppercase;
+}
+
+.pagination__current-page {
+  margin: 0 8px;
+
+  &:first-child {
+    margin-left: 0;
+  }
+}
+
+.pagination__previous,
+.pagination__next {
+  display: inline-block;
+  background-color: #0084ff;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+
+  i {
+    color: #fff;
+  }
+}

@@ -1,0 +1,21 @@
+@import url(//fonts.googleapis.com/css?family=Julius+Sans+One);
+@import url(//fonts.googleapis.com/css?family=Raleway:300,400,600);
+@import url(//fonts.googleapis.com/css?family=Open+Sans:400,600);
+
+$helvetica        : 'Helvetica Neue', Helvetica, Arial, sans-serif !default;
+$georgia          : Georgia, Cambria, 'Times New Roman', Times, serif !default;
+$lucida-grande    : 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif !default;
+$monospace        : 'Bitstream Vera Sans Mono', Consolas, Courier, monospace !default;
+$verdana          : Verdana, Geneva, sans-serif !default;
+$julius-sans-one  : 'Julius Sans One', sans-serif !default;
+$raleway          : 'Raleway', sans-serif !default;
+$open-sans        : 'Open Sans', sans-serif !default;
+
+@mixin helvetica            { font-family: $helvetica; }
+@mixin georgia              { font-family: $georgia; }
+@mixin lucida-grande        { font-family: $lucida-grande; }
+@mixin monospace            { font-family: $monospace; }
+@mixin verdana              { font-family: $verdana; }
+@mixin julius-sans-one      { font-family: $julius-sans-one; }
+@mixin raleway              { font-family: $raleway; }
+@mixin open-sans            { font-family: $open-sans; }

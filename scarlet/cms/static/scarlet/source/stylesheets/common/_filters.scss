@@ -1,0 +1,29 @@
+.filters {
+  @include hover-flip;
+  position: relative;
+  width: 30%;
+  float: right;
+  text-align: right;
+
+  .button-group {
+    margin-top: 20px;
+    padding-top: 20px;
+  }
+}
+
+.filters__label {
+  display: inline-block;
+  margin-right: 10px;
+  text-transform: uppercase;
+}
+
+.filters__form {
+  @include flyout($hover-selector: '.filters');
+  background-color: $white;
+  padding: 20px;
+  text-align: left;
+
+  label:not(first-of-type) {
+    margin-top: 20px;
+  }
+}

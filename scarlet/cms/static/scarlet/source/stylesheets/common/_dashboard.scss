@@ -1,0 +1,45 @@
+.dashboard {
+}
+
+.dashboard-history {
+	caption {
+		margin-bottom: 30px;
+		@include heading-large;
+	}
+
+	& thead tr:nth-child(2)
+    th:nth-child(1) {
+		width: 8%;
+		padding-left: 0;
+		text-align: center;
+	}
+	th:nth-child(2) {
+		width: 18%;
+		min-width: 190px;
+	}
+	th:nth-child(3) {
+		width: 14%;
+	}
+	th:nth-child(4) {
+		width: 49%;
+	}
+	th:nth-child(5) {
+		width: 11%;
+	}
+
+	td:first-of-type:not(:only-child) {
+		padding-left: 40px;
+	}
+}
+
+.dashboard-history__filter {
+	@include microfix;
+	position: absolute;
+	right: 20px;
+	top: 20px;
+
+	label,
+	.button {
+		display: none;
+	}
+}

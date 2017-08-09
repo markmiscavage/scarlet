@@ -12,16 +12,16 @@
             <ul>
             {% for obj in queryset %}
                 <li class="object-name">{{ obj }}
-                    <em>{% if obj.is_published %}Currently live, {% else %}Currently not live,{% endif %}
+                    <em>{% if item.is_published %}Currently live, {% else %}Currently not live,{% endif %}
                         {{ obj.status_line }}</em>
                 </li>
             {% endfor %}
             </ul>
         {% endifequal %}
     {{ publish_form }}
-    <p class="submit-row">
-        <a class="button" href="{{ cancel_url }} ">Cancel</a>
-        <input class="big" type="submit" name='modify' value={{ action }} />
-    </p>
+    <div class="button-group button-group--submit">
+        <a class="button button--secondary" href="{{ cancel_url }} ">Cancel</a>
+        <input class="button button--primary" type="submit" name='modify' value="{{ action }}" />
+    </div>
 </form>
 {% endblock %}

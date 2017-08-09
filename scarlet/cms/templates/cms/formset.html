@@ -1,28 +1,33 @@
 {{ form.non_field_errors }}
-
-{% if formset.can_delete %}
-	<div class="widget-formset-delete">
-		<b>X</b>
-		{{ form.DELETE }}
-	</div>
-{% endif %}
+<div class="formset__actions">
+  {% if formset.can_delete %}
+  	<div class="formset__button--delete">
+  		<i class="fa fa-trash-o" aria-hidden="true"></i>
+  		{{ form.DELETE }}
+  	</div>
+  {% endif %}
+  <div class="formset__button--minimize">
+    <i class="fa fa-minus" aria-hidden="true"></i>
+  </div>
+</div>
 {% for field in form %}
 	{% if field.name != 'DELETE' %}
 		{% if field.field.is_order_field %}
-			<div class="widget-formset-order">
+			<div class="formset__order">
 				{{ field }}
 			</div>
         	{{ field.errors }}
 		{% else %}
-			{% if not field.is_hidden %}
-                <p class="{% if field.is_date %}date{% endif %} {% if field.is_checkbox %}checkbox{% endif %} {% if field.errors %}error-field{% endif %}">
-				{{ field.label_tag }}
-				{% if field.field.help_text %}
-					<em class="help">{{ field.field.help_text|safe }}</em>
-				{% endif %}
-			{% endif %}
-			{{ field }}</p>
-        	{{ field.errors }}
+      <div class="formset__field {% if field.is_date %}date{% endif %} {% if field.is_checkbox %}checkbox{% endif %} {% if field.errors %}error-field{% endif %}">
+  			{% if not field.is_hidden %}
+  				{{ field.label_tag }}
+  				{% if field.field.help_text %}
+  					<em class="help">{{ field.field.help_text|safe }}</em>
+  				{% endif %}
+  			{% endif %}
+			{{ field }}
+      </div>
+      {{ field.errors }}
 		{% endif %}
 	{% endif %}
 {% endfor %}

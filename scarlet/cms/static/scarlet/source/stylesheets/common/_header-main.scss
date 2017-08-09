@@ -1,0 +1,52 @@
+.header-main {
+  border-bottom: 1px solid $white;
+  padding: 45px 30px 0;
+  width: 100%;
+}
+
+.header-main__logo {
+  width: 190px;
+  height: 40px;
+  float: left;
+  @include heading-large;
+
+  a {
+    cursor: pointer;
+    display: block;
+    height: 100%;
+  }
+}
+
+.nav-account {
+  float: right;
+  text-transform: uppercase;
+  text-align: right;
+
+  p {
+    margin-bottom: 10px;
+    @include raleway;
+    font-size: 15px;
+  }
+
+  strong {
+    font-weight: bold;
+  }
+
+  a {
+    color: #000;
+    font-size: 12px;
+
+    &:hover{
+      color: $red;
+    }
+
+    &:not(:last-of-type) {
+      @include divider($size: 10px);
+    }
+  }
+}
+
+.user-nav {
+  display: flex;
+  flex-direction: row;
+}
