@@ -96,20 +96,11 @@
   },
   "peerDependencies": {},
   "babel": {
-    "presets": [
-      "env",
-      "es2015-without-strict",
-      "stage-0",
-      "stage-1"
-    ],
-    "plugins": [
-      "transform-runtime"
-    ],
+    "presets": ["env", "es2015-without-strict", "stage-0", "stage-1"],
+    "plugins": ["transform-runtime"],
     "env": {
       "production": {
-        "plugins": [
-          "transform-runtime"
-        ]
+        "plugins": ["transform-runtime"]
       }
     }
   },
@@ -117,7 +108,7 @@
     "start": "node ./webpack-server.js",
     "save-prebuild": "npm run lint",
     "build": "npm run clean && webpack --config webpack.prod.config.js",
-    "clean": "rimraf ./scarlet/cms/static/scarlet/build",
+    "clean": "rimraf ./scarlet/cms/static/scarlet",
     "lint": "standard",
     "test": "karma start karma.conf.js"
   }

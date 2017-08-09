@@ -14,5 +14,5 @@ module.exports = {
   //   use: ['css-loader', 'sass-loader'],
   // }),
 
-  fontAwesomeCustomizations: './scarlet/cms/static/scarlet/source/stylesheets/vendor/_font-awesome.scss',
-}
+  fontAwesomeCustomizations: './scarlet/cms/source/stylesheets/vendor/_font-awesome.scss',
+};
