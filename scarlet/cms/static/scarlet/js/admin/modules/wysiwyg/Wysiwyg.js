@@ -1,28 +1,16 @@
 define(
-
-	[
-		'rosy/base/DOMClass',
-		'$',
-		'wysihtml5',
-		'./commands/commands',
-		'./WysiwygRules'
-	],
-
-	function (DOMClass, $, wysihtml5, commands, wysihtml5ParserRules) {
-
-		'use strict';
-
-		var guid = 0;
+	['rosy/base/DOMClass', '$', 'wysihtml5', './commands/commands', './WysiwygRules'],
+	(DOMClass, $, wysihtml5, commands, wysihtml5ParserRules) => {
+		let guid = 0;
 
 		return DOMClass.extend({
+			dom: null,
+			toolbar: null,
+			textarea: null,
 
-			dom : null,
-			toolbar : null,
-			textarea : null,
+			count: 0,
 
-			count : 0,
-
-			init : function (dom) {
+			init(dom) {
 				this.dom = dom;
 				this.toolbar = this.dom.find('.wysiwyg-toolbar');
 				this.textarea = this.dom.find('.wysiwyg-textarea');
@@ -30,10 +18,10 @@ define(
 				this._initWysihtml5();
 			},
 
-			_initWysihtml5 : function () {
-				var id = 'wysihtml5-' + (++guid),
-					textareaId = id + '-textarea',
-					toolbarId = id + '-toolbar',
+			_initWysihtml5() {
+				let id = `wysihtml5-${++guid}`,
+					textareaId = `${id}-textarea`,
+					toolbarId = `${id}-toolbar`,
 					editor;
 
 				this.toolbar.attr('id', toolbarId);
@@ -44,14 +32,14 @@ define(
 					style: false,
 					toolbar: toolbarId,
 					stylesheets: '/static/scarlet/css/wysiwyg.css',
-					id: id
+					id,
 				});
 
-				editor.on('load', function () {
+				editor.on('load', () => {
 					editor.id = id;
 
 					// load audio sources
-					this.dom.find('audio').each(function () {
+					this.dom.find('audio').each(function() {
 						$(this)[0].load();
 					});
 
@@ -59,12 +47,13 @@ define(
 						this._addListeners();
 					}
 
-				}.bind(this));
+					this.dom.addClass('widget-wysiwyg--rendered');
+				});
 
 				this.editor = editor;
 			},
 
-			_addListeners : function () {
+			_addListeners() {
 				this.editor.on('show:dialog', this.onShowDialog);
 				this.editor.on('save:dialog', this.onSaveDialog);
 				this.editor.on('update:dialog', this.onUpdateDialog);
@@ -73,29 +62,31 @@ define(
 				$('form[data-form-id=edit]').on('submit', this.onSubmit);
 			},
 
-			enableEditor: function () {
+			enableEditor() {
 				$(this.editor.composer.sandbox.getDocument()).find('a').off('click', this.preventClick);
 				this.editor.composer.enable();
 			},
 
-			disableEditor: function () {
+			disableEditor() {
 				$(this.editor.composer.sandbox.getDocument()).find('a').on('click', this.preventClick);
 				this.editor.composer.disable();
 			},
 
-			preventClick: function (e) {
+			preventClick(e) {
 				e.preventDefault();
 			},
 
-			onSubmit: function () {
-				var $editor = $(document.createElement('div')).html(this.editor.composer.getValue()),
-					$annotations = $(document.createElement('div')).html(this.dom.find('.wysiwyg-annotations').val()),
+			onSubmit() {
+				let $editor = $(document.createElement('div')).html(this.editor.composer.getValue()),
+					$annotations = $(document.createElement('div')).html(
+						this.dom.find('.wysiwyg-annotations').val(),
+					),
 					$this;
 
-				$annotations.find('span').each(function () {
+				$annotations.find('span').each(function() {
 					$this = $(this);
 
-					if ($editor.find('[data-annotation-id=' + $this.attr('id') + ']').length === 0) {
+					if ($editor.find(`[data-annotation-id=${$this.attr('id')}]`).length === 0) {
 						$this.remove();
 					}
 				});
@@ -104,9 +95,9 @@ define(
 				this.enableEditor();
 			},
 
-			onShowDialog: function (data) {
-				var command = data.command,
-					$button = this.toolbar.find('.wysiwyg-buttons a[data-wysihtml5-command=' + data.command + ']');
+			onShowDialog(data) {
+				let command = data.command,
+					$button = this.toolbar.find(`.wysiwyg-buttons a[data-wysihtml5-command=${data.command}]`);
 
 				// force dialog to close if command is disabled
 				if ($button.hasClass('disabled')) {
@@ -115,10 +106,14 @@ define(
 					return;
 				}
 
-				var annotationId = $(this.editor.composer.selection.getSelection().nativeSelection.anchorNode.parentNode).attr('data-annotation-id'),
+				let annotationId = $(
+						this.editor.composer.selection.getSelection().nativeSelection.anchorNode.parentNode,
+					).attr('data-annotation-id'),
 					annotationsHtml = this.dom.find('.wysiwyg-annotations').val(),
 					$annotationTextarea = $(data.dialogContainer).find('textarea'),
-					$annotation = $(document.createElement('div')).html(annotationsHtml).find('#' + annotationId);
+					$annotation = $(document.createElement('div'))
+						.html(annotationsHtml)
+						.find(`#${annotationId}`);
 
 				if ($annotation) {
 					$annotationTextarea.val($annotation.html());
@@ -129,30 +124,35 @@ define(
 				this.disableEditor();
 			},
 
-			onSaveDialog: function (data) {
-				var annotationId = $(this.editor.composer.selection.getSelection().nativeSelection.anchorNode.parentNode).attr('data-annotation-id'),
+			onSaveDialog(data) {
+				let annotationId = $(
+						this.editor.composer.selection.getSelection().nativeSelection.anchorNode.parentNode,
+					).attr('data-annotation-id'),
 					annotationsEl = this.dom.find('.wysiwyg-annotations'),
-					annotationHtml = '<span id="' + annotationId + '">' + $(data.dialogContainer).find('textarea').val() + '</span>';
+					annotationHtml = `<span id="${annotationId}">${$(data.dialogContainer)
+						.find('textarea')
+						.val()}</span>`;
 
 				annotationsEl.val(annotationsEl.val() + annotationHtml);
 				this.enableEditor();
 			},
 
-			onUpdateDialog: function (data) {
-				var annotationId = $(this.editor.composer.selection.getSelection().nativeSelection.anchorNode.parentNode).attr('data-annotation-id'),
+			onUpdateDialog(data) {
+				let annotationId = $(
+						this.editor.composer.selection.getSelection().nativeSelection.anchorNode.parentNode,
+					).attr('data-annotation-id'),
 					annotationsHtml = this.dom.find('.wysiwyg-annotations').val(),
 					annotationHtml = $(data.dialogContainer).find('textarea').val(),
 					tempEl = $(document.createElement('div'));
 
-				$(tempEl).html(annotationsHtml).find('#' + annotationId).html(annotationHtml);
+				$(tempEl).html(annotationsHtml).find(`#${annotationId}`).html(annotationHtml);
 				this.dom.find('.wysiwyg-annotations').val($(tempEl).html());
 				this.enableEditor();
-
 			},
 
-			onCancelDialog: function (data) {
+			onCancelDialog(data) {
 				this.enableEditor();
-			}
+			},
 		});
-	}
+	},
 );
