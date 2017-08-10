@@ -1,4 +1,5 @@
 import { View } from 'backbone';
+import hotspot from './lib/jquery.hotspot.js';
 import SelectAsset from '../../../../../cms/static/scarlet/source/js/views/SelectAsset';
 import Editor from '../../../../../cms/static/scarlet/source/js/views/editor/Editor';
 

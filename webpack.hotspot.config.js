@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const BundleTracker = require('webpack-bundle-tracker');
 
 const DefinePlugin = webpack.DefinePlugin;
 const NODE_ENV = getEnvVar('NODE_ENV', 'development');
@@ -148,6 +149,9 @@ function createWebpackPlugins() {
     }),
     new ExtractTextPlugin({ filename: 'css/[name].css', allChunks: true }),
     new CopyWebpackPlugin(COPY_PATHS),
+    new BundleTracker({
+      filename: './webpack-stats.json',
+    }),
   ];
 
   return plugins;
