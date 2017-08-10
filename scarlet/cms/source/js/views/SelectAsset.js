@@ -1,7 +1,7 @@
 import { View } from 'backbone';
 import selectize from 'selectize';
-import { clickOpenModal } from 'helpers/Modal';
-import { clickOpenPopup } from 'helpers/WindowPopup';
+import { clickOpenModal } from '../helpers/Modal';
+import { clickOpenPopup } from '../helpers/WindowPopup';
 
 const SelectAsset = View.extend({
   initialize() {

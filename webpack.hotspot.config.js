@@ -10,7 +10,7 @@ const NODE_ENV = getEnvVar('NODE_ENV', 'development');
 const ENV_IS_PRODUCTION = NODE_ENV === 'production';
 
 const PATHS = {
-  static: path.join(__dirname, 'scarlet/hotspots/static/hotspot/build'),
+  static: path.join(__dirname, 'scarlet/hotspots/static/hotspots'),
   src: path.join(__dirname, 'scarlet/hotspots/source'),
 };
 
@@ -27,11 +27,11 @@ const WEBPACK_ENV = {
 
 module.exports = {
   context: PATHS.src,
-  devtool: null,
+  devtool: 'cheap-source-map',
   target: 'web',
 
   entry: {
-    main: [
+    hotspot: [
       'babel-polyfill',
       `font-awesome-sass-loader!${path.resolve('./webpack-font-awesome-sass.config.js')}`,
       'eventsource-polyfill',
@@ -55,10 +55,7 @@ module.exports = {
     alias: {
       'jquery.ui': 'jquery-ui',
       imagesready: 'imagesready/dist/jquery-imagesready',
-      wysihtml: path.resolve(
-        __dirname,
-        './scarlet/cms/static/scarlet/source/js/views/editor/lib/wysihtml',
-      ),
+      hotspot: path.resolve(PATHS.src, 'js/views/hotspot/lib/jquery.hotspot.js'),
     },
   },
 };
@@ -77,6 +74,17 @@ function createWebpackLoaders() {
       loader: 'babel-loader',
       exclude: [/node_modules/, /wysihtml/],
       include: path.join(PATHS.src, 'js'),
+    },
+    {
+      test: /\.css$/,
+      use: ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: [
+          {
+            loader: 'css-loader',
+          },
+        ],
+      }),
     },
     {
       test: /\.scss$/,
