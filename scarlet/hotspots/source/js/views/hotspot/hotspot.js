@@ -1,5 +1,6 @@
 import { View } from 'backbone';
-import AssetSelect from '../../../../../cms/static/scarlet/source/js/views/SelectAsset';
+import SelectAsset from '../../../../../cms/static/scarlet/source/js/views/SelectAsset';
+import Editor from '../../../../../cms/static/scarlet/source/js/views/editor/Editor';
 
 const Hotspot = View.extend({
   events: {
