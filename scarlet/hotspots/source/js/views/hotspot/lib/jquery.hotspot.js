@@ -183,9 +183,6 @@
   };
 
   Hotspot.prototype.setFormFields = function setFormFields(newItem, x = '', y = '') {
-    // Creating an event which will be launched when a new hotpost is created
-    const event = new Event('hotspot-click');
-
     if (newItem) {
       let newEmptyFields = this.config.emptyFields;
       newEmptyFields = this.config.emptyFields.replace(/--/g, `-${x}-${y}`);
@@ -199,11 +196,10 @@
       );
 
       $('#div-scarlet-hotspot-form').append(newEmptyFields);
-
-      document.dispatchEvent(event);
+      $(document).trigger('hotspot-click');
     } else {
       $('#div-scarlet-hotspot-form').append(this.config.formFields);
-      document.dispatchEvent(event);
+      $(document).trigger('hotspot-click');
     }
   };
 

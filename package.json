@@ -17,6 +17,7 @@
     "imagesready": "^0.2.2",
     "jcrop": "0.0.1",
     "jquery": "^2.2.4",
+    "jquery-hotspot": "^1.0.2",
     "jquery-ui": "^1.12.1",
     "jquery-ui-timepicker-addon": "^1.6.3",
     "moment": "^2.18.1",

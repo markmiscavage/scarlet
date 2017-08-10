@@ -30,68 +30,64 @@
 
 
 <script type="text/javascript">
+requirejs(
+	['$', '$ui', './admin/modules/AssetSelect', './admin/modules/wysiwyg/Wysiwyg', '$plugin!hotspot'],
+	($, $ui, AssetSelect, Wysiwyg, hotspot) => {
+		$.ajax({
+			url: '/hotspots/{{ hotspot_module.id }}/get-data/',
+			dataType: 'json',
+		})
+			.done(result => {
+				$('#img-hotspot').hotspot({
+					data: result.hotspots,
+					formFields: result.fields,
+					emptyFields: result.emptyFields,
+				});
+			})
+			.fail(err => {
+				console.error('Error: ', err);
+			});
 
-requirejs(['$', '$ui', './admin/modules/AssetSelect', './admin/modules/wysiwyg/Wysiwyg', '$plugin!hotspot'], function($, $ui, AssetSelect, Wysiwyg, hotspot) {
+		$(document).on('click', '.btnDelete', function(event) {
+			$(`#${$(this).attr('data')}`).remove();
+			$(`#frm-${$(this).attr('data')}`).remove();
+		});
 
-    $.ajax({
-      url: "/hotspots/{{ hotspot_module.id }}/get-data/",
-      dataType: 'json'
+		$(document).on('click', '.order-inp', function(event) {
+			const thisId = this.id.split('order-input-')[1];
+			const spanNewColor = `div#spot-${thisId}`;
+			$(spanNewColor).removeClass('unselected-hotspot');
+			$(spanNewColor).addClass('selected-hotspot');
+		});
 
-    }).done(function (result) {
+		$(document).on('focusout', '.order-inp', function(event) {
+			const thisId = this.id.split('input-')[1];
+			const spanNewColor = `div#spot-${thisId}`;
+			$(spanNewColor).removeClass('selected-hotspot');
+			$(spanNewColor).addClass('unselected-hotspot');
+		});
 
-        $("#img-hotspot").hotspot({
-          data: result.hotspots,
-          formFields: result.fields,
-          emptyFields: result.emptyFields
-        });
-      }).fail(function(err) {
-        console.error('Error: ', err)
-      })
+		// If a new hotspot is created then call to `select2`
+		document.addEventListener(
+			'hotspot-click',
+			e => {
+				$(document.body).find('.widget-asset').each((i, dom) => {
+					const picker = new AssetSelect($(dom));
+				});
+				$(document.body).find('.widget-wysiwyg').each((i, textarea) => {
+					const wysiwyg = new Wysiwyg($(textarea));
+				});
+			},
+			false,
+		);
 
-
-    $(document).on("click", ".btnDelete", function (event) {
-      $('#' + $(this).attr("data")).remove();
-      $('#frm-' + $(this).attr("data")).remove();
-    });
-
-    $(document).on('click', '.order-inp', function (event) {
-      var thisId = this.id.split('order-input-')[1];
-      var spanNewColor = 'div#spot-' + thisId;
-      $(spanNewColor).removeClass('unselected-hotspot');
-      $(spanNewColor).addClass('selected-hotspot');
-    });
-
-    $(document).on('focusout', '.order-inp', function (event) {
-      var thisId = this.id.split('input-')[1];
-      var spanNewColor = 'div#spot-' + thisId;
-      $(spanNewColor).removeClass('selected-hotspot');
-      $(spanNewColor).addClass('unselected-hotspot');
-    });
-
-
-
-
-
-    // If a new hotspot is created then call to `select2`
-    document.addEventListener('hotspot-click', function (e) {
-      $(document.body).find(".widget-asset").each(function (i, dom) {
-        var picker = new AssetSelect($(dom));
-      })
-      $(document.body).find('.widget-wysiwyg').each(function (i, textarea) {
-        var wysiwyg = new Wysiwyg($(textarea));
-      })
-
-    }, false);
-
-    setTimeout(() => {
-      var overlayStyle = $('.HotspotPlugin_Overlay').attr('style');
-      var matched = overlayStyle.match(/height: (\d+)px; width: (\d+)px/);
-      $('#overlay-size').attr('value', matched[2] + '-' + matched[1]);
-    }, 1000)
-})
-
-
-
+		setTimeout(() => {
+			const overlayStyle = $('.HotspotPlugin_Overlay').attr('style');
+			const matched = overlayStyle.match(/height: (\d+)px; width: (\d+)px/);
+			$('#overlay-size').attr('value', `${matched[2]}-${matched[1]}`);
+		}, 1000);
+	},
+);
 </script>
 
 
