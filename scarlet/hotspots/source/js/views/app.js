@@ -6,7 +6,7 @@ const App = View.extend({
   initialize() {
     pubsub.on('scarlet:render', this.render);
 
-    $('#img-hotspot').each((i, dom) => {
+    $('.hotspots').each((i, dom) => {
       const hotspot = new Hotspot({
         el: dom,
       }).render();

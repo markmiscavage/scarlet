@@ -3,7 +3,8 @@
   <li class="{{ message_class }}">{{ message }}</li>
 </ul>
 {% endif %} {% endblock messages %} {% block main_content %}
-
+<link rel="stylesheet" href="{{ STATIC_URL}}css/hotspot.css">
+<div class="hotspots">
 <form data-form-id="edit" action="{{ url }}" method="post">
   {% csrf_token %}
 
@@ -19,16 +20,19 @@
     <a class="button close-popup" href="{{ cancel_url }}">Cancel</a>
     <input class="big" type="submit" value="Save" />
   </p>
-  <input type="hidden" name="module-id" value="{{ hotspot_module.id }}" />
+  <input type="hidden" name="module-id" id="hotspot-module-id" value="{{ hotspot_module.id }}" />
   <input type="hidden" name="overlay-size" id= "overlay-size" value="" />
 </form>
 
+</div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+<script src="{{ STATIC_URL }}js/hotspot.js"></script>
 {% endblock %}
 
 {% block additional_js %}
 
 
-<script src="{{ STATIC_URL }}js/hotspot.js"></script>
 
 
 {% endblock %}

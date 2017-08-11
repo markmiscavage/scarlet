@@ -6,6 +6,8 @@
  * License: http://www.opensource.org/licenses/mit-license.php
  */
 
+import draggable from 'jquery-ui/ui/widgets/draggable';
+
 (function($) {
   // Default settings for the plugin
   const defaults = {
@@ -116,7 +118,6 @@
       htmlBuilt.removeClass(widget.config.hiddenClass);
 
       htmlBuilt.css('display', 'none');
-
       $(`div#spot-${Math.floor(dataBuild.x)}-${Math.floor(dataBuild.y)}`).draggable({
         containment: '#img-hotspot-asset',
         stop: handleDragStop,
@@ -183,6 +184,7 @@
   };
 
   Hotspot.prototype.setFormFields = function setFormFields(newItem, x = '', y = '') {
+    const event = new Event('hotspot-click');
     if (newItem) {
       let newEmptyFields = this.config.emptyFields;
       newEmptyFields = this.config.emptyFields.replace(/--/g, `-${x}-${y}`);
@@ -196,10 +198,10 @@
       );
 
       $('#div-scarlet-hotspot-form').append(newEmptyFields);
-      $(document).trigger('hotspot-click');
+      document.dispatchEvent(event);
     } else {
       $('#div-scarlet-hotspot-form').append(this.config.formFields);
-      $(document).trigger('hotspot-click');
+      document.dispatchEvent(event);
     }
   };
 

@@ -15,8 +15,15 @@
 	<div class="asset" data-api="/admin/assets/?type=choices&amp;ftype=unknown&amp;exclude=ftype" data-title="{{ form.instance.icon.user_filename }}" data-tags="{{ asset_tags }}">
 		<div class="asset__preview" style="background-image:url({{ form.instance.icon.file.admin_url }})"></div>
 		<div class="asset__actions">
+      <div class="asset__select">
 			<input type="hidden" name="icon" value="{{ form.instance.icon.id }}" id="icon-{{ x }}-{{ y }}" style="display: none;">
-			<a class="button" target="_blank" href="/admin/assets/add/?popup=1&amp;type=unknown">Upload New</a>
+      <div class="asset__buttons">
+        {% if add_link %}
+      <a class="button" target="_blank" href="/admin/assets/add/?popup=1&amp;type=image">Upload New <i class="fa fa-plus-circle" aria-hidden="true"></i></a>
+
+        {% endif %}
+        <a class="button button--secondary asset__edit-link" data-base="{{ base_api_link }}" href="#">Edit Crop</a>
+    </div>
 		</div>
 	</div>
 	<p></p>
@@ -48,5 +55,5 @@
 	</p>
 	{{ form.video_json.errors }}
 
-	<p class="p-delete"><a class="button btnDelete" data="spot-{{ x }}-{{ y }}">Delete hotspot</a></p>
+	<p class="p-delete"><a class="button button--primary" data="spot-{{ x }}-{{ y }}">Delete hotspot</a></p>
 </fieldset>

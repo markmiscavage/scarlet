@@ -10,7 +10,7 @@ const NODE_ENV = getEnvVar('NODE_ENV', 'development');
 const ENV_IS_PRODUCTION = NODE_ENV === 'production';
 
 const PATHS = {
-  static: path.join(__dirname, 'scarlet/hotspots/static/hotspots'),
+  static: path.join(__dirname, 'scarlet/cms/static/scarlet'),
   src: path.join(__dirname, 'scarlet/hotspots/source'),
 };
 
@@ -31,12 +31,7 @@ module.exports = {
   target: 'web',
 
   entry: {
-    hotspot: [
-      'babel-polyfill',
-      `font-awesome-sass-loader!${path.resolve('./webpack-font-awesome-sass.config.js')}`,
-      'eventsource-polyfill',
-      './js/init',
-    ],
+    hotspot: ['./js/init'],
   },
 
   output: {
@@ -51,7 +46,7 @@ module.exports = {
   plugins: createWebpackPlugins(),
 
   resolve: {
-    modules: ['scarlet/cms/static/scarlet/source/js', 'node_modules'],
+    modules: [`${PATHS.src}/js`, 'node_modules'],
     alias: {
       'jquery.ui': 'jquery-ui',
       imagesready: 'imagesready/dist/jquery-imagesready',

@@ -109,9 +109,8 @@
     "start": "node ./webpack-server.js",
     "save-prebuild": "npm run lint",
     "build": "npm run clean && webpack --config webpack.prod.config.js",
-    "build:hotspot": "npm run clean:hotspot && webpack --config webpack.hotspot.config.js",
+    "build:hotspot": "webpack --config webpack.hotspot.config.js",
     "clean": "rimraf ./scarlet/cms/static/scarlet",
-    "clean:hotspot": "rimraf ./scarlet/hotspots/static/hotspots",
     "lint": "standard",
     "test": "karma start karma.conf.js"
   }

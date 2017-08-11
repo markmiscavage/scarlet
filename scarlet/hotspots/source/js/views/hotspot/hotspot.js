@@ -14,31 +14,13 @@ const Hotspot = View.extend({
 
   initialize() {
     this.$hotspot = $('#img-hotspot');
-
-    $(document).on(
-      'hotspot-click',
-      e => {
-        $('.asset').each((i, dom) => {
-          if (!$(dom).find('input').hasClass('selectized')) {
-            const selectAsset = new SelectAsset({
-              el: dom,
-            }).render();
-          }
-        });
-
-        $('.editor:not(.editor--rendered)').each((i, dom) => {
-          const editor = new Editor({
-            el: dom,
-          }).render();
-        });
-      },
-      false,
-    );
+    this.moduleId = $('#hotspot-module-id').val();
+    console.log($('#hotspot-module-id').val());
   },
 
   render() {
     $.ajax({
-      url: '/hotspots/{{ hotspot_module.id }}/get-data/',
+      url: `/hotspots/${this.moduleId}/get-data/`,
       dataType: 'json',
     })
       .done(result => {
@@ -57,11 +39,32 @@ const Hotspot = View.extend({
       const matched = overlayStyle.match(/height: (\d+)px; width: (\d+)px/);
       $('#overlay-size').attr('value', `${matched[2]}-${matched[1]}`);
     }, 1000);
+
+    document.addEventListener(
+      'hotspot-click',
+      e => {
+        console.log('THiNG WAS CLICKED');
+        $('.asset').each((i, dom) => {
+          if (!$(dom).find('input').hasClass('selectized')) {
+            const selectAsset = new SelectAsset({
+              el: dom,
+            }).render();
+          }
+        });
+
+        $('.editor:not(.editor--rendered)').each((i, dom) => {
+          const editor = new Editor({
+            el: dom,
+          }).render();
+        });
+      },
+      false,
+    );
   },
 
-  delete() {
-    $(`#${$(this).attr('data')}`).remove();
-    $(`#frm-${$(this).attr('data')}`).remove();
+  delete(e) {
+    $(`#${$(e.target).attr('data')}`).remove();
+    $(`#frm-${$(e.target).attr('data')}`).remove();
   },
 
   select() {
