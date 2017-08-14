@@ -1,15 +1,19 @@
+{% load cms %}
+
 {{ form.non_field_errors }}
+
 <div class="formset__actions">
   {% if formset.can_delete %}
-  	<div class="formset__button--delete">
-  		<i class="fa fa-trash-o" aria-hidden="true"></i>
-  		{{ form.DELETE }}
-  	</div>
+       <div class="formset__button--delete">
+               <i class="fa fa-trash-o" aria-hidden="true"></i>
+               {{ form.DELETE }}
+       </div>
   {% endif %}
   <div class="formset__button--minimize">
     <i class="fa fa-minus" aria-hidden="true"></i>
   </div>
 </div>
+
 {% for field in form %}
 	{% if field.name != 'DELETE' %}
 		{% if field.field.is_order_field %}
@@ -18,16 +22,17 @@
 			</div>
         	{{ field.errors }}
 		{% else %}
-      <div class="formset__field {% if field.is_date %}date{% endif %} {% if field.is_checkbox %}checkbox{% endif %} {% if field.errors %}error-field{% endif %}">
-  			{% if not field.is_hidden %}
-  				{{ field.label_tag }}
-  				{% if field.field.help_text %}
-  					<em class="help">{{ field.field.help_text|safe }}</em>
-  				{% endif %}
-  			{% endif %}
-			{{ field }}
-      </div>
-      {{ field.errors }}
+			<div class="formset__field {% if field.is_date %}date{% endif %} {% if field.is_checkbox %}checkbox{% endif %} {% if field.errors %}error
+			field{% endif %}">
+               {% if not field.is_hidden %}
+					<label for="{{ field.auto_id }}" {% if field.field.required %}class="required"{% endif %} >{{ field.label }}:</label>
+                       {% if field.field.help_text %}
+                               <em class="help">{{ field.field.help_text|safe }}</em>
+                       {% endif %}
+               {% endif %}
+               {{ field|set_label_hidden_formset }} {{ field }}
+			 </div>
+			{{ field.errors }}
 		{% endif %}
 	{% endif %}
 {% endfor %}
