@@ -1,7 +1,7 @@
 import { View } from 'backbone';
 import hotspot from './lib/jquery.hotspot.js';
-import SelectAsset from '../../../../../cms/source/js/views/SelectAsset';
-import Editor from '../../../../../cms/source/js/views/editor/Editor';
+import SelectAsset from 'views/SelectAsset';
+import Editor from 'views/editor/Editor';
 
 import '../../../css/jquery.hotspot.css';
 
@@ -15,10 +15,15 @@ const Hotspot = View.extend({
   initialize() {
     this.$hotspot = $('#img-hotspot');
     this.moduleId = $('#hotspot-module-id').val();
-    console.log($('#hotspot-module-id').val());
   },
 
   render() {
+    this.initHotspot();
+    this.setOverlay();
+    this.attachListener();
+  },
+
+  initHotspot() {
     $.ajax({
       url: `/hotspots/${this.moduleId}/get-data/`,
       dataType: 'json',
@@ -33,17 +38,20 @@ const Hotspot = View.extend({
       .fail(err => {
         console.error('Error: ', err);
       });
+  },
 
+  setOverlay() {
     setTimeout(() => {
       const overlayStyle = $('.HotspotPlugin_Overlay').attr('style');
       const matched = overlayStyle.match(/height: (\d+)px; width: (\d+)px/);
       $('#overlay-size').attr('value', `${matched[2]}-${matched[1]}`);
     }, 1000);
+  },
 
+  attachListener() {
     document.addEventListener(
       'hotspot-click',
       e => {
-        console.log('THiNG WAS CLICKED');
         $('.asset').each((i, dom) => {
           if (!$(dom).find('input').hasClass('selectized')) {
             const selectAsset = new SelectAsset({

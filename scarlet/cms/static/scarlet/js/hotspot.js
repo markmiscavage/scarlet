@@ -16933,9 +16933,13 @@ var Hotspot = _backbone.View.extend({
   initialize: function initialize() {
     this.$hotspot = $('#img-hotspot');
     this.moduleId = $('#hotspot-module-id').val();
-    console.log($('#hotspot-module-id').val());
   },
   render: function render() {
+    this.initHotspot();
+    this.setOverlay();
+    this.attachListener();
+  },
+  initHotspot: function initHotspot() {
     $.ajax({
       url: '/hotspots/' + this.moduleId + '/get-data/',
       dataType: 'json'
@@ -16948,15 +16952,16 @@ var Hotspot = _backbone.View.extend({
     }).fail(function (err) {
       console.error('Error: ', err);
     });
-
+  },
+  setOverlay: function setOverlay() {
     setTimeout(function () {
       var overlayStyle = $('.HotspotPlugin_Overlay').attr('style');
       var matched = overlayStyle.match(/height: (\d+)px; width: (\d+)px/);
       $('#overlay-size').attr('value', matched[2] + '-' + matched[1]);
     }, 1000);
-
+  },
+  attachListener: function attachListener() {
     document.addEventListener('hotspot-click', function (e) {
-      console.log('THiNG WAS CLICKED');
       $('.asset').each(function (i, dom) {
         if (!$(dom).find('input').hasClass('selectized')) {
           var selectAsset = new _SelectAsset2.default({

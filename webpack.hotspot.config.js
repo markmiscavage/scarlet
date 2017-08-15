@@ -12,6 +12,7 @@ const ENV_IS_PRODUCTION = NODE_ENV === 'production';
 const PATHS = {
   static: path.join(__dirname, 'scarlet/cms/static/scarlet'),
   src: path.join(__dirname, 'scarlet/hotspots/source'),
+  core: path.join(__dirname, 'scarlet/cms/source'),
 };
 
 const COPY_PATHS = [];
@@ -46,7 +47,7 @@ module.exports = {
   plugins: createWebpackPlugins(),
 
   resolve: {
-    modules: [`${PATHS.src}/js`, 'node_modules'],
+    modules: [`${PATHS.src}/js`, 'node_modules', `${PATHS.core}/js`],
     alias: {
       'jquery.ui': 'jquery-ui',
       imagesready: 'imagesready/dist/jquery-imagesready',
