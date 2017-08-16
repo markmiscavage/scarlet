@@ -15,14 +15,9 @@
   background: #1abc9c !important;
 }
 
-.btnDelete {
-  margin-bottom: 20px;
-  margin-top: 15px;
-}
-
 .p-delete {
-  text-align: center !important;
-  margin-top: 25px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 /* Hotspot message */
@@ -74,6 +69,42 @@ span.HotspotPlugin_Overlay {
 }
 span.HotspotPlugin_Overlay > p {
   text-align: center;
+}
+#img-hotspot {
+  margin-bottom: 30px;
+}
+
+#div-scarlet-hotspot-form {
+  margin-bottom: 30px;
+}
+
+#div-scarlet-hotspot-form > fieldset {
+  border: 1px dashed #7f7f7f;
+  padding: 30px;
+}
+
+#div-scarlet-hotspot-form > fieldset > legend {
+  font-size: 24px;
+  margin-bottom: 15px;
+  padding: 0 5px;
+}
+
+#div-scarlet-hotspot-form > fieldset textarea {
+  padding: 10px;
+  outline: none;
+}
+#div-scarlet-hotspot-form input[type=number] {
+  outline: none;
+  border: 1px solid #ddd;
+}
+
+.submit-row > .button--primary {
+  margin-right: 15px;
+}
+
+.btnDelete {
+  background-color: #ed6347;
+  margin: 15px 0;
 }
 
 /*# sourceMappingURL=hotspot.css.map*/

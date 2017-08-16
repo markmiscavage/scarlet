@@ -12,8 +12,8 @@ const SelectAsset = View.extend({
     this.baseLink = this.$cropsList.data('base-link');
     this.url = this.$el.data('api');
     this.addOpen = false;
-    this.id = this.$input[0].defaultValue;
-    this.baseUrl = $('.asset__edit-link').data().base;
+    this.id = this.$input.val();
+    this.baseUrl = $('.asset__edit-link').data() && $('.asset__edit-link').data().base;
   },
 
   /**

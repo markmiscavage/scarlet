@@ -16921,6 +16921,8 @@ var _Editor2 = _interopRequireDefault(_Editor);
 
 __webpack_require__(83);
 
+__webpack_require__(84);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Hotspot = _backbone.View.extend({
@@ -17352,8 +17354,8 @@ const SelectAsset = __WEBPACK_IMPORTED_MODULE_0_backbone__["View"].extend({
     this.baseLink = this.$cropsList.data('base-link');
     this.url = this.$el.data('api');
     this.addOpen = false;
-    this.id = this.$input[0].defaultValue;
-    this.baseUrl = $('.asset__edit-link').data().base;
+    this.id = this.$input.val();
+    this.baseUrl = $('.asset__edit-link').data() && $('.asset__edit-link').data().base;
   },
 
   /**
@@ -26322,6 +26324,12 @@ function getOptions(value) {
 
 /***/ }),
 /* 83 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 84 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

@@ -15,14 +15,9 @@
   background: #1abc9c !important;
 }
 
-.btnDelete {
-  margin-bottom: 20px;
-  margin-top: 15px;
-}
-
 .p-delete {
-  text-align: center !important;
-  margin-top: 25px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 /* Hotspot message */

@@ -4,6 +4,7 @@ import SelectAsset from 'views/SelectAsset';
 import Editor from 'views/editor/Editor';
 
 import '../../../css/jquery.hotspot.css';
+import '../../../css/hotspot.css';
 
 const Hotspot = View.extend({
   events: {

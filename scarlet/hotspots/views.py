@@ -34,6 +34,9 @@ class HotSpotsGetData(LoginRequiredMixin, View):
 
             form = cms_forms.HotSpotForm(instance=item, auto_id='%s-input-{0}-{1}'.format(item.x_cord, item.y_cord))
 
+            if form.instance.image:
+                print form.instance.image.file.url
+
             context = {
                 'x': item.x_cord,
                 'y': item.y_cord,

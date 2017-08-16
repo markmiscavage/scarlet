@@ -8,18 +8,17 @@
 <form data-form-id="edit" action="{{ url }}" method="post">
   {% csrf_token %}
 
-  <p>
-    <div id="img-hotspot">
-      <img src="{{ hotspot_module.image.url }}" id="img-hotspot-asset" />
-    </div>
-  </p>
+  <div id="img-hotspot">
+    <img src="{{ hotspot_module.image.url }}" id="img-hotspot-asset" />
+  </div>
 
   <div id="div-scarlet-hotspot-form"></div>
 
-  <p class="submit-row">
-    <a class="button close-popup" href="{{ cancel_url }}">Cancel</a>
-    <input class="big" type="submit" value="Save" />
-  </p>
+  <div class="submit-row">
+    <input class="button button--primary" type="submit" value="Save" />
+
+    <a class="button close-popup button--secondary" href="{{ cancel_url }}">Cancel</a>
+  </div>
   <input type="hidden" name="module-id" id="hotspot-module-id" value="{{ hotspot_module.id }}" />
   <input type="hidden" name="overlay-size" id= "overlay-size" value="" />
 </form>
