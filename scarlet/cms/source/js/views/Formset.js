@@ -48,10 +48,6 @@ const Formset = View.extend({
     // this.enableSort();
     this.bindControls();
     const $editor = $(this).find('.wysihtml-sandbox').contents().find('body');
-    console.log('EDITOR', $editor);
-    $editor.keypress(e => {
-      console.log('keypress', e);
-    });
   },
 
   bindControls() {

@@ -9,3 +9,57 @@
 		display: block;
 	}
 }
+
+.crop-info {
+	&__main {
+		margin-top: 30px;
+		display: flex;
+	}
+
+	&__nav {
+		width: 20%;
+		height: 100%;
+	}
+
+	&__nav
+
+	&__list .row {
+		padding: 5px 0 5px 15px;
+		line-height: 1.4;
+		transition: 100ms ease-in;
+		cursor: pointer;
+	}
+
+	&__list .row:nth-of-type(2n) {
+		background-color: #f4f6f8;
+	}
+
+	&__list .row:hover {
+		background-color: #c4cdd5;
+	}
+
+	&__list .row--active,
+	&__list .row--active:nth-of-type(2n) {
+		background-color: #c4cdd5;
+	}
+
+	&__name {
+		font-weight: 600;
+		font-size: 16px;
+		color: #454f5b;
+	}
+
+	&__dimensions {
+		color: #919eab;
+		font-size: 12px;
+	}
+
+	// &__list .row:hover {
+	// 	transition: 400ms ease-out;
+	// }
+
+	&__cropper {
+		width: 80%;
+		height: 100%;
+	}
+}

@@ -3129,6 +3129,46 @@ th:nth-child(1) {
   font-size: 12px;
   display: block; }
 
+.crop-info__main {
+  margin-top: 30px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex; }
+
+.crop-info__nav {
+  width: 20%;
+  height: 100%; }
+
+.crop-info__nav .crop-info__list .row {
+  padding: 5px 0 5px 15px;
+  line-height: 1.4;
+  -webkit-transition: 100ms ease-in;
+  transition: 100ms ease-in;
+  cursor: pointer; }
+
+.crop-info__list .row:nth-of-type(2n) {
+  background-color: #f4f6f8; }
+
+.crop-info__list .row:hover {
+  background-color: #c4cdd5; }
+
+.crop-info__list .row--active,
+.crop-info__list .row--active:nth-of-type(2n) {
+  background-color: #c4cdd5; }
+
+.crop-info__name {
+  font-weight: 600;
+  font-size: 16px;
+  color: #454f5b; }
+
+.crop-info__dimensions {
+  color: #919eab;
+  font-size: 12px; }
+
+.crop-info__cropper {
+  width: 80%;
+  height: 100%; }
+
 .wysihtml5-sandbox {
   color: #0084ff;
   font-size: 18px;
@@ -3751,7 +3791,7 @@ body.modal__body {
   cursor: not-allowed; }
 
 .image-cropper {
-  margin-top: 30px;
+  margin-left: 30px;
   height: 60vh; }
   .image-cropper img {
     max-width: 100%; }

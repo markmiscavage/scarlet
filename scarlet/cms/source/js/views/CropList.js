@@ -1,16 +1,23 @@
 import { View } from 'backbone';
 import selectize from 'selectize';
 import ImageCropper from 'views/ImageCropper';
+import pubsub from 'helpers/pubsub';
 
 const CropList = View.extend({
   initialize() {
     this.items = [];
-    this.$input = $('<select />');
+    // this.$input = $('<select />');
     this.$el.append(this.$input);
     this.getListItems();
-    $('.asset__crop-list').hide();
+    // $('.asset__crop-list').hide();
     this.url = $('.widget-asset-simple').find('a')[0].href;
-    console.log('URL', this.url);
+    this.$selected = null;
+    console.log('PUBSUB', pubsub);
+    pubsub.on('test', msg => console.log(msg));
+  },
+
+  events: {
+    'click .row': 'edit',
   },
 
   render() {
@@ -25,6 +32,8 @@ const CropList = View.extend({
       // onInitialize: this.getListItems.bind(this),
     };
     this.$input.selectize(options);
+
+    console.log('PUBSUB', pubsub);
     return this;
   },
 
@@ -52,7 +61,6 @@ const CropList = View.extend({
   renderOptions() {
     return {
       item: (item, escape) => {
-        console.log('THIS IS AN ITEM', item);
         return `<div class="crop-list__item" data-width="${item.width}" data-height="${item.height}" data-x="${item.x}" data-y="${item.y}" data-x2="${item.x2}" data-y2="${item.y2}">${item.name
           ? `<span class="crop-list__name">${escape(item.name)}</span>`
           : ''}${item.dimensions
@@ -73,15 +81,38 @@ const CropList = View.extend({
     cb(this.items);
   },
 
-  edit(value, $item) {
+  toggleActive(target) {
+    $('.row').each((index, value) => {
+      if ($(value).hasClass('row--active')) {
+        $(value).removeClass('row--active');
+      }
+    });
+    target.addClass('row--active');
+  },
+
+  edit(e) {
     // window.location.href = value;
+    pubsub.on('test', msg => console.log(msg));
+    const $target = $(e.target).closest('.row');
+    this.$selected = $target;
+    this.toggleActive($target);
+    const { x, y, x2, y2, width, height, name } = $target.data();
     $('.image-cropper').detach();
-    $('.crop-info').append(
+    $('.crop-info__cropper').append(
       `<div class="image-cropper">
       <img class="image-cropper__original" src="${this.url}" />
-      <div class="image-cropper__preview" data-scaleH=${$item.data()
-        .height} data-scaleW=${$item.data().width}/></div>`,
+      <div class="image-cropper__preview" data-scaleH=${height} data-scaleW=${width}/></div>`,
     );
+    $('.crop-info__cropper')
+      .append('<div />')
+      .addClass('crop-list__item')
+      .attr('data-x', x)
+      .attr('data-y', y)
+      .attr('data-x2', x2)
+      .attr('data-y2', y2)
+      .attr('data-width', width)
+      .attr('data-height', height);
+
     const dom = $('.image-cropper');
     const imageCropper = new ImageCropper({
       el: dom,

@@ -8,7 +8,6 @@ const SelectTags = View.extend({
   },
 
   render() {
-    console.log(this.$input);
     const options = {
       delimiter: ',',
       plugins: ['remove_button'],

@@ -1,6 +1,7 @@
 import { View } from 'backbone';
 import cropper from 'cropper';
 import imagesready from 'imagesready';
+import pubsub from 'helpers/pubsub';
 
 const ImageCropper = View.extend({
   classPrefix: '.image-cropper__',
@@ -97,12 +98,10 @@ const ImageCropper = View.extend({
   setInitialCroparea() {
     const data = $('.crop-list__item').data();
     const coords = this.buildMap(data);
-    console.log(coords);
+
     for (const [key, value] of coords) {
       this.cropCoords[key] = value;
     }
-    console.log('COORS', this.cropCoords);
-    console.log('get scale', this.getScale());
     // this.$original.css({ width: coords.get('width') });
     const obj = {
       x: coords.get('x'),
@@ -210,7 +209,7 @@ const ImageCropper = View.extend({
           .text(`${width} x ${height}`);
       }
     }
-
+    pubsub.trigger('test', data);
     this.setCropCoords(data);
 
     // debounce update of coord values (form fields) after interaction

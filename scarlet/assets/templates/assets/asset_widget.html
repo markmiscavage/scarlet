@@ -5,10 +5,11 @@
     <div class="asset__actions">
         <div class="asset__select">
             {{ hidden_input }}
-
+            <h1>{{ add_link }}</h1>
             <div class="asset__buttons">
               {% if add_link %}
               <a class="button button--primary asset__add-link" target="_blank" href="{{ add_link }}">
+
                   <i class="fa fa-plus-circle" aria-hidden="true"></i>
                   Upload New
               </a>
