@@ -1,5 +1,6 @@
 import { View } from 'backbone';
 import cropper from 'cropper';
+import _ from 'underscore';
 import imagesready from 'imagesready';
 import pubsub from 'helpers/pubsub';
 

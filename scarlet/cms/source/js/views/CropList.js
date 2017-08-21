@@ -1,4 +1,5 @@
 import { View } from 'backbone';
+import _ from 'underscore';
 import selectize from 'selectize';
 import ImageCropper from 'views/ImageCropper';
 import pubsub from 'helpers/pubsub';
@@ -12,8 +13,10 @@ const CropList = View.extend({
     // $('.asset__crop-list').hide();
     this.url = $('.widget-asset-simple').find('a')[0].href;
     this.$selected = null;
-    console.log('PUBSUB', pubsub);
-    pubsub.on('test', msg => console.log(msg));
+    this.edits = {};
+    this.current = {};
+
+    // pubsub.on('test', _.throttle(msg => console.log(msg), 2000));
   },
 
   events: {
@@ -33,7 +36,6 @@ const CropList = View.extend({
     };
     this.$input.selectize(options);
 
-    console.log('PUBSUB', pubsub);
     return this;
   },
 
@@ -55,7 +57,6 @@ const CropList = View.extend({
       };
       this.items = [obj, ...this.items];
     });
-    console.log(this.items);
   },
 
   renderOptions() {
@@ -92,11 +93,17 @@ const CropList = View.extend({
 
   edit(e) {
     // window.location.href = value;
-    pubsub.on('test', msg => console.log(msg));
     const $target = $(e.target).closest('.row');
     this.$selected = $target;
     this.toggleActive($target);
     const { x, y, x2, y2, width, height, name } = $target.data();
+    pubsub.on(
+      'test',
+      _.debounce(data => {
+        this.edits[name] = data;
+        console.log(this.edits);
+      }, 250),
+    );
     $('.image-cropper').detach();
     $('.crop-info__cropper').append(
       `<div class="image-cropper">
@@ -112,7 +119,6 @@ const CropList = View.extend({
       .attr('data-y2', y2)
       .attr('data-width', width)
       .attr('data-height', height);
-
     const dom = $('.image-cropper');
     const imageCropper = new ImageCropper({
       el: dom,
