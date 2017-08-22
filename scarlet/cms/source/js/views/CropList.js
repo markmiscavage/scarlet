@@ -7,79 +7,19 @@ import pubsub from 'helpers/pubsub';
 const CropList = View.extend({
   initialize() {
     this.items = [];
-    // this.$input = $('<select />');
-    this.$el.append(this.$input);
-    this.getListItems();
-    // $('.asset__crop-list').hide();
     this.url = $('.widget-asset-simple').find('a')[0].href;
     this.$selected = null;
     this.edits = {};
     this.current = {};
-
-    // pubsub.on('test', _.throttle(msg => console.log(msg), 2000));
   },
 
   events: {
     'click .row': 'edit',
+    'click .button--primary': 'submit',
   },
 
   render() {
-    const options = {
-      maxItems: 1,
-      valueField: 'path',
-      labelField: 'name',
-      options: this.items,
-      searchField: ['name', 'dimensions'],
-      render: this.renderOptions(),
-      onItemAdd: this.edit.bind(this),
-      // onInitialize: this.getListItems.bind(this),
-    };
-    this.$input.selectize(options);
-
     return this;
-  },
-
-  getListItems() {
-    $('.asset__crop-list').find('li').each((i, dom) => {
-      const props = $(dom).children();
-      const { width, height, x, x2, y, y2 } = $(dom).data();
-
-      const obj = {
-        name: props[0].innerText,
-        dimensions: props[1].innerText,
-        path: $(props[2]).find('a')[0].pathname,
-        height,
-        width,
-        x,
-        x2,
-        y,
-        y2,
-      };
-      this.items = [obj, ...this.items];
-    });
-  },
-
-  renderOptions() {
-    return {
-      item: (item, escape) => {
-        return `<div class="crop-list__item" data-width="${item.width}" data-height="${item.height}" data-x="${item.x}" data-y="${item.y}" data-x2="${item.x2}" data-y2="${item.y2}">${item.name
-          ? `<span class="crop-list__name">${escape(item.name)}</span>`
-          : ''}${item.dimensions
-          ? `<span class="crop-list__dimensions">${escape(item.dimensions)}</span>`
-          : ''}</div>`;
-      },
-      option: (item, escape) => {
-        const label = item.name || item.dimensions;
-        const caption = item.name ? item.dimensions : null;
-        return `<div><span class="crop-list__name">${escape(label)}</span>${caption
-          ? `<span class="crop-list__dimensions">${escape(caption)}</span>`
-          : ''}</div>`;
-      },
-    };
-  },
-
-  load(query, cb) {
-    cb(this.items);
   },
 
   toggleActive(target) {
@@ -96,22 +36,28 @@ const CropList = View.extend({
     const $target = $(e.target).closest('.row');
     this.$selected = $target;
     this.toggleActive($target);
-    const { x, y, x2, y2, width, height, name } = $target.data();
+    const name = $target.attr('data-name');
+    const { x, y, x2, y2, width, height } = this.edits.hasOwnProperty(name)
+      ? this.edits[name]
+      : $target.data();
     pubsub.on(
-      'test',
+      'update-crop',
       _.debounce(data => {
-        this.edits[name] = data;
-        console.log(this.edits);
-      }, 250),
+        if ($target.attr('data-name') === this.$selected.attr('data-name')) {
+          this.edits[name] = data;
+        }
+      }, 500),
     );
+
     $('.image-cropper').detach();
+
     $('.crop-info__cropper').append(
       `<div class="image-cropper">
       <img class="image-cropper__original" src="${this.url}" />
       <div class="image-cropper__preview" data-scaleH=${height} data-scaleW=${width}/></div>`,
     );
+
     $('.crop-info__cropper')
-      .append('<div />')
       .addClass('crop-list__item')
       .attr('data-x', x)
       .attr('data-y', y)
@@ -120,9 +66,35 @@ const CropList = View.extend({
       .attr('data-width', width)
       .attr('data-height', height);
     const dom = $('.image-cropper');
+
     const imageCropper = new ImageCropper({
       el: dom,
     }).render();
+  },
+
+  submit(e) {
+    e.preventDefault();
+    console.log(e);
+    console.log(Object.keys(this.edits));
+    Object.keys(this.edits).forEach(crop => {
+      const obj = this.edits[crop];
+      const { x, y, x2, y2 } = obj;
+      const formData = {
+        x,
+        y,
+        x2,
+        y2,
+      };
+      console.log(formData);
+      // $.post(`/admin/assets/192/crops/${crop}/edit/`, {
+      //   data: formData,
+      //   dataType: 'json',
+      //   encode: true,
+      // }).done(data => {
+      //   console.log('SUCCESS');
+      //   console.log(data);
+      // });
+    });
   },
 
   onChange() {

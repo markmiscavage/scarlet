@@ -17,26 +17,21 @@ const ImageCropper = View.extend({
   render() {
     this.$original = this.$(`${this.classPrefix}original`);
     this.$preview = this.$(`${this.classPrefix}preview`);
-    this.$mask = this.$(`${this.classPrefix}mask`);
-    this.$thumb = this.$preview.find('img');
-
     this.$original.imagesReady().then(this.onReady.bind(this), this.onError);
   },
 
   onReady() {
     this.setConstraints();
-    // this.setupPreview();
     this.setupCropper();
   },
 
   setupCropper() {
     this.$original.cropper({
-      data: this.setInitialCroparea(),
-      // ready: this.cropperReady.bind(this),
-      // crop: this.cropperClone.bind(this),
+      data: this.setInitialCroparea.bind(this),
       cropmove: this.updateCropArea.bind(this),
+      ready: this.cropperReady.bind(this),
       aspectRatio: this.cropScale.w / this.cropScale.h,
-      autoCropArea: 1,
+      autoCropArea: false,
       background: true,
       cropBoxMovable: true,
       cropBoxResizable: true,
@@ -45,47 +40,18 @@ const ImageCropper = View.extend({
       highlight: true,
       modal: false,
       responsive: true,
-      restore: true,
       viewMode: 1,
       zoomable: false,
     });
   },
 
   cropperReady() {
-    const $clone = this.$original.clone().removeClass('cropper-hidden');
-    $clone.css({
-      display: 'block',
-      width: '100%',
-      minWidth: 0,
-      minHeight: 0,
-      maxWidth: 'none',
-      maxHeight: 'none',
-    });
-    this.$preview
-      .css({
-        width: '300px',
-        overflow: 'hidden',
-      })
-      .html($clone);
-  },
-
-  cropperClone(e) {
-    const imageData = this.$original.cropper('getImageData');
-    const previewAspectRatio = e.width / e.height;
-    const previewWidth = this.$preview.width();
-    const previewHeight = previewWidth / previewAspectRatio;
-    const imageScaledRatio = e.width / previewWidth;
-    this.$preview.height(previewHeight).find('img').css({
-      width: imageData.naturalWidth / imageScaledRatio,
-      height: imageData.naturalHeight / imageScaledRatio,
-      marginLeft: -e.x / imageScaledRatio,
-      marginTop: -e.y / imageScaledRatio,
-    });
+    console.log(this.$original.cropper('getData'));
   },
 
   // iterate over coordinate property keys
   loopCoordProps(cb) {
-    const props = ['x', 'y', 'x2', 'y2', 'w', 'h'];
+    const props = ['x', 'y', 'x2', 'y2', 'width', 'height'];
     let i = props.length - 1;
     let prop;
 
@@ -97,42 +63,22 @@ const ImageCropper = View.extend({
 
   // set initial croparea from (x,y,x2,y2) field values
   setInitialCroparea() {
-    const data = $('.crop-list__item').data();
-    const coords = this.buildMap(data);
+    const $item = $('.crop-list__item');
 
-    for (const [key, value] of coords) {
-      this.cropCoords[key] = value;
-    }
-    // this.$original.css({ width: coords.get('width') });
+    this.loopCoordProps(prop => {
+      this.cropCoords[prop] = $item.attr(`data-${prop}`);
+    });
+
     const obj = {
-      x: coords.get('x'),
-      y: coords.get('y'),
-      width: coords.get('width'),
-      height: coords.get('height'),
+      x: $item.attr('data-x'),
+      y: $item.attr('data-y'),
+      width: $item.attr('data-width'),
+      height: $item.attr('data-height'),
+      rotate: 0,
       ...this.getScale(),
     };
-    console.log('OBJECT', obj);
+
     return obj;
-  },
-
-  buildMap(obj) {
-    const map = new Map();
-    Object.keys(obj).forEach(key => {
-      map.set(key, obj[key]);
-    });
-    return map;
-  },
-
-  // store current crop coordinates as field values
-  updateCoords() {
-    this.loopCoordProps(prop => {
-      const $coord = $(`input[data-property="${prop}"]`);
-
-      if ($coord.length) {
-        // sync field val
-        $coord.attr('value', this.cropCoords[prop]);
-      }
-    });
   },
 
   getScale() {
@@ -159,62 +105,10 @@ const ImageCropper = View.extend({
     };
   },
 
-  updateCropArea(coords) {
+  updateCropArea() {
     const data = this.$original.cropper('getData');
-    clearTimeout(this.refreshTimeout);
-
-    if (parseInt(data.width, 10) < 0) {
-      return;
-    }
-
-    let scale = this.getScale(),
-      width,
-      height;
-
-    if (!this.constrainRatio) {
-      if (this.constrainHeight) {
-        // update preview width
-        width = Math.round(scale.scaleY * data.width);
-
-        this.$preview
-          .find('.mask')
-          .css({
-            width: `${width}px`,
-          })
-          .end()
-          .find('strong')
-          .text(`${width} x ${this.cropScale.h}`);
-      } else if (this.constrainWidth) {
-        // update preview height
-        height = Math.round(scale.scaleX * data.height);
-
-        this.$mask
-          .css({
-            height: `${height}px`,
-          })
-          .end()
-          .find('strong')
-          .text(`${this.cropScale.w} x ${height}`);
-      } else {
-        // update preview height and width
-        height = Math.round(scale.scaleY * data.height);
-        width = Math.round(scale.scaleX * data.width);
-
-        this.$mask
-          .css({
-            width: `${width}px`,
-            height: `${height}px`,
-          })
-          .end()
-          .find('strong')
-          .text(`${width} x ${height}`);
-      }
-    }
-    pubsub.trigger('test', data);
+    pubsub.trigger('update-crop', data);
     this.setCropCoords(data);
-
-    // debounce update of coord values (form fields) after interaction
-    this.refreshTimeout = setTimeout(this.updateCoords.bind(this), 250);
   },
 
   setCropCoords(coords) {
@@ -224,33 +118,6 @@ const ImageCropper = View.extend({
       x2: Math.round(coords.x + coords.width),
       y2: Math.round(coords.y + coords.height),
     });
-  },
-
-  setConstraints() {
-    const data = this.$preview.data();
-    this.constrainHeight = data.scaleh !== 'None';
-    this.constrainWidth = data.scalew !== 'None';
-    this.constrainRatio = this.constrainHeight && this.constrainWidth;
-
-    // set aspect ratio for crop
-    // also defines .mask box size
-    this.cropScale = {
-      w: this.constrainWidth ? data.scalew : this.$original[0].naturalWidth,
-      h: this.constrainHeight ? data.scaleh : this.$original[0].naturalHeight,
-    };
-  },
-
-  setupPreview() {
-    this.$mask
-      .css({
-        width: this.cropScale.w,
-        height: this.cropScale.h,
-      })
-      .addClass('active');
-
-    if (this.constrainRatio) {
-      this.$preview.find('strong').text(`${this.cropScale.w} x ${this.cropScale.h}`);
-    }
   },
 });
 
