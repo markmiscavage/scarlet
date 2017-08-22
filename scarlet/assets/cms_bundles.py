@@ -46,11 +46,12 @@ class AssetBundle(bundles.Bundle):
                                          "modified", "type"))
     add = AssetFormView(force_add=True, form_class=forms.UploadAssetForm)
     edit = AssetFormView(form_class=forms.UpdateAssetForm)
+    edit_crops = AssetFormView(form_class=forms.UpdateAssetForm, default_template='assets/edit_crops.html')
     crop = CropView(default_template="assets/crop.html")
     crops = CropBundle.as_subbundle(name='crops')
 
     class Meta:
-        item_views = ('edit', 'crop', 'crops', 'delete')
+        item_views = ('edit', 'crop', 'crops', 'delete', 'edit_crops', )
         primary_model_bundle = True
         model = get_asset_model()
 
