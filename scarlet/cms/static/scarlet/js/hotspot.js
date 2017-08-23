@@ -17450,7 +17450,7 @@ const SelectAsset = __WEBPACK_IMPORTED_MODULE_0_backbone__["View"].extend({
    * @param  {object}
    */
   onSelect(value, $item) {
-    $('.asset__edit-link').attr('href', `${this.baseUrl}${value}/edit`);
+    $('.asset__edit-link').attr('href', `${this.baseUrl}${value}/edit_crops`);
     this.linkifyCrops();
     this.$preview.css('background-image', `url(${$item.attr('data-thumb')})`);
     if ($item.attr('data-src')) {

@@ -1,7 +1,7 @@
-{% extends "cms/edit.html" %}
+{% extends "cms/base_popup.html" %}
 {% load cms %}
 
-{% block formsets %}
+{% block content %}
 {% if crops %}
 	<div class="crop-info">
 		<h2>Crops</h2>
@@ -23,4 +23,4 @@
       <section class="crop-info__cropper"></section>
 	</div>
 {% endif %}
-{% endblock formsets %}
+{% endblock content %}
