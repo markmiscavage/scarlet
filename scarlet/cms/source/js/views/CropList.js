@@ -1,5 +1,6 @@
 import { View } from 'backbone';
 import _ from 'underscore';
+import Cookies from 'js-cookie';
 import selectize from 'selectize';
 import ImageCropper from 'views/ImageCropper';
 import pubsub from 'helpers/pubsub';
@@ -7,10 +8,13 @@ import pubsub from 'helpers/pubsub';
 const CropList = View.extend({
   initialize() {
     this.items = [];
-    this.url = $('.widget-asset-simple').find('a')[0].href;
+    // this.url = $('.widget-asset-simple')
+    //   ? $('.widget-asset-simple').find('a')[0].href
+    this.url = $('.crop-info').attr('data-asset-url');
     this.$selected = null;
     this.edits = {};
     this.current = {};
+    this.csrf = Cookies.get('csrftoken');
   },
 
   events: {
@@ -40,9 +44,11 @@ const CropList = View.extend({
     const { x, y, x2, y2, width, height } = this.edits.hasOwnProperty(name)
       ? this.edits[name]
       : $target.data();
+    console.log(x, y);
     pubsub.on(
       'update-crop',
       _.debounce(data => {
+        console.log(this.edits);
         if ($target.attr('data-name') === this.$selected.attr('data-name')) {
           this.edits[name] = data;
         }
@@ -74,26 +80,52 @@ const CropList = View.extend({
 
   submit(e) {
     e.preventDefault();
-    console.log(e);
-    console.log(Object.keys(this.edits));
+    // Object.keys(this.edits).forEach(crop => {
+    //   $.post(`/admin/assets/196/crops/${crop}/edit/`, {
+    //     data: _.pick(this.edits[crop], ['x', 'y', 'x2', 'y2']),
+    //     headers: {
+    //       'X-CSRFToken': this.csrf,
+    //     },
+    //     dataType: 'json',
+    //     encode: true,
+    //   }).done(data => {
+    //     console.log('SUCCESS');
+    //     console.log(data);
+    //   });
+    // });
+
     Object.keys(this.edits).forEach(crop => {
-      const obj = this.edits[crop];
-      const { x, y, x2, y2 } = obj;
-      const formData = {
-        x,
-        y,
-        x2,
-        y2,
-      };
-      console.log(formData);
-      // $.post(`/admin/assets/192/crops/${crop}/edit/`, {
-      //   data: formData,
-      //   dataType: 'json',
-      //   encode: true,
-      // }).done(data => {
-      //   console.log('SUCCESS');
-      //   console.log(data);
-      // });
+      const { x, y, x2, y2 } = this.edits[crop];
+
+      $.get(`/admin/assets/196/crops/${crop}/edit/`)
+        .done(data => {
+          return data;
+        })
+        .then(res => {
+          const csrf = $(res).find('input[name="csrfmiddlewaretoken"]').val();
+          const form = new FormData();
+          form.append('x', x);
+          form.append('y', y);
+          form.append('x2', x2);
+          form.append('y2', y2);
+          form.append('csrfmiddlewaretoken', csrf);
+
+          $.ajax({
+            url: `/admin/assets/196/crops/${crop}/edit/`,
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            data: form,
+            headers: {
+              'X-CSRFToken': csrf,
+            },
+          }).then(response => {
+            console.log('SUCCESS');
+            console.log(response);
+            window.close();
+          });
+        });
     });
   },
 

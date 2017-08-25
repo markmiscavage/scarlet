@@ -13,7 +13,9 @@ const SelectAsset = View.extend({
     this.url = this.$el.data('api');
     this.addOpen = false;
     this.id = this.$input.val();
-    this.baseUrl = $('.asset__edit-link').data() && $('.asset__edit-link').data().base;
+    this.$editBtn = $('.asset__edit-link');
+    this.baseUrl = this.$editBtn.attr('data-base');
+    this.assetUrl = this.$editBtn.attr('data-asset-url');
   },
 
   /**
@@ -243,7 +245,7 @@ const SelectAsset = View.extend({
   handlePopup(e) {
     // e.preventDefault();
     // clickOpenModal(e, 'modal-add-asset', this.setSelected.bind(this), this.autoTags)
-    clickOpenPopup(e, this.setSelected.bind(this));
+    clickOpenPopup(e, this.setSelected.bind(this), { url: this.assetUrl });
 
     // LIST APPROACH
     // if(this.addOpen){

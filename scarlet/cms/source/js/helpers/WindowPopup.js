@@ -8,8 +8,9 @@ class WindowPopup {
 	 * @param  {object}
 	 * @param  {Function}
 	 */
-  constructor(url, name, options, cb) {
+  constructor(url, name, options, cb, asset = '') {
     this.url = url;
+    this.assetUrl = asset;
     this.options = options;
     this.cb = cb;
     this.name = name;
@@ -26,8 +27,10 @@ class WindowPopup {
       window[name] = null;
       delete window[name];
     };
+    this.newWin = window.open(this.url, this.name, this.options);
+    this.newWin.assetUrl = this.assetUrl;
 
-    return (this.newWin = window.open(this.url, this.name, this.options));
+    return this.newWin;
   }
 }
 
@@ -35,8 +38,9 @@ class WindowPopup {
  * window response
  * @param  {object}
  */
-const respond = function(data) {
+const respond = data => {
   const name = window.name;
+  console.log('WINDOW OPENER', window.opener);
   if (window.opener && window.opener[name] && typeof window.opener[name] === 'function') {
     window.opener[name](data);
   }
@@ -57,10 +61,11 @@ function getQueryString(field) {
 /**
  * attach handlers to dom
  */
-const handlePopup = function() {
+const handlePopup = () => {
   if (!window.opener) {
     return;
   }
+
   if (getQueryString('popup') && getQueryString('addInput')) {
     $('#id_name').val(getQueryString('addInput'));
   }
@@ -72,6 +77,8 @@ const handlePopup = function() {
   $('.widget-popup-data').each((i, dom) => {
     respond($(dom).data());
   });
+
+  $('.crop-info').attr('data-asset-url', window.assetUrl);
 };
 
 /**
@@ -79,14 +86,22 @@ const handlePopup = function() {
  * @param  {object} event
  * @param  {Function} callback
  */
-const clickOpenPopup = function(e, cb) {
+const clickOpenPopup = (e, cb, params = {}) => {
   e.preventDefault();
+  console.log(params);
+  const assetUrl = params.url;
   const url = $(e.currentTarget).attr('href');
   const options =
     'menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=500,width=800';
-  const windowPopup = new WindowPopup(url, 'assetWindow', options, data => {
-    cb(data);
-  });
+  const windowPopup = new WindowPopup(
+    url,
+    'assetWindow',
+    options,
+    data => {
+      cb(data);
+    },
+    assetUrl,
+  );
   windowPopup.request();
 
   return false;

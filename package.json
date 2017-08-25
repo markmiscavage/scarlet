@@ -20,6 +20,7 @@
     "jquery-hotspot": "^1.0.2",
     "jquery-ui": "^1.12.1",
     "jquery-ui-timepicker-addon": "^1.6.3",
+    "js-cookie": "^2.1.4",
     "moment": "^2.18.1",
     "select2": "^4.0.3",
     "selectize": "^0.12.4",
@@ -97,11 +98,20 @@
   },
   "peerDependencies": {},
   "babel": {
-    "presets": ["env", "es2015-without-strict", "stage-0", "stage-1"],
-    "plugins": ["transform-runtime"],
+    "presets": [
+      "env",
+      "es2015-without-strict",
+      "stage-0",
+      "stage-1"
+    ],
+    "plugins": [
+      "transform-runtime"
+    ],
     "env": {
       "production": {
-        "plugins": ["transform-runtime"]
+        "plugins": [
+          "transform-runtime"
+        ]
       }
     }
   },

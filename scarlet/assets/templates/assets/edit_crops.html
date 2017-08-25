@@ -1,10 +1,11 @@
-{% extends "cms/base_popup.html" %}
+{% extends "cms/popup_redirect.html" %}
 {% load cms %}
 
 {% block content %}
 {% if crops %}
 	<div class="crop-info">
 		<h2>Crops</h2>
+
     <p>Select a crop from the drop down to begin editing.</p>
     <div class="crop-info__main">
       <aside class="crop-info__nav">
@@ -20,7 +21,13 @@
     			{% endfor %}
     		</ul>
       </aside>
-      <section class="crop-info__cropper"></section>
+      <section class="crop-info__cropper">
+        {% csrf_token %}
+      </section>
 	</div>
 {% endif %}
+<div class="button-group button-group--submit">
+  <a class="button button--secondary close-popup" href="{{ cancel_url }}">Cancel</a>
+  <input class="button button--primary" type="submit" value="Save" />
+</div>
 {% endblock content %}

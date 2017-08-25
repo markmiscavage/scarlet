@@ -9,6 +9,10 @@ const ImageCropper = View.extend({
 
   initialize() {
     this.cropCoords = {};
+    this.scaled = {
+      width: 0,
+      height: 0,
+    };
     this.options = {
       aspectRatio: 0,
     };
@@ -21,7 +25,7 @@ const ImageCropper = View.extend({
   },
 
   onReady() {
-    this.setConstraints();
+    // this.setConstraints();
     this.setupCropper();
   },
 
@@ -30,8 +34,9 @@ const ImageCropper = View.extend({
       data: this.setInitialCroparea.bind(this),
       cropmove: this.updateCropArea.bind(this),
       ready: this.cropperReady.bind(this),
-      aspectRatio: this.cropScale.w / this.cropScale.h,
-      autoCropArea: false,
+      aspectRatio: this.scaled.width / this.scaled.height,
+      autoCrop: true,
+      autoCropArea: 1,
       background: true,
       cropBoxMovable: true,
       cropBoxResizable: true,
@@ -43,10 +48,13 @@ const ImageCropper = View.extend({
       viewMode: 1,
       zoomable: false,
     });
+    console.log('aspect', this.scaled.width);
   },
 
   cropperReady() {
-    console.log(this.$original.cropper('getData'));
+    const aspectRatio = this.scaled.width / this.scaled.height;
+    this.$original.cropper('setAspectRatio', aspectRatio);
+    console.log(this.$original.cropper('getCropBoxData'));
   },
 
   // iterate over coordinate property keys
@@ -66,57 +74,62 @@ const ImageCropper = View.extend({
     const $item = $('.crop-list__item');
 
     this.loopCoordProps(prop => {
-      this.cropCoords[prop] = $item.attr(`data-${prop}`);
+      this.cropCoords[prop] = parseInt($item.attr(`data-${prop}`), 10);
     });
 
-    const obj = {
-      x: $item.attr('data-x'),
-      y: $item.attr('data-y'),
-      width: $item.attr('data-width'),
-      height: $item.attr('data-height'),
-      rotate: 0,
-      ...this.getScale(),
-    };
+    const { x, y, x2, y2, width, height } = this.cropCoords;
+    this.scaled.width = width;
+    this.scaled.height = height;
+    const scaleX = this.scaled.width / this.$original[0].naturalWidth;
+    const scaleY = this.scaled.height / this.$original[0].naturalHeight;
 
+    /* Server sets the x2, y2 values relative to the original image, therefore we can
+     check to see if the x2 / y2 values are greater than the current crop width / height
+     to determine if the values have been calculated properly */
+    const obj = {
+      x: x2 > width ? Math.round(x * scaleX) : x,
+      y: y2 > height ? Math.round(y * scaleY) : y,
+      x2: x2 > width ? width : x2,
+      y2: y2 > height ? height : y2,
+      width,
+      height,
+    };
+    console.log('FROM SETUP', {
+      left: Math.round(obj.x / scaleX),
+      top: Math.round(obj.y / scaleY),
+      width: Math.round((obj.x2 - obj.x) / scaleX),
+      height: Math.round((obj.y2 - obj.y) / scaleY),
+    });
+    this.$original.cropper('setCropBoxData', {
+      left: Math.round(obj.x / scaleX),
+      top: Math.round(obj.y / scaleY),
+      width: Math.round((obj.x2 - obj.x) / scaleX),
+      height: Math.round((obj.y2 - obj.y) / scaleY),
+    });
     return obj;
   },
 
   getScale() {
-    let scaleX, scaleY;
-
-    if (this.constrainRatio) {
-      scaleX = this.cropScale.w / this.cropCoords.width;
-      scaleY = this.cropScale.h / this.cropCoords.height;
-    } else if (this.constrainHeight) {
-      // set equal scaling ratio (to prevent distortion)
-      scaleX = scaleY = this.cropScale.h / this.cropCoords.height;
-    } else if (this.constrainWidth) {
-      scaleX = scaleY = this.cropScale.w / this.cropCoords.width;
-    } else {
-      scaleX = scaleY =
-        this.$original[0].naturalWidth /
-        this.cropCoords.width /
-        (this.$original[0].naturalHeight / this.cropCoords.height);
-    }
-
     return {
-      scaleX,
-      scaleY,
+      scaleX: this.scaled.width / this.$original[0].naturalWidth,
+      scaleY: this.scaled.height / this.$original[0].naturalHeight,
     };
   },
 
   updateCropArea() {
     const data = this.$original.cropper('getData');
-    pubsub.trigger('update-crop', data);
     this.setCropCoords(data);
+    pubsub.trigger('update-crop', this.cropCoords);
   },
 
   setCropCoords(coords) {
+    const { scaleX, scaleY } = this.getScale();
+
     this.cropCoords = Object.assign({}, coords, {
-      x: Math.round(coords.x),
-      y: Math.round(coords.y),
-      x2: Math.round(coords.x + coords.width),
-      y2: Math.round(coords.y + coords.height),
+      x: Math.round(coords.x * scaleX),
+      y: Math.round(coords.y * scaleY),
+      x2: Math.round((coords.x + coords.width) * scaleX),
+      y2: Math.round((coords.y + coords.height) * scaleY),
     });
   },
 });

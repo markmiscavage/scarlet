@@ -33,7 +33,7 @@ function createWebpackPlugins() {
 }
 
 config.devtool = 'source-map'; // 'cheap-source-map' doesn't work with uglify
-config.output.publicPath = '/static/scarlet';
+config.output.publicPath = '/static/';
 config.module.rules.push(...createWebpackLoaders());
 config.plugins.push(...createWebpackPlugins());
 module.exports = config;
