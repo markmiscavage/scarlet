@@ -8,13 +8,14 @@ class WindowPopup {
 	 * @param  {object}
 	 * @param  {Function}
 	 */
-  constructor(url, name, options, cb, asset = '') {
+  constructor(url, name, options, cb, asset = '', id = 0) {
     this.url = url;
     this.assetUrl = asset;
     this.options = options;
     this.cb = cb;
     this.name = name;
     this.newWin = null;
+    this.id = id;
   }
 
   /**
@@ -29,6 +30,7 @@ class WindowPopup {
     };
     this.newWin = window.open(this.url, this.name, this.options);
     this.newWin.assetUrl = this.assetUrl;
+    this.newWin.id = this.id;
 
     return this.newWin;
   }
@@ -78,7 +80,7 @@ const handlePopup = () => {
     respond($(dom).data());
   });
 
-  $('.crop-info').attr('data-asset-url', window.assetUrl);
+  $('.crop-info').attr('data-asset-url', window.assetUrl).attr('data-asset-id', window.id);
 };
 
 /**
@@ -88,8 +90,8 @@ const handlePopup = () => {
  */
 const clickOpenPopup = (e, cb, params = {}) => {
   e.preventDefault();
-  console.log(params);
   const assetUrl = params.url;
+  const id = params.id;
   const url = $(e.currentTarget).attr('href');
   const options =
     'menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=500,width=800';
@@ -101,6 +103,7 @@ const clickOpenPopup = (e, cb, params = {}) => {
       cb(data);
     },
     assetUrl,
+    id,
   );
   windowPopup.request();
 

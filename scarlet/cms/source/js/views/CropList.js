@@ -8,15 +8,16 @@ import pubsub from 'helpers/pubsub';
 const CropList = View.extend({
   initialize() {
     this.items = [];
+    // TODO: FIX THIS
     // this.url = $('.widget-asset-simple')
     //   ? $('.widget-asset-simple').find('a')[0].href
     this.url = $('.crop-info').attr('data-asset-url');
+    this.id = $('.crop-info').attr('data-asset-id');
     this.$selected = null;
     this.edits = {};
     this.current = {};
     this.csrf = Cookies.get('csrftoken');
   },
-
   events: {
     'click .row': 'edit',
     'click .button--primary': 'submit',
@@ -44,11 +45,9 @@ const CropList = View.extend({
     const { x, y, x2, y2, width, height } = this.edits.hasOwnProperty(name)
       ? this.edits[name]
       : $target.data();
-    console.log(x, y);
     pubsub.on(
       'update-crop',
       _.debounce(data => {
-        console.log(this.edits);
         if ($target.attr('data-name') === this.$selected.attr('data-name')) {
           this.edits[name] = data;
         }
@@ -80,25 +79,12 @@ const CropList = View.extend({
 
   submit(e) {
     e.preventDefault();
-    // Object.keys(this.edits).forEach(crop => {
-    //   $.post(`/admin/assets/196/crops/${crop}/edit/`, {
-    //     data: _.pick(this.edits[crop], ['x', 'y', 'x2', 'y2']),
-    //     headers: {
-    //       'X-CSRFToken': this.csrf,
-    //     },
-    //     dataType: 'json',
-    //     encode: true,
-    //   }).done(data => {
-    //     console.log('SUCCESS');
-    //     console.log(data);
-    //   });
-    // });
 
     Object.keys(this.edits).forEach(crop => {
       const { x, y, x2, y2 } = this.edits[crop];
 
-      $.get(`/admin/assets/196/crops/${crop}/edit/`)
-        .done(data => {
+      $.get(`/admin/assets/${this.id}/crops/${crop}/edit/`)
+        .then(data => {
           return data;
         })
         .then(res => {
@@ -111,7 +97,7 @@ const CropList = View.extend({
           form.append('csrfmiddlewaretoken', csrf);
 
           $.ajax({
-            url: `/admin/assets/196/crops/${crop}/edit/`,
+            url: `/admin/assets/${this.id}/crops/${crop}/edit/`,
             type: 'POST',
             processData: false,
             contentType: false,
@@ -120,10 +106,11 @@ const CropList = View.extend({
             headers: {
               'X-CSRFToken': csrf,
             },
-          }).then(response => {
-            console.log('SUCCESS');
-            console.log(response);
-            window.close();
+            success: data => {
+              console.log('SUCCESS');
+              console.log(data);
+              window.close();
+            },
           });
         });
     });

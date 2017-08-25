@@ -245,7 +245,7 @@ const SelectAsset = View.extend({
   handlePopup(e) {
     // e.preventDefault();
     // clickOpenModal(e, 'modal-add-asset', this.setSelected.bind(this), this.autoTags)
-    clickOpenPopup(e, this.setSelected.bind(this), { url: this.assetUrl });
+    clickOpenPopup(e, this.setSelected.bind(this), { url: this.assetUrl, id: this.id });
 
     // LIST APPROACH
     // if(this.addOpen){

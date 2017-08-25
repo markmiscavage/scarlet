@@ -48,13 +48,11 @@ const ImageCropper = View.extend({
       viewMode: 1,
       zoomable: false,
     });
-    console.log('aspect', this.scaled.width);
   },
 
   cropperReady() {
     const aspectRatio = this.scaled.width / this.scaled.height;
     this.$original.cropper('setAspectRatio', aspectRatio);
-    console.log(this.$original.cropper('getCropBoxData'));
   },
 
   // iterate over coordinate property keys
@@ -94,12 +92,7 @@ const ImageCropper = View.extend({
       width,
       height,
     };
-    console.log('FROM SETUP', {
-      left: Math.round(obj.x / scaleX),
-      top: Math.round(obj.y / scaleY),
-      width: Math.round((obj.x2 - obj.x) / scaleX),
-      height: Math.round((obj.y2 - obj.y) / scaleY),
-    });
+
     this.$original.cropper('setCropBoxData', {
       left: Math.round(obj.x / scaleX),
       top: Math.round(obj.y / scaleY),
