@@ -13,7 +13,9 @@
                   Upload New
               </a>
               {% endif %}
-            <a class="button button--secondary asset__edit-link" data-base="{{ base_api_link }}" data-asset-url="{{ object.file.url }}" href="#">Edit Crop</a>
+              {% if sizes %}
+              <a class="button button--secondary asset__edit-link" data-base="{{ base_api_link }}" data-asset-url="{{ object.file.url }}" href="#">Edit Crop</a>
+            {% endif %}
           </div>
         </div>
         {% if sizes and show_crops %}
