@@ -1,32 +1,28 @@
 /* jshint loopfunc: true */
 
 define(
-
 	[
-		"rosy/base/DOMClass",
-		"$",
-		"$ui",
-		"$plugin!select2",
-		"./WidgetEvents",
-		"./wysiwyg/Wysiwyg",
+		'rosy/base/DOMClass',
+		'$',
+		'$ui',
+		'$plugin!select2',
+		'./WidgetEvents',
+		'./wysiwyg/Wysiwyg',
 	],
-
 	function (DOMClass, $, $ui, jQuerySelect2, WidgetEvents, Wysiwyg) {
-
-		"use strict";
+		'use strict';
 
 		return DOMClass.extend({
-
-			dom : null,
-			forms : null,
+			dom: null,
+			forms: null,
 
 			types: [],
 
-			prefix : '',
+			prefix: '',
 
-			isDraggable : false,
+			isDraggable: false,
 
-			init : function (dom) {
+			init: function (dom) {
 				this.dom = dom;
 				this.forms = dom.find('.widget-formset-forms');
 				this.controls = dom.next('.widget-formset-controls');
@@ -37,9 +33,10 @@ define(
 				this._initTypes();
 				this._initSort();
 				this._initControls();
+				console.log(document.getElementById('id_order'));
 			},
 
-			_delete : function (e) {
+			_delete: function (e) {
 				var dom = $(e.currentTarget),
 					form = dom.closest('.widget-formset-form');
 
@@ -55,14 +52,17 @@ define(
 				Add
 			************************************/
 
-			_count : function (typeOf) {
-				return this.dom.find('.widget-formset-form[data-prefix=' + typeOf + ']').length;
+			_count: function (typeOf) {
+				return this.dom.find('.widget-formset-form[data-prefix=' + typeOf + ']')
+					.length;
 			},
 
-			_add : function (e) {
+			_add: function (e) {
 				var $scope = $(e.currentTarget),
 					typeOf = $scope.data('prefix'),
-					clone = $('<div>').addClass('widget-formset-form added-with-js').attr('data-prefix', typeOf),
+					clone = $('<div>')
+						.addClass('widget-formset-form added-with-js')
+						.attr('data-prefix', typeOf),
 					html = $scope.find('.widget-formset-form-template').html();
 
 				html = html.replace(/(__prefix__)/g, this._count(typeOf));
@@ -75,7 +75,7 @@ define(
 				}
 
 				this.publish(WidgetEvents.RENDER, {
-					dom : clone
+					dom: clone,
 				});
 
 				if (this.types.indexOf(typeOf) === -1) {
@@ -89,12 +89,12 @@ define(
 				Sorting
 			************************************/
 
-			_initSort : function () {
+			_initSort: function () {
 				if (this.forms.find('.widget-formset-order').length) {
 					this.forms.sortable({
-						update : this._resort,
+						update: this._resort,
 						//change : this._resort,
-						stop   : this._repairWysiwyg
+						stop: this._repairWysiwyg,
 					});
 					this.dom.find('.widget-formset-form').addClass('draggable');
 					this.isDraggable = true;
@@ -102,7 +102,7 @@ define(
 				this._resort();
 			},
 
-			_resort : function () {
+			_resort: function () {
 				var helper = this.dom.find('.ui-sortable-helper'),
 					placeholder = this.dom.find('.ui-sortable-placeholder');
 
@@ -132,7 +132,7 @@ define(
 			},
 
 			// workaround for WYSIHTML5 failing after iframe is moved
-			_repairWysiwyg : function (e, elem) {
+			_repairWysiwyg: function (e, elem) {
 				var $wysiwyg = $(elem.item[0]).find('.widget-wysiwyg');
 
 				if ($wysiwyg.length) {
@@ -145,22 +145,23 @@ define(
 				Metadata
 			************************************/
 
-			_initTypes : function () {
+			_initTypes: function () {
 				var self = this;
 				this.controls.find('.widget-formset-add').each(function () {
 					self.types.push($(this).data('prefix'));
 				});
 			},
 
-			_updateMetadata : function () {
+			_updateMetadata: function () {
 				for (var i = 0; i < this.types.length; i++) {
-
 					var typeOf = this.types[i],
 						$formset = $('.widget-formset-form[data-prefix=' + typeOf + ']');
 
 					$formset.each(function (n, el) {
 						var $this = $(this);
-						$this.find('.widget-formset-order input').val($this.prevAll().length);
+						$this
+							.find('.widget-formset-order input')
+							.val($this.prevAll().length);
 					});
 
 					$('#id_' + typeOf + '-TOTAL_FORMS').val($formset.length);
@@ -171,30 +172,31 @@ define(
 				Controls
 			************************************/
 
-			_initControls : function () {
-				var attrDataPrefix = this.prefix ? '[data-prefix=' + this.prefix + ']' : '[data-prefix]';
+			_initControls: function () {
+				var attrDataPrefix = this.prefix ?
+					'[data-prefix=' + this.prefix + ']' :
+					'[data-prefix]';
 
 				$('.widget-formset-add' + attrDataPrefix).on('click', this._add);
 
-				this.controls.filter('.dropdown')
+				this.controls
+					.filter('.dropdown')
 					.on('click', this._toggleOptions)
 					.on('mouseout', this._closeOptions);
 			},
 
-			_toggleOptions : function (e) {
+			_toggleOptions: function (e) {
 				$(e.currentTarget).toggleClass('show');
 			},
 
-			_closeOptions : function (e) {
+			_closeOptions: function (e) {
 				var parent = e.currentTarget,
 					child = e.toElement || e.relatedTarget;
 
 				// check all children (checking from bottom up)
 				// prevent closing on child event
 				while (child && child.parentNode && child.parentNode !== window) {
-
 					if (child.parentNode === parent || child === parent) {
-
 						if (child.preventDefault) {
 							child.preventDefault();
 						}
@@ -206,7 +208,7 @@ define(
 				}
 
 				$(parent).removeClass('show');
-			}
+			},
 		});
 	}
 );

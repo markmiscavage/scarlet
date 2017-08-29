@@ -1,5 +1,6 @@
 {
   "rules": {
       "space-before-function-paren": 2,
+      "operator-linebreak": ["error", "after"],
     }
 }
