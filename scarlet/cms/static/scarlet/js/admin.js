@@ -10599,30 +10599,26 @@ define(
 );
 
 define(
-
 	'admin/modules/AssetSelect',[
-		"rosy/base/DOMClass",
-		"$",
-		"$plugin!select2",
-		"./WidgetEvents",
-		"./WindowPopup"
+		'rosy/base/DOMClass',
+		'$',
+		'$plugin!select2',
+		'./WidgetEvents',
+		'./WindowPopup',
 	],
-
 	function (DOMClass, $, jQuerySelect2, WidgetEvents, WindowPopup) {
-
 		
 
 		return DOMClass.extend({
+			dom: null,
+			preview: null,
+			input: null,
 
-			dom : null,
-			preview : null,
-			input : null,
+			count: 0,
 
-			count : 0,
+			popup: null,
 
-			popup : null,
-
-			init : function (dom) {
+			init: function (dom) {
 				this.dom = dom;
 				this.input = dom.find('input');
 				this.preview = dom.find('.widget-asset-preview');
@@ -10635,21 +10631,21 @@ define(
 				this._linkifyCrops();
 			},
 
-			_initSelect2 : function () {
+			_initSelect2: function () {
 				this.input.select2({
-					placeholder : "Choose an asset",
+					placeholder: 'Choose an asset',
 					//minimumInputLength : 2,
-					allowClear : true,
-					initSelection : this.initSelection,
-					formatSelection : this.formatSelection,
-					formatResult : this.formatResult,
-					ajax : {
-						url : this.dom.data('api'),
-						quietMillis : 500,
-						dataType : "json",
-						data : this._ajaxData,
-						results : this._ajaxResults
-					}
+					allowClear: true,
+					initSelection: this.initSelection,
+					formatSelection: this.formatSelection,
+					formatResult: this.formatResult,
+					ajax: {
+						url: this.dom.data('api'),
+						quietMillis: 500,
+						dataType: 'json',
+						data: this._ajaxData,
+						results: this._ajaxResults,
+					},
 				});
 
 				this.input.on('change', this.onChange);
@@ -10659,33 +10655,40 @@ define(
 				this.dom.on('click', '.button, .crop-link', this._openPopup);
 			},
 
-			_openPopup : function (e) {
+			_openPopup: function (e) {
 				var dom = $(e.currentTarget),
 					url = dom.attr('href'),
-					options = 'menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=500,width=800';
+					options =
+						'menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=500,width=800';
 
 				WindowPopup.request(url, options, this._gotDataFromPopup);
 
 				return false;
 			},
 
-			_gotDataFromPopup : function (data) {
+			_gotDataFromPopup: function (data) {
+				console.log('DATA', data);
 				this.input.select2('data', data);
 			},
 
-			_linkifyCrops : function (dom) {
-				var guidLink = this.baseLink + this.cropsList.parent().find('[type=hidden]').val();
+			_linkifyCrops: function (dom) {
+				var guidLink =
+					this.baseLink +
+					this.cropsList
+						.parent()
+						.find('[type=hidden]')
+						.val();
 
 				this.cropsList.find('li').each(function (i, el) {
 					el = $(el);
 
-					var editLink = guidLink + "/" + el.data("crop-link") + '?popup=1';
+					var editLink = guidLink + '/' + el.data('crop-link') + '?popup=1';
 
 					el.find('a').attr('href', editLink);
 				});
 			},
 
-			_autoTag : function () {
+			_autoTag: function () {
 				var tags = [];
 				$('[data-auto-tag]').each(function (i, dom) {
 					var data_auto_tag = $(dom).data('auto-tag');
@@ -10693,7 +10696,7 @@ define(
 						var allTags = data_auto_tag.toLowerCase().split(',');
 						while (allTags.length) {
 							var tag = allTags.shift();
-							var splitTag = tag.split(" ");
+							var splitTag = tag.split(' ');
 							tags.push(tag);
 
 							// if splitTag length > 3, push individual values
@@ -10713,8 +10716,7 @@ define(
 				this._auto_tags = tags;
 			},
 
-			_tag : function () {
-
+			_tag: function () {
 				if (!this.dom.find('a.button').length) {
 					return;
 				}
@@ -10728,16 +10730,16 @@ define(
 				dom[0].search = this._param(params);
 			},
 
-			_param : function (obj) {
+			_param: function (obj) {
 				var op = [],
 					i;
 				for (i in obj) {
 					op.push(i + '=' + obj[i]);
 				}
-				return "?" + op.join('&');
+				return '?' + op.join('&');
 			},
 
-			_unparam : function (path) {
+			_unparam: function (path) {
 				var ret = {},
 					seg = path.replace(/^\?/, '').split('&'),
 					len = seg.length,
@@ -10753,43 +10755,43 @@ define(
 				return ret;
 			},
 
-			_ajaxData : function (term, page, context) {
+			_ajaxData: function (term, page, context) {
 				return {
-					page : page,
-					tag : term
+					page: page,
+					tag: term,
 				};
 			},
 
-			_ajaxResults : function (data, page, context) {
+			_ajaxResults: function (data, page, context) {
 				// sanitize data
 				$.each(data.results, function (i, result) {
 					result.text = result.user_filename;
 				});
 
 				return {
-					results : data.results,
-					more : !!data.next
+					results: data.results,
+					more: !!data.next,
 				};
 			},
 
-			onChange : function () {
+			onChange: function () {
 				this._linkifyCrops();
 
 				if (!this.input.val()) {
-					this.preview.css('background-image', "none");
+					this.preview.css('background-image', 'none');
 				}
 			},
 
-			initSelection : function (element, callback) {
+			initSelection: function (element, callback) {
 				callback({
 					id: element.val(),
-					text: this.dom.data('title')
+					text: this.dom.data('title'),
 				});
 			},
 
-			formatSelection : function (object, container) {
+			formatSelection: function (object, container) {
 				if (object.thumbnail) {
-					this.preview.css('background-image', 'url(' + object.thumbnail + ")");
+					this.preview.css('background-image', 'url(' + object.thumbnail + ')');
 				}
 				if (object.url) {
 					this.input.attr('data-src', object.url);
@@ -10797,15 +10799,15 @@ define(
 				return object.text;
 			},
 
-			formatResult : function (object, container, query) {
+			formatResult: function (object, container, query) {
 				var thumb = $('<div>').addClass('select2-result-image-thumbnail');
 				if (object.thumbnail) {
-					thumb.css('background-image', 'url(' + object.thumbnail + ")");
+					thumb.css('background-image', 'url(' + object.thumbnail + ')');
 				}
 				container.addClass('select2-result-image');
 				container.append(object.text);
 				container.append(thumb);
-			}
+			},
 		});
 	}
 );
@@ -24765,8 +24767,8 @@ define(
 			setupJcrop : function () {
 				var self = this,
 					options = $.extend({}, this.options, {
-						onSelect : $.proxy(this.updateCropCoords, this),
-						onChange : $.proxy(this.updateCropCoords, this),
+						onSelect : $.proxy(this.updatePreview, this),
+						onChange : $.proxy(this.updatePreview, this),
 						aspectRatio : (this.constrainRatio ? (this.cropScale.w / this.cropScale.h) : 0),
 						allowSelect : (this.constrainRatio ? true : false),
 						boxWidth : (this.$.width() * 0.75),
@@ -24813,9 +24815,16 @@ define(
 				}
 			},
 
-			updatePreview : function () {
+			updatePreview : function (coords) {
+				clearTimeout(this.refreshTimeout);
+
+				if (parseInt(coords.w, 10) < 0) {
+					return;
+				}
+
+				this.cropCoords = coords;
+
 				var scale = this.getScale(),
-					coords = this.cropCoords,
 					width,
 					height;
 
@@ -24859,6 +24868,9 @@ define(
 					marginLeft: "-" + Math.round(scale.scaleX * coords.x) + "px",
 					marginTop: "-" + Math.round(scale.scaleY * coords.y) + "px"
 				});
+
+				// debounce update of coord values (form fields) after interaction
+				this.refreshTimeout = setTimeout(this.updateCoords, 250);
 			},
 
 			getScale : function () {
@@ -24888,31 +24900,9 @@ define(
 				};
 			},
 
-			// update cropCoord values onChange or onSelect of jcrop
-			updateCropCoords : function (coords) {
-				clearTimeout(this.refreshTimeout);
-
-				if (parseInt(coords.w, 10) < 0) {
-					return;
-				}
-
-				this.cropCoords = {
-					x: Math.round(coords.x),
-					y: Math.round(coords.y),
-					x2: Math.round(coords.x2),
-					y2: Math.round(coords.y2),
-					w: coords.w,
-					h: coords.h
-				};
-
-				this.updatePreview();
-
-				// debounce update of coord values (form fields) after interaction
-				this.refreshTimeout = setTimeout(this.updateCoordFields, 250);
-			},
-
 			// store current crop coordinates as field values
-			updateCoordFields : function () {
+			updateCoords : function () {
+
 				this.loopCoordProps(function (prop) {
 					var $coord = $("input[data-property='" + prop + "']");
 

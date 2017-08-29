@@ -1,21 +1,20 @@
 /*jslint node: true */
 module.exports = function (grunt) {
-	"use strict";
+	'use strict';
 
-	var fs = require("fs"),
+	var fs = require('fs'),
 		cwd = process.cwd(),
-		path = require("path"),
-		source = path.join(cwd, "scarlet", "cms", "static", "scarlet", "js"),
-		jshint = require("jshint").JSHINT;
+		path = require('path'),
+		source = path.join(cwd, 'scarlet', 'cms', 'static', 'scarlet', 'js'),
+		jshint = require('jshint').JSHINT;
 
-	var FILES = path.join(source, "**", "*[^.min].js");
+	var FILES = path.join(source, '**', '*[^.min].js');
 
-	function pad(str, len, padChar) {
-
+	function pad (str, len, padChar) {
 		str = str.toString();
 
-		if (typeof padChar === "undefined") {
-			padChar = " ";
+		if (typeof padChar === 'undefined') {
+			padChar = ' ';
 		}
 
 		while (str.length < len) {
@@ -24,9 +23,9 @@ module.exports = function (grunt) {
 		return str;
 	}
 
-	function trim(str) {
+	function trim (str) {
 		str = str.replace(/^\s\s*/, '');
-		var	ws = /\s/,
+		var ws = /\s/,
 			i = str.length - 1;
 
 		while (ws.test(str.charAt(i))) {
@@ -35,31 +34,38 @@ module.exports = function (grunt) {
 		return str.slice(0, i + 1);
 	}
 
-	grunt.registerTask("jshint", "JSHint your JavaScript.", function (mode) {
-
+	grunt.registerTask('jshint', 'JSHint your JavaScript.', function (mode) {
 		var done = this.async();
-		var jshintOptions = grunt.file.readJSON(path.join(source, ".jshintrc"));
+		var jshintOptions = grunt.file.readJSON(path.join(source, '.jshintrc'));
 
-		if (mode === "browser") {
+		if (mode === 'browser') {
 			jshintOptions.node = false;
-			jshintOptions.devel = false;
+			jshintOptions.devel = true;
 			jshintOptions.browser = true;
 		}
 
 		var hasErrors = false;
 
-		var exclude = grunt.file.read(path.join(source, ".jshintignore")).trim().split("\n");
-		var files = grunt.file.expand({
-			filter: "isFile"
-		}, FILES).filter(function (file) {
-			return exclude.every(function (x) {
-				x = x.replace(/\./g, "\\.");
-				x = x.replace(/^\*/g, ".*");
+		var exclude = grunt.file
+			.read(path.join(source, '.jshintignore'))
+			.trim()
+			.split('\n');
+		var files = grunt.file
+			.expand(
+				{
+					filter: 'isFile',
+				},
+				FILES
+			)
+			.filter(function (file) {
+				return exclude.every(function (x) {
+					x = x.replace(/\./g, '\\.');
+					x = x.replace(/^\*/g, '.*');
 
-				var match = (new RegExp(x).test(file));
-				return !match;
+					var match = new RegExp(x).test(file);
+					return !match;
+				});
 			});
-		});
 
 		var length = files.length;
 		var x = 0;
@@ -70,19 +76,25 @@ module.exports = function (grunt) {
 					hasErrors = true;
 
 					grunt.log.writeln();
-					grunt.log.writeln("Err ".red + filename);
+					grunt.log.writeln('Err '.red + filename);
 
-					for (var j = 0; j < jshint.errors.length; j ++) {
+					for (var j = 0; j < jshint.errors.length; j++) {
 						var err = jshint.errors[j],
-							line = ["line", pad(err.line, 1, " "), ": char", pad(err.character, 1, " "), pad("", 1)].join(" ").grey.bold,
+							line = [
+								'line',
+								pad(err.line, 1, ' '),
+								': char',
+								pad(err.character, 1, ' '),
+								pad('', 1),
+							].join(' ').grey.bold,
 							reason = err.reason.yellow;
 
-						grunt.log.writeln(pad("", 4) + line + reason);
-						grunt.log.writeln(pad("", 22) + trim(err.evidence).white);
+						grunt.log.writeln(pad('', 4) + line + reason);
+						grunt.log.writeln(pad('', 22) + trim(err.evidence).white);
 						grunt.log.writeln();
 					}
-				} else if (!grunt.option("quiet")) {
-					grunt.log.writeln("Ok  ".green + filename);
+				} else if (!grunt.option('quiet')) {
+					grunt.log.writeln('Ok  '.green + filename);
 				}
 
 				if (length === ++x) {
@@ -91,17 +103,16 @@ module.exports = function (grunt) {
 			};
 		};
 
-		for (var i = 0; i < files.length; i ++) {
+		for (var i = 0; i < files.length; i++) {
 			var file = files[i];
 
 			var fa = file.split(path.sep);
 			fa[fa.length - 1] = fa[fa.length - 1].white;
 			var filename = fa.join(path.sep).grey;
 
-			fs.readFile(file, "utf8", handleContents(filename));
+			fs.readFile(file, 'utf8', handleContents(filename));
 		}
-
 	});
 
-	grunt.config.set("build.jshint", ["jshint:browser"]);
+	grunt.config.set('build.jshint', ['jshint:browser']);
 };

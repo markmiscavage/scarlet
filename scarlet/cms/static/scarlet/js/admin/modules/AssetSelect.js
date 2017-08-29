@@ -6,7 +6,7 @@ define(
 		'./WidgetEvents',
 		'./WindowPopup',
 	],
-	function(DOMClass, $, jQuerySelect2, WidgetEvents, WindowPopup) {
+	function (DOMClass, $, jQuerySelect2, WidgetEvents, WindowPopup) {
 		'use strict';
 
 		return DOMClass.extend({
@@ -18,7 +18,7 @@ define(
 
 			popup: null,
 
-			init: function(dom) {
+			init: function (dom) {
 				this.dom = dom;
 				this.input = dom.find('input');
 				this.preview = dom.find('.widget-asset-preview');
@@ -31,7 +31,7 @@ define(
 				this._linkifyCrops();
 			},
 
-			_initSelect2: function() {
+			_initSelect2: function () {
 				this.input.select2({
 					placeholder: 'Choose an asset',
 					//minimumInputLength : 2,
@@ -55,7 +55,7 @@ define(
 				this.dom.on('click', '.button, .crop-link', this._openPopup);
 			},
 
-			_openPopup: function(e) {
+			_openPopup: function (e) {
 				var dom = $(e.currentTarget),
 					url = dom.attr('href'),
 					options =
@@ -66,12 +66,12 @@ define(
 				return false;
 			},
 
-			_gotDataFromPopup: function(data) {
+			_gotDataFromPopup: function (data) {
 				console.log('DATA', data);
 				this.input.select2('data', data);
 			},
 
-			_linkifyCrops: function(dom) {
+			_linkifyCrops: function (dom) {
 				var guidLink =
 					this.baseLink +
 					this.cropsList
@@ -79,7 +79,7 @@ define(
 						.find('[type=hidden]')
 						.val();
 
-				this.cropsList.find('li').each(function(i, el) {
+				this.cropsList.find('li').each(function (i, el) {
 					el = $(el);
 
 					var editLink = guidLink + '/' + el.data('crop-link') + '?popup=1';
@@ -88,9 +88,9 @@ define(
 				});
 			},
 
-			_autoTag: function() {
+			_autoTag: function () {
 				var tags = [];
-				$('[data-auto-tag]').each(function(i, dom) {
+				$('[data-auto-tag]').each(function (i, dom) {
 					var data_auto_tag = $(dom).data('auto-tag');
 					if (data_auto_tag) {
 						var allTags = data_auto_tag.toLowerCase().split(',');
@@ -116,7 +116,7 @@ define(
 				this._auto_tags = tags;
 			},
 
-			_tag: function() {
+			_tag: function () {
 				if (!this.dom.find('a.button').length) {
 					return;
 				}
@@ -130,7 +130,7 @@ define(
 				dom[0].search = this._param(params);
 			},
 
-			_param: function(obj) {
+			_param: function (obj) {
 				var op = [],
 					i;
 				for (i in obj) {
@@ -139,7 +139,7 @@ define(
 				return '?' + op.join('&');
 			},
 
-			_unparam: function(path) {
+			_unparam: function (path) {
 				var ret = {},
 					seg = path.replace(/^\?/, '').split('&'),
 					len = seg.length,
@@ -155,16 +155,16 @@ define(
 				return ret;
 			},
 
-			_ajaxData: function(term, page, context) {
+			_ajaxData: function (term, page, context) {
 				return {
 					page: page,
 					tag: term,
 				};
 			},
 
-			_ajaxResults: function(data, page, context) {
+			_ajaxResults: function (data, page, context) {
 				// sanitize data
-				$.each(data.results, function(i, result) {
+				$.each(data.results, function (i, result) {
 					result.text = result.user_filename;
 				});
 
@@ -174,7 +174,7 @@ define(
 				};
 			},
 
-			onChange: function() {
+			onChange: function () {
 				this._linkifyCrops();
 
 				if (!this.input.val()) {
@@ -182,14 +182,14 @@ define(
 				}
 			},
 
-			initSelection: function(element, callback) {
+			initSelection: function (element, callback) {
 				callback({
 					id: element.val(),
 					text: this.dom.data('title'),
 				});
 			},
 
-			formatSelection: function(object, container) {
+			formatSelection: function (object, container) {
 				if (object.thumbnail) {
 					this.preview.css('background-image', 'url(' + object.thumbnail + ')');
 				}
@@ -199,7 +199,7 @@ define(
 				return object.text;
 			},
 
-			formatResult: function(object, container, query) {
+			formatResult: function (object, container, query) {
 				var thumb = $('<div>').addClass('select2-result-image-thumbnail');
 				if (object.thumbnail) {
 					thumb.css('background-image', 'url(' + object.thumbnail + ')');
