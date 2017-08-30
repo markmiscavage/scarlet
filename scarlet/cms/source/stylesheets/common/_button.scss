@@ -39,6 +39,7 @@ button,
 		color: $white;
 		cursor: default;
 		background-color: $gray-light;
+		pointer-events: none;
 
 		&:hover {
 			color: $white;

@@ -2482,7 +2482,8 @@ button,
   .button--disabled {
     color: #fff;
     cursor: default;
-    background-color: #eee; }
+    background-color: #eee;
+    pointer-events: none; }
     button--disabled:hover,
     .button--disabled:hover {
       color: #fff;
