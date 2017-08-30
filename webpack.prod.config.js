@@ -1,7 +1,6 @@
 const webpack = require('webpack');
 const config = require('./webpack.config');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
-const BundleTracker = require('webpack-bundle-tracker');
 
 const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 
@@ -21,13 +20,7 @@ function createWebpackLoaders() {
 }
 
 function createWebpackPlugins() {
-  const plugins = [
-    new ProgressBarPlugin({ width: 60 }),
-    new UglifyJsPlugin(UGLIFY_CONFIG),
-    new BundleTracker({
-      filename: './webpack-stats.json',
-    }),
-  ];
+  const plugins = [new ProgressBarPlugin({ width: 60 }), new UglifyJsPlugin(UGLIFY_CONFIG)];
 
   return plugins;
 }
