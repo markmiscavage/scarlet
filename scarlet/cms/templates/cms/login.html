@@ -40,7 +40,7 @@
 
   <body>
     <div class="login">
-      <img src="{{ STATIC_URL }}images/logo-scarlet-2.png" class="login__logo--main" />
+      <img src="{{ STATIC_URL }}scarlet/images/logo-scarlet-2.png" class="login__logo--main" />
     {% if form.errors and not form.non_field_errors and not form.this_is_the_login_form.errors %}
     <p class="errornote">
     {% blocktrans count counter=form.errors.items|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
