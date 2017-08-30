@@ -16,14 +16,15 @@ const Sortable = View.extend({
           inputs[i].value = i + 1;
         }
       },
-      containment: 'parent',
-      grid: [0, 10],
+      containment: $('#content'),
+      // grid: [0, 10],
+      axis: 'y',
       iframeFix: true,
-      cursorAt: { left: -50 },
+      // cursorAt: { left: -50 },
       scroll: true,
       snap: true,
       snapMode: 'outer',
-      snapTolerance: 50,
+      snapTolerance: 5,
     });
   },
 

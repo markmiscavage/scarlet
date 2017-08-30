@@ -1,6 +1,6 @@
-input[type=text],
-input[type=file],
-input[type=password],
+input[type='text'],
+input[type='file'],
+input[type='password'],
 textarea {
 	background-color: $bg-primary;
 	display: block;
@@ -12,23 +12,23 @@ textarea {
 	}
 }
 
-input[type=text],
-input[type=file],
-input[type=password],
-input[type=number] {
+input[type='text'],
+input[type='file'],
+input[type='password'],
+input[type='number'] {
 	line-height: 38px;
 	text-indent: 10px;
 	margin-top: 10px;
 }
 
-input[type=file] {
+input[type='file'] {
 	padding: 12px;
 	line-height: 1;
 	text-indent: 0;
 	outline: none;
 }
 
-input[type=radio] {
+input[type='radio'] {
 	display: none;
 
 	& + label {
@@ -63,6 +63,11 @@ input[type=radio] {
 		border-radius: 50%;
 		margin-right: 30px;
 	}
+}
+
+input[type='number'] {
+	border: 1px solid #ddd;
+	outline: none;
 }
 
 legend {
