@@ -35,7 +35,7 @@ const Editor = View.extend({
       parserRules: editorRules,
       style: false,
       toolbar: toolbarId,
-      stylesheets: `${envPath}static/css/main.css`,
+      stylesheets: '/static/scarlet/css/main.css',
       showToolbarDialogsOnSelection: false,
       id,
       useLineBreaks: false,
@@ -75,12 +75,16 @@ const Editor = View.extend({
   },
 
   enableEditor() {
-    $(this.editor.composer.sandbox.getDocument()).find('a').off('click', this.preventClick);
+    $(this.editor.composer.sandbox.getDocument())
+      .find('a')
+      .off('click', this.preventClick);
     this.editor.composer.enable();
   },
 
   disableEditor() {
-    $(this.editor.composer.sandbox.getDocument()).find('a').on('click', this.preventClick);
+    $(this.editor.composer.sandbox.getDocument())
+      .find('a')
+      .on('click', this.preventClick);
     this.editor.composer.disable();
   },
 
@@ -150,10 +154,15 @@ const Editor = View.extend({
       this.editor.composer.selection.getSelection().nativeSelection.anchorNode.parentNode,
     ).attr('data-annotation-id');
     const annotationsHtml = this.$('.editor__annotations').val();
-    const annotationHtml = $(data.dialogContainer).find('textarea').val();
+    const annotationHtml = $(data.dialogContainer)
+      .find('textarea')
+      .val();
     const tempEl = $(document.createElement('div'));
 
-    $(tempEl).html(annotationsHtml).find(`#${annotationId}`).html(annotationHtml);
+    $(tempEl)
+      .html(annotationsHtml)
+      .find(`#${annotationId}`)
+      .html(annotationHtml);
     this.$('.editor__annotations').val($(tempEl).html());
     this.enableEditor();
   },
