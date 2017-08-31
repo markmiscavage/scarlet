@@ -97,6 +97,10 @@ class CropView(views.ModelCMSMixin, views.ModelFormMixin,
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
+        print '----------------'
+        print dir(self.object)
+        print dir(self.object.image)
+        print '----------------'
         form = CropForm(request.POST)
         if form.is_valid():
             im = get_image_cropper().replace_image(self.object.file,
