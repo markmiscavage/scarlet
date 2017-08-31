@@ -464,12 +464,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         formsets = self.get_formsets(form)
-        print '----------------'
-        print dir(self.object)
-        print '----------------'
-        print self.object.image_id
-        print '----------------'
-        print dir(self.object.image)
+
         adminForm = self.get_admin_form(form)
         adminFormSets = self.get_admin_formsets(formsets)
         context = {

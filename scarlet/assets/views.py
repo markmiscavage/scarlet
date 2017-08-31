@@ -83,10 +83,7 @@ class CropView(views.ModelCMSMixin, views.ModelFormMixin,
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        print '----------------'
-        print dir(self.object)
-        print dir(self.object.image)
-        print '----------------'
+
         form = CropForm()
         context = {
             'form': form,
