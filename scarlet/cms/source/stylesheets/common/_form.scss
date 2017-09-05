@@ -70,6 +70,11 @@ input[type='number'] {
 	outline: none;
 }
 
+textarea {
+	padding: 10px;
+	outline: none;
+}
+
 legend {
 	@include heading-large;
 }
@@ -129,4 +134,8 @@ fieldset {
 	@include heading-medium;
 	color: #0084ff;
 	margin-bottom: 20px;
+}
+
+td input.orderfield {
+	display: none;
 }

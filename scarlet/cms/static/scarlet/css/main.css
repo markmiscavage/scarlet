@@ -2395,6 +2395,10 @@ input[type='number'] {
   border: 1px solid #ddd;
   outline: none; }
 
+textarea {
+  padding: 10px;
+  outline: none; }
+
 legend {
   font-family: "Raleway", sans-serif;
   font-weight: 300;
@@ -2446,11 +2450,14 @@ fieldset > div:not(:last-of-type) {
   color: #0084ff;
   margin-bottom: 20px; }
 
+td input.orderfield {
+  display: none; }
+
 button,
 .button {
   display: inline-block;
   cursor: pointer;
-  min-width: 150px;
+  padding: 0 20px;
   line-height: 40px;
   text-align: center;
   font-size: 14px;
@@ -2492,44 +2499,43 @@ button,
   .button:focus {
     outline: none; }
 
-.button-group:before, .button-group:after {
-  content: "";
-  display: table; }
-
-.button-group:after {
-  clear: both; }
-
-.button-group .button:not(:last-child) {
-  margin-right: 10px; }
-
-.button-group .divider {
-  float: left; }
-  .button-group .divider:not(:last-child) {
-    position: relative;
-    padding-right: 20px;
-    margin-right: 20px; }
-    .button-group .divider:not(:last-child):after {
-      content: '';
-      display: inline-block;
-      background-color: #b8b8b8;
-      width: 1px;
-      height: 38px;
-      top: 50%;
-      right: 0;
-      position: absolute;
-      -webkit-transform: translateY(-50%);
-              transform: translateY(-50%); }
-
-.button-group--actions {
-  padding-bottom: 20px;
-  border-bottom: #eee 1px solid;
-  margin-bottom: 30px; }
-
-.button-group--submit {
-  padding-top: 40px;
-  border-top: #eee 1px solid;
-  margin-top: 50px;
-  text-align: right; }
+.button-group {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap; }
+  .button-group .button:not(:last-child) {
+    margin-right: 10px; }
+  .button-group .divider {
+    float: left; }
+    .button-group .divider:not(:last-child) {
+      position: relative;
+      padding-right: 20px;
+      margin-right: 20px;
+      margin-bottom: 20px; }
+      .button-group .divider:not(:last-child):after {
+        content: '';
+        display: inline-block;
+        background-color: #b8b8b8;
+        width: 1px;
+        height: 38px;
+        top: 50%;
+        right: 0;
+        position: absolute;
+        -webkit-transform: translateY(-50%);
+                transform: translateY(-50%); }
+  .button-group--actions {
+    padding-bottom: 20px;
+    border-bottom: #eee 1px solid;
+    margin-bottom: 30px; }
+  .button-group--submit {
+    padding-top: 40px;
+    border-top: #eee 1px solid;
+    margin-top: 50px;
+    text-align: right; }
 
 .filters {
   position: relative;
