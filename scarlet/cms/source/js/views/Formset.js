@@ -47,7 +47,10 @@ const Formset = View.extend({
     this.delegateEvents();
     // this.enableSort();
     this.bindControls();
-    const $editor = $(this).find('.wysihtml-sandbox').contents().find('body');
+    const $editor = $(this)
+      .find('.wysihtml-sandbox')
+      .contents()
+      .find('body');
   },
 
   bindControls() {
@@ -85,7 +88,7 @@ const Formset = View.extend({
       .addClass('formset__form added-with-js')
       .attr('data-prefix', formsetType);
     let html = $(`.formset__form-template[data-prefix="${formsetType}"]`).html();
-
+    console.log('HTML', html);
     html = html.replace(/(__prefix__)/g, this.count(formsetType));
     clone.html(html);
 
@@ -101,7 +104,7 @@ const Formset = View.extend({
       });
     }
 
-    this.enableSort();
+    // this.enableSort();
     pubsub.trigger('scarlet:render');
   },
 
@@ -184,11 +187,13 @@ const Formset = View.extend({
             `<h3><i class="fa ${self.iconMap[type]} " aria-hidden="true"></i>${name}</h3>`,
           );
 
-          $(this).children().each(function() {
-            if ($(this).hasClass('formset__field')) {
-              $(this).css({ display: 'none' });
-            }
-          });
+          $(this)
+            .children()
+            .each(function() {
+              if ($(this).hasClass('formset__field') || $(this).hasClass('asset')) {
+                $(this).css({ display: 'none' });
+              }
+            });
         }
       });
     } else {
@@ -196,11 +201,13 @@ const Formset = View.extend({
         $(this).css({ height: 'auto' });
         $('h3').remove();
         $(this).removeClass('formset__form--edit');
-        $(this).children().each(function() {
-          if ($(this).hasClass('formset__field')) {
-            $(this).css({ display: 'block' });
-          }
-        });
+        $(this)
+          .children()
+          .each(function() {
+            if ($(this).hasClass('formset__field') || $(this).hasClass('asset')) {
+              $(this).css({ display: 'block' });
+            }
+          });
       });
     }
   },
@@ -211,7 +218,9 @@ const Formset = View.extend({
     const type = $formset.data('module-type');
 
     if (!$($formset).hasClass('formset__form--edit')) {
-      $(e.target).removeClass('fa-minus').addClass('fa-plus');
+      $(e.target)
+        .removeClass('fa-minus')
+        .addClass('fa-plus');
       $formset
         .addClass('formset__form--edit')
         .css({ height: '100px' })
@@ -223,7 +232,9 @@ const Formset = View.extend({
           }
         });
     } else {
-      $(e.target).removeClass('fa-plus').addClass('fa-minus');
+      $(e.target)
+        .removeClass('fa-plus')
+        .addClass('fa-minus');
       $formset.find('h3').remove();
       $formset
         .removeClass('formset__form--edit')
