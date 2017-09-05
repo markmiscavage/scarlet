@@ -32,14 +32,14 @@
 
   <div class="button-group button-group--actions {% if not actions %}hidden{% endif %}">
       {% block add %}
-      <div class="divider">
       {% bundle_url bundle "add" as add_url %}
       {% if add_url and add_url != request.path_info %}
+      <div class="divider">
         <a class="button button--primary add" href="{{ add_url }}">
           <i class="fa fa-plus-circle" aria-hidden="true"></i>Add {{ model_name }}
         </a>
-      {% endif %}
       </div>
+      {% endif %}
       {% endblock %}
 
       {% if not list.empty %}

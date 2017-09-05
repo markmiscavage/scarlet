@@ -10,7 +10,15 @@ const Formset = View.extend({
     'click .formset__button--delete': 'delete',
     'click .formset__reorder': 'minimize',
     'click .formset__button--minimize': 'collapseSingle',
-    // 'click .button' : function(e){clickOpenPopup(e, (data) => console.log('thing', data));},
+    // 'click .button': function(e) {
+    //   clickOpenPopup(e, data => {
+    //     if (data.thumbnail) {
+    //       this.selectize.addOption(data);
+    //       this.selectize.setValue(data.id);
+    //       this.addOpen = false;
+    //     }
+    //   });
+    // },
     // 'clidk .crop-link' : function(e){clickOpenPopup(e, (data) => console.log('thing', data))}
   },
 
@@ -88,7 +96,6 @@ const Formset = View.extend({
       .addClass('formset__form added-with-js')
       .attr('data-prefix', formsetType);
     let html = $(`.formset__form-template[data-prefix="${formsetType}"]`).html();
-    console.log('HTML', html);
     html = html.replace(/(__prefix__)/g, this.count(formsetType));
     clone.html(html);
 
