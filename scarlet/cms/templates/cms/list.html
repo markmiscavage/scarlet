@@ -118,7 +118,7 @@
             {% endif %}
           </a>
         {% elif action_link.0 == "preview" and row.instance.get_absolute_url %}
-          <a href="{{ row.instance.get_absolute_url }}" class="actions__action" title="Preview" target="_blank">
+          <a href="/{{ row.instance.get_absolute_url }}" class="actions__action" title="Preview" target="_blank">
             <i class="fa fa-eye" aria-hidden="true"></i>
           </a>
         {% endif %}

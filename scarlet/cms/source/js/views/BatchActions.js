@@ -70,8 +70,10 @@ const BatchActions = View.extend({
     });
   },
 
-  goToRowUrl() {
-    window.location.href = this.$el.find('[data-edit-url]').data('edit-url');
+  goToRowUrl(e) {
+    window.location.href = $(e.target)
+      .closest('[data-edit-url]')
+      .attr('data-edit-url');
   },
 });
 
