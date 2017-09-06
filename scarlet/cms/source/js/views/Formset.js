@@ -229,7 +229,7 @@ const Formset = View.extend({
         .removeClass('fa-minus')
         .addClass('fa-plus');
       $formset
-        .addClass('formset__form--edit')
+        .addClass('formset__form--edit draggable')
         .css({ height: '100px' })
         .append(`<h3><i class="fa ${this.iconMap[type]} " aria-hidden="true"></i>${name}</h3>`)
         .children()
