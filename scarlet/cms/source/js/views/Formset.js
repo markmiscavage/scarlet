@@ -121,7 +121,7 @@ const Formset = View.extend({
     return this.$(`.formset__form[data-prefix="${formsetType}"]`).length;
   },
 
-  /** **********************************
+  /* ***********************************
   Sorting
   *********************************** */
 
@@ -267,7 +267,7 @@ const Formset = View.extend({
     }
   },
 
-  /** **********************************
+  /* ***********************************
   Metadata
   *********************************** */
 
@@ -279,6 +279,7 @@ const Formset = View.extend({
         value: $el.data('prefix'),
       });
     });
+    console.log('FORMSET TYPES', this.formsetTypes);
   },
 
   updateMetadata() {
