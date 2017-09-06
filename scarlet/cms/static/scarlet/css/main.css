@@ -3358,21 +3358,6 @@ th:nth-child(1) {
     margin-left: 13px; }
   .formset__form h3 > .fa {
     margin-right: 10px; }
-  .formset__form--edit {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    padding: 0 30px;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
-    -webkit-box-pack: justify;
-        -ms-flex-pack: justify;
-            justify-content: space-between; }
-    .formset__form--edit .formset__button--delete {
-      position: relative;
-      top: 0;
-      right: 0; }
 
 .formset__reorder {
   display: none; }

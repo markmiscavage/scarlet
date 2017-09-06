@@ -17,18 +17,16 @@
 		margin-right: 10px;
 	}
 
-	&--edit {
-		display: flex;
-		padding: 0 30px;
-		align-items: center;
-		justify-content: space-between;
-
-		.formset__button--delete {
-			position: relative;
-			top: 0;
-			right: 0;
-		}
-	}
+	// &--edit {
+	// 	display: flex;
+	// 	padding: 0 30px;
+	// 	align-items: center;
+	// 	justify-content: space-between;
+	//
+	// 	.formset__header {
+	// 		margin-bottom: 0;
+	// 	}
+	// }
 }
 
 .formset__reorder {

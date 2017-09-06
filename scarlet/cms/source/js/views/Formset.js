@@ -97,15 +97,13 @@ const Formset = View.extend({
       .attr('data-prefix', formsetType)
       .attr('data-module-type', '')
       .attr('data-module-name', '');
+
     let html = $(`.formset__form-template[data-prefix="${formsetType}"]`).html();
     html = html.replace(/(__prefix__)/g, this.count(formsetType));
+
     clone.html(html);
 
     this.$forms.append(clone);
-
-    if (this.isDraggable) {
-      clone.addClass('draggable');
-    }
 
     if (this.formsetTypes.indexOf(formsetType) === -1) {
       this.formsetTypes.push({
@@ -184,40 +182,39 @@ const Formset = View.extend({
   minimize() {
     const self = this;
     this.enableSort();
+
     if (this.sortMode) {
-      $('.formset__form').each(function(index, value) {
-        console.log($(this));
-        if (!$(this).hasClass('formset__form--edit')) {
-          $(this).addClass('formset__form--edit');
-          $(this).css({ height: '100px' });
-          const name = $(this).data('module-name');
-          const type = $(this).data('module-type');
-          console.log('TYPE', type);
-          $(this).append(
+      $('.formset__form').each((index, el) => {
+        const $el = $(el);
+        if (!$el.hasClass('formset__form--edit')) {
+          $el.addClass('formset__form--edit');
+          $el.css({ height: '100px' });
+          $el.find('i.fa-minus').toggleClass('fa-minus fa-plus');
+          const name = $el.data('module-name');
+          const type = $el.data('module-type');
+          $el.append(
             `<h3><i class="fa ${self.iconMap[type]} " aria-hidden="true"></i>${name}</h3>`,
           );
 
-          $(this)
-            .children()
-            .each(function() {
-              if ($(this).hasClass('formset__field')) {
-                $(this).css({ display: 'none' });
-              }
-            });
+          $el.children().each((i, dom) => {
+            if ($(dom).hasClass('formset__field')) {
+              $(dom).css({ display: 'none' });
+            }
+          });
         }
       });
     } else {
-      $('.formset__form').each(function(index, value) {
-        $(this).css({ height: 'auto' });
+      $('.formset__form').each((index, el) => {
+        const $el = $(el);
+        $el.css({ height: 'auto' });
         $('h3').remove();
-        $(this).removeClass('formset__form--edit');
-        $(this)
-          .children()
-          .each(function() {
-            if ($(this).hasClass('formset__field')) {
-              $(this).css({ display: 'block' });
-            }
-          });
+        $el.removeClass('formset__form--edit');
+        $el.find('i.fa-plus').toggleClass('fa-minus fa-plus');
+        $el.children().each((i, dom) => {
+          if ($(dom).hasClass('formset__field')) {
+            $(dom).css({ display: 'block' });
+          }
+        });
       });
     }
   },
