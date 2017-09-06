@@ -116,6 +116,16 @@ fieldset {
 	}
 }
 
+.field-row.checkbox {
+	width: auto;
+	position: relative;
+	float: left;
+}
+
+.field-row.checkbox:not(:last-of-type) {
+	margin-right: 30px;
+}
+
 .object-name {
 	font-weight: bold;
 }

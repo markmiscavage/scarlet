@@ -184,12 +184,13 @@ const Formset = View.extend({
     this.enableSort();
     if (this.sortMode) {
       $('.formset__form').each(function(index, value) {
+        console.log($(this));
         if (!$(this).hasClass('formset__form--edit')) {
           $(this).addClass('formset__form--edit');
           $(this).css({ height: '100px' });
           const name = $(this).data('module-name');
           const type = $(this).data('module-type');
-
+          console.log('TYPE', type);
           $(this).append(
             `<h3><i class="fa ${self.iconMap[type]} " aria-hidden="true"></i>${name}</h3>`,
           );
@@ -197,7 +198,7 @@ const Formset = View.extend({
           $(this)
             .children()
             .each(function() {
-              if ($(this).hasClass('formset__field') || $(this).hasClass('asset')) {
+              if ($(this).hasClass('formset__field')) {
                 $(this).css({ display: 'none' });
               }
             });
@@ -211,7 +212,7 @@ const Formset = View.extend({
         $(this)
           .children()
           .each(function() {
-            if ($(this).hasClass('formset__field') || $(this).hasClass('asset')) {
+            if ($(this).hasClass('formset__field')) {
               $(this).css({ display: 'block' });
             }
           });
