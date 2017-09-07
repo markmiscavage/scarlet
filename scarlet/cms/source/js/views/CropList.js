@@ -88,7 +88,9 @@ const CropList = View.extend({
           return data;
         })
         .then(res => {
-          const csrf = $(res).find('input[name="csrfmiddlewaretoken"]').val();
+          const csrf = $(res)
+            .find('input[name="csrfmiddlewaretoken"]')
+            .val();
           const form = new FormData();
           form.append('x', x);
           form.append('y', y);
@@ -107,8 +109,6 @@ const CropList = View.extend({
               'X-CSRFToken': csrf,
             },
             success: data => {
-              console.log('SUCCESS');
-              console.log(data);
               window.close();
             },
           });

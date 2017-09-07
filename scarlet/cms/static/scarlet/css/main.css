@@ -2584,7 +2584,8 @@ button,
   transition: top 250ms, opacity 200ms 50ms;
   background-color: #fff;
   padding: 20px;
-  text-align: left; }
+  text-align: left;
+  z-index: auto; }
   .filters:hover .filters__form {
     top: 100%;
     opacity: 1;
@@ -2945,7 +2946,8 @@ button,
   text-transform: uppercase;
   overflow: hidden; }
   .nav-main__item-title span {
-    position: relative; }
+    position: relative;
+    cursor: pointer; }
     .nav-main__item:active .nav-main__item-title span:before {
       top: 34px; }
 
