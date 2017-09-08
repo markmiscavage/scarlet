@@ -4,7 +4,7 @@
 	transition: opacity 200ms, transform 300ms, position 300ms 350ms;
 	border: 1px dashed #7f7f7f;
 	border-radius: 3px;
-	padding: 60px 30px 0px;
+	padding: 15px 30px 0px;
 	position: relative;
 
 	h3 {
@@ -17,18 +17,16 @@
 		margin-right: 10px;
 	}
 
-	&--edit {
-		display: flex;
-		padding: 0 30px;
-		align-items: center;
-		justify-content: space-between;
-
-		.formset__button--delete {
-			position: relative;
-			top: 0;
-			right: 0;
-		}
-	}
+	// &--edit {
+	// 	display: flex;
+	// 	padding: 0 30px;
+	// 	align-items: center;
+	// 	justify-content: space-between;
+	//
+	// 	.formset__header {
+	// 		margin-bottom: 0;
+	// 	}
+	// }
 }
 
 .formset__reorder {
@@ -46,7 +44,7 @@
 		border-radius: 10px;
 		border: 1px solid #bbb;
 		padding: 2px;
-		transition: all .4s ease;
+		transition: all 0.4s ease;
 		width: 40px;
 		height: 20px;
 		cursor: pointer;
@@ -58,7 +56,7 @@
 		&:after {
 			border-radius: 50%;
 			background: #fff;
-			transition: all .2s ease;
+			transition: all 0.2s ease;
 			content: '';
 			width: 50%;
 			height: 100%;
@@ -133,14 +131,27 @@
 	}
 }
 
-.sweet-btn {
+.formset__type {
+	font-weight: 200;
+	font-size: 20px;
+	color: #444;
+	font-family: 'Raleway', sans-serif;
+}
+
+.formset__header {
+	padding: 15px 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	margin-bottom: 30px;
+	width: 100%;
 }
 
 .formset__actions {
 	display: flex;
 	justify-content: flex-end;
-	position: absolute;
-	right: 15px;
-	top: 15px;
+	align-items: center;
+	// position: absolute;
+	// right: 15px;
+	// top: 15px;
 }

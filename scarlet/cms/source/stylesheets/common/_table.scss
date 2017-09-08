@@ -1,68 +1,66 @@
 table {
-  border-bottom: 1px solid $bg-primary;
-  background-color: #fff;
-  width: 100%;
+	border-bottom: 1px solid $bg-primary;
+	background-color: #fff;
+	width: 100%;
 
-  th,
-  td {
-    padding: 10px;
+	th,
+	td {
+		padding: 10px;
 
-    &:first-of-type:not(:only-child) {
-      padding-left: $padding-width;
-    }
+		&:first-of-type:not(:only-child) {
+			padding-left: $padding-width;
+		}
 
-    &:last-of-type:not(:only-child) {
-      padding-right: $padding-width;
-    }
-  }
+		&:last-of-type:not(:only-child) {
+			padding-right: $padding-width;
+		}
+	}
 
-  caption {
-    background-color: #fff;
-    text-align: left;
-    text-transform: capitalize;
-    font-size: 32px;
-  }
+	td[data-edit-url] {
+		cursor: pointer;
+	}
 
-  thead {
-    border-bottom: 1px solid $bg-primary;
-  }
+	caption {
+		background-color: #fff;
+		text-align: left;
+		text-transform: capitalize;
+		font-size: 32px;
+	}
 
-  th {
-    text-transform: uppercase;
-    text-align: left;
+	thead {
+		border-bottom: 1px solid $bg-primary;
+	}
 
-    a {
-      color: $black;
-    }
+	th {
+		text-transform: uppercase;
+		text-align: left;
 
-    &.sortable {
+		a {
+			color: $black;
+		}
 
-      .fa {
-        margin-left: 10px;
-      }
-    }
-  }
+		&.sortable {
+			.fa {
+				margin-left: 10px;
+			}
+		}
+	}
 
-  tr {
+	tr {
+	}
 
+	tbody {
+		tr {
+			&:hover {
+				background-color: $bg-primary;
+			}
+		}
+	}
 
-  }
-
-  tbody {
-
-    tr {
-
-      &:hover {
-        background-color: $bg-primary;
-      }
-    }
-  }
-
-  &.is-empty {
-
-    &,
-    thead {
-      border: none;
-    }
-  }
+	&.is-empty {
+		&,
+		thead {
+			border: none;
+		}
+	}
 }

@@ -144,7 +144,11 @@ const App = View.extend({
 
     // SELECTASSET
     $('.asset').each((i, dom) => {
-      if (!$(dom).find('input').hasClass('selectized')) {
+      if (
+        !$(dom)
+          .find('input')
+          .hasClass('selectized')
+      ) {
         const selectAsset = new SelectAsset({
           el: dom,
         }).render();

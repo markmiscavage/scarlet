@@ -32,14 +32,14 @@
 
   <div class="button-group button-group--actions {% if not actions %}hidden{% endif %}">
       {% block add %}
-      <div class="divider">
       {% bundle_url bundle "add" as add_url %}
       {% if add_url and add_url != request.path_info %}
+      <div class="divider">
         <a class="button button--primary add" href="{{ add_url }}">
           <i class="fa fa-plus-circle" aria-hidden="true"></i>Add {{ model_name }}
         </a>
-      {% endif %}
       </div>
+      {% endif %}
       {% endblock %}
 
       {% if not list.empty %}
@@ -98,12 +98,11 @@
     {% endif %}
 
     <tr{% if list.auto_sort %} draggable="true"{% endif %}>
-    {% if actions %}
-    <td class="checkbox">
+    <td class="checkbox {% if list.auto_sort %}draggable{% endif %}">
       <input type="checkbox" data-type="batch-check-row" name ="{{ checkbox_name }}" value="{{ row.instance.pk }}" />
     </td>
-    {% endif %}
-      <td class="actions {% if list.auto_sort %}draggable{% endif %}">
+    {% if actions %}
+      <td class="actions">
       {% for action_link in action_links %}
         {% bundle_url bundle action_link.0 object=row.instance follow_parent=False as url %}
         {% if url %}
@@ -131,6 +130,7 @@
       {% endif %}
       {% endwith %}
       </td>
+      {% endif %}
 
 
       {% for elem in row %}

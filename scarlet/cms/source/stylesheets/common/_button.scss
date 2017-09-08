@@ -2,7 +2,8 @@ button,
 .button {
 	display: inline-block;
 	cursor: pointer;
-	min-width: $button-width;
+	// min-width: $button-width;
+	padding: 0 20px;
 	line-height: 40px;
 	text-align: center;
 	font-size: 14px;
@@ -39,6 +40,7 @@ button,
 		color: $white;
 		cursor: default;
 		background-color: $gray-light;
+		pointer-events: none;
 
 		&:hover {
 			color: $white;
@@ -52,7 +54,10 @@ button,
 }
 
 .button-group {
-	@include microfix;
+	// @include microfix;
+
+	display: flex;
+	flex-flow: row wrap;
 
 	.button:not(:last-child) {
 		margin-right: 10px;
@@ -63,6 +68,7 @@ button,
 
 		&:not(:last-child) {
 			@include divider($size: 38px, $space: 20px, $color: $gray);
+			margin-bottom: 20px;
 		}
 	}
 

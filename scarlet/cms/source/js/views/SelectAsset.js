@@ -43,7 +43,6 @@ const SelectAsset = View.extend({
     };
     this.$selectizeInput.selectize(options);
     this.tag();
-    this.autoTag();
     this.linkifyCrops();
     $('.asset__edit-link').attr('href', `${this.baseUrl}${this.id}/edit`);
   },
@@ -151,7 +150,12 @@ const SelectAsset = View.extend({
   },
 
   linkifyCrops() {
-    const guidLink = this.baseLink + this.$cropsList.parent().find('[type=hidden]').val();
+    const guidLink =
+      this.baseLink +
+      this.$cropsList
+        .parent()
+        .find('[type=hidden]')
+        .val();
     this.$cropsList.find('li').each((i, el) => {
       const $el = $(el);
       const editLink = `${guidLink}/${$el.data('crop-link')}?popup=1`;

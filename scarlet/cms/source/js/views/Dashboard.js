@@ -18,11 +18,20 @@ const Dashboard = View.extend({
 
   mapIcons() {
     const self = this;
-    this.$el.find('.nav-dashboard__item').find('.nav-dashboard__item-title').each(function(i) {
-      const text = $(this).text().replace(/\s/g, '').toLowerCase();
-      console.log(self.iconMap);
-      $(this).children().first().removeClass(`fa-${text}`).addClass(`fa-${self.iconMap[text]}`);
-    });
+    this.$el
+      .find('.nav-dashboard__item')
+      .find('.nav-dashboard__item-title')
+      .each(function(i) {
+        const text = $(this)
+          .text()
+          .replace(/\s/g, '')
+          .toLowerCase();
+        $(this)
+          .children()
+          .first()
+          .removeClass(`fa-${text}`)
+          .addClass(`fa-${self.iconMap[text]}`);
+      });
   },
 });
 

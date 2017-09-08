@@ -46,11 +46,17 @@ const BatchActions = View.extend({
   },
 
   enableActions() {
-    this.$actions.removeClass('button--disabled').addClass('button--primary');
+    this.$actions
+      .removeClass('button--disabled')
+      .addClass('button--primary')
+      .removeAttr('disabled');
   },
 
   disableActions() {
-    this.$actions.addClass('button--disabled').removeClass('button--primary');
+    this.$actions
+      .addClass('button--disabled')
+      .removeClass('button--primary')
+      .attr('disabled', 'disabled');
     this.$selectAll.prop('checked', false);
   },
 
@@ -64,8 +70,10 @@ const BatchActions = View.extend({
     });
   },
 
-  goToRowUrl() {
-    window.location.href = this.$el.find('[data-edit-url]').data('edit-url');
+  goToRowUrl(e) {
+    window.location.href = $(e.target)
+      .closest('[data-edit-url]')
+      .attr('data-edit-url');
   },
 });
 

@@ -10,7 +10,15 @@ const Formset = View.extend({
     'click .formset__button--delete': 'delete',
     'click .formset__reorder': 'minimize',
     'click .formset__button--minimize': 'collapseSingle',
-    // 'click .button' : function(e){clickOpenPopup(e, (data) => console.log('thing', data));},
+    // 'click .button': function(e) {
+    //   clickOpenPopup(e, data => {
+    //     if (data.thumbnail) {
+    //       this.selectize.addOption(data);
+    //       this.selectize.setValue(data.id);
+    //       this.addOpen = false;
+    //     }
+    //   });
+    // },
     // 'clidk .crop-link' : function(e){clickOpenPopup(e, (data) => console.log('thing', data))}
   },
 
@@ -47,7 +55,10 @@ const Formset = View.extend({
     this.delegateEvents();
     // this.enableSort();
     this.bindControls();
-    const $editor = $(this).find('.wysihtml-sandbox').contents().find('body');
+    const $editor = $(this)
+      .find('.wysihtml-sandbox')
+      .contents()
+      .find('body');
   },
 
   bindControls() {
@@ -83,17 +94,16 @@ const Formset = View.extend({
   add(formsetType) {
     const clone = $('<div>')
       .addClass('formset__form added-with-js')
-      .attr('data-prefix', formsetType);
-    let html = $(`.formset__form-template[data-prefix="${formsetType}"]`).html();
+      .attr('data-prefix', formsetType)
+      .attr('data-module-type', '')
+      .attr('data-module-name', '');
 
+    let html = $(`.formset__form-template[data-prefix="${formsetType}"]`).html();
     html = html.replace(/(__prefix__)/g, this.count(formsetType));
+
     clone.html(html);
 
     this.$forms.append(clone);
-
-    if (this.isDraggable) {
-      clone.addClass('draggable');
-    }
 
     if (this.formsetTypes.indexOf(formsetType) === -1) {
       this.formsetTypes.push({
@@ -101,7 +111,7 @@ const Formset = View.extend({
       });
     }
 
-    this.enableSort();
+    // this.enableSort();
     pubsub.trigger('scarlet:render');
   },
 
@@ -109,7 +119,7 @@ const Formset = View.extend({
     return this.$(`.formset__form[data-prefix="${formsetType}"]`).length;
   },
 
-  /** **********************************
+  /* ***********************************
   Sorting
   *********************************** */
 
@@ -172,33 +182,37 @@ const Formset = View.extend({
   minimize() {
     const self = this;
     this.enableSort();
-    if (this.sortMode) {
-      $('.formset__form').each(function(index, value) {
-        if (!$(this).hasClass('formset__form--edit')) {
-          $(this).addClass('formset__form--edit');
-          $(this).css({ height: '100px' });
-          const name = $(this).data('module-name');
-          const type = $(this).data('module-type');
 
-          $(this).append(
+    if (this.sortMode) {
+      $('.formset__form').each((index, el) => {
+        const $el = $(el);
+        if (!$el.hasClass('formset__form--edit')) {
+          $el.addClass('formset__form--edit');
+          $el.css({ height: '100px' });
+          $el.find('i.fa-minus').toggleClass('fa-minus fa-plus');
+          const name = $el.data('module-name');
+          const type = $el.data('module-type');
+          $el.append(
             `<h3><i class="fa ${self.iconMap[type]} " aria-hidden="true"></i>${name}</h3>`,
           );
 
-          $(this).children().each(function() {
-            if ($(this).hasClass('formset__field')) {
-              $(this).css({ display: 'none' });
+          $el.children().each((i, dom) => {
+            if ($(dom).hasClass('formset__field')) {
+              $(dom).css({ display: 'none' });
             }
           });
         }
       });
     } else {
-      $('.formset__form').each(function(index, value) {
-        $(this).css({ height: 'auto' });
+      $('.formset__form').each((index, el) => {
+        const $el = $(el);
+        $el.css({ height: 'auto' });
         $('h3').remove();
-        $(this).removeClass('formset__form--edit');
-        $(this).children().each(function() {
-          if ($(this).hasClass('formset__field')) {
-            $(this).css({ display: 'block' });
+        $el.removeClass('formset__form--edit');
+        $el.find('i.fa-plus').toggleClass('fa-minus fa-plus');
+        $el.children().each((i, dom) => {
+          if ($(dom).hasClass('formset__field')) {
+            $(dom).css({ display: 'block' });
           }
         });
       });
@@ -211,9 +225,11 @@ const Formset = View.extend({
     const type = $formset.data('module-type');
 
     if (!$($formset).hasClass('formset__form--edit')) {
-      $(e.target).removeClass('fa-minus').addClass('fa-plus');
+      $(e.target)
+        .removeClass('fa-minus')
+        .addClass('fa-plus');
       $formset
-        .addClass('formset__form--edit')
+        .addClass('formset__form--edit draggable')
         .css({ height: '100px' })
         .append(`<h3><i class="fa ${this.iconMap[type]} " aria-hidden="true"></i>${name}</h3>`)
         .children()
@@ -223,7 +239,9 @@ const Formset = View.extend({
           }
         });
     } else {
-      $(e.target).removeClass('fa-plus').addClass('fa-minus');
+      $(e.target)
+        .removeClass('fa-plus')
+        .addClass('fa-minus');
       $formset.find('h3').remove();
       $formset
         .removeClass('formset__form--edit')
@@ -246,7 +264,7 @@ const Formset = View.extend({
     }
   },
 
-  /** **********************************
+  /* ***********************************
   Metadata
   *********************************** */
 
@@ -258,6 +276,7 @@ const Formset = View.extend({
         value: $el.data('prefix'),
       });
     });
+    console.log('FORMSET TYPES', this.formsetTypes);
   },
 
   updateMetadata() {
