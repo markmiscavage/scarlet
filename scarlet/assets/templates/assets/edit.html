@@ -3,9 +3,8 @@
 
 {% block formsets %}
 {% if crops %}
-	<div class="crop-info">
+	<div class="crop-info" data-asset-id="{{ obj.id }}">
 		<h2>Crops</h2>
-    <h3>{{ obj.id }}</h3>
     <p>Select a crop from the drop down to begin editing.</p>
     <div class="crop-info__main">
       <aside class="crop-info__nav">
