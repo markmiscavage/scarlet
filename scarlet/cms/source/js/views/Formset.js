@@ -154,7 +154,6 @@ const Formset = View.extend({
   resort() {
     const $helper = this.$('.ui-sortable-helper');
     const $placeholder = this.$('.ui-sortable-placeholder');
-
     this.$forms.find('.formset__form').each(function(i) {
       const $dom = $(this);
 

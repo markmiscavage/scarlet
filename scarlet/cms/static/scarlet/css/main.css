@@ -2363,35 +2363,35 @@ input[type='file'] {
   text-indent: 0;
   outline: none; }
 
-input[type='radio'] {
-  display: none; }
-  input[type='radio'] + label {
-    position: relative;
-    padding-left: 30px;
-    color: #191919;
-    font-weight: 200;
-    font-size: 16px;
-    margin-top: 3px; }
-  input[type='radio'] + label:before {
-    position: absolute;
-    top: 0;
-    left: 0;
-    content: '';
-    border-radius: 50%;
-    border: 2px solid #191919;
-    width: 14px;
-    height: 14px;
-    margin-right: 30px; }
-  input[type='radio']:checked + label:after {
-    position: absolute;
-    top: 0;
-    left: 0;
-    content: '';
-    width: 18px;
-    height: 18px;
-    background-color: #0084ff;
-    border-radius: 50%;
-    margin-right: 30px; }
+input[type='radio'] + label {
+  position: relative;
+  padding-left: 30px;
+  color: #191919;
+  font-weight: 200;
+  font-size: 16px;
+  margin-top: 3px; }
+
+input[type='radio'] + label:before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: '';
+  border-radius: 50%;
+  border: 2px solid #191919;
+  width: 14px;
+  height: 14px;
+  margin-right: 30px; }
+
+input[type='radio']:checked + label:after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: '';
+  width: 18px;
+  height: 18px;
+  background-color: #0084ff;
+  border-radius: 50%;
+  margin-right: 30px; }
 
 input[type='number'] {
   border: 1px solid #ddd;
@@ -2462,6 +2462,10 @@ fieldset > div:not(:last-of-type) {
 
 td input.orderfield {
   display: none; }
+
+.datetime {
+  width: 260px;
+  outline: none; }
 
 button,
 .button {
