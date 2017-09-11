@@ -172,7 +172,6 @@ const Editor = View.extend({
   },
 
   onRemoveLink() {
-    console.log('removing link');
     this.editor.composer.commands.exec('removeLink');
   },
 
