@@ -9,9 +9,10 @@ const CropList = View.extend({
   initialize() {
     this.items = [];
     // TODO: FIX THIS
-    // this.url = $('.widget-asset-simple')
-    //   ? $('.widget-asset-simple').find('a')[0].href
-    this.url = $('.crop-info').attr('data-asset-url');
+    const $urlSelector = $('.widget-asset-simple');
+    this.url = $urlSelector
+      ? $urlSelector.find('a')[0].href
+      : $('.crop-info').attr('data-asset-url');
     this.id = $('.crop-info').attr('data-asset-id');
     this.$selected = null;
     this.edits = {};

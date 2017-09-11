@@ -288,7 +288,7 @@ const Formset = View.extend({
         const $this = $(this);
         $this.find('.formset__order input').val($this.prevAll().length);
       });
-
+      console.log('FORMSET LENGTH', $formset.length);
       $(`#id_${formsetType}-TOTAL_FORMS`).val($formset.length);
     }
   },
