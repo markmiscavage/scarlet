@@ -112,6 +112,7 @@ const Formset = View.extend({
     }
 
     // this.enableSort();
+    this.resort();
     pubsub.trigger('scarlet:render');
   },
 
