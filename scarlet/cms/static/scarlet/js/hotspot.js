@@ -25683,7 +25683,6 @@ const Editor = __WEBPACK_IMPORTED_MODULE_0_backbone__["View"].extend({
   },
 
   onRemoveLink() {
-    console.log('removing link');
     this.editor.composer.commands.exec('removeLink');
   },
 
