@@ -29,7 +29,7 @@ input[type='file'] {
 }
 
 input[type='radio'] {
-	display: none;
+	// display: none;
 
 	& + label {
 		position: relative;
@@ -148,4 +148,9 @@ fieldset {
 
 td input.orderfield {
 	display: none;
+}
+
+.datetime {
+	width: 260px;
+	outline: none;
 }
