@@ -1988,7 +1988,7 @@ body {
 
 a {
   text-decoration: none;
-  color: #b8b8b8; }
+  color: #858f99; }
   a:hover {
     color: #f00; }
 
@@ -2126,7 +2126,7 @@ em {
     -webkit-box-shadow: 0px 10px 40px -10px #c4c4c4;
             box-shadow: 0px 10px 40px -10px #c4c4c4; }
   .draggable:hover:before {
-    background-color: #b8b8b8; }
+    background-color: #858f99; }
 
 svg {
   width: 100%; }
@@ -2248,7 +2248,7 @@ svg {
   font-weight: bold; }
   .asset__crop-link:hover {
     color: #191919;
-    background-color: #b8b8b8; }
+    background-color: #858f99; }
 
 .asset__tags {
   margin-top: 10px; }
@@ -2269,7 +2269,7 @@ svg {
     margin-right: 10px; }
   .tabs .button {
     color: #fff;
-    background-color: #b8b8b8; }
+    background-color: #858f99; }
     .tabs .button.active, .tabs .button:hover {
       color: #fff;
       background-color: #0084ff; }
@@ -2301,7 +2301,7 @@ svg {
     padding: 10px; }
     .sub-tabs a.active {
       color: #fff;
-      background-color: #b8b8b8; }
+      background-color: #858f99; }
 
 table {
   border-bottom: 1px solid #f4f5f6;
@@ -2415,7 +2415,7 @@ legend {
   margin-bottom: 40px; }
 
 label {
-  color: #b8b8b8;
+  color: #858f99;
   font-size: 18px;
   font-weight: normal;
   display: block;
@@ -2549,7 +2549,7 @@ button,
       .button-group .divider:not(:last-child):after {
         content: '';
         display: inline-block;
-        background-color: #b8b8b8;
+        background-color: #858f99;
         width: 1px;
         height: 38px;
         top: 50%;
@@ -2573,7 +2573,7 @@ button,
   float: right;
   text-align: right; }
   .filters .fa-angle-down {
-    color: #b8b8b8;
+    color: #858f99;
     -webkit-transition: -webkit-transform 150ms;
     transition: -webkit-transform 150ms;
     transition: transform 150ms;
@@ -2690,7 +2690,7 @@ button,
 .header-object__breadcrumb {
   font-family: "Open Sans", sans-serif;
   font-size: 14px;
-  color: #b8b8b8;
+  color: #858f99;
   font-size: 18px;
   position: absolute;
   left: 30px;
@@ -2711,7 +2711,7 @@ button,
   text-align: right;
   font-size: 12px; }
   .header-object__tools p {
-    color: #b8b8b8;
+    color: #858f99;
     margin-bottom: 15px; }
     .header-object__tools p span {
       position: relative;
@@ -2720,7 +2720,7 @@ button,
       .header-object__tools p span:after {
         content: '';
         display: inline-block;
-        background-color: #b8b8b8;
+        background-color: #858f99;
         width: 1px;
         height: 9px;
         top: 50%;
@@ -2750,7 +2750,7 @@ button,
   float: left;
   position: relative; }
   .header-object__actions .fa-chevron-down {
-    color: #b8b8b8;
+    color: #858f99;
     -webkit-transition: -webkit-transform 150ms;
     transition: -webkit-transform 150ms;
     transition: transform 150ms;
@@ -2942,7 +2942,7 @@ button,
           flex-grow: 1;
   position: relative; }
   .nav-main__item .fa-angle-down {
-    color: #b8b8b8;
+    color: #858f99;
     -webkit-transition: -webkit-transform 150ms;
     transition: -webkit-transform 150ms;
     transition: transform 150ms;
@@ -3011,7 +3011,7 @@ button,
 
 .nav-main__sublist-link {
   display: block;
-  color: #b8b8b8;
+  color: #858f99;
   cursor: pointer; }
   .nav-main__sublist-link:active, .nav-main__sublist-link:hover {
     color: #f00; }
@@ -3134,7 +3134,7 @@ th:nth-child(1) {
     color: #eee;
     font-size: 9px; }
   .login label {
-    color: #b8b8b8;
+    color: #858f99;
     font-size: 18px;
     font-weight: 300;
     margin-bottom: 10px; }
@@ -3526,7 +3526,7 @@ th:nth-child(1) {
   .ui-dialog .ui-dialog-titlebar {
     padding: 0; }
   .ui-dialog .ui-dialog-titlebar-close {
-    background: #b8b8b8;
+    background: #858f99;
     padding: 15px;
     right: 10px;
     top: 20px;
@@ -3854,7 +3854,7 @@ body.modal__body {
 .selectize-control.single .selectize-input:after,
 .selectize-control.single .selectize-input.dropdown-active:after {
   content: '\F078';
-  color: #b8b8b8;
+  color: #858f99;
   font-family: 'FontAwesome';
   display: block;
   border: none;
@@ -3976,7 +3976,7 @@ body.modal__body {
 
 .selectize-control.multi .selectize-input [data-value] .remove {
   border: none;
-  color: #b8b8b8;
+  color: #858f99;
   font-size: 20px;
   padding: 3px 4px 0 0; }
   .selectize-control.multi .selectize-input [data-value] .remove:hover {
@@ -4240,7 +4240,7 @@ visit http://jqueryui.com/themeroller/?ffDefault=Helvetica%2CArial%2Csans-serif&
   margin-bottom: 20px; }
 
 .ui-datepicker th {
-  color: #b8b8b8;
+  color: #858f99;
   text-align: center;
   font-weight: bold;
   border: 0; }
