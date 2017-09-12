@@ -1983,7 +1983,7 @@ table {
 body {
   font-family: "Open Sans", sans-serif;
   color: #191919;
-  background-color: #eee;
+  background-color: #f4f5f6;
   font-size: 14px; }
 
 a {
@@ -2304,7 +2304,7 @@ svg {
       background-color: #b8b8b8; }
 
 table {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #f4f5f6;
   background-color: #fff;
   width: 100%; }
   table th,
@@ -2334,7 +2334,7 @@ table {
     table th.sortable .fa {
       margin-left: 10px; }
   table tbody tr:hover {
-    background-color: #eee; }
+    background-color: #f4f5f6; }
   table.is-empty,
   table.is-empty thead {
     border: none; }
@@ -2782,7 +2782,7 @@ button,
       -webkit-transition: top 250ms, opacity 200ms 50ms;
       transition: top 250ms, opacity 200ms 50ms; }
   .header-object__actions-list:empty {
-    background-color: #eee;
+    background-color: #f4f5f6;
     position: absolute;
     opacity: 1;
     z-index: 1;
@@ -2891,7 +2891,7 @@ button,
   background-color: #fff; }
 
 .nav-dashboard__sublist-item {
-  border-top: 1px solid #eee;
+  border-top: 1px solid #f4f5f6;
   padding: 20px 0;
   text-align: center; }
 
