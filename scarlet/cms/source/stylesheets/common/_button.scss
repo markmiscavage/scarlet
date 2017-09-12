@@ -8,6 +8,13 @@ button,
 	text-align: center;
 	font-size: 14px;
 	transition: background-color 200ms;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+	border-radius: 3px;
+
+	&:hover {
+		transform: translateY(-1px);
+		box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.18);
+	}
 
 	.fa {
 		margin-right: 4px;
@@ -16,6 +23,7 @@ button,
 	&--primary {
 		color: $white;
 		background-color: #0084ff;
+		background: linear-gradient(to top, hsl(210, 100%, 50%), hsl(200, 100%, 50%));
 		padding: 0 15px;
 
 		&.active,
@@ -28,11 +36,13 @@ button,
 	&--secondary {
 		color: $white;
 		background-color: $gray;
+		background: linear-gradient(to top, hsl(0, 0%, 70%), hsl(0, 0%, 82%));
 
 		&.active,
 		&:hover {
 			color: $white;
 			background-color: $gray-dark;
+			background: linear-gradient(to top, hsl(0, 0%, 60%), hsl(0, 0%, 72%));
 		}
 	}
 
