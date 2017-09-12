@@ -34,16 +34,12 @@ button,
 	}
 
 	&--secondary {
-		color: #333;
-		// background-color: $gray;
-		// background: linear-gradient(to top, hsl(0, 0%, 70%), hsl(0, 0%, 82%));
+		color: hsl(0, 0%, 20%);
 		border: 1px solid #b8b8b8;
 
 		&.active,
 		&:hover {
-			// color: $white;
-			// background-color: $gray-dark;
-			// background: linear-gradient(to top, hsl(0, 0%, 60%), hsl(0, 0%, 72%));
+			color: hsl(0, 0%, 60%);
 		}
 	}
 

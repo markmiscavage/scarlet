@@ -2503,8 +2503,12 @@ button,
               box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18); }
   button--secondary,
   .button--secondary {
-    color: #333;
+    color: #333333;
     border: 1px solid #b8b8b8; }
+    button--secondary.active, button--secondary:hover,
+    .button--secondary.active,
+    .button--secondary:hover {
+      color: #999999; }
   button--disabled,
   .button--disabled {
     color: #fff;
