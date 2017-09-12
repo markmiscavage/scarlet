@@ -2361,16 +2361,17 @@ input[type='number'] {
   text-indent: 10px;
   margin-top: 10px;
   border-radius: 3px;
-  -webkit-transition: all 300ms ease-in-out;
-  transition: all 300ms ease-in-out; }
+  -webkit-transition: all 300ms ease-out;
+  transition: all 300ms ease-out;
+  outline: none; }
 
 input[type='text']:focus,
 input[type='file']:focus,
 input[type='password']:focus,
 input[type='number']:focus {
-  -webkit-box-shadow: 0 0 4px #858f99;
-          box-shadow: 0 0 4px #858f99;
-  border: 1px solid #858f99; }
+  -webkit-box-shadow: 0 0 4px #bcc2c7;
+          box-shadow: 0 0 4px #bcc2c7;
+  border: 1px solid #bcc2c7; }
 
 input[type='file'] {
   padding: 12px;
