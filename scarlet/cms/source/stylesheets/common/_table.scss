@@ -28,15 +28,16 @@ table {
 	}
 
 	thead {
-		border-bottom: 1px solid $bg-primary;
+		// border-bottom: 1px solid $bg-primary;
+		background-color: hsl(210, 9%, 96%);
 	}
 
 	th {
 		text-transform: uppercase;
 		text-align: left;
-
+		color: hsl(210, 9%, 56%);
 		a {
-			color: $black;
+			color: hsl(210, 9%, 56%);
 		}
 
 		&.sortable {

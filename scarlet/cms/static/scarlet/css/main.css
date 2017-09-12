@@ -2321,12 +2321,13 @@ table {
     text-transform: capitalize;
     font-size: 32px; }
   table thead {
-    border-bottom: 1px solid #eee; }
+    background-color: #f4f5f6; }
   table th {
     text-transform: uppercase;
-    text-align: left; }
+    text-align: left;
+    color: #858f99; }
     table th a {
-      color: #191919; }
+      color: #858f99; }
     table th.sortable .fa {
       margin-left: 10px; }
   table tbody tr:hover {
@@ -4476,5 +4477,19 @@ visit http://jqueryui.com/themeroller/?ffDefault=Helvetica%2CArial%2Csans-serif&
 
 .insert-media {
   padding: 10px 0 0; }
+
+.language {
+  margin-bottom: 120px; }
+  .language ul {
+    margin-bottom: 20px; }
+  .language li {
+    line-height: 1.5; }
+  .language table > thead {
+    border: none;
+    background-color: #f4f5f6; }
+  .language table th a {
+    color: #828c97; }
+  .language table td {
+    padding: 12px 10px; }
 
 /*# sourceMappingURL=main.css.map*/

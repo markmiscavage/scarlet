@@ -1,0 +1,24 @@
+.language {
+	margin-bottom: 120px;
+
+	ul {
+		margin-bottom: 20px;
+	}
+
+	li {
+		line-height: 1.5;
+	}
+
+	table > thead {
+		border: none;
+		background-color: hsl(210, 9%, 96%);
+	}
+
+	table th a {
+		color: hsl(210, 9%, 55%);
+	}
+
+	table td {
+		padding: 12px 10px;
+	}
+}
