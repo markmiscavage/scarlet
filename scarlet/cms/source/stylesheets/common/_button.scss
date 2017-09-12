@@ -30,19 +30,21 @@ button,
 		&:hover {
 			color: $white;
 			background-color: $blue-dark;
+			background: linear-gradient(to top, hsl(214, 100%, 50%), hsl(200, 100%, 50%));
 		}
 	}
 
 	&--secondary {
-		color: $white;
-		background-color: $gray;
-		background: linear-gradient(to top, hsl(0, 0%, 70%), hsl(0, 0%, 82%));
+		color: #333;
+		// background-color: $gray;
+		// background: linear-gradient(to top, hsl(0, 0%, 70%), hsl(0, 0%, 82%));
+		border: 1px solid #b8b8bb8;
 
 		&.active,
 		&:hover {
-			color: $white;
-			background-color: $gray-dark;
-			background: linear-gradient(to top, hsl(0, 0%, 60%), hsl(0, 0%, 72%));
+			// color: $white;
+			// background-color: $gray-dark;
+			// background: linear-gradient(to top, hsl(0, 0%, 60%), hsl(0, 0%, 72%));
 		}
 	}
 
