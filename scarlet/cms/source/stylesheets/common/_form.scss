@@ -2,9 +2,11 @@ input[type='text'],
 input[type='file'],
 input[type='password'],
 textarea {
-	background-color: $bg-primary;
+	// background-color: $bg-primary;
+	background-color: hsl(210, 9%, 96%);
 	display: block;
 	width: 100%;
+	border-radius: 3px;
 
 	td & {
 		display: inline-block;
