@@ -1,5 +1,10 @@
 .language {
 	margin-bottom: 120px;
+	padding: 0 15px;
+
+	&:first-of-type {
+		padding-top: 60px;
+	}
 
 	ul {
 		margin-bottom: 20px;

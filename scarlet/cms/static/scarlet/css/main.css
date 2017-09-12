@@ -2043,6 +2043,9 @@ header {
   header h4 {
     margin-bottom: 10px; }
 
+em {
+  font-weight: 800; }
+
 #container {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -2098,7 +2101,7 @@ header {
   transition: box-shadow 200ms, -webkit-box-shadow 200ms; }
   .draggable:before {
     cursor: move;
-    content: "";
+    content: '';
     background-color: #c0c0c0;
     display: block;
     width: 13px;
@@ -2111,7 +2114,7 @@ header {
   .draggable:after {
     cursor: move;
     text-shadow: #191919 0px 1px 1px;
-    content: "\250B";
+    content: '\250B';
     color: #eee;
     font-size: 24px;
     position: absolute;
@@ -4479,7 +4482,10 @@ visit http://jqueryui.com/themeroller/?ffDefault=Helvetica%2CArial%2Csans-serif&
   padding: 10px 0 0; }
 
 .language {
-  margin-bottom: 120px; }
+  margin-bottom: 120px;
+  padding: 0 15px; }
+  .language:first-of-type {
+    padding-top: 60px; }
   .language ul {
     margin-bottom: 20px; }
   .language li {
