@@ -2476,7 +2476,14 @@ button,
   text-align: center;
   font-size: 14px;
   -webkit-transition: background-color 200ms;
-  transition: background-color 200ms; }
+  transition: background-color 200ms;
+  border-radius: 3px; }
+  button:hover,
+  .button:hover {
+    -webkit-transform: translateY(-1px);
+            transform: translateY(-1px);
+    -webkit-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.18);
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.18); }
   button .fa,
   .button .fa {
     margin-right: 4px; }
@@ -2484,21 +2491,20 @@ button,
   .button--primary {
     color: #fff;
     background-color: #0084ff;
+    background: -webkit-gradient(linear, left bottom, left top, from(#0080ff), to(#00aaff));
+    background: linear-gradient(to top, #0080ff, #00aaff);
     padding: 0 15px; }
     button--primary.active, button--primary:hover,
     .button--primary.active,
     .button--primary:hover {
       color: #fff;
-      background-color: #006bcd; }
+      background-color: #006bcd;
+      background: -webkit-gradient(linear, left bottom, left top, from(#006fff), to(#00aaff));
+      background: linear-gradient(to top, #006fff, #00aaff); }
   button--secondary,
   .button--secondary {
-    color: #fff;
-    background-color: #b8b8b8; }
-    button--secondary.active, button--secondary:hover,
-    .button--secondary.active,
-    .button--secondary:hover {
-      color: #fff;
-      background-color: #666; }
+    color: #333;
+    border: 1px solid #b8b8bb8; }
   button--disabled,
   .button--disabled {
     color: #fff;
