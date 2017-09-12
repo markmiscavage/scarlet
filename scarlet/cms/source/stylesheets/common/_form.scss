@@ -3,7 +3,6 @@ input[type='file'],
 input[type='password'],
 textarea {
 	background-color: $bg-primary;
-	// background-color: hsl(210, 9%, 96%);
 	display: block;
 	width: 100%;
 	border-radius: 3px;
@@ -69,6 +68,7 @@ input[type='radio'] {
 
 input[type='number'] {
 	border: 1px solid #ddd;
+	border-radius: 3px;
 	outline: none;
 }
 

@@ -2400,6 +2400,7 @@ input[type='radio']:checked + label:after {
 
 input[type='number'] {
   border: 1px solid #ddd;
+  border-radius: 3px;
   outline: none; }
 
 textarea {
