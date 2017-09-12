@@ -51,14 +51,6 @@
       </div>
       {% endif %}
 
-      {% block submit %}
-      {% if show_form %}
-        <div class="divider">
-          <a class="button button--secondary" href="{{ cancel_url }}">Cancel</a>
-          <input class="button button--primary" type="submit" value="Save" />
-        </div>
-      {% endif %}
-      {% endblock %}
       {% endif %}
   </div>
   <table class="{% if list.empty %}is-empty{% endif %} list-table">
@@ -160,6 +152,16 @@
     </tbody>
   </table>
 
+  {% block submit %}
+  {% if show_form %}
+    <div class="button-group button-group--submit">
+      <div class="divider">
+        <a class="button button--secondary" href="{{ cancel_url }}">Cancel</a>
+        <input class="button button--primary" type="submit" value="Save" />
+      </div>
+    </div>
+  {% endif %}
+  {% endblock %}
   {% if show_form %}
   </form>
   {% endif %}

@@ -3,12 +3,12 @@ button,
 	display: inline-block;
 	cursor: pointer;
 	// min-width: $button-width;
-	padding: 0 20px;
+	padding: 0 15px;
 	line-height: 40px;
 	text-align: center;
 	font-size: 14px;
-	transition: background-color 200ms;
 	border-radius: 3px;
+	transition: all 150ms ease-out;
 
 	&:hover {
 		transform: translateY(-1px);
@@ -34,8 +34,8 @@ button,
 	}
 
 	&--secondary {
-		color: hsl(0, 0%, 20%);
-		border: 1px solid #b8b8b8;
+		color: $gray;
+		border: 1px solid $gray;
 
 		&.active,
 		&:hover {
@@ -44,15 +44,11 @@ button,
 	}
 
 	&--disabled {
-		color: $white;
+		color: $gray-lightish;
+		border: 1px solid $gray-lightish;
 		cursor: default;
-		background-color: $gray-light;
+		// background: linear-gradient(to top, hsl(210, 100%, 80%), hsl(200, 100%, 80%));
 		pointer-events: none;
-
-		&:hover {
-			color: $white;
-			background-color: $gray-light;
-		}
 	}
 
 	&:focus {
@@ -89,6 +85,6 @@ button,
 		padding-top: 40px;
 		border-top: $gray-light 1px solid;
 		margin-top: 50px;
-		text-align: right;
+		justify-content: flex-end;
 	}
 }

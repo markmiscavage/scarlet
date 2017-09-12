@@ -1,97 +1,99 @@
 .header-object {
-  @include microfix;
-  width: 100%;
-  max-width: $max-width;
-  margin: 0 30px 30px;
-  position: relative;
-  padding: 40px 30px 0;
-  z-index: $z-mid;
+	@include microfix;
+	width: 100%;
+	max-width: $max-width;
+	margin: 0 30px 30px;
+	position: relative;
+	padding: 40px 30px 0;
+	z-index: $z-mid;
 }
 
 .header-object__breadcrumb {
-  @include text-default;
-  color: $gray;
-  font-size: 18px;
-  position: absolute;
-  left: 30px;
-  top: 0;
+	@include text-default;
+	// font-family: 'open-sans', sans-serif;
+	font-weight: 300;
+	color: $gray;
+	font-size: 18px;
+	position: absolute;
+	left: 30px;
+	top: 0;
 
-  &:before {
-    color: $red;
-    font-size: 15px;
-    margin-right: 6px;
-  }
+	&:before {
+		color: $red;
+		font-size: 15px;
+		margin-right: 6px;
+	}
 }
 
 .header-object__title {
-  font-size: 32px;
-  color: $black;
-  float: left;
+	font-size: 32px;
+	color: $black;
+	float: left;
 }
 
 .header-object__tools {
-  float: right;
-  text-transform: uppercase;
-  text-align: right;
-  font-size: 12px;
+	float: right;
+	text-transform: uppercase;
+	text-align: right;
+	font-size: 12px;
 
-  p {
-    color: $gray;
-    margin-bottom: 15px;
+	p {
+		color: $gray;
+		margin-bottom: 15px;
 
-    span {
-      @include divider($color: $gray);
-    }
-  }
+		span {
+			@include divider($color: $gray);
+		}
+	}
 
-  a {
-    color: $black;
+	a {
+		color: $black;
 
-    &:not(:last-of-type) {
-      @include divider;
-    }
-  }
+		&:not(:last-of-type) {
+			@include divider;
+		}
+	}
 }
 
 .header-object__actions {
-  @include hover-flip($selector: '.fa-chevron-down');
-  float: left;
-  position: relative;
+	@include hover-flip($selector: '.fa-chevron-down');
+	float: left;
+	position: relative;
 
-  .fa {
-    margin: 7px 0 0 9px;
-  }
+	.fa {
+		margin: 7px 0 0 9px;
+	}
 }
 
 .header-object__actions-list {
-  margin-left: 7px;
+	margin-left: 7px;
 
-  &:not(:empty) {
-    @include flyout($hover-selector: '.header-object__actions');
-    width: auto;
-  }
+	&:not(:empty) {
+		@include flyout($hover-selector: '.header-object__actions');
+		width: auto;
+	}
 
-  // workaround for unreliable condition to prevent .header-object__actions from rendering if...
-  // ...links aren't present
-  &:empty {
-    background-color: $bg-primary;
-    position: absolute;
-    opacity: 1;
-    z-index: 1;
-    width: 20px;
-    height: 20px;
-    left: 0px;
-    top: 8px;
-  }
+	// workaround for unreliable condition to prevent .header-object__actions from rendering if...
+	// ...links aren't present
+	&:empty {
+		background-color: $bg-primary;
+		position: absolute;
+		opacity: 1;
+		z-index: 1;
+		width: 20px;
+		height: 20px;
+		left: 0px;
+		top: 8px;
+	}
 
-  a {
-    display: block;
-    background-color: $white;
-    padding: 15px 15px 10px;
-    white-space: nowrap;
+	a {
+		display: block;
+		background-color: $white;
+		padding: 15px 15px 10px;
+		white-space: nowrap;
 
-    &:last-child {
-      padding-bottom: 15px;
-    }
-  }
+		&:last-child {
+			padding-bottom: 15px;
+		}
+	}
 }

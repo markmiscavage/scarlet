@@ -6,6 +6,7 @@ table {
 	th,
 	td {
 		padding: 12px 10px;
+		color: $black;
 
 		&:first-of-type:not(:only-child) {
 			padding-left: $padding-width;
@@ -28,8 +29,7 @@ table {
 	}
 
 	thead {
-		// border-bottom: 1px solid $bg-primary;
-		background-color: hsl(210, 9%, 96%);
+		border-bottom: 1px solid $bg-primary;
 	}
 
 	th {

@@ -48,14 +48,14 @@ const BatchActions = View.extend({
   enableActions() {
     this.$actions
       .removeClass('button--disabled')
-      .addClass('button--primary')
+      .addClass('button--secondary')
       .removeAttr('disabled');
   },
 
   disableActions() {
     this.$actions
       .addClass('button--disabled')
-      .removeClass('button--primary')
+      .removeClass('button--secondary')
       .attr('disabled', 'disabled');
     this.$selectAll.prop('checked', false);
   },
