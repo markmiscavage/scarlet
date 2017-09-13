@@ -113,7 +113,7 @@ $spacer: 1;
 	z-index: -1;
 
 	// transition-out effect
-	transition: top 300ms ease-in, opacity 250ms 50ms ease-in;
+	transition: top 250ms ease-in, opacity 200ms 50ms ease-in;
 
 	#{$hover-selector}:hover & {
 		top: 100%;
@@ -121,7 +121,7 @@ $spacer: 1;
 		z-index: 1;
 
 		// transition-in effect
-		transition: top 300ms ease-out, opacity 250ms 50ms ease-out;
+		transition: top 250ms ease-out, opacity 200ms 50ms ease-out;
 	}
 }
 

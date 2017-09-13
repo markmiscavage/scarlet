@@ -2656,8 +2656,8 @@ button,
   width: 100%;
   opacity: 0;
   z-index: -1;
-  -webkit-transition: top 300ms ease-in, opacity 250ms 50ms ease-in;
-  transition: top 300ms ease-in, opacity 250ms 50ms ease-in;
+  -webkit-transition: top 250ms ease-in, opacity 200ms 50ms ease-in;
+  transition: top 250ms ease-in, opacity 200ms 50ms ease-in;
   background-color: #fff;
   padding: 20px;
   text-align: left;
@@ -2666,8 +2666,8 @@ button,
     top: 100%;
     opacity: 1;
     z-index: 1;
-    -webkit-transition: top 300ms ease-out, opacity 250ms 50ms ease-out;
-    transition: top 300ms ease-out, opacity 250ms 50ms ease-out; }
+    -webkit-transition: top 250ms ease-out, opacity 200ms 50ms ease-out;
+    transition: top 250ms ease-out, opacity 200ms 50ms ease-out; }
   .filters__form label:not(first-of-type) {
     margin-top: 20px; }
 
@@ -2830,15 +2830,15 @@ button,
     width: 100%;
     opacity: 0;
     z-index: -1;
-    -webkit-transition: top 300ms ease-in, opacity 250ms 50ms ease-in;
-    transition: top 300ms ease-in, opacity 250ms 50ms ease-in;
+    -webkit-transition: top 250ms ease-in, opacity 200ms 50ms ease-in;
+    transition: top 250ms ease-in, opacity 200ms 50ms ease-in;
     width: auto; }
     .header-object__actions:hover .header-object__actions-list:not(:empty) {
       top: 100%;
       opacity: 1;
       z-index: 1;
-      -webkit-transition: top 300ms ease-out, opacity 250ms 50ms ease-out;
-      transition: top 300ms ease-out, opacity 250ms 50ms ease-out; }
+      -webkit-transition: top 250ms ease-out, opacity 200ms 50ms ease-out;
+      transition: top 250ms ease-out, opacity 200ms 50ms ease-out; }
   .header-object__actions-list:empty {
     background-color: #f4f5f6;
     position: absolute;
@@ -3037,15 +3037,15 @@ button,
   width: 100%;
   opacity: 0;
   z-index: -1;
-  -webkit-transition: top 300ms ease-in, opacity 250ms 50ms ease-in;
-  transition: top 300ms ease-in, opacity 250ms 50ms ease-in;
+  -webkit-transition: top 250ms ease-in, opacity 200ms 50ms ease-in;
+  transition: top 250ms ease-in, opacity 200ms 50ms ease-in;
   left: -8px; }
   .nav-main__item:hover .nav-main__sublist {
     top: 100%;
     opacity: 1;
     z-index: 1;
-    -webkit-transition: top 300ms ease-out, opacity 250ms 50ms ease-out;
-    transition: top 300ms ease-out, opacity 250ms 50ms ease-out; }
+    -webkit-transition: top 250ms ease-out, opacity 200ms 50ms ease-out;
+    transition: top 250ms ease-out, opacity 200ms 50ms ease-out; }
   .nav-main__sublist:before {
     display: block;
     text-align: center;
@@ -3281,11 +3281,12 @@ th:nth-child(1) {
 
 .editor__textarea {
   background-color: #f4f5f6;
-  padding: 10px;
+  padding: 10px 60px;
   line-height: 1.5; }
   .editor__textarea body {
     font-size: 16px;
-    font-family: AvenirRoman;
+    font-family: 'open-sans', sans-serif;
+    font-weight: 300;
     color: #0084ff;
     line-height: 1.2; }
   .editor__textarea h1 {
