@@ -3438,10 +3438,21 @@ th:nth-child(1) {
   transition: opacity 200ms, position 300ms 350ms, -webkit-transform 300ms;
   transition: opacity 200ms, transform 300ms, position 300ms 350ms;
   transition: opacity 200ms, transform 300ms, position 300ms 350ms, -webkit-transform 300ms;
-  -webkit-box-shadow: 0 0px 3px rgba(0, 0, 0, 0.18);
-          box-shadow: 0 0px 3px rgba(0, 0, 0, 0.18);
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
   border-radius: 3px;
   position: relative; }
+  .formset__form:before {
+    content: '';
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    height: 5px;
+    background: -webkit-gradient(linear, right top, left top, from(#ff8066), to(#ff6666));
+    background: linear-gradient(to left, #ff8066, #ff6666);
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px; }
   .formset__form h3 {
     margin-bottom: 0;
     -webkit-box-ordinal-group: 2;
@@ -3464,6 +3475,13 @@ th:nth-child(1) {
     -webkit-box-align: center;
         -ms-flex-align: center;
             align-items: center; }
+    .formset__reorder-btn-group h4 {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 600;
+      color: #4d4d4d;
+      font-size: 12px;
+      margin-bottom: 10px;
+      text-transform: uppercase; }
   .formset__reorder + .formset__toggle-switch {
     background: #d8dbdf;
     border-radius: 10px;
@@ -3514,7 +3532,7 @@ th:nth-child(1) {
       -ms-flex-order: 2;
           order: 2; }
   .formset__button--delete .fa {
-    color: #ff6666;
+    color: #4d4d4d;
     font-size: 20px; }
   .formset__button--delete input {
     display: none; }
@@ -3570,7 +3588,7 @@ th:nth-child(1) {
   letter-spacing: 1px; }
 
 .formset__header {
-  padding: 15px 15px;
+  padding: 20px 15px 15px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
