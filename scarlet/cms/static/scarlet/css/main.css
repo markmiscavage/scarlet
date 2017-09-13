@@ -2357,10 +2357,9 @@ textarea {
 input[type='text'],
 input[type='file'],
 input[type='password'],
-input[type='number'] {
-  line-height: 38px;
-  text-indent: 10px;
-  margin-top: 10px;
+input[type='number'],
+textarea {
+  line-height: 1.5;
   border: 1px solid #f4f5f6;
   border-radius: 3px;
   -webkit-transition: -webkit-box-shadow 250ms ease-out;
@@ -2368,12 +2367,14 @@ input[type='number'] {
   transition: box-shadow 250ms ease-out;
   transition: box-shadow 250ms ease-out, -webkit-box-shadow 250ms ease-out;
   outline: none;
-  color: #404040; }
+  color: #404040;
+  padding: 7px 10px; }
 
 input[type='text']:focus,
 input[type='file']:focus,
 input[type='password']:focus,
-input[type='number']:focus {
+input[type='number']:focus,
+textarea:focus {
   -webkit-box-shadow: 0 0 4px #cdd1d5;
           box-shadow: 0 0 4px #cdd1d5;
   border: 1px solid #cdd1d5; }
@@ -2391,7 +2392,6 @@ input[type='number']::selection {
   background: #d8dbdf; }
 
 input[type='file'] {
-  padding: 12px;
   line-height: 1;
   text-indent: 0; }
 
@@ -2428,22 +2428,20 @@ input[type='radio']:checked + label:after {
 input[type='number'] {
   border: 1px solid #d8dbdf; }
 
-textarea {
-  padding: 10px; }
-
 legend {
-  font-family: "Raleway", sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-weight: 300;
   color: #404040;
-  font-size: 32px;
-  margin-bottom: 40px; }
+  font-size: 16px;
+  line-height: 1.4;
+  text-transform: uppercase; }
 
 label {
   color: #858f99;
   font-size: 13px;
   font-weight: 400;
   display: block;
-  line-height: 0.5;
+  line-height: 2;
   text-transform: uppercase;
   letter-spacing: 1px; }
   label.required {
@@ -2462,12 +2460,32 @@ label::-moz-selection {
 label::selection {
   background: #d8dbdf; }
 
-fieldset:not(:last-of-type),
-fieldset > div:not(:last-of-type) {
-  margin-bottom: 40px; }
+fieldset {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  border-bottom: 1px solid #f4f5f6; }
+  fieldset:first-of-type {
+    border-top: 1px solid #f4f5f6; }
+  fieldset:not(:last-of-type),
+  fieldset > div:not(:last-of-type) {
+    margin-bottom: 40px; }
+
+.fieldset__container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  padding: 30px 0px; }
+
+.fieldset__legend {
+  width: 20%;
+  padding-top: 5px; }
+
+.fieldset__body {
+  width: 80%; }
 
 .field-row {
-  margin-bottom: 25px; }
+  margin-bottom: 30px; }
   .field-row em {
     margin-bottom: 10px;
     display: inline-block; }
@@ -2717,7 +2735,8 @@ button,
     clear: both; }
 
 .header-object__breadcrumb {
-  font-family: 'open-sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
   font-weight: 300;
   color: #858f99;
   font-size: 18px;

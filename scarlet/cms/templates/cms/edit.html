@@ -24,36 +24,42 @@
 
     {% for fieldset in adminForm %}
     <fieldset>
-      {% if fieldset.name %}<legend>{{ fieldset.name }}</legend>{% endif %}
-      {% if fieldset.description %}
-        <div class="description">{{ fieldset.description|safe }}</div>
-      {% endif %}
-      {% for line in fieldset %}
-        {% for field in line %}
-          <div class='field-row {% if field.is_autoslug %}auto-slug{% endif %} {% if field.is_date %}date{% endif %} {% if field.is_checkbox %}checkbox{% endif %} {% if field.errors %}error-field{% endif %}'
-            {% for attr, value in field.label_attrs.items %}
-            data-label-{{attr}}="{{ value }}"
-            {% endfor %}
-            {% if field.field.id_for_label %}
-            data-label-for="{{ field.field.id_for_label }}"
-            {% endif %}
-            data-label-value="{{ field.label_contents }}"
+      <div class="fieldset__container">
+        <section class="fieldset__legend">
+        {% if fieldset.name %}<legend>{{ fieldset.name }}</legend>{% endif %}
+        </section>
+        <section class="fieldset__body">
+          {% if fieldset.description %}
+            <div class="description">{{ fieldset.description|safe }}</div>
+          {% endif %}
+          {% for line in fieldset %}
+            {% for field in line %}
+              <div class='field-row {% if field.is_autoslug %}auto-slug{% endif %} {% if field.is_date %}date{% endif %} {% if field.is_checkbox %}checkbox{% endif %} {% if field.errors %}error-field{% endif %}'
+                {% for attr, value in field.label_attrs.items %}
+                data-label-{{attr}}="{{ value }}"
+                {% endfor %}
+                {% if field.field.id_for_label %}
+                data-label-for="{{ field.field.id_for_label }}"
+                {% endif %}
+                data-label-value="{{ field.label_contents }}"
 
-            {% if field.field_tag %}
-              {% for attr, value in field.field_attrs.items %}
-              data-{{field.field_tag}}-{{attr}}="{{ value }}"
-              {% endfor %}
-              {% if field.field.value %}
-                data-{{field.field_tag}}-value="{{field.field.value}}"
-              {% endif %}
-            {% endif %}
-              <label>{{ field.label_tag }}</label>
-              {% if field.field.help_text %}<em class="help">{{ field.field.help_text|safe }}</em>{% endif %}
-              {{ field.field }}
-            {{ field.errors }}
-          </div>
-        {% endfor %}
-      {% endfor %}
+                {% if field.field_tag %}
+                  {% for attr, value in field.field_attrs.items %}
+                  data-{{field.field_tag}}-{{attr}}="{{ value }}"
+                  {% endfor %}
+                  {% if field.field.value %}
+                    data-{{field.field_tag}}-value="{{field.field.value}}"
+                  {% endif %}
+                {% endif %}
+                  <label>{{ field.label_tag }}</label>
+                  {% if field.field.help_text %}<em class="help">{{ field.field.help_text|safe }}</em>{% endif %}
+                  {{ field.field }}
+                {{ field.errors }}
+              </div>
+            {% endfor %}
+          {% endfor %}
+        </section>
+      </div>
     </fieldset>
     {% endfor %}
   {% endblock form %}

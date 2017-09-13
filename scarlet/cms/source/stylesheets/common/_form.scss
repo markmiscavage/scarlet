@@ -15,21 +15,22 @@ textarea {
 input[type='text'],
 input[type='file'],
 input[type='password'],
-input[type='number'] {
-	line-height: 38px;
-	text-indent: 10px;
-	margin-top: 10px;
+input[type='number'],
+textarea {
+	line-height: 1.5;
 	border: 1px solid $bg-primary;
 	border-radius: 3px;
 	transition: box-shadow 250ms ease-out;
 	outline: none;
 	color: $black;
+	padding: 7px 10px;
 }
 
 input[type='text']:focus,
 input[type='file']:focus,
 input[type='password']:focus,
-input[type='number']:focus {
+input[type='number']:focus,
+textarea:focus {
 	box-shadow: 0 0 4px hsl(210, 9%, 82%);
 	border: 1px solid hsl(210, 9%, 82%);
 }
@@ -42,7 +43,6 @@ input[type='number']::selection {
 }
 
 input[type='file'] {
-	padding: 12px;
 	line-height: 1;
 	text-indent: 0;
 }
@@ -88,12 +88,13 @@ input[type='number'] {
 	border: 1px solid $gray-lightish;
 }
 
-textarea {
-	padding: 10px;
-}
-
 legend {
-	@include heading-large;
+	font-family: 'Raleway', sans-serif;
+	font-weight: 300;
+	color: hsl(0, 0%, 25%);
+	font-size: 16px;
+	line-height: 1.4;
+	text-transform: uppercase;
 }
 
 label {
@@ -101,7 +102,7 @@ label {
 	font-size: 13px;
 	font-weight: 400;
 	display: block;
-	line-height: 0.5;
+	line-height: 2;
 	text-transform: uppercase;
 	letter-spacing: 1px;
 
@@ -124,14 +125,35 @@ label::selection {
 }
 
 fieldset {
+	display: flex;
+	border-bottom: 1px solid hsl(210, 9%, 96%);
+
+	&:first-of-type {
+		border-top: 1px solid hsl(210, 9%, 96%);
+	}
+
 	&:not(:last-of-type),
 	& > div:not(:last-of-type) {
 		margin-bottom: 40px;
 	}
 }
 
+.fieldset__container {
+	display: flex;
+	padding: 30px 0px;
+}
+
+.fieldset__legend {
+	width: 20%;
+	padding-top: 5px;
+}
+
+.fieldset__body {
+	width: 80%;
+}
+
 .field-row {
-	margin-bottom: 25px;
+	margin-bottom: 30px;
 
 	em {
 		margin-bottom: 10px;
