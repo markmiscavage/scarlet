@@ -107,6 +107,7 @@
       </div>
 
       {% for title, formset in formsets.all_formsets %}
+
         <div class="formset__type" data-text="{{ title }}" data-count="{{ formset.count }}" data-prefix="{{ formset.prefix }}">
           <script type="text/html" data-prefix="{{ formset.prefix }}" class="formset__form-template">
             {% include "cms/formset.html" with form=formset.empty_form formset=formset %}
