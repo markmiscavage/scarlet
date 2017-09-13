@@ -4,7 +4,7 @@ body {
 	@include open-sans;
 	color: $black;
 	background-color: $bg-primary;
-	font-size: 14px;
+	font-size: 16px;
 }
 
 a {
@@ -28,6 +28,17 @@ h2,
 h3,
 .heading-medium {
 	@include heading-medium;
+}
+
+.header__subitem {
+	font-family: 'Raleway', sans-serif;
+	font-weight: 300;
+	color: hsl(210, 9%, 56%);
+	font-size: 18px;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	line-height: 2;
+	text-align: center;
 }
 
 h4,
@@ -104,7 +115,7 @@ em {
 	&:before {
 		cursor: move;
 		content: '';
-		background-color: hsl(210, 9%, 56%);
+		background-color: $gray-lightish;
 		// border-right: 12px solid white; // solidifies gap from parent
 		display: block;
 		width: 13px;

@@ -103,7 +103,7 @@ legend {
 
 label {
 	color: $gray;
-	font-size: 13px;
+	font-size: 14px;
 	font-weight: 400;
 	display: block;
 	line-height: 2;
@@ -136,10 +136,10 @@ fieldset {
 		border-top: 1px solid hsl(210, 9%, 96%);
 	}
 
-	&:not(:last-of-type),
-	& > div:not(:last-of-type) {
-		margin-bottom: 40px;
-	}
+	// &:not(:last-of-type),
+	// & > div:not(:last-of-type) {
+	// 	margin-bottom: 40px;
+	// }
 }
 
 .fieldset__container {
@@ -165,11 +165,11 @@ fieldset {
 	}
 }
 
-.field-row.checkbox {
-	width: auto;
-	position: relative;
-	float: left;
-}
+// .field-row.checkbox {
+// 	width: auto;
+// 	position: relative;
+// 	float: left;
+// }
 
 .field-row.checkbox:not(:last-of-type) {
 	margin-right: 30px;
