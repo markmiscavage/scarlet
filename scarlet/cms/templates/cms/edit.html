@@ -25,9 +25,11 @@
     {% for fieldset in adminForm %}
     <fieldset>
       <div class="fieldset__container">
-        <section class="fieldset__legend">
-        {% if fieldset.name %}<legend>{{ fieldset.name }}</legend>{% endif %}
-        </section>
+        {% if fieldset.name %}
+          <section class="fieldset__legend">
+            <legend>{{ fieldset.name }}</legend>
+          </section>
+        {% endif %}
         <section class="fieldset__body">
           {% if fieldset.description %}
             <div class="description">{{ fieldset.description|safe }}</div>
