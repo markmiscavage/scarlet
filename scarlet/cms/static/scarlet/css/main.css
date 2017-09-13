@@ -2150,7 +2150,8 @@ svg {
 
 .actions__help {
   font-size: 12px;
-  margin-top: 8px; }
+  margin-top: 8px;
+  color: #858f99; }
 
 .asset {
   display: -webkit-box;
@@ -2343,6 +2344,7 @@ table {
 input[type='text'],
 input[type='file'],
 input[type='password'],
+input[type='url'],
 textarea {
   background-color: #f4f5f6;
   display: block;
@@ -2350,6 +2352,7 @@ textarea {
   td input[type='text'], td
   input[type='file'], td
   input[type='password'], td
+  input[type='url'], td
   textarea {
     display: inline-block;
     width: auto; }
@@ -2358,6 +2361,7 @@ input[type='text'],
 input[type='file'],
 input[type='password'],
 input[type='number'],
+input[type='url'],
 textarea {
   line-height: 1.5;
   border: 1px solid #f4f5f6;
@@ -2374,6 +2378,7 @@ input[type='text']:focus,
 input[type='file']:focus,
 input[type='password']:focus,
 input[type='number']:focus,
+input[type='url']:focus,
 textarea:focus {
   -webkit-box-shadow: 0 0 4px #cdd1d5;
           box-shadow: 0 0 4px #cdd1d5;
@@ -2382,13 +2387,15 @@ textarea:focus {
 input[type='text']::-moz-selection,
 input[type='file']::-moz-selection,
 input[type='password']::-moz-selection,
-input[type='number']::-moz-selection {
+input[type='number']::-moz-selection,
+input[type='url']::-moz-selection {
   background: #d8dbdf; }
 
 input[type='text']::selection,
 input[type='file']::selection,
 input[type='password']::selection,
-input[type='number']::selection {
+input[type='number']::selection,
+input[type='url']::selection {
   background: #d8dbdf; }
 
 input[type='file'] {

@@ -1,6 +1,7 @@
 input[type='text'],
 input[type='file'],
 input[type='password'],
+input[type='url'],
 textarea {
 	background-color: $bg-primary;
 	display: block;
@@ -16,6 +17,7 @@ input[type='text'],
 input[type='file'],
 input[type='password'],
 input[type='number'],
+input[type='url'],
 textarea {
 	line-height: 1.5;
 	border: 1px solid $bg-primary;
@@ -30,6 +32,7 @@ input[type='text']:focus,
 input[type='file']:focus,
 input[type='password']:focus,
 input[type='number']:focus,
+input[type='url']:focus,
 textarea:focus {
 	box-shadow: 0 0 4px hsl(210, 9%, 82%);
 	border: 1px solid hsl(210, 9%, 82%);
@@ -38,7 +41,8 @@ textarea:focus {
 input[type='text']::selection,
 input[type='file']::selection,
 input[type='password']::selection,
-input[type='number']::selection {
+input[type='number']::selection,
+input[type='url']::selection {
 	background: $gray-lightish;
 }
 
