@@ -155,12 +155,12 @@ fieldset {
 }
 
 .fieldset__legend {
-	width: 20%;
+	width: calc(33% - 30px);
 	padding-top: 5px;
 }
 
 .fieldset__body {
-	width: 80%;
+	width: calc(66% + 30px);
 }
 
 .field-row {

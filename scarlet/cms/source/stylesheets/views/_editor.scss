@@ -1,7 +1,7 @@
 @import '../vendor/wysihtml5';
 
 .editor__textarea {
-	background-color: $gray-light;
+	background-color: $white;
 	padding: 10px 60px;
 	line-height: 1.5;
 
@@ -107,10 +107,11 @@
 }
 
 .editor__toolbar {
-	border: 1px solid $gray-light;
+	border: 1px solid $gray-lightish;
 	position: relative;
 	border-bottom: none;
 	padding: 10px;
+	background-color: $white;
 
 	+ textarea {
 		height: 400px;

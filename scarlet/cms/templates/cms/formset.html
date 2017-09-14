@@ -2,15 +2,26 @@
 
 {{ form.non_field_errors }}
 
-<div class="formset__actions">
-  {% if formset.can_delete %}
-       <div class="formset__button--delete">
-               <i class="fa fa-trash-o" aria-hidden="true"></i>
-               {{ form.DELETE }}
-       </div>
+
+<div class="formset__header">
+  <div class="formset__draggable">
+    <i class="fa fa-bars" aria-hidden="true"></i>
+  </div>
+  {% if form.instance.kind %}
+    <div class="formset__type" data-module-type="{{ form.instance.kind }}">
+      {{ form.instance.kind }} module
+    </div>
   {% endif %}
-  <div class="formset__button--minimize">
-    <i class="fa fa-minus" aria-hidden="true"></i>
+
+  <div class="formset__actions">
+    {% if formset.can_delete %}
+    <div class="formset__button--delete">
+      <i class="fa fa-trash-o" aria-hidden="true"></i> {{ form.DELETE }}
+    </div>
+    {% endif %}
+    <div class="formset__button--minimize">
+      <i class="fa fa-minus-square-o" aria-hidden="true"></i>
+    </div>
   </div>
 </div>
 
