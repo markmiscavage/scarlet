@@ -1,35 +1,42 @@
 .nav-sidebar {
-  float: left;
-  width: 20%;
+	float: left;
+	width: 20%;
 }
 
 .nav-sidebar + .content {
-  float: right;
-  width: 79%;
-  padding-left: 20px;
+	float: right;
+	width: 79%;
+	padding-left: 20px;
 
-  &:before {
-    content: '';
-    width: 1px;
-    background-color: $gray-light;
-    position: absolute;
-    height: 100%;
-    top: -50px;
+	&:before {
+		content: '';
+		width: 1px;
+		background-color: $gray-light;
+		position: absolute;
+		height: 100%;
+		top: -50px;
 
-    // negate margin-left instead of left so bar stays next to content
-    margin-left: -30px;
-  }
+		// negate margin-left instead of left so bar stays next to content
+		margin-left: -30px;
+	}
 }
 
 .nav-sidebar__link {
-  color: $black;
-  display: block;
-  padding: 12px 0 12px 15px;
-  text-transform: uppercase;
+	color: $black;
+	display: block;
+	padding: 15px 0 15px 15px;
+	text-transform: uppercase;
+	transition: all 100ms ease-in;
 
-  // TODO: add class to active page (backend)
-  &:active {
-    color: $white;
-    background-color: $red;
-  }
+	// TODO: add class to active page (backend)
+	&:active {
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+		transition: all 100ms ease-out;
+	}
+
+	&:hover {
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+		transform: translateY(-1px);
+		transition: all 100ms ease-out;
+	}
 }
