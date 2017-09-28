@@ -10,7 +10,6 @@ const FormsetForm = View.extend({
     'click .formset__button--delete': 'delete',
     'click .formset__reorder': 'handleCollapseAllClick',
     'click .formset__button--minimize': 'handleCollapseClick',
-    'click .formset__button--add': 'add'
     // 'click .button': function(e) {
     //   clickOpenPopup(e, data => {
     //     if (data.thumbnail) {
@@ -25,6 +24,7 @@ const FormsetForm = View.extend({
 
   initialize() {
     this.prefix = '';
+    this.formsetTypes = [];
     this.isDraggable = false;
     this.didInitialize = true;
     this.sortMode = false;
@@ -46,14 +46,35 @@ const FormsetForm = View.extend({
 
   render() {
     this.$forms = this.$('.formset__forms');
+    this.$controls = this.$el.next('.formset__controls');
     this.prefix = this.$el.data('prefix') || new Date().valueOf();
 
     this.$el.prepend(
       '<span class="formset__reorder-btn-group"><h4>collapse all: </h4><input class="formset__reorder" id="' + this.prefix + '-reorder" type="checkbox" /><label for="' + this.prefix + '-reorder" class="formset__toggle-switch" /></span>',
     );
 
+    this.setFormsetTypes();
     this.delegateEvents();
-    // this.enableSort();
+    this.enableSort();
+    this.bindControls();
+  },
+
+  bindControls() {
+    this.setupSelect();
+    this.$controls.on('click', '.formset__button--add', () => this.add(this.formsetTypes[0].value));
+  },
+
+  setupSelect() {
+    this.selectize = $('.formset__select').selectize({
+      selectOnTab: true,
+      maxItems: 1,
+      placeholder: 'Add a Module',
+      options: this.formsetTypes,
+      onChange: function(value) {
+        this.selectize[0].selectize.clear(true);
+        this.add(value);
+      }.bind(this),
+    });
   },
 
   delete(e) {
@@ -68,11 +89,10 @@ const FormsetForm = View.extend({
     this.resort();
   },
 
-  add() {
+  add(formsetType) {
     // const $parent = this.$el.parent();
     // const $targetFormset = $parent.find(`.formset[data-prefix="${formsetType}"]`)
     const $targetFormset = this.$el.find('.formset__forms')
-    const formsetType = this.prefix
 
     const clone = $('<div>')
       .addClass('formset__form added-with-js')
@@ -81,6 +101,7 @@ const FormsetForm = View.extend({
       .attr('data-module-name', '');
 
     let html = $(`.formset__form-template[data-prefix="${formsetType}"]`).html();
+
     const count = this.count(formsetType)
     
     html = html.replace(/(__prefix__)/g, count);
@@ -88,8 +109,13 @@ const FormsetForm = View.extend({
     clone.html(html);
 
     $targetFormset.append(clone);
-    
-    // this.enableSort();
+
+    if (this.formsetTypes.indexOf(formsetType) === -1) {
+      this.formsetTypes.push({
+        value: formsetType,
+      });
+    }
+
     this.resort();
     pubsub.trigger('scarlet:render');
   },
@@ -123,7 +149,6 @@ const FormsetForm = View.extend({
         this.$('.formset__form').addClass('draggable');
         this.$('.formset__form')
           .find('.formset__draggable')
-          .addClass('formset__draggable--show');
         this.isDraggable = true;
       }
       this.sortMode = true;
@@ -133,7 +158,6 @@ const FormsetForm = View.extend({
       this.$('.formset__form')
         .find('.formset__draggable')
         .first()
-        .removeClass('formset__draggable--show');
       this.sortMode = false;
       this.resort();
     }
@@ -178,7 +202,6 @@ const FormsetForm = View.extend({
 
   setAllFormsetCollapsedStates ($toCollapsed) {
     const self = this;
-    // this.enableSort();
 
     const collapseFormset = this.collapseFormset.bind(this)
     const expandFormset = this.expandFormset.bind(this)
@@ -191,26 +214,7 @@ const FormsetForm = View.extend({
         } else {
           expandFormset($el)
         }
-        //   $el.addClass('formset__form--edit');
-        //   $el
-        //     .find('.formset__fields')
-        //     .first()
-        //     .addClass('formset__fields--collapsed');
-        //   $el.find('i.fa-minus-square-o').toggleClass('fa-minus-square-o fa-plus-square-o');
-      } //else {
-        // if (isCollapsed) {
-        //   expandFormset($el)
-        // } else {
-        //   collapseFormset($el)
-        // }
-        // $el
-        //   .find('.formset__fields')
-        //   .first()
-        //   .removeClass('formset__fields--collapsed');
-        // $('h3').remove();
-        // $el.removeClass('formset__form--edit');
-        // $el.find('i.fa-plus-square-o').toggleClass('fa-minus-square-o fa-plus-square-o');
-      //}
+      }
     )
   },
 
@@ -282,15 +286,27 @@ const FormsetForm = View.extend({
   Metadata
   *********************************** */
 
-  updateMetadata() {
-    let formsetType = this.prefix,
-      $formset = $(`.formset__form[data-prefix=${formsetType}]`);
-      console.log('updateMetaData')
-    $formset.each(function(n, el) {
-      const $this = $(this);
-      $this.find('.formset__order input').val($this.prevAll().length);
+  setFormsetTypes() {
+    $('.formset__type').each((i, el) => {
+      const $el = $(el);
+      this.formsetTypes.push({
+        text: $el.data('text'),
+        value: $el.data('prefix'),
+      });
     });
-    $(`#id_${formsetType}-TOTAL_FORMS`).val($formset.length);
+  },
+
+  updateMetadata() {
+    for (let i = 0; i < this.formsetTypes.length; i++) {
+      let formsetType = this.formsetTypes[i].value,
+        $formset = $(`.formset__form[data-prefix=${formsetType}]`);
+
+      $formset.each(function(n, el) {
+        const $this = $(this);
+        $this.find('.formset__order input').val($this.prevAll().length);
+      });
+      $(`#id_${formsetType}-TOTAL_FORMS`).val($formset.length);
+    }
   },
 });
 

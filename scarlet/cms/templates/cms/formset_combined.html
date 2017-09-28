@@ -1,0 +1,27 @@
+{% load cms %}
+
+<fieldset class="formset-combined" data-prefix="{{ formset.prefix }}">
+ 
+  {{ formset.non_form_errors }}
+
+  <div class="formset__forms">
+
+    {% for form, fset in formset %}
+      <div class="formset__form combined" data-prefix="{{ fset.prefix }}" data-module-type="{{ form.instance.icon_kind }}" data-module-name="{{ form.instance.name }}" >
+        {% include "cms/formset_form.html" with form=form formset=fset %}
+      </div>
+    {% endfor %}
+
+  </div>
+
+  <div class="formset__controls">
+    {% if formsets.formsets|length > 1 %}
+      <div class="formset__select"></div>
+    {% else %}
+      {% for title, formset in all_formsets %}
+        <div class="formset__button--add button button--primary">Add {{ title }}</div>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+</fieldset>

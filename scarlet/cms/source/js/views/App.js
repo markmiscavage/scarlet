@@ -9,6 +9,8 @@ import DateTimePicker from 'views/DateTimePicker';
 import Editor from 'views/editor/Editor';
 import Filters from 'views/Filters';
 import Formset from 'views/Formset';
+import FormsetCombined from 'views/FormsetCombined';
+import FormsetForm from 'views/FormsetForm';
 import ImageCropper from 'views/ImageCropper';
 import InsertImage from 'views/InsertImage';
 import InsertVideo from 'views/InsertVideo';
@@ -51,6 +53,20 @@ const App = View.extend({
     // Formset
     $('.formset').each((i, dom) => {
       const formset = new Formset({
+        el: dom,
+      }).render();
+    });
+    
+    // FormsetCombined
+    $('.formset-combined').each((i, dom) => {
+      const formset = new FormsetCombined({
+        el: dom,
+      }).render();
+    });
+
+    // FormsetForm
+    $('.formset-form').each((i, dom) => {
+      const formset = new FormsetForm({
         el: dom,
       }).render();
     });

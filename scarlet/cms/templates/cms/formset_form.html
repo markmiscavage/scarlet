@@ -1,0 +1,48 @@
+{% load cms %}
+
+{{ form.non_field_errors }}
+
+
+<div class="formset__header">
+  <div class="formset__draggable">
+    <i class="fa fa-bars" aria-hidden="true"></i>
+  </div>
+  {% if form.instance.kind %}
+    <div class="formset__type" data-module-type="{{ form.instance.kind }}">
+      {{ form.instance.kind }} module
+    </div>
+  {% endif %}
+
+  <div class="formset__actions">
+    {% if formset.can_delete %}
+    <div class="formset__button--delete">
+      <i class="fa fa-trash-o" aria-hidden="true"></i> {{ form.DELETE }}
+    </div>
+    {% endif %}
+    <div class="formset__button--minimize">
+      <i class="fa fa-minus-square-o" aria-hidden="true"></i>
+    </div>
+  </div>
+</div>
+
+{% for field in form %}
+	{% if field.name != 'DELETE' %}
+		{% if field.field.is_order_field %}
+			<div class="formset__order">
+				{{ field }}
+			</div>
+		{% else %}
+			<div class="formset__field {% if field.is_date %}date{% endif %} {% if field.is_checkbox %}checkbox{% endif %} {% if field.errors %}error
+			field{% endif %}">
+               {% if not field.is_hidden %}
+					<label for="{{ field.auto_id }}" {% if field.field.required %}class="required"{% endif %} >{{ field.label }}:</label>
+                       {% if field.field.help_text %}
+                               <em class="help">{{ field.field.help_text|safe }}</em>
+                       {% endif %}
+               {% endif %}
+               {{ field|set_label_hidden_formset }} {{ field }}
+			 </div>
+			{{ field.errors }}
+		{% endif %}
+	{% endif %}
+{% endfor %}
