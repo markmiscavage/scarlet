@@ -1984,6 +1984,8 @@ body {
   color: #4d4d4d;
   background-color: #f4f5f6;
   font-size: 16px; }
+  body.modal-open {
+    overflow: hidden; }
 
 a {
   text-decoration: none;
@@ -2114,6 +2116,66 @@ svg {
     fill: #f00; }
   svg .type {
     fill: #000; }
+
+@-webkit-keyframes rotate {
+  from {
+    -webkit-transform: translate(-50%, -50%) rotate(0deg);
+            transform: translate(-50%, -50%) rotate(0deg); }
+  to {
+    -webkit-transform: translate(-50%, -50%) rotate(360deg);
+            transform: translate(-50%, -50%) rotate(360deg); } }
+
+@keyframes rotate {
+  from {
+    -webkit-transform: translate(-50%, -50%) rotate(0deg);
+            transform: translate(-50%, -50%) rotate(0deg); }
+  to {
+    -webkit-transform: translate(-50%, -50%) rotate(360deg);
+            transform: translate(-50%, -50%) rotate(360deg); } }
+
+.loading-screen {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0;
+  -webkit-transition: opacity 0.2s linear;
+  transition: opacity 0.2s linear;
+  background: rgba(255, 255, 255, 0.75);
+  pointer-events: none; }
+  .loading-screen .spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 25px;
+    height: 25px;
+    -webkit-transform: translate(-50%, -50%) scale(2, 2);
+            transform: translate(-50%, -50%) scale(2, 2);
+    -webkit-transition: -webkit-transform 0.5s cubic-bezier(0, 0, 0, 1);
+    transition: -webkit-transform 0.5s cubic-bezier(0, 0, 0, 1);
+    transition: transform 0.5s cubic-bezier(0, 0, 0, 1);
+    transition: transform 0.5s cubic-bezier(0, 0, 0, 1), -webkit-transform 0.5s cubic-bezier(0, 0, 0, 1); }
+    .loading-screen .spinner:before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 100%;
+      height: 100%;
+      -webkit-transform: translate(-50%, -50%);
+              transform: translate(-50%, -50%);
+      background: url(/static/scarlet/images/spinner.png);
+      background-size: contain;
+      -webkit-animation: rotate 1s infinite linear;
+              animation: rotate 1s infinite linear; }
+  .loading-screen.is-loading {
+    opacity: 1;
+    pointer-events: inherit; }
+    .loading-screen.is-loading .spinner {
+      -webkit-transform: translate(-50%, -50%) scale(1, 1);
+              transform: translate(-50%, -50%) scale(1, 1); }
 
 .actions__action {
   display: inline-block;
@@ -2545,6 +2607,10 @@ button,
       background: linear-gradient(to top, #006fff, #00aaff);
       -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
               box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18); }
+    button--primary:disabled,
+    .button--primary:disabled {
+      background: #cecece;
+      pointer-events: none; }
   button--secondary,
   .button--secondary {
     color: #858f99;
@@ -3269,6 +3335,22 @@ th:nth-child(1) {
 .crop-info__cropper {
   width: 80%;
   height: 100%; }
+
+.crop-info .save-status {
+  font-family: "Raleway", sans-serif;
+  font-weight: 400;
+  color: #4d4d4d;
+  font-size: 18px;
+  margin-bottom: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-bottom: 0;
+  margin-right: 10px;
+  color: #0084ff; }
 
 .wysihtml5-sandbox {
   color: #0080ff;

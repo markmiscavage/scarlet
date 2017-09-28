@@ -110,8 +110,11 @@
         {% endblock %}
 
         <article id="content" class="content {% block content_class %}{% endblock %}">
-        {% block content %}
-        {% endblock %}
+          <div class='loading-screen'>
+            <div class='spinner'></div>
+          </div>
+          {% block content %}
+          {% endblock %}
         </article>
         <div id="modal"></div>
       </section>

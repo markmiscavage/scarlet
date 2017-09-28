@@ -46,7 +46,7 @@ class AssetBundle(bundles.Bundle):
                                          "modified", "type"))
     add = AssetFormView(force_add=True, form_class=forms.UploadAssetForm)
     edit = AssetFormView(form_class=forms.UpdateAssetForm)
-    edit_crops = AssetFormView(form_class=forms.UpdateAssetForm, default_template='assets/edit_crops.html')
+    edit_crops = AssetFormView(form_class=forms.UpdateAssetForm)
     crop = CropView(default_template="assets/crop.html")
     crops = CropBundle.as_subbundle(name='crops')
 

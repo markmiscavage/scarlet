@@ -5,15 +5,15 @@ import { clickOpenPopup } from '../helpers/WindowPopup';
 
 const SelectAsset = View.extend({
   initialize() {
-    this.$input = this.$('input');
-    this.$preview = this.$('.asset__preview');
-    this.$cropsList = this.$('.asset__crop-list');
+    this.$input = this.$el.find('input');
+    this.$preview = this.$el.find('.asset__preview');
+    this.$cropsList = this.$el.find('.asset__crop-list');
     this.$selectizeInput = this.$input.after('<input />');
     this.baseLink = this.$cropsList.data('base-link');
     this.url = this.$el.data('api');
     this.addOpen = false;
     this.id = this.$input.val();
-    this.$editBtn = $('.asset__edit-link');
+    this.$editBtn = this.$el.find('.asset__edit-link');
     this.baseUrl = this.$editBtn.attr('data-base');
     this.assetUrl = this.$editBtn.attr('data-asset-url');
   },
@@ -44,7 +44,8 @@ const SelectAsset = View.extend({
     this.$selectizeInput.selectize(options);
     this.tag();
     this.linkifyCrops();
-    $('.asset__edit-link').attr('href', `${this.baseUrl}${this.id}/edit`);
+    
+    this.$editBtn.attr('href', `${this.baseUrl}${this.id}/edit/?popup=1`);
   },
 
   /**
@@ -109,7 +110,7 @@ const SelectAsset = View.extend({
    * @param  {object}
    */
   onSelect(value, $item) {
-    $('.asset__edit-link').attr('href', `${this.baseUrl}${value}/edit_crops`);
+    this.$editBtn.attr('href', `${this.baseUrl}${value}/edit/?popup=1`);
     this.linkifyCrops();
     this.$preview.css('background-image', `url(${$item.attr('data-thumb')})`);
     if ($item.attr('data-src')) {

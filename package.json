@@ -98,11 +98,20 @@
   },
   "peerDependencies": {},
   "babel": {
-    "presets": ["env", "es2015-without-strict", "stage-0", "stage-1"],
-    "plugins": ["transform-runtime"],
+    "presets": [
+      "env",
+      "es2015-without-strict",
+      "stage-0",
+      "stage-1"
+    ],
+    "plugins": [
+      "transform-runtime"
+    ],
     "env": {
       "production": {
-        "plugins": ["transform-runtime"]
+        "plugins": [
+          "transform-runtime"
+        ]
       }
     }
   },

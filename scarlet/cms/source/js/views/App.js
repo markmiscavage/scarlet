@@ -26,6 +26,8 @@ import '../../stylesheets/app.scss';
 const App = View.extend({
   initialize() {
     pubsub.on('scarlet:render', this.render);
+    pubsub.on('scarlet:showLoader', this.showPreloader);
+    pubsub.on('scarlet:hideLoader', this.hidePreloader);
 
     // AutoSlug
     $('.auto-slug').each((i, dom) => {
@@ -175,6 +177,16 @@ const App = View.extend({
       }).render();
     });
   },
+
+  showPreloader () {
+    $('body').addClass('modal-open')
+    $('.loading-screen').addClass('is-loading')
+  }, 
+
+  hidePreloader () {
+    $('body').removeClass('modal-open')
+    $('.loading-screen').removeClass('is-loading')
+  }
 });
 
 export default App;

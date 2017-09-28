@@ -4,7 +4,7 @@
 {% block formsets %}
 {% if crops %}
 	<div class="crop-info" data-asset-id="{{ obj.id }}">
-		<h2>Crops</h2>
+	<h2>Crops</h2>
     <p>Select a crop from the drop down to begin editing.</p>
     <div class="crop-info__main">
       <aside class="crop-info__nav">
@@ -24,3 +24,12 @@
 	</div>
 {% endif %}
 {% endblock formsets %}
+
+
+{% block submit %}
+    <div class="button-group button-group--submit">
+        <div class='save-status'></div>
+        <input class="button button--primary" type="submit" value="Save" />
+        <a class="button button--secondary close-popup" href="{{ cancel_url }}">Close</a>
+    </div>
+{% endblock submit %}
