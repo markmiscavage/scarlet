@@ -25,7 +25,6 @@ const ImageCropper = View.extend({
   },
 
   onReady() {
-    // this.setConstraints();
     this.setupCropper();
   },
 
@@ -53,6 +52,31 @@ const ImageCropper = View.extend({
   cropperReady() {
     const aspectRatio = this.scaled.width / this.scaled.height;
     this.$original.cropper('setAspectRatio', aspectRatio);
+    
+    const containerWidth = this.$el.find('.cropper-container').width();
+    const containerHeight = this.$el.find('.cropper-container').height();
+    const displayWidth = this.$el.find('.cropper-canvas').width();
+    const displayHeight = this.$el.find('.cropper-canvas').height();
+    const originalWidth = this.$original[0].naturalWidth;
+    const originalHeight = this.$original[0].naturalHeight;
+    const displayScaleX = displayWidth / originalWidth;
+    const displayScaleY = displayHeight / originalHeight;
+
+    const startX = ((containerWidth - displayWidth) / 2);
+    const startY = ((containerHeight - displayHeight) / 2);
+    const x1 = (this.cropCoords.x / originalWidth) * displayWidth;
+    const x2 = (this.cropCoords.x2 / originalWidth) * displayWidth;
+    const y1 = (this.cropCoords.y / originalHeight) * displayHeight;
+    const y2 = (this.cropCoords.y2 / originalHeight) * displayHeight;
+
+    const initCropArea = {
+      left: startX + x1,
+      top: startY + y1,
+      width: x2 - x1,
+      height: y2 - y1,
+    };
+
+    this.$original.cropper('setCropBoxData', initCropArea);
   },
 
   // iterate over coordinate property keys
@@ -81,14 +105,14 @@ const ImageCropper = View.extend({
     const scaleX = this.scaled.width / this.$original[0].naturalWidth;
     const scaleY = this.scaled.height / this.$original[0].naturalHeight;
 
-    /* Server sets the x2, y2 values relative to the original image, therefore we can
-     check to see if the x2 / y2 values are greater than the current crop width / height
-     to determine if the values have been calculated properly */
+    /* Server sets the x2, y2 values relative to the original image, so we 
+    have to scale the coordinate values; don't have to scale width and 
+    height because that attribute is being set in the django template */
     const obj = {
-      x: x2 > width ? Math.round(x * scaleX) : x,
-      y: y2 > height ? Math.round(y * scaleY) : y,
-      x2: x2 > width ? width : x2,
-      y2: y2 > height ? height : y2,
+      x: x * scaleX,
+      y: y * scaleY,
+      x2: x2 * scaleX,
+      y2: y2 * scaleX,
       width,
       height,
     };
@@ -99,6 +123,7 @@ const ImageCropper = View.extend({
       width: Math.round((obj.x2 - obj.x) / scaleX),
       height: Math.round((obj.y2 - obj.y) / scaleY),
     });
+
     return obj;
   },
 
@@ -116,13 +141,14 @@ const ImageCropper = View.extend({
   },
 
   setCropCoords(coords) {
-    const { scaleX, scaleY } = this.getScale();
+    // comment out scale adjustment since backend sizes the cropped section properly
+    // const { scaleX, scaleY } = this.getScale();
 
     this.cropCoords = Object.assign({}, coords, {
-      x: Math.round(coords.x * scaleX),
-      y: Math.round(coords.y * scaleY),
-      x2: Math.round((coords.x + coords.width) * scaleX),
-      y2: Math.round((coords.y + coords.height) * scaleY),
+      x: Math.round(coords.x/* * scaleX*/),
+      y: Math.round(coords.y/* * scaleY*/),
+      x2: Math.round((coords.x + coords.width)/* * scaleX*/),
+      y2: Math.round((coords.y + coords.height)/* * scaleY*/)
     });
   },
 });

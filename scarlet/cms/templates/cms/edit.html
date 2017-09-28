@@ -2,7 +2,6 @@
 {% load cms %}
 
 {% block main_content %}
-
   {% block form_title %}
   {% if obj %}
     {% if subitem %}
@@ -94,6 +93,7 @@
       <a class="button button--secondary close-popup" href="{{ cancel_url }}">Cancel</a>
       <input class="button button--primary" type="submit" value="Save" />
     </div>
-  </form>
   {% endblock submit %}
+  
+  </form>
 {% endblock %}

@@ -113,6 +113,7 @@ class AssetFormView(views.FormView):
         obj = kwargs.get('obj')
         if obj and obj.type == self.model.IMAGE:
             kwargs['crops'] = obj.imagedetail_set.filter(editable=True)
+            # print dir(obj)
         return super(AssetFormView, self).render(*args, **kwargs)
 
     def formfield_for_dbfield(self, db_field, **kwargs):
