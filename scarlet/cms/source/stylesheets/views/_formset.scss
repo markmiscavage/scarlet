@@ -281,7 +281,7 @@
 	&__draggable {
 		.fa {
 			color: $gray;
-			opacity: 0;
+			opacity: 1;
 			transition: all 150ms ease-out 100ms;
 			cursor: grab;
 		}
