@@ -51,9 +51,8 @@ const FormsetForm = View.extend({
     this.$el.prepend(
       '<span class="formset__reorder-btn-group"><h4>collapse all: </h4><input class="formset__reorder" id="' + this.prefix + '-reorder" type="checkbox" /><label for="' + this.prefix + '-reorder" class="formset__toggle-switch" /></span>',
     );
-
     this.delegateEvents();
-    // this.enableSort();
+    this.enableSort();
   },
 
   delete(e) {
@@ -69,8 +68,6 @@ const FormsetForm = View.extend({
   },
 
   add() {
-    // const $parent = this.$el.parent();
-    // const $targetFormset = $parent.find(`.formset[data-prefix="${formsetType}"]`)
     const $targetFormset = this.$el.find('.formset__forms')
     const formsetType = this.prefix
 
@@ -89,7 +86,6 @@ const FormsetForm = View.extend({
 
     $targetFormset.append(clone);
     
-    // this.enableSort();
     this.resort();
     pubsub.trigger('scarlet:render');
   },
@@ -176,9 +172,9 @@ const FormsetForm = View.extend({
     this.setAllFormsetCollapsedStates (isChecked)
   },
 
+  
   setAllFormsetCollapsedStates ($toCollapsed) {
     const self = this;
-    // this.enableSort();
 
     const collapseFormset = this.collapseFormset.bind(this)
     const expandFormset = this.expandFormset.bind(this)
@@ -191,26 +187,7 @@ const FormsetForm = View.extend({
         } else {
           expandFormset($el)
         }
-        //   $el.addClass('formset__form--edit');
-        //   $el
-        //     .find('.formset__fields')
-        //     .first()
-        //     .addClass('formset__fields--collapsed');
-        //   $el.find('i.fa-minus-square-o').toggleClass('fa-minus-square-o fa-plus-square-o');
-      } //else {
-        // if (isCollapsed) {
-        //   expandFormset($el)
-        // } else {
-        //   collapseFormset($el)
-        // }
-        // $el
-        //   .find('.formset__fields')
-        //   .first()
-        //   .removeClass('formset__fields--collapsed');
-        // $('h3').remove();
-        // $el.removeClass('formset__form--edit');
-        // $el.find('i.fa-plus-square-o').toggleClass('fa-minus-square-o fa-plus-square-o');
-      //}
+      }
     )
   },
 
@@ -285,7 +262,6 @@ const FormsetForm = View.extend({
   updateMetadata() {
     let formsetType = this.prefix,
       $formset = $(`.formset__form[data-prefix=${formsetType}]`);
-      console.log('updateMetaData')
     $formset.each(function(n, el) {
       const $this = $(this);
       $this.find('.formset__order input').val($this.prevAll().length);

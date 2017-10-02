@@ -3502,7 +3502,9 @@ th:nth-child(1) {
 
 .wysihtml-sandbox {
   height: 400px;
-  width: 100%; }
+  width: 100%;
+  border: 1px solid #d8dbdf;
+  border-width: 1px; }
 
 .formset {
   margin-bottom: 20px; }

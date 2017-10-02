@@ -9,17 +9,7 @@ const FormsetForm = View.extend({
   events: {
     'click .formset__button--delete': 'delete',
     'click .formset__reorder': 'handleCollapseAllClick',
-    'click .formset__button--minimize': 'handleCollapseClick',
-    // 'click .button': function(e) {
-    //   clickOpenPopup(e, data => {
-    //     if (data.thumbnail) {
-    //       this.selectize.addOption(data);
-    //       this.selectize.setValue(data.id);
-    //       this.addOpen = false;
-    //     }
-    //   });
-    // },
-    // 'clidk .crop-link' : function(e){clickOpenPopup(e, (data) => console.log('thing', data))}
+    'click .formset__button--minimize': 'handleCollapseClick'
   },
 
   initialize() {
@@ -90,8 +80,6 @@ const FormsetForm = View.extend({
   },
 
   add(formsetType) {
-    // const $parent = this.$el.parent();
-    // const $targetFormset = $parent.find(`.formset[data-prefix="${formsetType}"]`)
     const $targetFormset = this.$el.find('.formset__forms')
 
     const clone = $('<div>')
