@@ -165,7 +165,7 @@ const EditorRules = {
     },
     a: {
       check_attributes: {
-        href: 'preserve', // if you compiled master manually then change this from 'url' to 'href'
+        href: 'href', // if you compiled master manually then change this from 'url' to 'href'
         rel: 'preserve',
         'data-annotation-id': 'preserve',
         'data-annotation-text': 'preserve',
