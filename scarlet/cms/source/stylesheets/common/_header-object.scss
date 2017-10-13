@@ -1,11 +1,18 @@
 .header-object {
 	@include microfix;
 	position: relative;
+	display: flex;
 	width: 100%;
 	max-width: $max-width;
     margin: 0 30px;
     padding: 40px 30px;
 	z-index: $z-mid;
+}
+
+.header-object__main {
+	flex: 0 0 auto;
+	display: flex;
+	width: auto;
 }
 
 .header-object__breadcrumb {
@@ -34,15 +41,20 @@
 	font-size: 16px;
 }
 
-.header-object__title {
+.header-object__title-container {
+	display: flex;
+	align-items: center;
 	margin-top: 30px;
+}
+
+.header-object__title {
 	font-size: 32px;
 	color: $black;
-	float: left;
+	margin-bottom: 0;
 }
 
 .header-object__tools {
-	float: right;
+	flex-grow: 1;
 	text-transform: uppercase;
 	text-align: right;
 	font-size: 12px;
@@ -71,7 +83,7 @@
 	position: relative;
 
 	.fa {
-		margin: 7px 0 0 9px;
+		margin: 0 0 0 9px;
 	}
 }
 
@@ -93,7 +105,7 @@
 		width: 20px;
 		height: 20px;
 		left: 0px;
-		top: 8px;
+		top: 0px;
 	}
 
 	a {

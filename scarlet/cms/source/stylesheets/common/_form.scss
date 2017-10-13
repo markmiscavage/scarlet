@@ -133,7 +133,7 @@ label::selection {
 
 fieldset {
 	display: flex;
-	border-bottom: 1px solid hsl(210, 9%, 96%);
+	/*border-bottom: 1px solid hsl(210, 9%, 96%);
 
 	&:first-of-type {
 		border-top: 1px solid hsl(210, 9%, 96%);
@@ -141,7 +141,7 @@ fieldset {
 
 	&:last-of-type {
 		border: none;
-	}
+	}*/
 
 	// &:not(:last-of-type),
 	// & > div:not(:last-of-type) {
@@ -150,17 +150,19 @@ fieldset {
 }
 
 .fieldset__container {
-	display: flex;
+	/*display: flex;*/
 	padding: 30px 0px;
 }
 
 .fieldset__legend {
-	width: calc(33% - 30px);
-	padding-top: 5px;
+	/*width: calc(33% - 30px);*/
+	margin: 0 0 20px;
+	padding: 5px 0 20px;
+	border-bottom: 1px solid rgba(77, 77, 77, 0.58);
 }
 
 .fieldset__body {
-	width: calc(66% + 30px);
+	/*width: calc(66% + 30px);*/
 }
 
 .field-row {
