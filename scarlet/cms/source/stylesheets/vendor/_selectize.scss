@@ -46,9 +46,11 @@
 
 .selectize-control,
 .selectize-input {
-	height: 40px;
+	max-width: 100%;
+	min-height: 40px;
 	display: flex;
 	align-items: center;
+    flex-wrap: wrap;
 }
 
 .selectize-control.single .selectize-input,
@@ -130,9 +132,16 @@
 			border: none;
 			text-shadow: none;
 			color: $blue;
+
+			&:hover {
+				.remove {
+					display: block;
+				}
+			}
 		}
 
 		.remove {
+			display: none;
 			border: none;
 			color: $gray;
 			font-size: 20px;
@@ -146,7 +155,7 @@
 	}
 
 	& > div {
-		margin: 0 8px 3px 0;
-		padding: 6px 12px;
+		margin: 0 0 3px 0;
+		padding: 6px 0 6px 6px;
 	}
 }

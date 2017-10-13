@@ -5,6 +5,7 @@ const Select = View.extend({
   render() {
     this.selectize = this.$el.selectize({
       selectOnTab: true,
+      plugins: ['remove_button'],
       onChange() {
         const $parentForm = this.$input.parents('form')
 

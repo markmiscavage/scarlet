@@ -4153,13 +4153,16 @@ body.modal__body {
 
 .selectize-control,
 .selectize-input {
-  height: 40px;
+  max-width: 100%;
+  min-height: 40px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center; }
+          align-items: center;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap; }
 
 .selectize-control.single .selectize-input,
 .selectize-dropdown.single,
@@ -4233,8 +4236,11 @@ body.modal__body {
   border: none;
   text-shadow: none;
   color: #0080ff; }
+  .selectize-control.multi .selectize-input [data-value]:hover .remove, .selectize-control.multi .selectize-input [data-value].active:hover .remove {
+    display: block; }
 
 .selectize-control.multi .selectize-input [data-value] .remove {
+  display: none;
   border: none;
   color: #858f99;
   font-size: 20px;
@@ -4244,8 +4250,8 @@ body.modal__body {
     color: #f00; }
 
 .selectize-control.multi .selectize-input > div {
-  margin: 0 8px 3px 0;
-  padding: 6px 12px; }
+  margin: 0 0 3px 0;
+  padding: 6px 0 6px 6px; }
 
 .select-asset__item {
   position: relative; }
