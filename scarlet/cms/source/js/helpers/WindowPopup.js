@@ -94,7 +94,7 @@ const clickOpenPopup = (e, cb, params = {}) => {
   const id = params.id;
   const url = $(e.currentTarget).attr('href');
   const options =
-    'menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=500,width=800';
+    'menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=900,width=600';
   const windowPopup = new WindowPopup(
     url,
     'assetWindow',
