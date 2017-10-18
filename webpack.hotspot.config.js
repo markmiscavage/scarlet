@@ -66,12 +66,6 @@ function getEnvVar(key, defaultValue) {
 function createWebpackLoaders() {
   const rules = [
     {
-      test: /\.js$/,
-      loader: 'babel-loader',
-      exclude: [/node_modules/, /wysihtml/],
-      include: path.join(PATHS.src, 'js'),
-    },
-    {
       test: /\.css$/,
       use: ExtractTextPlugin.extract({
         fallback: 'style-loader',
