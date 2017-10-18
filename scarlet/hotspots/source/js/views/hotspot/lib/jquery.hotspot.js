@@ -31,7 +31,6 @@ import draggable from 'jquery-ui/ui/widgets/draggable';
   function Hotspot(element, options) {
     // Overwriting defaults with options
     this.config = $.extend(true, {}, defaults, options);
-
     this.element = element;
     this.imageEl = element.find(this.config.tag);
     this.imageParent = this.imageEl.parent();
