@@ -150,7 +150,8 @@
 
     {% if settings.TEMPLATE_DEBUG %}
       {% render_bundle 'main' 'js' %}
-    {% else %}
+         <script src="{{ STATIC_URL }}scarlet/js/main.js"></script>
+   {% else %}
         <script src="{{ STATIC_URL }}scarlet/js/main.js"></script>
     {% endif %}
 
