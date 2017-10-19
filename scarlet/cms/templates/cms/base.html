@@ -148,7 +148,11 @@
 
     {% endblock popup_footer %}
 
+    {% if settings.TEMPLATE_DEBUG %}
+      {% render_bundle 'main' 'js' %}
+    {% else %}
         <script src="{{ STATIC_URL }}scarlet/js/main.js"></script>
+    {% endif %}
 
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: none">
       <defs>
