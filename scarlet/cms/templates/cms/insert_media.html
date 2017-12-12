@@ -7,6 +7,7 @@
   <li><a class="button active" data-tabs-content="> .images" href="#">Images</a></li>
   <li><a class="button" data-tabs-content="> .video" href="#">Video</a></li>
   <li><a class="button" data-tabs-content="> .audio" href="#">Audio</a></li>
+  <li><a class="button" data-tabs-content="> .document" href="#">Document</a></li>
 </ul>
 {% endblock popup_header %}
 
@@ -238,6 +239,49 @@
 
   </div>
 
+  <div class="document" style="display: none;">
+
+          <div class="document-container">
+
+            {% if api_link %}
+            <div class="insert-document">
+              <form>
+
+                <div class="asset" data-api="{{ api_link }}&ftype=document" data-title="{{ object.user_filename }}" data-tags="{{ asset_tags }}">
+                  <div class="asset__preview" style="background-image:url({{ object.url }})"></div>
+
+                    <div class="asset__actions">
+                        <div class="asset__select">
+                            <input data-respond="true" data-attribute="src" type="hidden" value="">
+                            {% if add_link %}
+                              <a class="button button--primary asset__add-link" target="_blank" href="{{ add_link }}">
+                                <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                Upload New
+                              </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <p class="row">
+                  <label class="col inline">Text for link:
+                    <input data-attribute="linktext" type="text" name="linktext" value="" class="image-size">
+                  </label>
+                </p>
+
+                <hr>
+
+                <div class="button-group button-group--submit">
+                  <a class="button button--secondary close-popup" href="#">Cancel</a>
+                  <input type="submit" class="button button--primary" name="insert" value="Insert" />
+                </div>
+              </form>
+            </div>
+            {% endif %}
+
+          </div>
+
+        </div>
 </div>
 
 {% endblock content %}

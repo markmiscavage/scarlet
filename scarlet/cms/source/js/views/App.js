@@ -15,6 +15,7 @@ import ImageCropper from 'views/ImageCropper';
 import InsertImage from 'views/InsertImage';
 import InsertVideo from 'views/InsertVideo';
 import InsertAudio from 'views/InsertAudio';
+import InsertDocument from 'views/InsertDocument';
 import Select from 'views/Select';
 import SelectApi from 'views/SelectApi';
 import SelectAsset from 'views/SelectAsset';
@@ -58,7 +59,7 @@ const App = View.extend({
         el: dom,
       }).render();
     });
-    
+
     // FormsetCombined
     $('.formset-combined').each((i, dom) => {
       const formset = new FormsetCombined({
@@ -97,6 +98,13 @@ const App = View.extend({
     // Insert Audio
     $('.insert-audio').each((i, dom) => {
       const insertAudio = new InsertAudio({
+        el: dom,
+      });
+    });
+
+    // Insert Document
+    $('.insert-document').each((i, dom) => {
+      const insertDocument = new InsertDocument({
         el: dom,
       });
     });
@@ -197,7 +205,7 @@ const App = View.extend({
   showPreloader () {
     $('body').addClass('modal-open')
     $('.loading-screen').addClass('is-loading')
-  }, 
+  },
 
   hidePreloader () {
     $('body').removeClass('modal-open')
