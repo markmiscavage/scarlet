@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+
 try:
     from django.conf.urls import include, url
 except ImportError:
@@ -8,13 +9,14 @@ from scarlet import cms
 
 cms.autodiscover()
 urlpatterns = [
-    url(r'^admin/', include(cms.sites.site.urls)),
+    url(r"^admin/", include(cms.sites.site.urls)),
 ]
 
 try:
     from scarlet_blog import blog
+
     urlpatterns += [
-        url(r'', include('scarlet_blog.blog.urls')),
+        url(r"", include("scarlet_blog.blog.urls")),
     ]
 except ImportError:
     pass

@@ -15,7 +15,7 @@ from .models import CMSLog
 from .base_views import ModelCMSMixin, ModelCMSView
 
 
-CHECKBOX_NAME = '_selected'
+CHECKBOX_NAME = "_selected"
 
 
 class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
@@ -54,27 +54,30 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     """
 
     short_description = None
-    redirect_to_view = 'main_list'
-    confirmation_message = u'Please confirm that you want to {action_name} the following {bundle_name}:'
-    confirmation_message_single = u'Please confirm that you want to {action_name} the {bundle_name}'
-    default_template = 'cms/action_confirmation.html'
+    redirect_to_view = "main_list"
+    confirmation_message = (
+        "Please confirm that you want to {action_name} the following {bundle_name}:"
+    )
+    confirmation_message_single = (
+        "Please confirm that you want to {action_name} the {bundle_name}"
+    )
+    default_template = "cms/action_confirmation.html"
 
     object = None
     action_name = None
 
     def render(self, *args, **kwargs):
-        if 'action' not in kwargs:
+        if "action" not in kwargs:
             if not self.action_name:
-                kwargs['action'] = 'Yes'
+                kwargs["action"] = "Yes"
             else:
-                kwargs['action'] = self.action_name
+                kwargs["action"] = self.action_name
         return super(ActionView, self).render(*args, **kwargs)
 
     def get_navigation(self):
         if not self.object and self.name not in self.bundle._meta.action_views:
             if self.bundle.parent:
-                return self.bundle.parent.get_navigation(self.request,
-                                                         **self.kwargs)
+                return self.bundle.parent.get_navigation(self.request, **self.kwargs)
             return None
         return super(ActionView, self).get_navigation()
 
@@ -97,12 +100,14 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         confirmation_msg = ""
         if len(queryset) == 1:
             confirmation_msg = self.confirmation_message_single.format(
-                    action_name=force_text(self.action_name).lower(),
-                    bundle_name=force_text(self.bundle.get_single_title()).lower())
+                action_name=force_text(self.action_name).lower(),
+                bundle_name=force_text(self.bundle.get_single_title()).lower(),
+            )
         else:
             confirmation_msg = self.confirmation_message.format(
-                    action_name=force_text(self.action_name).lower(),
-                    bundle_name=force_text(self.bundle.get_title()).lower())
+                action_name=force_text(self.action_name).lower(),
+                bundle_name=force_text(self.bundle.get_title()).lower(),
+            )
         return confirmation_msg
 
     def get_context_data(self, **kwargs):
@@ -110,9 +115,9 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         Hook for adding arguments to the context.
         """
 
-        context = {'obj': self.object }
-        if 'queryset' in kwargs:
-            context['conf_msg'] = self.get_confirmation_message(kwargs['queryset'])
+        context = {"obj": self.object}
+        if "queryset" in kwargs:
+            context["conf_msg"] = self.get_confirmation_message(kwargs["queryset"])
         context.update(kwargs)
         return context
 
@@ -152,8 +157,7 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         """
         data = dict(self.kwargs)
         data.pop(self.slug_url_kwarg, None)
-        url = self.bundle.get_view_url(self.redirect_to_view,
-                                        self.request.user, data)
+        url = self.bundle.get_view_url(self.redirect_to_view, self.request.user, data)
         return self.customized_return_url(url)
 
     def get_selected(self, request):
@@ -166,7 +170,7 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         # if single-object URL not used, check for selected objects
         if not obj:
             if request.GET.get(CHECKBOX_NAME):
-                selected = request.GET.get(CHECKBOX_NAME).split(',')
+                selected = request.GET.get(CHECKBOX_NAME).split(",")
             else:
                 selected = request.POST.getlist(CHECKBOX_NAME)
         else:
@@ -185,8 +189,7 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         """
 
         queryset = self.get_selected(request)
-        return self.render(request, queryset = queryset)
-
+        return self.render(request, queryset=queryset)
 
     def post(self, request, *args, **kwargs):
         """
@@ -197,7 +200,7 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         """
         queryset = self.get_selected(request)
 
-        if request.POST.get('modify'):
+        if request.POST.get("modify"):
             response = self.process_action(request, queryset)
             if not response:
                 url = self.get_done_url()
@@ -208,10 +211,11 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
             return self.render(request, redirect_url=request.build_absolute_uri())
 
     def as_string(self, *args, **kwargs):
-        if self.render_type == 'option':
+        if self.render_type == "option":
             return self.short_description
 
         return super(ActionView, self).as_string(*args, **kwargs)
+
 
 class DeleteActionView(ActionView):
     """
@@ -223,13 +227,15 @@ class DeleteActionView(ActionView):
 
     :param redirect_to_view: Defaults to 'main_list'.
     """
+
     short_description = "Delete selected items"
     action_name = "Delete"
 
     def __init__(self, *args, **kwargs):
         super(DeleteActionView, self).__init__(*args, **kwargs)
-        self.renders['object_header'] = renders.RenderString(
-                                            template=self.object_header_tmpl)
+        self.renders["object_header"] = renders.RenderString(
+            template=self.object_header_tmpl
+        )
 
     def process_action(self, request, queryset):
         """
@@ -248,18 +254,19 @@ class DeleteActionView(ActionView):
                     self.log_action(obj, CMSLog.DELETE)
                     count += 1
                     obj.delete()
-            msg = "%s object%s deleted." % (count, ('' if count ==1 else 's'))
+            msg = "%s object%s deleted." % (count, ("" if count == 1 else "s"))
             url = self.get_done_url()
-            return self.render(request, redirect_url=url, message = msg)
+            return self.render(request, redirect_url=url, message=msg)
         except ProtectedError as e:
             protected = []
             for x in e.protected_objects:
-                if hasattr(x, 'delete_blocked_message'):
+                if hasattr(x, "delete_blocked_message"):
                     protected.append(x.delete_blocked_message())
                 else:
-                    protected.append(u"%s - %s" % (x._meta.verbose_name, x))
+                    protected.append("%s - %s" % (x._meta.verbose_name, x))
             msg = "Cannot delete some objects because the following objects depend on them:"
-            return self.render(request, error_msg = msg, errors = protected)
+            return self.render(request, error_msg=msg, errors=protected)
+
 
 class PublishActionView(ActionView):
     """
@@ -271,8 +278,8 @@ class PublishActionView(ActionView):
     :param short_description: Defaults to 'Publish selected items'
     """
 
-    default_template = 'cms/publish_action.html'
-    short_description = 'Publish selected items'
+    default_template = "cms/publish_action.html"
+    short_description = "Publish selected items"
     form = WhenForm
     action_name = "Publish"
 
@@ -284,7 +291,7 @@ class PublishActionView(ActionView):
         obj = super(PublishActionView, self).get_object()
 
         if obj:
-            if not hasattr(obj, 'publish'):
+            if not hasattr(obj, "publish"):
                 raise http.Http404
 
         return obj
@@ -295,10 +302,9 @@ class PublishActionView(ActionView):
         The get_view_url will be called on the current bundle using
         'edit` as the view name.
         """
-        return self.bundle.get_view_url('edit',
-                                        self.request.user,
-                                        {'object': obj},
-                                        self.kwargs)
+        return self.bundle.get_view_url(
+            "edit", self.request.user, {"object": obj}, self.kwargs
+        )
 
     def get(self, request, *args, **kwargs):
         """
@@ -311,7 +317,6 @@ class PublishActionView(ActionView):
 
         queryset = self.get_selected(request)
         return self.render(request, queryset=queryset, publish_form=self.form())
-
 
     def process_action(self, request, queryset):
         """
@@ -327,7 +332,7 @@ class PublishActionView(ActionView):
         """
         form = self.form(request.POST)
         if form.is_valid():
-            when = form.cleaned_data.get('when')
+            when = form.cleaned_data.get("when")
             count = 0
             for obj in queryset:
                 count += 1
@@ -335,18 +340,22 @@ class PublishActionView(ActionView):
                 obj.purge_archives()
                 object_url = self.get_object_url(obj)
                 if obj.state == obj.PUBLISHED:
-                    self.log_action(
-                        obj, CMSLog.PUBLISH, url=object_url)
+                    self.log_action(obj, CMSLog.PUBLISH, url=object_url)
                 else:
-                    self.log_action(
-                       obj, CMSLog.SCHEDULE, url=object_url)
+                    self.log_action(obj, CMSLog.SCHEDULE, url=object_url)
             message = "%s objects published." % count
             self.write_message(message=message)
 
-            return self.render(request, redirect_url= self.get_done_url(),
-                                message=message,
-                                collect_render_data=False)
-        return self.render(request, queryset=queryset, publish_form=form, action='Publish')
+            return self.render(
+                request,
+                redirect_url=self.get_done_url(),
+                message=message,
+                collect_render_data=False,
+            )
+        return self.render(
+            request, queryset=queryset, publish_form=form, action="Publish"
+        )
+
 
 class UnPublishActionView(PublishActionView):
     """
@@ -357,7 +366,7 @@ class UnPublishActionView(PublishActionView):
     :param redirect_to_view: Defaults to 'Unpublish selected items'
     """
 
-    short_description = 'Unpublish selected items'
+    short_description = "Unpublish selected items"
     action_name = "Unpublish"
 
     def get(self, request, *args, **kwargs):
@@ -369,7 +378,7 @@ class UnPublishActionView(PublishActionView):
         """
 
         queryset = self.get_selected(request)
-        return self.render(request, queryset=queryset, action='Unpublish')
+        return self.render(request, queryset=queryset, action="Unpublish")
 
     def process_action(self, request, queryset):
         """
@@ -388,9 +397,10 @@ class UnPublishActionView(PublishActionView):
             self.log_action(obj, CMSLog.UNPUBLISH, url=object_url)
         url = self.get_done_url()
         msg = self.write_message(message="%s objects unpublished." % count)
-        return self.render(request, redirect_url=url,
-                                message=msg,
-                                collect_render_data=False)
+        return self.render(
+            request, redirect_url=url, message=msg, collect_render_data=False
+        )
+
 
 # deprecated views
 class PublishView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
@@ -403,7 +413,7 @@ class PublishView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
     :param redirect_to_view: Defaults to 'edit'.
     """
 
-    default_template = 'cms/publish.html'
+    default_template = "cms/publish.html"
     redirect_to_view = "edit"
     form = WhenForm
 
@@ -414,7 +424,7 @@ class PublishView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
         """
         obj = super(PublishView, self).get_object()
 
-        if not obj or not hasattr(obj, 'publish'):
+        if not obj or not hasattr(obj, "publish"):
             raise http.Http404
 
         return obj
@@ -425,8 +435,7 @@ class PublishView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
         The get_view_url will be called on the current bundle using
         'edit` as the view name.
         """
-        return self.bundle.get_view_url('edit',
-                                        self.request.user, {}, self.kwargs)
+        return self.bundle.get_view_url("edit", self.request.user, {}, self.kwargs)
 
     def get_done_url(self):
         """
@@ -434,8 +443,9 @@ class PublishView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
         The get_view_url will be called on the current bundle using
         `self.redirect_to_view` as the view name.
         """
-        url = self.bundle.get_view_url(self.redirect_to_view,
-                                        self.request.user, {}, self.kwargs)
+        url = self.bundle.get_view_url(
+            self.redirect_to_view, self.request.user, {}, self.kwargs
+        )
         return self.customized_return_url(url)
 
     def get(self, request, *args, **kwargs):
@@ -449,8 +459,9 @@ class PublishView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
         """
 
         self.object = self.get_object()
-        return self.render(request, obj=self.object, form=self.form(),
-                           done_url=self.get_done_url())
+        return self.render(
+            request, obj=self.object, form=self.form(), done_url=self.get_done_url()
+        )
 
     def post(self, request, *args, **kwargs):
         """
@@ -469,28 +480,30 @@ class PublishView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
         self.object = self.get_object()
         form = self.form()
         url = self.get_done_url()
-        if request.POST.get('publish'):
+        if request.POST.get("publish"):
             form = self.form(request.POST)
             if form.is_valid():
-                when = form.cleaned_data.get('when')
+                when = form.cleaned_data.get("when")
                 self.object.publish(user=request.user, when=when)
                 self.object.purge_archives()
                 object_url = self.get_object_url()
                 if self.object.state == self.object.PUBLISHED:
-                    self.log_action(
-                        self.object, CMSLog.PUBLISH, url=object_url)
+                    self.log_action(self.object, CMSLog.PUBLISH, url=object_url)
                 else:
-                    self.log_action(
-                        self.object, CMSLog.SCHEDULE, url=object_url)
+                    self.log_action(self.object, CMSLog.SCHEDULE, url=object_url)
 
                 message = "%s %s" % (self.object, self.object.state)
                 self.write_message(message=message)
 
-                return self.render(request, redirect_url=url,
-                           message=message,
-                           obj=self.object,
-                           collect_render_data=False)
+                return self.render(
+                    request,
+                    redirect_url=url,
+                    message=message,
+                    obj=self.object,
+                    collect_render_data=False,
+                )
         return self.render(request, obj=self.object, form=form, done_url=url)
+
 
 class UnPublishView(PublishView):
     """
@@ -500,7 +513,7 @@ class UnPublishView(PublishView):
     :param redirect_to_view: 'edit'.
     """
 
-    default_template = 'cms/unpublish.html'
+    default_template = "cms/unpublish.html"
     redirect_to_view = "edit"
 
     def get(self, request, *args, **kwargs):
@@ -513,8 +526,7 @@ class UnPublishView(PublishView):
         """
 
         self.object = self.get_object()
-        return self.render(request, obj=self.object,
-                           done_url=self.get_done_url())
+        return self.render(request, obj=self.object, done_url=self.get_done_url())
 
     def post(self, request, *args, **kwargs):
         """
@@ -527,17 +539,21 @@ class UnPublishView(PublishView):
 
         self.object = self.get_object()
         url = self.get_done_url()
-        if request.POST.get('unpublish'):
+        if request.POST.get("unpublish"):
             self.object.unpublish()
             object_url = self.get_object_url()
             self.log_action(self.object, CMSLog.UNPUBLISH, url=object_url)
             msg = self.write_message(message="%s unpublished" % (self.object))
-            return self.render(request, redirect_url=url,
-                       message=msg,
-                       obj=self.object,
-                       collect_render_data=False)
+            return self.render(
+                request,
+                redirect_url=url,
+                message=msg,
+                obj=self.object,
+                collect_render_data=False,
+            )
 
         return self.render(request, obj=self.object, done_url=url)
+
 
 class DeleteView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
     """
@@ -551,13 +567,14 @@ class DeleteView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
     :param redirect_to_view: Defaults to 'main_list'.
     """
 
-    default_template = 'cms/delete.html'
+    default_template = "cms/delete.html"
     redirect_to_view = "main_list"
 
     def __init__(self, *args, **kwargs):
         super(DeleteView, self).__init__(*args, **kwargs)
-        self.renders['object_header'] = renders.RenderString(
-                                            template=self.object_header_tmpl)
+        self.renders["object_header"] = renders.RenderString(
+            template=self.object_header_tmpl
+        )
 
     def get_done_url(self):
         """
@@ -567,8 +584,7 @@ class DeleteView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
         """
         data = dict(self.kwargs)
         data.pop(self.slug_url_kwarg, None)
-        url = self.bundle.get_view_url(self.redirect_to_view,
-                                        self.request.user, data)
+        url = self.bundle.get_view_url(self.redirect_to_view, self.request.user, data)
         return self.customized_return_url(url)
 
     def get_object(self):
@@ -609,7 +625,7 @@ class DeleteView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
 
         self.object = self.get_object()
         msg = None
-        if request.POST.get('delete'):
+        if request.POST.get("delete"):
             try:
                 with transaction.commit_on_success():
                     self.log_action(self.object, CMSLog.DELETE)
@@ -618,14 +634,16 @@ class DeleteView(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
             except ProtectedError as e:
                 protected = []
                 for x in e.protected_objects:
-                    if hasattr(x, 'delete_blocked_message'):
+                    if hasattr(x, "delete_blocked_message"):
                         protected.append(x.delete_blocked_message())
                     else:
-                        protected.append(u"%s: %s" % (x._meta.verbose_name, x))
-                return self.render(request, obj=self.object,
-                                   protected=protected)
+                        protected.append("%s: %s" % (x._meta.verbose_name, x))
+                return self.render(request, obj=self.object, protected=protected)
 
-        return self.render(request, redirect_url=self.get_done_url(),
-                           obj=self.object,
-                           message=msg,
-                           collect_render_data=False)
+        return self.render(
+            request,
+            redirect_url=self.get_done_url(),
+            obj=self.object,
+            message=msg,
+            collect_render_data=False,
+        )

@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, REDIRECT_FIELD_NAME
 from django.contrib.auth.forms import PasswordChangeForm
@@ -12,22 +12,23 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.http import HttpResponseForbidden, Http404
 
-from .forms import (SignupForm, AuthenticationForm,
-                           ChangeEmailForm, EditProfileForm)
+from .forms import SignupForm, AuthenticationForm, ChangeEmailForm, EditProfileForm
 from .models import AccountsSignup
 from .decorators import secure_required
 from .utils import signin_redirect, get_profile_model, get_user_model
-from .import signals as accounts_signals
-from .import settings as accounts_settings
+from . import signals as accounts_signals
+from . import settings as accounts_settings
 
 
 class ExtraContextTemplateView(TemplateView):
     """ Add extra context to a simple template view """
+
     extra_context = None
 
     def get_context_data(self, *args, **kwargs):
-        context = super(ExtraContextTemplateView, self).get_context_data(*args,
-                                                                    **kwargs)
+        context = super(ExtraContextTemplateView, self).get_context_data(
+            *args, **kwargs
+        )
         if self.extra_context:
             context.update(self.extra_context)
         return context
@@ -38,9 +39,13 @@ class ExtraContextTemplateView(TemplateView):
 
 
 @secure_required
-def activate(request, activation_key,
-             template_name='accounts/activate_fail.html',
-             success_url=None, extra_context=None):
+def activate(
+    request,
+    activation_key,
+    template_name="accounts/activate_fail.html",
+    success_url=None,
+    extra_context=None,
+):
     """
     Activate a user with an activation key.
 
@@ -74,32 +79,39 @@ def activate(request, activation_key,
     user = AccountsSignup.objects.activate_user(activation_key)
     if user:
         # Sign the user in.
-        auth_user = authenticate(identification=user.email,
-                                 check_password=False)
+        auth_user = authenticate(identification=user.email, check_password=False)
         login(request, auth_user)
 
         if accounts_settings.ACCOUNTS_USE_MESSAGES:
-            messages.success(request,
-                             _('Your account has been activated and you have been signed in.'),
-                             fail_silently=True)
+            messages.success(
+                request,
+                _("Your account has been activated and you have been signed in."),
+                fail_silently=True,
+            )
 
         if success_url:
-            redirect_to = success_url % {'username': user.username}
+            redirect_to = success_url % {"username": user.username}
         else:
-            redirect_to = reverse('accounts_profile_detail',
-                                    kwargs={'username': user.username})
+            redirect_to = reverse(
+                "accounts_profile_detail", kwargs={"username": user.username}
+            )
         return redirect(redirect_to)
     else:
         if not extra_context:
             extra_context = dict()
-        return ExtraContextTemplateView.as_view(template_name=template_name,
-                                        extra_context=extra_context)(request)
+        return ExtraContextTemplateView.as_view(
+            template_name=template_name, extra_context=extra_context
+        )(request)
 
 
 @secure_required
-def email_confirm(request, confirmation_key,
-                  template_name='accounts/email_confirm_fail.html',
-                  success_url=None, extra_context=None):
+def email_confirm(
+    request,
+    confirmation_key,
+    template_name="accounts/email_confirm_fail.html",
+    success_url=None,
+    extra_context=None,
+):
     """
     Confirms an email address with a confirmation key.
 
@@ -131,25 +143,26 @@ def email_confirm(request, confirmation_key,
     user = AccountsSignup.objects.confirm_email(confirmation_key)
     if user:
         if accounts_settings.ACCOUNTS_USE_MESSAGES:
-            messages.success(request,
-                             _('Your email address has been changed.'),
-                             fail_silently=True)
+            messages.success(
+                request, _("Your email address has been changed."), fail_silently=True
+            )
 
         if success_url:
             redirect_to = success_url
         else:
-            redirect_to = reverse('accounts_email_confirm_complete',
-                                    kwargs={'username': user.username})
+            redirect_to = reverse(
+                "accounts_email_confirm_complete", kwargs={"username": user.username}
+            )
         return redirect(redirect_to)
     else:
         if not extra_context:
             extra_context = dict()
-        return ExtraContextTemplateView.as_view(template_name=template_name,
-                                        extra_context=extra_context)(request)
+        return ExtraContextTemplateView.as_view(
+            template_name=template_name, extra_context=extra_context
+        )(request)
 
 
-def direct_to_user_template(request, username, template_name,
-                            extra_context=None):
+def direct_to_user_template(request, username, template_name, extra_context=None):
     """
     Simple wrapper for Django's :func:`direct_to_template` view.
 
@@ -182,17 +195,22 @@ def direct_to_user_template(request, username, template_name,
 
     if not extra_context:
         extra_context = dict()
-    extra_context['viewed_user'] = user
-    extra_context['profile'] = user.get_profile()
-    return ExtraContextTemplateView.as_view(template_name=template_name,
-                                        extra_context=extra_context)(request)
+    extra_context["viewed_user"] = user
+    extra_context["profile"] = user.get_profile()
+    return ExtraContextTemplateView.as_view(
+        template_name=template_name, extra_context=extra_context
+    )(request)
 
 
 @secure_required
-def signin(request, auth_form=AuthenticationForm,
-           template_name='accounts/signin_form.html',
-           redirect_field_name=REDIRECT_FIELD_NAME,
-           redirect_signin_function=signin_redirect, extra_context=None):
+def signin(
+    request,
+    auth_form=AuthenticationForm,
+    template_name="accounts/signin_form.html",
+    redirect_field_name=REDIRECT_FIELD_NAME,
+    redirect_signin_function=signin_redirect,
+    extra_context=None,
+):
     """
     Signin using email or username with password.
 
@@ -235,47 +253,56 @@ def signin(request, auth_form=AuthenticationForm,
     """
     form = auth_form()
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = auth_form(request.POST, request.FILES)
         if form.is_valid():
-            identification = form.cleaned_data['identification']
-            password = form.cleaned_data['password']
-            remember_me = form.cleaned_data['remember_me']
+            identification = form.cleaned_data["identification"]
+            password = form.cleaned_data["password"]
+            remember_me = form.cleaned_data["remember_me"]
 
-            user = authenticate(identification=identification,
-                                password=password)
+            user = authenticate(identification=identification, password=password)
             if user.is_active:
                 login(request, user)
                 if remember_me:
-                    request.session.set_expiry(accounts_settings.ACCOUNTS_REMEMBER_ME_DAYS[1] * 86400)
+                    request.session.set_expiry(
+                        accounts_settings.ACCOUNTS_REMEMBER_ME_DAYS[1] * 86400
+                    )
                 else:
                     request.session.set_expiry(0)
 
                 if accounts_settings.ACCOUNTS_USE_MESSAGES:
-                    messages.success(request, _('You have been signed in.'),
-                                     fail_silently=True)
+                    messages.success(
+                        request, _("You have been signed in."), fail_silently=True
+                    )
 
                 # Whereto now?
                 redirect_to = redirect_signin_function(
-                    request.GET.get(redirect_field_name), user)
+                    request.GET.get(redirect_field_name), user
+                )
                 return redirect(redirect_to)
             else:
-                return redirect(reverse('accounts_disabled',
-                                        kwargs={'username': user.username}))
+                return redirect(
+                    reverse("accounts_disabled", kwargs={"username": user.username})
+                )
 
     if not extra_context:
         extra_context = dict()
-    extra_context.update({
-        'form': form,
-        'next': request.GET.get(redirect_field_name),
-    })
-    return ExtraContextTemplateView.as_view(template_name=template_name,
-                                        extra_context=extra_context)(request)
+    extra_context.update(
+        {"form": form, "next": request.GET.get(redirect_field_name),}
+    )
+    return ExtraContextTemplateView.as_view(
+        template_name=template_name, extra_context=extra_context
+    )(request)
 
 
 @secure_required
-def signout(request, next_page=accounts_settings.ACCOUNTS_REDIRECT_ON_SIGNOUT,
-            template_name='accounts/signout.html', *args, **kwargs):
+def signout(
+    request,
+    next_page=accounts_settings.ACCOUNTS_REDIRECT_ON_SIGNOUT,
+    template_name="accounts/signout.html",
+    *args,
+    **kwargs
+):
     """
     Signs out the user and adds a success message ``You have been signed
     out.`` If next_page is defined you will be redirected to the URI. If
@@ -289,17 +316,22 @@ def signout(request, next_page=accounts_settings.ACCOUNTS_REDIRECT_ON_SIGNOUT,
         ``accounts/signout.html``.
 
     """
-    if request.user.is_authenticated() and \
-            accounts_settings.ACCOUNTS_USE_MESSAGES:  # pragma: no cover
-        messages.success(request, _('You have been signed out.'),
-                         fail_silently=True)
+    if (
+        request.user.is_authenticated() and accounts_settings.ACCOUNTS_USE_MESSAGES
+    ):  # pragma: no cover
+        messages.success(request, _("You have been signed out."), fail_silently=True)
     return Signout(request, next_page, template_name, *args, **kwargs)
 
 
 @secure_required
-def email_change(request, username, email_form=ChangeEmailForm,
-                 template_name='accounts/email_form.html', success_url=None,
-                 extra_context=None):
+def email_change(
+    request,
+    username,
+    email_form=ChangeEmailForm,
+    template_name="accounts/email_form.html",
+    success_url=None,
+    extra_context=None,
+):
     """
     Change email address
 
@@ -343,10 +375,8 @@ def email_change(request, username, email_form=ChangeEmailForm,
 
     form = email_form(user)
 
-    if request.method == 'POST':
-        form = email_form(user,
-                               request.POST,
-                               request.FILES)
+    if request.method == "POST":
+        form = email_form(user, request.POST, request.FILES)
 
         if form.is_valid():
             form.save()
@@ -354,23 +384,29 @@ def email_change(request, username, email_form=ChangeEmailForm,
             if success_url:
                 redirect_to = success_url
             else:
-                redirect_to = reverse('accounts_email_change_complete',
-                                        kwargs={'username': user.username})
+                redirect_to = reverse(
+                    "accounts_email_change_complete", kwargs={"username": user.username}
+                )
             return redirect(redirect_to)
 
     if not extra_context:
         extra_context = dict()
-    extra_context['form'] = form
-    extra_context['profile'] = user.get_profile()
-    return ExtraContextTemplateView.as_view(template_name=template_name,
-                                        extra_context=extra_context)(request)
+    extra_context["form"] = form
+    extra_context["profile"] = user.get_profile()
+    return ExtraContextTemplateView.as_view(
+        template_name=template_name, extra_context=extra_context
+    )(request)
 
 
 @secure_required
-def password_change(request, username,
-                    template_name='accounts/password_form.html',
-                    pass_form=PasswordChangeForm, success_url=None,
-                    extra_context=None):
+def password_change(
+    request,
+    username,
+    template_name="accounts/password_form.html",
+    pass_form=PasswordChangeForm,
+    success_url=None,
+    extra_context=None,
+):
     """ Change password of user.
 
     This view is almost a mirror of the view supplied in
@@ -407,8 +443,7 @@ def password_change(request, username,
         Form used to change the password.
 
     """
-    user = get_object_or_404(get_user_model(),
-                             username__iexact=username)
+    user = get_object_or_404(get_user_model(), username__iexact=username)
 
     form = pass_form(user=user)
 
@@ -418,28 +453,36 @@ def password_change(request, username,
             form.save()
 
             # Send a signal that the password has changed
-            accounts_signals.password_complete.send(sender=None,
-                                                   user=user)
+            accounts_signals.password_complete.send(sender=None, user=user)
 
             if success_url:
                 redirect_to = success_url
             else:
-                redirect_to = reverse('accounts_password_change_complete',
-                                        kwargs={'username': user.username})
+                redirect_to = reverse(
+                    "accounts_password_change_complete",
+                    kwargs={"username": user.username},
+                )
             return redirect(redirect_to)
 
     if not extra_context:
         extra_context = dict()
-    extra_context['form'] = form
-    extra_context['profile'] = user.get_profile()
-    return ExtraContextTemplateView.as_view(template_name=template_name,
-                                        extra_context=extra_context)(request)
+    extra_context["form"] = form
+    extra_context["profile"] = user.get_profile()
+    return ExtraContextTemplateView.as_view(
+        template_name=template_name, extra_context=extra_context
+    )(request)
 
 
 @secure_required
-def profile_edit(request, username, edit_profile_form=EditProfileForm,
-                 template_name='accounts/profile_form.html', success_url=None,
-                 extra_context=None, **kwargs):
+def profile_edit(
+    request,
+    username,
+    edit_profile_form=EditProfileForm,
+    template_name="accounts/profile_form.html",
+    success_url=None,
+    extra_context=None,
+    **kwargs
+):
     """
     Edit profile.
 
@@ -482,46 +525,51 @@ def profile_edit(request, username, edit_profile_form=EditProfileForm,
         Instance of the ``Profile`` that is edited.
 
     """
-    user = get_object_or_404(get_user_model(),
-                             username__iexact=username)
+    user = get_object_or_404(get_user_model(), username__iexact=username)
 
     profile = user.get_profile()
 
-    user_initial = {'first_name': user.first_name,
-                    'last_name': user.last_name}
+    user_initial = {"first_name": user.first_name, "last_name": user.last_name}
 
     form = edit_profile_form(instance=profile, initial=user_initial)
 
-    if request.method == 'POST':
-        form = edit_profile_form(request.POST, request.FILES, instance=profile,
-                                 initial=user_initial)
+    if request.method == "POST":
+        form = edit_profile_form(
+            request.POST, request.FILES, instance=profile, initial=user_initial
+        )
 
         if form.is_valid():
             profile = form.save()
 
             if accounts_settings.ACCOUNTS_USE_MESSAGES:
-                messages.success(request, _('Your profile has been updated.'),
-                                 fail_silently=True)
+                messages.success(
+                    request, _("Your profile has been updated."), fail_silently=True
+                )
 
             if success_url:
                 redirect_to = success_url
             else:
-                redirect_to = reverse('accounts_profile_detail',
-                                      kwargs={'username': username})
+                redirect_to = reverse(
+                    "accounts_profile_detail", kwargs={"username": username}
+                )
             return redirect(redirect_to)
 
     if not extra_context:
         extra_context = dict()
-    extra_context['form'] = form
-    extra_context['profile'] = profile
-    return ExtraContextTemplateView.as_view(template_name=template_name,
-                                        extra_context=extra_context)(request)
+    extra_context["form"] = form
+    extra_context["profile"] = profile
+    return ExtraContextTemplateView.as_view(
+        template_name=template_name, extra_context=extra_context
+    )(request)
 
 
 def profile_detail(
-    request, username,
+    request,
+    username,
     template_name=accounts_settings.ACCOUNTS_PROFILE_DETAIL_TEMPLATE,
-    extra_context=None, **kwargs):
+    extra_context=None,
+    **kwargs
+):
     """
     Detailed view of an user.
 
@@ -542,8 +590,7 @@ def profile_detail(
         Instance of the currently viewed ``Profile``.
 
     """
-    user = get_object_or_404(get_user_model(),
-                             username__iexact=username)
+    user = get_object_or_404(get_user_model(), username__iexact=username)
     profile_model = get_profile_model()
     try:
         profile = user.get_profile()
@@ -551,43 +598,50 @@ def profile_detail(
         profile = profile_model(user=user)
         profile.save()
     if not profile.can_view_profile(request.user):
-        return HttpResponseForbidden(_("You don't have permission to view this profile."))
+        return HttpResponseForbidden(
+            _("You don't have permission to view this profile.")
+        )
     if not extra_context:
         extra_context = dict()
-    extra_context['profile'] = user.get_profile()
-    return ExtraContextTemplateView.as_view(template_name=template_name,
-                                       extra_context=extra_context)(request)
+    extra_context["profile"] = user.get_profile()
+    return ExtraContextTemplateView.as_view(
+        template_name=template_name, extra_context=extra_context
+    )(request)
 
 
-def account_delete(request, username,
-        template_name=accounts_settings.ACCOUNTS_PROFILE_DETAIL_TEMPLATE,
-        extra_context=None, **kwargs):
+def account_delete(
+    request,
+    username,
+    template_name=accounts_settings.ACCOUNTS_PROFILE_DETAIL_TEMPLATE,
+    extra_context=None,
+    **kwargs
+):
     """
     Delete an account.
     """
-    user = get_object_or_404(get_user_model(),
-                             username__iexact=username)
+    user = get_object_or_404(get_user_model(), username__iexact=username)
     user.is_active = False
     user.save()
 
-    return redirect(reverse('accounts_admin'))
+    return redirect(reverse("accounts_admin"))
 
 
 class ProfileListView(ListView):
     """
     Lists all profiles
     """
-    context_object_name = 'profile_list'
+
+    context_object_name = "profile_list"
     page = 1
     paginate_by = 20
-    template_name = 'accounts/profile_list.html'
+    template_name = "accounts/profile_list.html"
     extra_context = None
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(ProfileListView, self).get_context_data(**kwargs)
         try:
-            page = int(self.request.GET.get('page', None))
+            page = int(self.request.GET.get("page", None))
         except (TypeError, ValueError):
             page = self.page
 
@@ -597,11 +651,11 @@ class ProfileListView(ListView):
         if not self.extra_context:
             self.extra_context = dict()
 
-        context['page'] = page
-        context['paginate_by'] = self.paginate_by
-        context['extra_context'] = self.extra_context
+        context["page"] = page
+        context["paginate_by"] = self.paginate_by
+        context["extra_context"] = self.extra_context
 
-        context['form'] = SignupForm()
+        context["form"] = SignupForm()
 
         return context
 
@@ -612,7 +666,7 @@ class ProfileListView(ListView):
 
 
 class AccountsFormView(FormView, MultipleObjectMixin):
-    template_name = 'accounts/profile_list.html'
+    template_name = "accounts/profile_list.html"
     form_class = SignupForm
 
     def get_context_data(self, **kwargs):
@@ -621,10 +675,7 @@ class AccountsFormView(FormView, MultipleObjectMixin):
         return context
 
     def get_success_url(self):
-        return reverse(
-            'accounts_admin',
-            kwargs=None
-        )
+        return reverse("accounts_admin", kwargs=None)
 
     def form_valid(self, form):
         if not self.request.user.is_authenticated():
@@ -633,15 +684,13 @@ class AccountsFormView(FormView, MultipleObjectMixin):
         user = form.save()
 
         # Send the signup complete signal
-        accounts_signals.signup_complete.send(sender=None,
-                                             user=user)
+        accounts_signals.signup_complete.send(sender=None, user=user)
 
         # record the interest using the message in form.cleaned_data
         return super(AccountsFormView, self).form_valid(form)
 
 
 class AccountsListView(View):
-
     def get(self, request, *args, **kwargs):
         view = ProfileListView.as_view()
         return view(request, *args, **kwargs)

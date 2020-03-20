@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
-#imports for backwards compatibility
+
+# imports for backwards compatibility
 from django.views.generic.edit import ModelFormMixin
 
 from .base_views import BaseView, SiteView, CMSView, ModelCMSView, ModelCMSMixin

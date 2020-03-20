@@ -1,10 +1,8 @@
 from __future__ import unicode_literals
-from past.builtins import basestring
 import json
 
 from django.db import models
 from django.core.serializers.json import DjangoJSONEncoder
-from future.utils import with_metaclass
 
 
 class CastOnAssignDescriptor(object):
@@ -29,16 +27,15 @@ class CastOnAssignDescriptor(object):
 class JSONField(models.TextField):
     # Used so to_python() is called
     def __init__(self, *args, **kwargs):
-        self.dump_kwargs = kwargs.pop('dump_kwargs',
-                                      {'cls': DjangoJSONEncoder})
-        self.load_kwargs = kwargs.pop('load_kwargs', {})
+        self.dump_kwargs = kwargs.pop("dump_kwargs", {"cls": DjangoJSONEncoder})
+        self.load_kwargs = kwargs.pop("load_kwargs", {})
 
         super(JSONField, self).__init__(*args, **kwargs)
 
     def to_python(self, value):
-        if value is None or value == '':
+        if value is None or value == "":
             return {}
-        elif isinstance(value, basestring):
+        elif isinstance(value, str):
             return json.loads(value, **self.load_kwargs)
         else:
             return value

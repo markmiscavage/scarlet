@@ -1,20 +1,16 @@
 from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
 from urllib.parse import urlencode
 
 from django import http
 from django.views.generic.list import MultipleObjectMixin
 from django.forms import models as model_forms
 from django.db import models
-from django.core.exceptions import ImproperlyConfigured
 
 from . import fields
 from . import helpers
 from . import renders
 from . import transaction
 from . import widgets
-from .actions import ActionView
 from .forms import VersionFilterForm
 from .models import CMSLog
 from .base_views import ModelCMSMixin, ModelCMSView
@@ -53,7 +49,7 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
     change_fields = ()
 
     # Fields that should be displayed. Must include
-    display_fields = ('__str__',)
+    display_fields = ("__str__",)
 
     # class that each form should use
     form_class = None
@@ -62,21 +58,21 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
     action_views = None
 
-    default_template = 'cms/list.html'
+    default_template = "cms/list.html"
 
     # Are we allowed to sort this list?
     can_sort = True
 
     action_links = (
-        ('edit', 'Edit', 'e'),
-        ('delete', 'Delete', 'd', True),
-        ('publish', 'Publish', 'P', True),
-        ('preview', 'Preview', 'p')
+        ("edit", "Edit", "e"),
+        ("delete", "Delete", "d", True),
+        ("publish", "Publish", "P", True),
+        ("preview", "Preview", "p"),
     )
 
     def __init__(self, *args, **kwargs):
         super(ListView, self).__init__(*args, **kwargs)
-        self.renders['choices'] = renders.ChoicesRender()
+        self.renders["choices"] = renders.ChoicesRender()
 
     def get_back_bundle(self, start_bundle=None):
         return None
@@ -87,7 +83,7 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         HiddenTextInput.
         """
         if isinstance(db_field, fields.OrderField):
-            kwargs['widget'] = widgets.HiddenTextInput
+            kwargs["widget"] = widgets.HiddenTextInput
 
         return super(ListView, self).formfield_for_dbfield(db_field, **kwargs)
 
@@ -122,7 +118,7 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         form = None
         if self.filter_form:
             form = self.filter_form(self.request.GET)
-        elif self.model and hasattr(self.model._meta, '_is_view'):
+        elif self.model and hasattr(self.model._meta, "_is_view"):
             form = VersionFilterForm(self.request.GET)
         return form
 
@@ -150,12 +146,12 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         with that. Otherwise None is returned.
         """
         if self.form_class or self.change_fields:
-            params = {'formfield_callback': self.formfield_for_dbfield}
+            params = {"formfield_callback": self.formfield_for_dbfield}
             if self.form_class:
                 fc = self.customize_form_widgets(self.form_class)
-                params['form'] = fc
+                params["form"] = fc
             if self.change_fields:
-                params['fields'] = self.change_fields
+                params["fields"] = self.change_fields
 
             return model_forms.modelform_factory(self.model, **params)
 
@@ -166,16 +162,16 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         """
         form_class = self.get_formset_form_class()
         if form_class:
-            kwargs['formfield_callback'] = self.formfield_for_dbfield
-            return model_forms.modelformset_factory(self.model,
-                        form_class, fields=self.change_fields, extra=0,
-                        **kwargs)
+            kwargs["formfield_callback"] = self.formfield_for_dbfield
+            return model_forms.modelformset_factory(
+                self.model, form_class, fields=self.change_fields, extra=0, **kwargs
+            )
 
     def _add_formset_id(self, data, queryset):
         q = None
         key = self.model._meta.pk.name
         for k, v in list(data.items()):
-            if k.endswith('-%s' % key):
+            if k.endswith("-%s" % key):
                 new_q = models.Q(**{key: v})
                 if q:
                     q = q | new_q
@@ -224,10 +220,10 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
     def _get_query_string(self, request, exclude_page=True):
         qs = request.GET.copy()
-        if 'page' in qs and exclude_page:
-            qs.pop('page')
+        if "page" in qs and exclude_page:
+            qs.pop("page")
 
-        return '?%s&' % qs.urlencode() if qs else '?'
+        return "?%s&" % qs.urlencode() if qs else "?"
 
     def _sort_queryset(self, object_list, sort_field, order_type):
         sort_field = helpers.get_sort_field(sort_field, object_list.model)
@@ -236,11 +232,11 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
             if order_type == helpers.AdminList.ASC:
                 queryset = self.object_list.order_by(sort_field)
             else:
-                queryset = self.object_list.order_by('-' + sort_field)
+                queryset = self.object_list.order_by("-" + sort_field)
         else:
             queryset = self.object_list
             if not queryset.ordered:
-                queryset = self.object_list.order_by('-pk')
+                queryset = self.object_list.order_by("-pk")
 
         return queryset
 
@@ -249,23 +245,25 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         paginator = None
         if page_size:
             paginator, page, queryset, is_paginated = self.paginate_queryset(
-                queryset, page_size)
+                queryset, page_size
+            )
             is_paginated = True
         else:
             page = None
             is_paginated = False
         return is_paginated, page, paginator, queryset
 
-
     def get_action_context(self, request):
         actions = []
 
         for action in self.action_views or self.bundle._meta.action_views:
-            action_name = '{0}{1}'.format(action, self.bundle.action_alias)
-            v, name = self.bundle.get_initialized_view_and_name(action_name,
-                                                        **self.kwargs)
-            url = self.bundle.get_view_url(action_name,
-                                    request.user, url_kwargs=self.kwargs)
+            action_name = "{0}{1}".format(action, self.bundle.action_alias)
+            v, name = self.bundle.get_initialized_view_and_name(
+                action_name, **self.kwargs
+            )
+            url = self.bundle.get_view_url(
+                action_name, request.user, url_kwargs=self.kwargs
+            )
             if v and url:
                 actions.append((url, v.action_name))
 
@@ -300,17 +298,16 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
                     default = self.object_list.query.order_by[0]
                 else:
                     default = self.object_list.model._meta.ordering[0]
-                if default.startswith('-'):
+                if default.startswith("-"):
                     default = default[1:]
                     default_order = helpers.AdminList.DESC
 
-            sort_field = request.GET.get('sf', default)
-            order_type = request.GET.get('ot', default_order)
+            sort_field = request.GET.get("sf", default)
+            order_type = request.GET.get("ot", default_order)
 
-        queryset = self._sort_queryset(self.object_list, sort_field,
-                                       order_type)
+        queryset = self._sort_queryset(self.object_list, sort_field, order_type)
 
-        if self.request.method == 'POST' and self.can_submit:
+        if self.request.method == "POST" and self.can_submit:
             formset = self.get_formset(data=self.request.POST, queryset=queryset)
             is_paginated, page, paginator, queryset = self._paginate_queryset(queryset)
         else:
@@ -318,20 +315,20 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
             formset = self.get_formset(queryset=queryset)
 
         visible_fields = self.get_visible_fields(formset)
-        adm_list = helpers.AdminList(formset, queryset, visible_fields,
-                                       sort_field, order_type,
-                                       self.model_name)
+        adm_list = helpers.AdminList(
+            formset, queryset, visible_fields, sort_field, order_type, self.model_name
+        )
 
         actions = self.get_action_context(request)
         data = {
-            'list': adm_list,
-            'filter_form': self.get_filter_form(),
-            'page_obj': page,
-            'is_paginated': is_paginated,
-            'show_form': (self.can_submit and formset is not None),
-            'paginator': paginator,
-            'checkbox_name' : CHECKBOX_NAME,
-            'actions' : actions,
+            "list": adm_list,
+            "filter_form": self.get_filter_form(),
+            "page_obj": page,
+            "is_paginated": is_paginated,
+            "show_form": (self.can_submit and formset is not None),
+            "paginator": paginator,
+            "checkbox_name": CHECKBOX_NAME,
+            "actions": actions,
         }
 
         return data
@@ -346,10 +343,10 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
         origin_qs = self._get_query_string(self.request, False)
         context = {
-            'query_string': self._get_query_string(self.request),
-            'origin_qs': self.request.path + origin_qs,
-            'origin_var': self.ORIGIN_ARGUMENT,
-            'action_links': self.get_actions()
+            "query_string": self._get_query_string(self.request),
+            "origin_qs": self.request.path + origin_qs,
+            "origin_var": self.ORIGIN_ARGUMENT,
+            "action_links": self.get_actions(),
         }
         context.update(kwargs)
 
@@ -364,8 +361,8 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         `get_list_data` method as context.
         """
 
-        if request.GET.get('type') == 'choices':
-            self.render_type = 'choices'
+        if request.GET.get("type") == "choices":
+            self.render_type = "choices"
             self.can_submit = False
 
         data = self.get_list_data(request, **kwargs)
@@ -387,17 +384,17 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         objects.
         """
         msg = None
-        action = request.POST.get('actions', None)
+        action = request.POST.get("actions", None)
         selected = request.POST.getlist(CHECKBOX_NAME)
-        if not action == 'None' and action is not None:
+        if not action == "None" and action is not None:
             if len(selected) > 0:
-                sel = {CHECKBOX_NAME : ','.join(selected)}
-                qs = '?' + urlencode(sel)
-                return self.render(request, redirect_url = action + qs)
+                sel = {CHECKBOX_NAME: ",".join(selected)}
+                qs = "?" + urlencode(sel)
+                return self.render(request, redirect_url=action + qs)
 
         data = self.get_list_data(request, **kwargs)
 
-        l = data.get('list')
+        l = data.get("list")
         formset = None
         if l and l.formset:
             formset = l.formset
@@ -425,11 +422,15 @@ class ListView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
                     if form.has_changed():
                         obj = form.save()
                         changecount += 1
-                        self.log_action(obj, CMSLog.SAVE, url=url,
-                                        update_parent=changecount == 1)
+                        self.log_action(
+                            obj, CMSLog.SAVE, url=url, update_parent=changecount == 1
+                        )
 
-            return self.render(request, redirect_url=url,
-                           message="%s items updated" % changecount,
-                           collect_render_data=False)
+            return self.render(
+                request,
+                redirect_url=url,
+                message="%s items updated" % changecount,
+                collect_render_data=False,
+            )
         else:
-            return self.render(request, message = msg, **data)
+            return self.render(request, message=msg, **data)

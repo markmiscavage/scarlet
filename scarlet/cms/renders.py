@@ -23,8 +23,8 @@ class RenderResponse(object):
     """
 
     template = None
-    base = 'base.html'
-    partial_base = 'partial.html'
+    base = "base.html"
+    partial_base = "partial.html"
 
     def __init__(self, **kwargs):
         # Go through keyword arguments and save to instance
@@ -39,10 +39,10 @@ class RenderResponse(object):
         :param kwargs: The current context keyword arguments.
         :param request: The current request object.
         """
-        if not 'base' in kwargs:
-            kwargs['base'] = self.base
-            if request.is_ajax() or request.GET.get('json'):
-                kwargs['base'] = self.partial_base
+        if not "base" in kwargs:
+            kwargs["base"] = self.base
+            if request.is_ajax() or request.GET.get("json"):
+                kwargs["base"] = self.partial_base
 
         return kwargs
 
@@ -62,8 +62,8 @@ class RenderResponse(object):
             # items on `ListView`. `kwargs` contains `message` but that
             # one is not passing through redirection. That's the reason for using
             # directly `messages` and get message on result template
-            if kwargs.get('message'):
-                messages.success(request, kwargs.get('message'))
+            if kwargs.get("message"):
+                messages.success(request, kwargs.get("message"))
             return self.redirect(request, redirect_url, **kwargs)
 
         kwargs = self.update_kwargs(request, **kwargs)
@@ -109,20 +109,24 @@ class CMSRender(RenderResponse):
 
         # Check if we need to to include a separate object
         # bundle for the title
-        bundle = kwargs.get('bundle')
-        url_kwargs = kwargs.get('url_params')
+        bundle = kwargs.get("bundle")
+        url_kwargs = kwargs.get("url_params")
         view = None
         if bundle:
-            view, name = bundle.get_object_header_view(request, url_kwargs, parent_only=True)
+            view, name = bundle.get_object_header_view(
+                request, url_kwargs, parent_only=True
+            )
 
-        kwargs['dashboard'] = bundle.admin_site.get_dashboard_urls(request)
+        kwargs["dashboard"] = bundle.admin_site.get_dashboard_urls(request)
 
         if view:
             obj = view.get_object()
-            if not 'object_header' in kwargs:
-                kwargs['object_header'] = bundle._render_view_as_string(view, name, request, url_kwargs)
-            if obj and obj != kwargs.get('obj'):
-                kwargs['subitem'] = True
+            if not "object_header" in kwargs:
+                kwargs["object_header"] = bundle._render_view_as_string(
+                    view, name, request, url_kwargs
+                )
+            if obj and obj != kwargs.get("obj"):
+                kwargs["subitem"] = True
         return kwargs
 
 
@@ -140,15 +144,15 @@ class ChoicesRender(object):
 
         if page:
             qs = request.GET.copy()
-            qs['page'] = page
+            qs["page"] = page
             return "%s?%s" % (request.path_info, qs.urlencode())
         return None
 
     def get_label_attr(self, label):
         attr = label.attr
-        if label.attr == '__str__':
+        if label.attr == "__str__":
             attr = force_text(slugify(label.name))
-        if hasattr(attr, '__call__'):
+        if hasattr(attr, "__call__"):
             attr = attr.__name__
         return attr
 
@@ -157,7 +161,7 @@ class ChoicesRender(object):
         labels = list(adm_list.labels())
         for row in adm_list:
             data = {
-                'id': row.instance.pk,
+                "id": row.instance.pk,
             }
 
             for label in labels:
@@ -172,9 +176,9 @@ class ChoicesRender(object):
         data = {}
         for label in adm_list.labels():
             data[self.get_label_attr(label)] = {
-                'name': force_text(label.name),
-                'sortable': label.sortable,
-                'order_type': label.order_type
+                "name": force_text(label.name),
+                "sortable": label.sortable,
+                "order_type": label.order_type,
             }
         return data
 
@@ -226,47 +230,47 @@ class ChoicesRender(object):
             "page": 1,
             "previous": ""}
         """
-        data = {
-            'is_paginated': kwargs.get('is_paginated')
-        }
+        data = {"is_paginated": kwargs.get("is_paginated")}
 
-        if data.get('is_paginated'):
-            page = kwargs['page_obj']
+        if data.get("is_paginated"):
+            page = kwargs["page_obj"]
 
-            next_p = ''
-            previous = ''
+            next_p = ""
+            previous = ""
             if page.has_next():
                 next_p = self.get_different_page(request, page.number + 1)
 
             if page.has_previous():
                 previous = self.get_different_page(request, page.number - 1)
 
-            data.update({
-                'count': page.paginator.count,
-                'page': page.number,
-                'next': next_p,
-                'previous': previous,
-            })
+            data.update(
+                {
+                    "count": page.paginator.count,
+                    "page": page.number,
+                    "next": next_p,
+                    "previous": previous,
+                }
+            )
 
-        if kwargs.get('filter_form'):
-            exclude = request.GET.getlist('exclude')
+        if kwargs.get("filter_form"):
+            exclude = request.GET.getlist("exclude")
             filter_form = {}
-            form = kwargs.get('filter_form')
+            form = kwargs.get("filter_form")
             for name in form.get_search_fields(exclude):
                 k = form[name]
                 obj = {}
-                obj['value'] = k.value()
-                obj['label'] = k.label
-                if hasattr(k.field, 'choices'):
-                    obj['choices'] = k.field.choices
+                obj["value"] = k.value()
+                obj["label"] = k.label
+                if hasattr(k.field, "choices"):
+                    obj["choices"] = k.field.choices
 
                 filter_form[k.name] = obj
 
-            data['params'] = filter_form
+            data["params"] = filter_form
 
-        adm_list = kwargs['list']
-        data['fields'] = self.get_fields(adm_list)
-        data['results'] = self.get_object_list(adm_list)
+        adm_list = kwargs["list"]
+        data["fields"] = self.get_fields(adm_list)
+        data["results"] = self.get_object_list(adm_list)
         return http.HttpResponse(json.dumps(data, cls=DjangoJSONEncoder))
 
 
@@ -293,11 +297,11 @@ class PopupRender(RenderResponse):
     :param redirect_template: The template to use for redirect renders.
     """
 
-    base = 'cms/base_popup.html'
-    redirect_template = 'cms/popup_redirect.html'
+    base = "cms/base_popup.html"
+    redirect_template = "cms/popup_redirect.html"
 
     def update_kwargs(self, request, **kwargs):
-        kwargs['base'] = self.base
+        kwargs["base"] = self.base
         return kwargs
 
     def redirect(self, request, url, **kwargs):

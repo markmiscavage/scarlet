@@ -86,10 +86,11 @@ class CacheManager(object):
         groups.
         """
 
-        extra = extra or kwargs.pop('extra', {})
+        extra = extra or kwargs.pop("extra", {})
         for group in list(self._registry.values()):
             if klass in group.models:
                 e = extra.get(group.key)
                 group.invalidate_cache(klass, extra=e, **kwargs)
+
 
 cache_manager = CacheManager()

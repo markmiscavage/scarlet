@@ -19,13 +19,13 @@ class AddView(views.FormView):
     form_class = forms.SignupModelForm
 
     fieldsets = (
-        ("User Information", {
-            'fields': ('username', 'first_name', 'last_name', 'email')
-        }),
-        ("Password", {
-            'fields': ('password1', 'password2')
-        }),
+        (
+            "User Information",
+            {"fields": ("username", "first_name", "last_name", "email")},
+        ),
+        ("Password", {"fields": ("password1", "password2")}),
     )
+
 
 class PasswordView(views.FormView):
     redirect_to_view = "edit"
@@ -35,53 +35,58 @@ class PasswordView(views.FormView):
         return AdminPasswordChangeForm
 
     def write_message(self, message=None):
-        message = u"%s password changed" % self.object
+        message = "%s password changed" % self.object
         super(PasswordView, self).write_message(message=message)
 
     def get_form_kwargs(self):
         # Since we aren't using a model form
         # strip instance and use user instead
         kwargs = super(PasswordView, self).get_form_kwargs()
-        instance = kwargs.pop('instance')
-        kwargs['user'] = instance
+        instance = kwargs.pop("instance")
+        kwargs["user"] = instance
         return kwargs
+
 
 class AccountBundle(bundles.Bundle):
     required_groups = (groups.ADMIN,)
 
     add = AddView()
-    edit = views.FormView(form_class=forms.UserForm,
+    edit = views.FormView(
+        form_class=forms.UserForm,
         fieldsets=(
-            ("User Information", {
-                'fields': ('username', 'first_name', 'last_name',
-                'email', 'password')
-            }),
-            ("Status", {
-                'fields': ('is_active', 'is_superuser', 'is_staff')
-            }),
-            ("Groups", {
-                'fields': ('groups',)
-            }),),
-        context_object_name = "object"
+            (
+                "User Information",
+                {
+                    "fields": (
+                        "username",
+                        "first_name",
+                        "last_name",
+                        "email",
+                        "password",
+                    )
+                },
+            ),
+            ("Status", {"fields": ("is_active", "is_superuser", "is_staff")}),
+            ("Groups", {"fields": ("groups",)}),
+        ),
+        context_object_name="object",
     )
     password = PasswordView()
-    main = views.ListView(paginate_by=100,
-            display_fields=('username', 'first_name',
-                            'last_name', 'email', 'groups'),
-            action_links=(
-                ('edit', 'Edit', 'e'),
-                ('delete', "Delete", 'd'),
-                ('password', 'Change Password', 'k')
-            )
+    main = views.ListView(
+        paginate_by=100,
+        display_fields=("username", "first_name", "last_name", "email", "groups"),
+        action_links=(
+            ("edit", "Edit", "e"),
+            ("delete", "Delete", "d"),
+            ("password", "Change Password", "k"),
+        ),
     )
 
     class Meta(object):
         model = get_user_model()
         primary_model_bundle = True
-        item_views = ('password', 'edit', 'delete')
-        default_kwargs = {
-            'object_header_tmpl': "cms/object_header_no_preview.html"
-        }
+        item_views = ("password", "edit", "delete")
+        default_kwargs = {"object_header_tmpl": "cms/object_header_no_preview.html"}
 
-site.register('users', AccountBundle(name='accounts_admin', title='Account'),
-              10)
+
+site.register("users", AccountBundle(name="accounts_admin", title="Account"), 10)

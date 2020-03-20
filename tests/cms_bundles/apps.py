@@ -3,4 +3,4 @@ from django.apps import AppConfig as DjangoAppConfig
 
 
 class AppConfig(DjangoAppConfig):
-    name = 'tests.cms_bundles'
+    name = "tests.cms_bundles"

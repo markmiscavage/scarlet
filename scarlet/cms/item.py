@@ -47,7 +47,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
     AdminFormset used to combine the display of formsets
     """
 
-    default_template = 'cms/edit.html'
+    default_template = "cms/edit.html"
     force_add = False
 
     fieldsets = None
@@ -65,16 +65,12 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         else:
             super(FormView, self).__init__(**kwargs)
 
-        self.renders['popup'] = renders.PopupRender(
-                        template=self.default_template
-        )
+        self.renders["popup"] = renders.PopupRender(template=self.default_template)
 
         if self.formsets:
             for k, v in list(self.formsets.items()):
                 if not isinstance(v, LazyFormSetFactory):
-                    raise TypeError(
-                        '%s must be a LazyFormSetFactory instance' % k)
-
+                    raise TypeError("%s must be a LazyFormSetFactory instance" % k)
 
     def get_readonly_fields(self):
         """
@@ -96,14 +92,16 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         Returns the url where this object can be edited.
         """
 
-        if self.kwargs.get(self.slug_url_kwarg, False) == \
-                    str(getattr(self.object, self.slug_field, "")) \
-                    and not self.force_add:
+        if (
+            self.kwargs.get(self.slug_url_kwarg, False)
+            == str(getattr(self.object, self.slug_field, ""))
+            and not self.force_add
+        ):
             url = self.request.build_absolute_uri()
         else:
-            url = self.bundle.get_view_url('edit', self.request.user,
-                                           {'object': self.object},
-                                           self.kwargs)
+            url = self.bundle.get_view_url(
+                "edit", self.request.user, {"object": self.object}, self.kwargs
+            )
         return url
 
     def get_cancel_url(self):
@@ -116,9 +114,9 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         view name.
         """
         if self.cancel_view:
-            url = self.bundle.get_view_url(self.cancel_view,
-                                            self.request.user, {},
-                                            self.kwargs)
+            url = self.bundle.get_view_url(
+                self.cancel_view, self.request.user, {}, self.kwargs
+            )
         else:
             url = self.request.build_absolute_uri()
 
@@ -138,12 +136,11 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
 
         if self.redirect_to_view:
             kwargs = {}
-            if self.redirect_to_view != 'main' and \
-                        self.redirect_to_view != 'main_list':
-                kwargs['object'] = self.object
-            return self.bundle.get_view_url(self.redirect_to_view,
-                                            self.request.user, kwargs,
-                                            self.kwargs)
+            if self.redirect_to_view != "main" and self.redirect_to_view != "main_list":
+                kwargs["object"] = self.object
+            return self.bundle.get_view_url(
+                self.redirect_to_view, self.request.user, kwargs, self.kwargs
+            )
         else:
             return self.request.build_absolute_uri()
 
@@ -177,7 +174,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         if readonly_fields:
             fields.extend(readonly_fields)
 
-        return [(None, {'fields': fields})]
+        return [(None, {"fields": fields})]
 
     def get_form_class(self):
         """
@@ -190,9 +187,11 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         if self.fieldsets:
             fields = flatten_fieldsets(self.get_fieldsets())
         else:
-            if (self.form_class and
-                    getattr(self.form_class, 'Meta', None) and
-                    getattr(self.form_class.Meta, 'fields', None)):
+            if (
+                self.form_class
+                and getattr(self.form_class, "Meta", None)
+                and getattr(self.form_class.Meta, "fields", None)
+            ):
                 fields = self.form_class.Meta.fields
             else:
                 fields = []
@@ -222,23 +221,26 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
                 except ValueError:
                     pass
 
-        params = {'fields': fields or '__all__',
-                  'exclude': exclude,
-                  'formfield_callback': self.formfield_for_dbfield}
+        params = {
+            "fields": fields or "__all__",
+            "exclude": exclude,
+            "formfield_callback": self.formfield_for_dbfield,
+        }
 
         if self.form_class:
-            if issubclass(self.form_class, forms.ModelForm) and \
-                    getattr(self.form_class._meta, 'model', None):
+            if issubclass(self.form_class, forms.ModelForm) and getattr(
+                self.form_class._meta, "model", None
+            ):
                 model = self.form_class.Meta.model
             else:
                 model = self.model
             fc = self.customize_form_widgets(self.form_class, fields=fields)
-            params['form'] = fc
+            params["form"] = fc
         else:
             if self.model is not None:
                 # If a model has been explicitly provided, use it
                 model = self.model
-            elif hasattr(self, 'object') and self.object is not None:
+            elif hasattr(self, "object") and self.object is not None:
                 # If this view is operating on a single object, use
                 # the class of that object
                 model = self.object.__class__
@@ -253,14 +255,10 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         """
         Returns the keyword arguments for instantiating the form.
         """
-        kwargs = {'initial': self.get_initial(),
-                  'instance': self.object}
+        kwargs = {"initial": self.get_initial(), "instance": self.object}
 
-        if self.request.method in ('POST', 'PUT') and self.can_submit:
-            kwargs.update({
-                'data': self.request.POST,
-                'files': self.request.FILES
-            })
+        if self.request.method in ("POST", "PUT") and self.can_submit:
+            kwargs.update({"data": self.request.POST, "files": self.request.FILES})
         return kwargs
 
     def get_formsets_dict(self):
@@ -292,13 +290,11 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         if not fdict:
             return {}
 
-        obj = self.get_formset_parent_object(parent_form,
-                                             saving=saving)
+        obj = self.get_formset_parent_object(parent_form, saving=saving)
 
         formsets = {}
         for k, v in list(fdict.items()):
-            formsets[k] = self._init_formset(k, v,
-                                         obj, saving=saving)
+            formsets[k] = self._init_formset(k, v, obj, saving=saving)
         return formsets
 
     def get_combined_formset_defs(self):
@@ -319,15 +315,18 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         return helpers.AdminForm(form, self.get_fieldsets())
 
     def _init_formset(self, key, lazy_klass, obj, saving=False):
-        klass = lazy_klass(self.formfield_for_dbfield,
-                           self.customize_form_widgets)
+        klass = lazy_klass(self.formfield_for_dbfield, self.customize_form_widgets)
         prefix = klass.__name__.lower()
         queryset = self.get_formset_queryset(key, klass)
 
         if saving:
-            ins = klass(self.request.POST, files=self.request.FILES,
-                                instance=obj, prefix=prefix,
-                                queryset=queryset)
+            ins = klass(
+                self.request.POST,
+                files=self.request.FILES,
+                instance=obj,
+                prefix=prefix,
+                queryset=queryset,
+            )
         else:
             ins = klass(instance=obj, prefix=prefix, queryset=queryset)
 
@@ -362,9 +361,11 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         if self.parent_object:
             m2ms = [f.name for f in form.instance._meta.many_to_many]
             m2ms.extend(
-                [f.field.rel.related_name for f in
-                    [
-                        f for f in form.instance._meta.get_fields(include_hidden=True)
+                [
+                    f.field.rel.related_name
+                    for f in [
+                        f
+                        for f in form.instance._meta.get_fields(include_hidden=True)
                         if f.many_to_many and f.auto_created
                     ]
                 ]
@@ -375,8 +376,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
             else:
                 try:
                     form.instance._meta.get_field(self.parent_field)
-                    setattr(form.instance, self.parent_field,
-                            self.parent_object)
+                    setattr(form.instance, self.parent_field, self.parent_object)
                 except FieldDoesNotExist:
                     pass
 
@@ -410,9 +410,10 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         if not self.object:
             new_object = True
 
-        instance = getattr(form, 'instance', None)
+        instance = getattr(form, "instance", None)
         auto_tags, changed_tags, old_tags = tag_handler.get_tags_from_data(
-            form.data, self.get_tags(instance))
+            form.data, self.get_tags(instance)
+        )
         tag_handler.set_auto_tags_for_form(form, auto_tags)
 
         with transaction.commit_on_success():
@@ -435,11 +436,13 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         `get_success_url` method.
         """
 
-        return self.render(self.request,
-                           redirect_url=self.get_success_url(),
-                           obj=self.object,
-                           message=message,
-                           collect_render_data=False)
+        return self.render(
+            self.request,
+            redirect_url=self.get_success_url(),
+            obj=self.object,
+            message=message,
+            collect_render_data=False,
+        )
 
     def render(self, request, **kwargs):
         """
@@ -447,13 +450,13 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         If the request get parameters contains 'popup' then
         the `render_type` is set to 'popup'.
         """
-        if request.GET.get('popup'):
-            self.render_type = 'popup'
-            kwargs['popup'] = 1
+        if request.GET.get("popup"):
+            self.render_type = "popup"
+            kwargs["popup"] = 1
 
-        kwargs['cancel_url'] = self.get_cancel_url()
+        kwargs["cancel_url"] = self.get_cancel_url()
         if not self.object:
-            kwargs['single_title'] = True
+            kwargs["single_title"] = True
         return super(FormView, self).render(request, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -476,9 +479,9 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         adminForm = self.get_admin_form(form)
         adminFormSets = self.get_admin_formsets(formsets)
         context = {
-            'adminForm': adminForm,
-            'obj': self.object,
-            'formsets': adminFormSets,
+            "adminForm": adminForm,
+            "obj": self.object,
+            "formsets": adminFormSets,
         }
         return self.render(request, **context)
 
@@ -529,11 +532,12 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
             adminForm = self.get_admin_form(form)
             adminFormSets = self.get_admin_formsets(formsets)
             context = {
-                'adminForm': adminForm,
-                'formsets': adminFormSets,
-                'obj': self.object,
+                "adminForm": adminForm,
+                "formsets": adminFormSets,
+                "obj": self.object,
             }
             return self.form_invalid(form=form, **context)
+
 
 class PreviewWrapper(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
     """
@@ -552,14 +556,14 @@ class PreviewWrapper(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
     to 'cms/preview.html'.
     """
 
-    pass_through_kwarg = 'slug'
-    pass_through_attr = 'slug'
+    pass_through_kwarg = "slug"
+    pass_through_attr = "slug"
     preview_view = None
 
-    slug_field = 'pk'
-    slug_url_kwarg = 'pk'
+    slug_field = "pk"
+    slug_url_kwarg = "pk"
 
-    default_template = 'cms/preview.html'
+    default_template = "cms/preview.html"
 
     def get_context_data(self, **kwargs):
         """
@@ -604,9 +608,7 @@ class PreviewWrapper(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
             return {}
 
         obj = self.get_object()
-        return {
-            self.pass_through_kwarg: getattr(obj, self.pass_through_attr)
-        }
+        return {self.pass_through_kwarg: getattr(obj, self.pass_through_attr)}
 
     def get(self, request, *args, **kwargs):
         """
@@ -619,11 +621,12 @@ class PreviewWrapper(ModelCMSMixin, SingleObjectMixin, ModelCMSView):
         """
 
         self.renders = {
-            'response': renders.RenderResponse(template=self.default_template),
+            "response": renders.RenderResponse(template=self.default_template),
         }
         kwargs = self.get_preview_kwargs(**kwargs)
         view = self.preview_view.as_string()
         return self.render(request, data=view(request, **kwargs))
+
 
 class VersionsList(PublishView):
     """
@@ -634,14 +637,17 @@ class VersionsList(PublishView):
     :param redirect_to_view: 'edit'.
     """
 
-    default_template = 'cms/versions.html'
+    default_template = "cms/versions.html"
     redirect_to_view = "edit"
 
     def _get_versions(self):
         self.object = self.get_object()
         klass = self.object.get_version_class()
-        return klass.normal.filter(object_id=self.object.pk).exclude(
-                                state=klass.DRAFT).order_by('-date_published')
+        return (
+            klass.normal.filter(object_id=self.object.pk)
+            .exclude(state=klass.DRAFT)
+            .order_by("-date_published")
+        )
 
     def get(self, request, *args, **kwargs):
         """
@@ -654,8 +660,9 @@ class VersionsList(PublishView):
         * **done_url** - The result of the `get_done_url` method.
         """
         versions = self._get_versions()
-        return self.render(request, obj=self.object, versions=versions,
-                           done_url=self.get_done_url())
+        return self.render(
+            request, obj=self.object, versions=versions, done_url=self.get_done_url()
+        )
 
     def revert(self, version, url):
         """
@@ -663,7 +670,10 @@ class VersionsList(PublishView):
         This is done by calling the object's `make_draft` method.
         Logs the revert as a 'save' and messages the user.
         """
-        message = "Draft replaced with %s version. This revert has not been published." % version.date_published
+        message = (
+            "Draft replaced with %s version. This revert has not been published."
+            % version.date_published
+        )
         version.make_draft()
 
         # Log action as a save
@@ -677,8 +687,7 @@ class VersionsList(PublishView):
         with a message.
         """
         # Shouldn't be able to delete live or draft version
-        if version.state != version.DRAFT and \
-                      version.state != version.PUBLISHED:
+        if version.state != version.DRAFT and version.state != version.PUBLISHED:
             version.delete()
             message = "%s version deleted." % version.date_published
             return self.write_message(message=message)
@@ -707,12 +716,12 @@ class VersionsList(PublishView):
         msg = None
 
         try:
-            vid = int(request.POST.get('version', ''))
+            vid = int(request.POST.get("version", ""))
             version = versions.get(vid=vid)
-            if request.POST.get('revert'):
+            if request.POST.get("revert"):
                 object_url = self.get_object_url()
                 msg = self.revert(version, object_url)
-            elif request.POST.get('delete'):
+            elif request.POST.get("delete"):
                 msg = self.delete(version)
                 # Delete should redirect back to itself
                 url = self.request.build_absolute_uri()
@@ -721,7 +730,10 @@ class VersionsList(PublishView):
         except (ValueError, versions.model.DoesNotExist):
             pass
 
-        return self.render(request, redirect_url=url,
-                   message=msg,
-                   obj=self.object,
-                   collect_render_data=False)
+        return self.render(
+            request,
+            redirect_url=url,
+            message=msg,
+            obj=self.object,
+            collect_render_data=False,
+        )

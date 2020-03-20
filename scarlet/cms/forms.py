@@ -6,14 +6,16 @@ from django.core.validators import EMPTY_VALUES
 
 from . import widgets
 
+
 class BaseFilterForm(forms.Form):
     """
     A base filter form. Implementing classes should
     define their own filter fields.
     """
+
     exclude = []
     search_fields = None
-    SEARCH_KEY = 'search'
+    SEARCH_KEY = "search"
 
     def get_filter_fields(self, exclude=None):
         """
@@ -24,8 +26,7 @@ class BaseFilterForm(forms.Form):
         if exclude:
             exclude_set = exclude_set.union(set(exclude))
 
-        return [name for name in self.fields
-                if name not in exclude_set]
+        return [name for name in self.fields if name not in exclude_set]
 
     def get_search_fields(self, exclude=None):
         """
@@ -47,7 +48,7 @@ class BaseFilterForm(forms.Form):
             filter_kwargs = {}
             for field in self.get_filter_fields():
                 empty_values = EMPTY_VALUES
-                if hasattr(self.fields[field], 'empty_values'):
+                if hasattr(self.fields[field], "empty_values"):
                     empty_values = self.fields[field].empty_values
 
                 value = self.cleaned_data.get(field)
@@ -76,11 +77,11 @@ class BaseFilterForm(forms.Form):
 
         args = []
         filter_kwargs = self.get_filter_kwargs()
-        search = filter_kwargs.pop('search', None)
+        search = filter_kwargs.pop("search", None)
         if search and self.search_fields:
             search_args = []
             for f in self.search_fields:
-                k = '%s__icontains' % f
+                k = "%s__icontains" % f
                 filter_kwargs.pop(k, None)
                 q = Q(**{k: search})
                 if search_args:
@@ -97,32 +98,34 @@ class BaseFilterForm(forms.Form):
 
 
 class VersionFilterForm(BaseFilterForm):
-    DRAFT = 'draft'
-    LIVE = 'live'
-    SCHEDULED = 'scheduled'
+    DRAFT = "draft"
+    LIVE = "live"
+    SCHEDULED = "scheduled"
 
-    exclude = ('item_status',)
+    exclude = ("item_status",)
 
-    item_status = forms.ChoiceField(required=False,
+    item_status = forms.ChoiceField(
+        required=False,
         choices=(
-            ('', 'All'),
-            (DRAFT, 'Has unpublished changes'),
-            (LIVE, 'Is Live'),
-            (SCHEDULED, 'Is scheduled')
-    ))
+            ("", "All"),
+            (DRAFT, "Has unpublished changes"),
+            (LIVE, "Is Live"),
+            (SCHEDULED, "Is scheduled"),
+        ),
+    )
 
     def get_status_filter(self):
         q = None
         if self.is_valid():
-            ftype = self.cleaned_data.get('item_status')
+            ftype = self.cleaned_data.get("item_status")
             if ftype == self.DRAFT:
-                q = Q(is_published=False)|Q(last_save__gt=F('last_scheduled'))
+                q = Q(is_published=False) | Q(last_save__gt=F("last_scheduled"))
             elif ftype == self.LIVE:
-                q = Q(last_save=F('last_scheduled'),
-                      last_scheduled=F('v_last_save'))
+                q = Q(last_save=F("last_scheduled"), last_scheduled=F("v_last_save"))
             elif ftype == self.SCHEDULED:
-                q = Q(last_save=F('last_scheduled'),
-                      last_scheduled__gt=F('v_last_save'))
+                q = Q(
+                    last_save=F("last_scheduled"), last_scheduled__gt=F("v_last_save")
+                )
         return q
 
     def get_filter(self):
@@ -147,27 +150,28 @@ def search_form(*fields, **kwargs):
     on this form.
     """
 
-    fdict = {
-        'search_fields': set(fields)
-    }
+    fdict = {"search_fields": set(fields)}
 
-    if kwargs.get('search_only'):
-        fdict['search'] = forms.CharField(max_length=255, required=False)
+    if kwargs.get("search_only"):
+        fdict["search"] = forms.CharField(max_length=255, required=False)
     else:
-        fdict['search'] = forms.CharField(max_length=255, required=False,
-                                          widget=forms.HiddenInput)
+        fdict["search"] = forms.CharField(
+            max_length=255, required=False, widget=forms.HiddenInput
+        )
         for f in fields:
             fdict[f] = forms.CharField(max_length=255, required=False)
 
-    if kwargs.get('status_filter', False):
+    if kwargs.get("status_filter", False):
         return type("filterform", (VersionFilterForm,), fdict)
     else:
         return type("filterform", (BaseFilterForm,), fdict)
+
 
 class HiddenObjectForm(forms.ModelForm):
     """
     Base form with no fields. Meant for use with formsets.
     """
+
     class Meta(object):
         fields = []
 
@@ -185,10 +189,8 @@ class MassActionForm(forms.ModelForm):
     selected = forms.BooleanField(required=False)
 
 
-
 class ActionForm(forms.Form):
-    action = forms.ChoiceField(label=('Action:'))
-
+    action = forms.ChoiceField(label=("Action:"))
 
 
 class LazyFormSetFactory(object):
@@ -211,8 +213,8 @@ class LazyFormSetFactory(object):
         assert callable(args[0]), "The first argument must be a formset factory"
         self.args = args
         self.kwargs = kwargs
-        if 'extra' not in self.kwargs:
-            self.kwargs['extra'] = 0
+        if "extra" not in self.kwargs:
+            self.kwargs["extra"] = 0
 
     def __call__(self, callback, form_processor):
         """
@@ -225,7 +227,7 @@ class LazyFormSetFactory(object):
         prep the form before the factory is called.
         """
 
-        self.kwargs['formfield_callback'] = callback
-        if 'form' in self.kwargs:
-            self.kwargs['form'] = form_processor(self.kwargs['form'])
+        self.kwargs["formfield_callback"] = callback
+        if "form" in self.kwargs:
+            self.kwargs["form"] = form_processor(self.kwargs["form"])
         return self.args[0](*self.args[1:], **self.kwargs)

@@ -19,4 +19,4 @@ def ensure_groups(sender=None, **kwargs):
         Group.objects.get_or_create(name=group)
 
 
-post_migrate.connect(ensure_groups, sender=auth_app, dispatch_uid='ensure_groups')
+post_migrate.connect(ensure_groups, sender=auth_app, dispatch_uid="ensure_groups")

@@ -17,11 +17,15 @@ def clear_cache_delete_selected(modeladmin, request, queryset):
     result = delete_selected(modeladmin, request, queryset)
 
     # A result of None means that the delete happened.
-    if not result and hasattr(modeladmin, 'invalidate_cache'):
+    if not result and hasattr(modeladmin, "invalidate_cache"):
         modeladmin.invalidate_cache(queryset=queryset)
 
     return result
-clear_cache_delete_selected.short_description = ugettext_lazy("Delete selected %(verbose_name_plural)s")
+
+
+clear_cache_delete_selected.short_description = ugettext_lazy(
+    "Delete selected %(verbose_name_plural)s"
+)
 
 
 class AdminSite(OrgAdminSite):
@@ -32,7 +36,7 @@ class AdminSite(OrgAdminSite):
 
     def __init__(self, *args, **kwargs):
         super(AdminSite, self).__init__(*args, **kwargs)
-        self._actions = {'delete_selected': clear_cache_delete_selected}
+        self._actions = {"delete_selected": clear_cache_delete_selected}
         self._global_actions = self._actions.copy()
 
 
@@ -47,8 +51,7 @@ class ModelAdmin(OrgModelAdmin):
 
     cache_manager = cache_manager
 
-    def invalidate_cache(self, obj=None, queryset=None,
-                         extra=None, force_all=False):
+    def invalidate_cache(self, obj=None, queryset=None, extra=None, force_all=False):
         """
         Method that should be called by all tiggers to invalidate the
         cache for an item(s).
@@ -60,9 +63,9 @@ class ModelAdmin(OrgModelAdmin):
             if queryset != None:
                 force_all = True
 
-            self.cache_manager.invalidate_cache(self.model, instance=obj,
-                                                   extra=extra,
-                                                   force_all=force_all)
+            self.cache_manager.invalidate_cache(
+                self.model, instance=obj, extra=extra, force_all=force_all
+            )
 
     def delete_model(self, request, obj):
         result = super(ModelAdmin, self).delete_model(request, obj)
@@ -75,10 +78,10 @@ class ModelAdmin(OrgModelAdmin):
         return result
 
     def response_add(self, request, obj, post_url_continue=None):
-        result = super(ModelAdmin, self).response_add(request, obj,
-                                                      post_url_continue)
+        result = super(ModelAdmin, self).response_add(request, obj, post_url_continue)
         self.invalidate_cache(obj=obj)
         return result
+
 
 site = AdminSite()
 site.register(Group, GroupAdmin)

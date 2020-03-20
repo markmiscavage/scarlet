@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
+
 from builtins import str
 from builtins import range
 from builtins import object
@@ -44,7 +43,7 @@ class BaseView(generic.base.View):
     Default is 'response'.
     """
 
-    render_type = 'response'
+    render_type = "response"
 
     def get_render_data(self, **kwargs):
         """
@@ -54,7 +53,7 @@ class BaseView(generic.base.View):
         calls that method if available and returns
         the resulting context.
         """
-        if hasattr(self, 'get_context_data'):
+        if hasattr(self, "get_context_data"):
             data = self.get_context_data(**kwargs)
         else:
             data = kwargs
@@ -100,17 +99,19 @@ class SiteView(BaseView):
         to specify a render class that returns a string.
         """
 
-        if not 'render_type' in initkwargs:
-            initkwargs['render_type'] = 'string'
+        if not "render_type" in initkwargs:
+            initkwargs["render_type"] = "string"
 
         for key in initkwargs:
             if key in cls.http_method_names:
-                raise TypeError(u"You tried to pass in the %s method name as a"
-                                u" keyword argument to %s(). Don't do that."
-                                % (key, cls.__name__))
+                raise TypeError(
+                    "You tried to pass in the %s method name as a"
+                    " keyword argument to %s(). Don't do that." % (key, cls.__name__)
+                )
             if not hasattr(cls, key):
-                raise TypeError(u"%s() received an invalid keyword %r" % (
-                    cls.__name__, key))
+                raise TypeError(
+                    "%s() received an invalid keyword %r" % (cls.__name__, key)
+                )
 
         def view(request, *args, **kwargs):
             try:
@@ -153,9 +154,9 @@ class CMSView(BaseView):
 
     object_header_tmpl = "cms/object_header.html"
 
-    render_type = 'response'
+    render_type = "response"
 
-    base_template = 'cms/base_bundle_view.html'
+    base_template = "cms/base_bundle_view.html"
 
     renders = {}
 
@@ -165,7 +166,7 @@ class CMSView(BaseView):
 
     required_groups = None
 
-    ORIGIN_ARGUMENT = 'o'
+    ORIGIN_ARGUMENT = "o"
 
     name = None
 
@@ -175,17 +176,19 @@ class CMSView(BaseView):
         super(CMSView, self).__init__(*args, **kwargs)
         if not self.renders:
             self.renders = {
-                'response': renders.CMSRender(template=self.default_template,
-                               base=self.base_template),
-                'string': renders.RenderString(template=self.default_template,
-                               base=self.base_template)
+                "response": renders.CMSRender(
+                    template=self.default_template, base=self.base_template
+                ),
+                "string": renders.RenderString(
+                    template=self.default_template, base=self.base_template
+                ),
             }
 
     def customized_return_url(self, default_url):
         redirect_url = self.request.GET.get(self.ORIGIN_ARGUMENT)
         if redirect_url:
-            base = self.request.path.split('/')
-            if len(base) > 1 and redirect_url.startswith('/%s' % base[1]):
+            base = self.request.path.split("/")
+            if len(base) > 1 and redirect_url.startswith("/%s" % base[1]):
                 return redirect_url
 
         return default_url
@@ -223,7 +226,7 @@ class CMSView(BaseView):
         if not start_bundle:
             start_bundle = self.bundle
 
-        if getattr(start_bundle, 'main_list', None):
+        if getattr(start_bundle, "main_list", None):
             main_list = start_bundle.main_list
             bundle = main_list.get_bundle(start_bundle, {}, self.kwargs)
             return bundle
@@ -250,28 +253,30 @@ class CMSView(BaseView):
         admin_site's home page.
         """
 
-        obj = getattr(self, 'object', None)
+        obj = getattr(self, "object", None)
         data = dict(self.extra_render_data)
         data.update(kwargs)
-        data.update({
-            'bundle': self.bundle,
-            'navigation': self.get_navigation(),
-            'url_params': self.kwargs,
-            'user': self.request.user,
-            'object_header_tmpl': self.object_header_tmpl,
-            'view_tags': tag_handler.tags_to_string(self.get_tags(obj))
-        })
+        data.update(
+            {
+                "bundle": self.bundle,
+                "navigation": self.get_navigation(),
+                "url_params": self.kwargs,
+                "user": self.request.user,
+                "object_header_tmpl": self.object_header_tmpl,
+                "view_tags": tag_handler.tags_to_string(self.get_tags(obj)),
+            }
+        )
 
-        if not 'base' in data:
-            data['base'] = self.base_template
+        if not "base" in data:
+            data["base"] = self.base_template
 
-        if not 'back_bundle' in data:
-            data['back_bundle'] = self.get_back_bundle()
+        if not "back_bundle" in data:
+            data["back_bundle"] = self.get_back_bundle()
 
         return super(CMSView, self).get_render_data(**data)
 
     def _user_in_groups(self, user, allowed_groups):
-        groups = getattr(user, 'cached_groups', None)
+        groups = getattr(user, "cached_groups", None)
         if groups is None:
             user.cached_groups = user.groups.all()
 
@@ -315,7 +320,7 @@ class CMSView(BaseView):
         """
 
         if not request_kwargs:
-            request_kwargs = getattr(self, 'kwargs', {})
+            request_kwargs = getattr(self, "kwargs", {})
 
         for k in self.bundle.url_params:
             if k in request_kwargs and not k in kwargs:
@@ -343,8 +348,9 @@ class CMSView(BaseView):
             if fields and not k in fields:
                 continue
 
-            if isinstance(f.widget, widgets.APIModelChoiceWidget) \
-                    or isinstance(f.widget, widgets.APIManyChoiceWidget):
+            if isinstance(f.widget, widgets.APIModelChoiceWidget) or isinstance(
+                f.widget, widgets.APIManyChoiceWidget
+            ):
                 field = copy.deepcopy(f)
                 field.widget.update_links(self.request, self.bundle.admin_site)
                 attrs[k] = field
@@ -372,6 +378,7 @@ class CMSView(BaseView):
     def as_string(self, request, *args, **kwargs):
         return self.get(request, *args, **kwargs)
 
+
 class ModelCMSMixin(object):
     """
     Mixin for use with all cms views that interact with database models.
@@ -395,8 +402,8 @@ class ModelCMSMixin(object):
     parent_lookups = None
     parent_field = None
 
-    slug_field = 'pk'
-    slug_url_kwarg = 'pk'
+    slug_field = "pk"
+    slug_url_kwarg = "pk"
 
     base_filter_kwargs = {}
 
@@ -440,40 +447,48 @@ class ModelCMSMixin(object):
 
         # Our custom widgets need special init
         mbundle = None
-        extra = kwargs.pop('widget_kwargs', {})
-        widget = kwargs.get('widget')
-        if kwargs.get('widget'):
-            if widget and isinstance(widget, type) and \
-                            issubclass(widget, widgets.APIChoiceWidget):
+        extra = kwargs.pop("widget_kwargs", {})
+        widget = kwargs.get("widget")
+        if kwargs.get("widget"):
+            if (
+                widget
+                and isinstance(widget, type)
+                and issubclass(widget, widgets.APIChoiceWidget)
+            ):
                 mbundle = self.bundle.admin_site.get_bundle_for_model(
-                                                db_field.rel.to)
+                    db_field.remote_field.remote_field
+                )
                 if mbundle:
-                    widget = widget(db_field.rel, **extra)
+                    widget = widget(db_field.remote_field, **extra)
                 else:
                     widget = None
 
-        if getattr(self, 'prepopulated_fields', None) and \
-                        not getattr(self, 'object', None) and \
-                        db_field.name in self.prepopulated_fields:
-            extra = kwargs.pop('widget_kwargs', {})
-            attr = extra.pop('attrs', {})
-            attr['data-source-fields'] = self.prepopulated_fields[db_field.name]
-            extra['attrs'] = attr
+        if (
+            getattr(self, "prepopulated_fields", None)
+            and not getattr(self, "object", None)
+            and db_field.name in self.prepopulated_fields
+        ):
+            extra = kwargs.pop("widget_kwargs", {})
+            attr = extra.pop("attrs", {})
+            attr["data-source-fields"] = self.prepopulated_fields[db_field.name]
+            extra["attrs"] = attr
             if not widget:
                 from django.forms.widgets import TextInput
+
                 widget = TextInput(**extra)
             elif widget and isinstance(widget, type):
                 widget = widget(**extra)
 
-        kwargs['widget'] = widget
+        kwargs["widget"] = widget
 
         field = db_field.formfield(**kwargs)
         if mbundle:
             field.widget.update_links(self.request, self.bundle.admin_site)
         return field
 
-    def log_action(self, instance, action, action_date=None, url="",
-                   update_parent=True):
+    def log_action(
+        self, instance, action, action_date=None, url="", update_parent=True
+    ):
         """
         Store an action in the database using the CMSLog model.
         The following attributes are calculated and set on the log entry:
@@ -511,7 +526,8 @@ class ModelCMSMixin(object):
 
         if update_parent and changed_object.__class__ != bundle._meta.model:
             object_view, name = bundle.get_initialized_view_and_name(
-                                    bundle.object_view, kwargs=self.kwargs)
+                bundle.object_view, kwargs=self.kwargs
+            )
 
             changed_object = object_view.get_object()
             changed_object.save()
@@ -526,11 +542,15 @@ class ModelCMSMixin(object):
         if rep:
             rep = rep[:255]
 
-        log = CMSLog(action=action, url=url, section=section,
-                     model_repr=instance._meta.verbose_name,
-                     object_repr=rep,
-                     user_name=self.request.user.username,
-                     action_date=action_date)
+        log = CMSLog(
+            action=action,
+            url=url,
+            section=section,
+            model_repr=instance._meta.verbose_name,
+            object_repr=rep,
+            user_name=self.request.user.username,
+            action_date=action_date,
+        )
         log.save()
 
     def get_filter(self, **filter_kwargs):
@@ -567,13 +587,14 @@ class ModelCMSMixin(object):
 
         if self.queryset is not None:
             queryset = self.queryset
-            if hasattr(queryset, '_clone'):
+            if hasattr(queryset, "_clone"):
                 queryset = queryset._clone()
         elif self.model is not None:
             queryset = self.model._default_manager.filter()
         else:
-            raise ImproperlyConfigured(u"'%s' must define 'queryset' or 'model'"
-                                       % self.__class__.__name__)
+            raise ImproperlyConfigured(
+                "'%s' must define 'queryset' or 'model'" % self.__class__.__name__
+            )
 
         q_objects = self.get_filter(**filter_kwargs)
         queryset = queryset.filter()
@@ -627,7 +648,7 @@ class ModelCMSMixin(object):
 
         if self.parent_field:
             # Get the model we are querying on
-            if getattr(self.model._meta, 'init_name_map', None):
+            if getattr(self.model._meta, "init_name_map", None):
                 # pre-django-1.8
                 cache = self.model._meta.init_name_map()
                 field, mod, direct, m2m = cache[self.parent_field]
@@ -639,15 +660,17 @@ class ModelCMSMixin(object):
                     direct = not field.auto_created or field.concrete
                 else:
                     # 1.8 and 1.9
-                    field, mod, direct, m2m = self.model._meta.get_field(self.parent_field)
+                    field, mod, direct, m2m = self.model._meta.get_field(
+                        self.parent_field
+                    )
 
             to = None
             field_name = None
             if self.parent_lookups is None:
-                self.parent_lookups = ('pk',)
+                self.parent_lookups = ("pk",)
 
             url_params = list(self.bundle.url_params)
-            if url_params and getattr(self.bundle, 'delegated', False):
+            if url_params and getattr(self.bundle, "delegated", False):
                 url_params = url_params[:-1]
 
             offset = len(url_params) - len(self.parent_lookups)
@@ -664,25 +687,25 @@ class ModelCMSMixin(object):
                 rel = getattr(self.model, self.parent_field)
                 kwargs[main_key] = main_arg
                 if direct:
-                    to = rel.field.rel.to
+                    to = rel.field.remote_field.to
                     field_name = self.parent_field
                 else:
                     try:
-                        from django.db.models.fields.related import (
-                            ForeignObjectRel)
-                        if isinstance(rel.rel, ForeignObjectRel):
-                            to = rel.rel.related_model
+                        from django.db.models.fields.related import ForeignObjectRel
+
+                        if isinstance(rel.remote_field, ForeignObjectRel):
+                            to = rel.remote_field.related_model
                         else:
-                            to = rel.rel.model
+                            to = rel.remote_field.model
                     except ImportError:
                         to = rel.rel.model
-                    field_name = rel.rel.field.name
+                    field_name = rel.remote_field.field.name
             else:
                 to = field.rel.to
-                if main_key == 'pk':
-                    to_field = field.rel.field_name
-                    if to_field == 'vid':
-                        to_field = 'object_id'
+                if main_key == "pk":
+                    to_field = field.remote_field.field_name
+                    if to_field == "vid":
+                        to_field = "object_id"
                 else:
                     to_field = main_key
                 kwargs[to_field] = main_arg
@@ -695,7 +718,8 @@ class ModelCMSMixin(object):
                         self.queryset = getattr(obj, field_name)
                     else:
                         self.queryset = self.model.objects.filter(
-                                                    **{self.parent_field: obj})
+                            **{self.parent_field: obj}
+                        )
                 return obj
             except to.DoesNotExist:
                 raise http.Http404
@@ -730,7 +754,7 @@ class ModelCMSView(CMSView):
         of `self.object`.
         """
         if not message:
-                message = u"%s saved" % self.object
+            message = "%s saved" % self.object
         messages.add_message(self.request, status, message)
         return message
 
@@ -743,11 +767,10 @@ class ModelCMSView(CMSView):
         """
 
         if not request_kwargs:
-            request_kwargs = getattr(self, 'kwargs', {})
+            request_kwargs = getattr(self, "kwargs", {})
 
-        kwargs = super(ModelCMSView, self).get_url_kwargs(request_kwargs,
-                                                          **kwargs)
-        obj = kwargs.pop('object', None)
+        kwargs = super(ModelCMSView, self).get_url_kwargs(request_kwargs, **kwargs)
+        obj = kwargs.pop("object", None)
         if obj:
             kwargs[self.slug_url_kwarg] = getattr(obj, self.slug_field, None)
         elif self.slug_url_kwarg in request_kwargs:
@@ -756,9 +779,12 @@ class ModelCMSView(CMSView):
         return kwargs
 
     def _model_name(self, plural=False):
-        return helpers.model_name(self.model, self.custom_model_name,
-                                  self.custom_model_name_plural,
-                                  plural=plural)
+        return helpers.model_name(
+            self.model,
+            self.custom_model_name,
+            self.custom_model_name_plural,
+            plural=plural,
+        )
 
     @property
     def model_name_plural(self):
@@ -782,6 +808,6 @@ class ModelCMSView(CMSView):
         """
         Adds the model_name to the context, then calls super.
         """
-        kwargs['model_name'] = self.model_name
-        kwargs['model_name_plural'] = self.model_name_plural
+        kwargs["model_name"] = self.model_name
+        kwargs["model_name_plural"] = self.model_name_plural
         return super(ModelCMSView, self).get_render_data(**kwargs)

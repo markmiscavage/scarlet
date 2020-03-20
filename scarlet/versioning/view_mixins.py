@@ -21,11 +21,14 @@ class PreviewableObject(SingleObjectMixin):
 
         schema = manager.get_schema()
         vid = None
-        if self.request.GET.get('vid') and self.request.user.is_staff and \
-                self.request.user.is_active:
+        if (
+            self.request.GET.get("vid")
+            and self.request.user.is_staff
+            and self.request.user.is_active
+        ):
             try:
-                schema = 'public'
-                vid = int(self.request.GET.get('vid'))
+                schema = "public"
+                vid = int(self.request.GET.get("vid"))
                 queryset = self.model.normal.filter(vid=vid)
             except ValueError:
                 pass
@@ -51,15 +54,17 @@ class PreviewableObject(SingleObjectMixin):
 
             # If none of those are defined, it's an error.
             else:
-                raise AttributeError(u"View %s must be called with "
-                                     u"either an object pk or a slug."
-                                     % self.__class__.__name__)
+                raise AttributeError(
+                    "View %s must be called with "
+                    "either an object pk or a slug." % self.__class__.__name__
+                )
 
             try:
                 obj = queryset.get()
             except queryset.model.DoesNotExist:
                 raise http.Http404(
-                        u"No %(verbose_name)s found matching the query" %
-                         {'verbose_name': queryset.model._meta.verbose_name})
+                    "No %(verbose_name)s found matching the query"
+                    % {"verbose_name": queryset.model._meta.verbose_name}
+                )
 
         return obj

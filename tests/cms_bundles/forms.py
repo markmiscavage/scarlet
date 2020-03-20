@@ -13,9 +13,10 @@ class EditAuthorForm(forms.ModelForm):
     """
     Form for handling asset updates
     """
+
     class Meta(object):
         model = Author
-        fields = ('name', 'bio')
+        fields = ("name", "bio")
 
     def __init__(self, *args, **kwargs):
         super(EditAuthorForm, self).__init__(*args, **kwargs)
@@ -24,4 +25,4 @@ class EditAuthorForm(forms.ModelForm):
 class TestPostForm(forms.ModelForm):
     class Meta(object):
         model = Post
-        fields = '__all__'
+        fields = "__all__"

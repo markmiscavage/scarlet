@@ -28,41 +28,42 @@ class CropBundle(bundles.BlankBundle):
     navigation = bundles.PARENT
     object_view = bundles.PARENT
 
-    edit_asset = bundles.URLAlias(bundle_attr=bundles.PARENT,
-                                  alias_to="edit")
+    edit_asset = bundles.URLAlias(bundle_attr=bundles.PARENT, alias_to="edit")
 
-    main = views.ListView(allow_empty=False,
-                         base_template="cms/partial.html",
-                          base_filter_kwargs={'editable': True})
+    main = views.ListView(
+        allow_empty=False,
+        base_template="cms/partial.html",
+        base_filter_kwargs={"editable": True},
+    )
     edit = CropVersionView()
 
     class Meta(object):
-        parent_field = 'image'
+        parent_field = "image"
         model = models.ImageDetail
-        edit_regex_base = '(?P<%(group_name)s_pk>[a-zA-z0-9_.-]+)/%(attname)s/'
+        edit_regex_base = "(?P<%(group_name)s_pk>[a-zA-z0-9_.-]+)/%(attname)s/"
 
 
 class AssetBundle(bundles.Bundle):
 
-    main = AssetListView(display_fields=(preview, "title", "user_filename",
-                                         "modified", "type"))
+    main = AssetListView(
+        display_fields=(preview, "title", "user_filename", "modified", "type")
+    )
     add = AssetFormView(force_add=True, form_class=forms.UploadAssetForm)
     edit = AssetFormView(form_class=forms.UpdateAssetForm)
     crop = CropView(default_template="assets/crop.html")
-    crops = CropBundle.as_subbundle(name='crops')
+    crops = CropBundle.as_subbundle(name="crops")
 
     class Meta(object):
-        item_views = ('edit', 'crop', 'crops', 'delete')
+        item_views = ("edit", "crop", "crops", "delete")
         primary_model_bundle = True
         model = get_asset_model()
 
 
 class EmbedView(cms_bundles.EmbedView):
-
     def get(self, request, *args, **kwargs):
-        tags = request.GET.get('tags')
+        tags = request.GET.get("tags")
         bundle = self.bundle.admin_site.get_bundle_for_model(get_asset_model())
-        api_link = ''
+        api_link = ""
         if bundle:
             api_link = bundle.get_view_url("main", request.user)
             if api_link:
@@ -72,9 +73,9 @@ class EmbedView(cms_bundles.EmbedView):
 
 
 class WYSIWYG(cms_bundles.WYSIWYG):
-    main = EmbedView(default_template='cms/insert_media.html')
+    main = EmbedView(default_template="cms/insert_media.html")
 
 
-site.unregister('wysiwyg')
-site.register('wysiwyg', WYSIWYG(name='wysiwyg'), 21)
-site.register('assets', AssetBundle(name='assets'), 20)
+site.unregister("wysiwyg")
+site.register("wysiwyg", WYSIWYG(name="wysiwyg"), 21)
+site.register("assets", AssetBundle(name="assets"), 20)

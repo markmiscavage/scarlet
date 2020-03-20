@@ -10,19 +10,19 @@ class NameModel(models.Model):
 
     class Meta(object):
         abstract = True
-        app_label='version_twomodels'
+        app_label = "version_twomodels"
 
 
 class AuthorBase(BaseModel):
     class Meta(object):
-        app_label='version_twomodels'
+        app_label = "version_twomodels"
 
 
 class Author(VersionModel, NameModel):
     associates = models.ManyToManyField(AuthorBase, blank=True)
 
     class Meta(object):
-        app_label='version_twomodels'
+        app_label = "version_twomodels"
         _base_model = AuthorBase
 
     def __unicode__(self):
@@ -31,17 +31,17 @@ class Author(VersionModel, NameModel):
 
 class BookBase(BaseModel):
     class Meta(object):
-        app_label = 'version_twomodels'
+        app_label = "version_twomodels"
 
 
 class Book(VersionModel, NameModel):
-    _clone_related = ['review', 'galleries']
+    _clone_related = ["review", "galleries"]
 
     author = models.ForeignKey(AuthorBase)
-    galleries = models.ManyToManyField('Gallery')
+    galleries = models.ManyToManyField("Gallery")
 
     class Meta(object):
-        app_label = 'version_twomodels'
+        app_label = "version_twomodels"
         _base_model = BookBase
 
 
@@ -50,12 +50,12 @@ class Review(Cloneable):
     text = models.CharField(max_length=255)
 
     class Meta(object):
-        app_label = 'version_twomodels'
+        app_label = "version_twomodels"
 
 
 class StoreBase(BaseModel):
     class Meta(object):
-        app_label = 'version_twomodels'
+        app_label = "version_twomodels"
 
 
 class Store(VersionModel, NameModel):
@@ -63,11 +63,11 @@ class Store(VersionModel, NameModel):
 
     class Meta(object):
         _base_model = StoreBase
-        app_label = 'version_twomodels'
+        app_label = "version_twomodels"
 
 
 class Gallery(Cloneable):
     name = models.CharField(max_length=255)
 
     class Meta(object):
-        app_label = 'version_twomodels'
+        app_label = "version_twomodels"

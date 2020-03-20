@@ -22,36 +22,42 @@ class URLNode(Node):
         self.asvar = asvar
 
     def render(self, context):
-        from django.core.urlresolvers import NoReverseMatch
+        from django.urls.exceptions import NoReverseMatch
 
-        url = ''
+        url = ""
 
         # Resolve vars
-        kwargs = dict([(smart_str(k, 'ascii'), v.resolve(context))
-                       for k, v in list(self.kwargs.items())])
-        follow_parent = kwargs.pop('follow_parent', True)
+        kwargs = dict(
+            [
+                (smart_str(k, "ascii"), v.resolve(context))
+                for k, v in list(self.kwargs.items())
+            ]
+        )
+        follow_parent = kwargs.pop("follow_parent", True)
         bundle = self.bundle.resolve(context)
-        url_params = context['url_params']
+        url_params = context["url_params"]
 
         view_name = self.view_name.resolve(context)
         # Try to get the url
         try:
-            url = bundle.get_view_url(view_name, context['user'],
-                                      url_kwargs=kwargs,
-                                      context_kwargs=url_params,
-                                      follow_parent=follow_parent)
+            url = bundle.get_view_url(
+                view_name,
+                context["user"],
+                url_kwargs=kwargs,
+                context_kwargs=url_params,
+                follow_parent=follow_parent,
+            )
         except NoReverseMatch:
             pass
 
         if self.asvar:
             context[self.asvar] = url
-            return ''
+            return ""
         else:
             return url
 
 
 class ViewNode(Node):
-
     def __init__(self, bundle, view_name, asvar):
         self.bundle = bundle
         self.view_name = view_name
@@ -60,16 +66,15 @@ class ViewNode(Node):
     def render(self, context):
 
         bundle = self.bundle.resolve(context)
-        url_params = context['url_params']
+        url_params = context["url_params"]
         view_name = self.view_name.resolve(context)
 
         # Get the string
-        resp = bundle.get_string_from_view(context['request'],
-                                           view_name, url_params)
+        resp = bundle.get_string_from_view(context["request"], view_name, url_params)
 
         if self.asvar:
             context[self.asvar] = resp
-            return ''
+            return ""
         else:
             return resp
 
@@ -81,25 +86,29 @@ class StringNode(Node):
 
     def render(self, context):
 
-        modules = self.viewname.split('.')
+        modules = self.viewname.split(".")
         if len(modules) == 1:
             module = modules[0]
             view = __import__(module, globals(), locals(), [], -1)
         else:
-            module = '.'.join(modules[:-1])
+            module = ".".join(modules[:-1])
             view_name = str(modules[-1])
             module = __import__(module, globals(), locals(), [view_name], -1)
             view = getattr(module, view_name)
 
-        kwargs = dict([(smart_str(k, 'ascii'), v.resolve(context))
-                       for k, v in list(self.kwargs.items())])
+        kwargs = dict(
+            [
+                (smart_str(k, "ascii"), v.resolve(context))
+                for k, v in list(self.kwargs.items())
+            ]
+        )
 
         class_kwargs = {}
-        for k,v in list(kwargs.items()):
+        for k, v in list(kwargs.items()):
             if hasattr(view, k):
                 class_kwargs[k] = v
 
-        return view.as_string(**class_kwargs)(context['request'], **kwargs)
+        return view.as_string(**class_kwargs)(context["request"], **kwargs)
 
 
 @register.tag
@@ -154,15 +163,16 @@ def bundle_view(parser, token):
 
     bits = token.split_contents()
     if len(bits) < 3:
-        raise TemplateSyntaxError("'%s' takes at least two arguments"
-                                  " bundle and view_name" % bits[0])
+        raise TemplateSyntaxError(
+            "'%s' takes at least two arguments" " bundle and view_name" % bits[0]
+        )
 
     bundle = parser.compile_filter(bits[1])
     viewname = parser.compile_filter(bits[2])
 
     asvar = None
     bits = bits[2:]
-    if len(bits) >= 2 and bits[-2] == 'as':
+    if len(bits) >= 2 and bits[-2] == "as":
         asvar = bits[-1]
         bits = bits[:-2]
 
@@ -197,8 +207,9 @@ def bundle_url(parser, token):
 
     bits = token.split_contents()
     if len(bits) < 3:
-        raise TemplateSyntaxError("'%s' takes at least two arguments"
-                                  " bundle and view_name" % bits[0])
+        raise TemplateSyntaxError(
+            "'%s' takes at least two arguments" " bundle and view_name" % bits[0]
+        )
 
     bundle = parser.compile_filter(bits[1])
     viewname = parser.compile_filter(bits[2])
@@ -206,7 +217,7 @@ def bundle_url(parser, token):
     kwargs = {}
     asvar = None
     bits = bits[2:]
-    if len(bits) >= 2 and bits[-2] == 'as':
+    if len(bits) >= 2 and bits[-2] == "as":
         asvar = bits[-1]
         bits = bits[:-2]
 
@@ -222,7 +233,7 @@ def bundle_url(parser, token):
     return URLNode(bundle, viewname, kwargs, asvar)
 
 
-@register.assignment_tag
+@register.simple_tag
 def user_url(user, bundle):
     """
     Filter for a user object. Checks if a user has
@@ -235,5 +246,5 @@ def user_url(user, bundle):
     edit = None
 
     if bundle:
-        edit = bundle.get_view_url('main', user)
+        edit = bundle.get_view_url("main", user)
     return edit

@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+
 try:
     from ..cms import renders
 except ValueError:
@@ -13,16 +14,12 @@ class AssetRenderer(renders.ChoicesRender):
         for row in adm_list:
             o = row.instance
 
-            if hasattr(o.file, 'admin_url'):
+            if hasattr(o.file, "admin_url"):
                 thumbnail = o.file.admin_url()
 
-            data = {
-                'id': o.pk,
-                'user_filename': o.user_filename,
-                'url': o.file.url
-            }
+            data = {"id": o.pk, "user_filename": o.user_filename, "url": o.file.url}
             if thumbnail:
-                data['thumbnail'] = thumbnail
+                data["thumbnail"] = thumbnail
 
             l.append(data)
 
@@ -30,20 +27,12 @@ class AssetRenderer(renders.ChoicesRender):
 
     def get_fields(self, fields):
         data = {
-            'user_filename': {
-                'sortable': False,
-                'order_type': '',
-                'name': 'User Filename'
+            "user_filename": {
+                "sortable": False,
+                "order_type": "",
+                "name": "User Filename",
             },
-            'thumbnail': {
-                'sortable': False,
-                'order_type': '',
-                'name': 'Thumbnail'
-            },
-            'url': {
-                'sortable': False,
-                'order_type': '',
-                'name': 'Url'
-            }
+            "thumbnail": {"sortable": False, "order_type": "", "name": "Thumbnail"},
+            "url": {"sortable": False, "order_type": "", "name": "Url"},
         }
         return data, []

@@ -21,221 +21,460 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Category',
+            name="Category",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('last_save', models.DateTimeField(editable=False)),
-                ('is_published', models.BooleanField(default=False, editable=False)),
-                ('created_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
-                ('v_last_save', models.DateTimeField(editable=False, null=True)),
-                ('state', models.CharField(choices=[('published', 'published'), ('scheduled', 'scheduled'), ('draft', 'draft'), ('archived', 'archived')], editable=False, max_length=50)),
-                ('last_scheduled', models.DateTimeField(editable=False, null=True)),
-                ('date_published', models.DateTimeField(editable=False, null=True)),
-                ('user_published', models.CharField(editable=False, max_length=255, null=True)),
-                ('vid', models.PositiveIntegerField(editable=False, unique=True)),
-                ('object_id', models.PositiveIntegerField(editable=False)),
-                ('category', models.CharField(max_length=150)),
-                ('slug', models.SlugField(editable=False, max_length=150)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("last_save", models.DateTimeField(editable=False)),
+                ("is_published", models.BooleanField(default=False, editable=False)),
+                (
+                    "created_date",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
+                ),
+                ("v_last_save", models.DateTimeField(editable=False, null=True)),
+                (
+                    "state",
+                    models.CharField(
+                        choices=[
+                            ("published", "published"),
+                            ("scheduled", "scheduled"),
+                            ("draft", "draft"),
+                            ("archived", "archived"),
+                        ],
+                        editable=False,
+                        max_length=50,
+                    ),
+                ),
+                ("last_scheduled", models.DateTimeField(editable=False, null=True)),
+                ("date_published", models.DateTimeField(editable=False, null=True)),
+                (
+                    "user_published",
+                    models.CharField(editable=False, max_length=255, null=True),
+                ),
+                ("vid", models.PositiveIntegerField(editable=False, unique=True)),
+                ("object_id", models.PositiveIntegerField(editable=False)),
+                ("category", models.CharField(max_length=150)),
+                ("slug", models.SlugField(editable=False, max_length=150)),
             ],
-            options={
-                'db_table': 'cms_bundles_category_base',
-                'managed': False,
-            },
+            options={"db_table": "cms_bundles_category_base", "managed": False,},
             bases=(models.Model, cms_bundles_models.CategoryReferences),
         ),
         migrations.CreateModel(
-            name='Comment',
+            name="Comment",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('last_save', models.DateTimeField(editable=False)),
-                ('is_published', models.BooleanField(default=False, editable=False)),
-                ('created_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
-                ('v_last_save', models.DateTimeField(editable=False, null=True)),
-                ('state', models.CharField(choices=[('published', 'published'), ('scheduled', 'scheduled'), ('draft', 'draft'), ('archived', 'archived')], editable=False, max_length=50)),
-                ('last_scheduled', models.DateTimeField(editable=False, null=True)),
-                ('date_published', models.DateTimeField(editable=False, null=True)),
-                ('user_published', models.CharField(editable=False, max_length=255, null=True)),
-                ('vid', models.PositiveIntegerField(editable=False, unique=True)),
-                ('object_id', models.PositiveIntegerField(editable=False)),
-                ('name', models.CharField(max_length=100)),
-                ('text', models.TextField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("last_save", models.DateTimeField(editable=False)),
+                ("is_published", models.BooleanField(default=False, editable=False)),
+                (
+                    "created_date",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
+                ),
+                ("v_last_save", models.DateTimeField(editable=False, null=True)),
+                (
+                    "state",
+                    models.CharField(
+                        choices=[
+                            ("published", "published"),
+                            ("scheduled", "scheduled"),
+                            ("draft", "draft"),
+                            ("archived", "archived"),
+                        ],
+                        editable=False,
+                        max_length=50,
+                    ),
+                ),
+                ("last_scheduled", models.DateTimeField(editable=False, null=True)),
+                ("date_published", models.DateTimeField(editable=False, null=True)),
+                (
+                    "user_published",
+                    models.CharField(editable=False, max_length=255, null=True),
+                ),
+                ("vid", models.PositiveIntegerField(editable=False, unique=True)),
+                ("object_id", models.PositiveIntegerField(editable=False)),
+                ("name", models.CharField(max_length=100)),
+                ("text", models.TextField()),
             ],
-            options={
-                'db_table': 'cms_bundles_comment_base',
-                'managed': False,
-            },
+            options={"db_table": "cms_bundles_comment_base", "managed": False,},
             bases=(models.Model, cms_bundles_models.CommentReferences),
         ),
         migrations.CreateModel(
-            name='Post',
+            name="Post",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('last_save', models.DateTimeField(editable=False)),
-                ('is_published', models.BooleanField(default=False, editable=False)),
-                ('created_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
-                ('v_last_save', models.DateTimeField(editable=False, null=True)),
-                ('state', models.CharField(choices=[('published', 'published'), ('scheduled', 'scheduled'), ('draft', 'draft'), ('archived', 'archived')], editable=False, max_length=50)),
-                ('last_scheduled', models.DateTimeField(editable=False, null=True)),
-                ('date_published', models.DateTimeField(editable=False, null=True)),
-                ('user_published', models.CharField(editable=False, max_length=255, null=True)),
-                ('vid', models.PositiveIntegerField(editable=False, unique=True)),
-                ('object_id', models.PositiveIntegerField(editable=False)),
-                ('date', models.DateField()),
-                ('title', models.CharField(max_length=255)),
-                ('slug', models.SlugField(editable=False, max_length=255)),
-                ('body', models.TextField()),
-                ('keywords', models.TextField(blank=True)),
-                ('description', models.TextField(blank=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("last_save", models.DateTimeField(editable=False)),
+                ("is_published", models.BooleanField(default=False, editable=False)),
+                (
+                    "created_date",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
+                ),
+                ("v_last_save", models.DateTimeField(editable=False, null=True)),
+                (
+                    "state",
+                    models.CharField(
+                        choices=[
+                            ("published", "published"),
+                            ("scheduled", "scheduled"),
+                            ("draft", "draft"),
+                            ("archived", "archived"),
+                        ],
+                        editable=False,
+                        max_length=50,
+                    ),
+                ),
+                ("last_scheduled", models.DateTimeField(editable=False, null=True)),
+                ("date_published", models.DateTimeField(editable=False, null=True)),
+                (
+                    "user_published",
+                    models.CharField(editable=False, max_length=255, null=True),
+                ),
+                ("vid", models.PositiveIntegerField(editable=False, unique=True)),
+                ("object_id", models.PositiveIntegerField(editable=False)),
+                ("date", models.DateField()),
+                ("title", models.CharField(max_length=255)),
+                ("slug", models.SlugField(editable=False, max_length=255)),
+                ("body", models.TextField()),
+                ("keywords", models.TextField(blank=True)),
+                ("description", models.TextField(blank=True)),
             ],
-            options={
-                'db_table': 'cms_bundles_post_base',
-                'managed': False,
-            },
+            options={"db_table": "cms_bundles_post_base", "managed": False,},
             bases=(models.Model, cms_bundles_models.PostReferences),
         ),
         migrations.CreateModel(
-            name='Author',
+            name="Author",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('bio', models.TextField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("bio", models.TextField()),
             ],
         ),
         migrations.CreateModel(
-            name='Category_base',
+            name="Category_base",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_published', models.BooleanField(default=False, editable=False)),
-                ('created_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
-                ('v_last_save', models.DateTimeField(editable=False, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_published", models.BooleanField(default=False, editable=False)),
+                (
+                    "created_date",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
+                ),
+                ("v_last_save", models.DateTimeField(editable=False, null=True)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False,},
         ),
         migrations.CreateModel(
-            name='Category_version',
+            name="Category_version",
             fields=[
-                ('last_save', models.DateTimeField(editable=False)),
-                ('state', models.CharField(choices=[('published', 'published'), ('scheduled', 'scheduled'), ('draft', 'draft'), ('archived', 'archived')], editable=False, max_length=50)),
-                ('last_scheduled', models.DateTimeField(editable=False, null=True)),
-                ('date_published', models.DateTimeField(editable=False, null=True)),
-                ('user_published', models.CharField(editable=False, max_length=255, null=True)),
-                ('category', models.CharField(max_length=150)),
-                ('slug', models.SlugField(editable=False, max_length=150)),
-                ('vid', models.AutoField(primary_key=True, serialize=False)),
-                ('object', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='version_version', to='cms_bundles.Category_base')),
+                ("last_save", models.DateTimeField(editable=False)),
+                (
+                    "state",
+                    models.CharField(
+                        choices=[
+                            ("published", "published"),
+                            ("scheduled", "scheduled"),
+                            ("draft", "draft"),
+                            ("archived", "archived"),
+                        ],
+                        editable=False,
+                        max_length=50,
+                    ),
+                ),
+                ("last_scheduled", models.DateTimeField(editable=False, null=True)),
+                ("date_published", models.DateTimeField(editable=False, null=True)),
+                (
+                    "user_published",
+                    models.CharField(editable=False, max_length=255, null=True),
+                ),
+                ("category", models.CharField(max_length=150)),
+                ("slug", models.SlugField(editable=False, max_length=150)),
+                ("vid", models.AutoField(primary_key=True, serialize=False)),
+                (
+                    "object",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="version_version",
+                        to="cms_bundles.Category_base",
+                    ),
+                ),
             ],
-            options={
-                'managed': True,
-            },
+            options={"managed": True,},
             bases=(models.Model, cms_bundles_models.CategoryVersionReferences),
         ),
         migrations.CreateModel(
-            name='Comment_base',
+            name="Comment_base",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_published', models.BooleanField(default=False, editable=False)),
-                ('created_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
-                ('v_last_save', models.DateTimeField(editable=False, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_published", models.BooleanField(default=False, editable=False)),
+                (
+                    "created_date",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
+                ),
+                ("v_last_save", models.DateTimeField(editable=False, null=True)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False,},
         ),
         migrations.CreateModel(
-            name='Comment_version',
+            name="Comment_version",
             fields=[
-                ('last_save', models.DateTimeField(editable=False)),
-                ('state', models.CharField(choices=[('published', 'published'), ('scheduled', 'scheduled'), ('draft', 'draft'), ('archived', 'archived')], editable=False, max_length=50)),
-                ('last_scheduled', models.DateTimeField(editable=False, null=True)),
-                ('date_published', models.DateTimeField(editable=False, null=True)),
-                ('user_published', models.CharField(editable=False, max_length=255, null=True)),
-                ('name', models.CharField(max_length=100)),
-                ('text', models.TextField()),
-                ('vid', models.AutoField(primary_key=True, serialize=False)),
-                ('object', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='version_version', to='cms_bundles.Comment_base')),
-                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cms_bundles.Post')),
+                ("last_save", models.DateTimeField(editable=False)),
+                (
+                    "state",
+                    models.CharField(
+                        choices=[
+                            ("published", "published"),
+                            ("scheduled", "scheduled"),
+                            ("draft", "draft"),
+                            ("archived", "archived"),
+                        ],
+                        editable=False,
+                        max_length=50,
+                    ),
+                ),
+                ("last_scheduled", models.DateTimeField(editable=False, null=True)),
+                ("date_published", models.DateTimeField(editable=False, null=True)),
+                (
+                    "user_published",
+                    models.CharField(editable=False, max_length=255, null=True),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("text", models.TextField()),
+                ("vid", models.AutoField(primary_key=True, serialize=False)),
+                (
+                    "object",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="version_version",
+                        to="cms_bundles.Comment_base",
+                    ),
+                ),
+                (
+                    "post",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="cms_bundles.Post",
+                    ),
+                ),
             ],
-            options={
-                'managed': True,
-            },
+            options={"managed": True,},
             bases=(models.Model, cms_bundles_models.CommentVersionReferences),
         ),
         migrations.CreateModel(
-            name='DummyModel',
+            name="DummyModel",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
             ],
         ),
         migrations.CreateModel(
-            name='Post_base',
+            name="Post_base",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_published', models.BooleanField(default=False, editable=False)),
-                ('created_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
-                ('v_last_save', models.DateTimeField(editable=False, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_published", models.BooleanField(default=False, editable=False)),
+                (
+                    "created_date",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
+                ),
+                ("v_last_save", models.DateTimeField(editable=False, null=True)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False,},
         ),
         migrations.CreateModel(
-            name='Post_version',
+            name="Post_version",
             fields=[
-                ('last_save', models.DateTimeField(editable=False)),
-                ('state', models.CharField(choices=[('published', 'published'), ('scheduled', 'scheduled'), ('draft', 'draft'), ('archived', 'archived')], editable=False, max_length=50)),
-                ('last_scheduled', models.DateTimeField(editable=False, null=True)),
-                ('date_published', models.DateTimeField(editable=False, null=True)),
-                ('user_published', models.CharField(editable=False, max_length=255, null=True)),
-                ('date', models.DateField()),
-                ('title', models.CharField(max_length=255)),
-                ('slug', models.SlugField(editable=False, max_length=255)),
-                ('body', models.TextField()),
-                ('keywords', models.TextField(blank=True)),
-                ('description', models.TextField(blank=True)),
-                ('vid', models.AutoField(primary_key=True, serialize=False)),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='cms_bundles.Author')),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cms_bundles.Category')),
-                ('object', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='version_version', to='cms_bundles.Post_base')),
+                ("last_save", models.DateTimeField(editable=False)),
+                (
+                    "state",
+                    models.CharField(
+                        choices=[
+                            ("published", "published"),
+                            ("scheduled", "scheduled"),
+                            ("draft", "draft"),
+                            ("archived", "archived"),
+                        ],
+                        editable=False,
+                        max_length=50,
+                    ),
+                ),
+                ("last_scheduled", models.DateTimeField(editable=False, null=True)),
+                ("date_published", models.DateTimeField(editable=False, null=True)),
+                (
+                    "user_published",
+                    models.CharField(editable=False, max_length=255, null=True),
+                ),
+                ("date", models.DateField()),
+                ("title", models.CharField(max_length=255)),
+                ("slug", models.SlugField(editable=False, max_length=255)),
+                ("body", models.TextField()),
+                ("keywords", models.TextField(blank=True)),
+                ("description", models.TextField(blank=True)),
+                ("vid", models.AutoField(primary_key=True, serialize=False)),
+                (
+                    "author",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="cms_bundles.Author",
+                    ),
+                ),
+                (
+                    "category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="cms_bundles.Category",
+                    ),
+                ),
+                (
+                    "object",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="version_version",
+                        to="cms_bundles.Post_base",
+                    ),
+                ),
             ],
-            options={
-                'managed': True,
-            },
+            options={"managed": True,},
             bases=(models.Model, cms_bundles_models.PostVersionReferences),
         ),
         migrations.CreateModel(
-            name='PostImage',
+            name="PostImage",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('last_save', models.DateTimeField(editable=False)),
-                ('caption', models.CharField(blank=True, max_length=255)),
-                ('order', scarlet.cms.fields.OrderField(db_index=True, default=0)),
-                ('post', scarlet.versioning.fields.FKToVersion(on_delete=django.db.models.deletion.CASCADE, to='cms_bundles.Post_version')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("last_save", models.DateTimeField(editable=False)),
+                ("caption", models.CharField(blank=True, max_length=255)),
+                ("order", scarlet.cms.fields.OrderField(db_index=True, default=0)),
+                (
+                    "post",
+                    scarlet.versioning.fields.FKToVersion(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="cms_bundles.Post_version",
+                    ),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False,},
         ),
         migrations.CreateModel(
-            name='Tag',
+            name="Tag",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
             ],
         ),
         migrations.CreateModel(
-            name='UserSite',
+            name="UserSite",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('data', models.IntegerField()),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, to_field='username')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("data", models.IntegerField()),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        to_field="username",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='post_version',
-            name='tags',
-            field=scarlet.versioning.fields.M2MFromVersion(blank=True, to='cms_bundles.Tag'),
+            model_name="post_version",
+            name="tags",
+            field=scarlet.versioning.fields.M2MFromVersion(
+                blank=True, to="cms_bundles.Tag"
+            ),
         ),
     ]

@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 from builtins import object
+
+
 class Meta(object):
     """
     The options class for Bundle objects, every bundle will
@@ -47,39 +49,39 @@ class Meta(object):
     """
 
     view_attributes = (
-        'model',
-        'parent_field',
-        'parent_lookups',
-        'base_template',
-        'custom_model_name',
-        'custom_model_name_plural'
+        "model",
+        "parent_field",
+        "parent_lookups",
+        "base_template",
+        "custom_model_name",
+        "custom_model_name_plural",
     )
 
     other_attributes = (
-        'item_regex_base',
-        'item_views',
-        'live_views',
-        'defaults',
-        'default_kwargs',
-        'primary_model_bundle',
-        'action_views'
+        "item_regex_base",
+        "item_views",
+        "live_views",
+        "defaults",
+        "default_kwargs",
+        "primary_model_bundle",
+        "action_views",
     )
 
     def __init__(self):
         self.primary_model_bundle = False
 
         # which items should use item_regex_base
-        self.item_views = ('edit',)
+        self.item_views = ("edit",)
 
         # which items are considered live actions
-        self.live_views = ('delete',)
+        self.live_views = ("delete",)
 
         # which items should be displayed as mass actions
-        self.action_views = ('delete',)
+        self.action_views = ("delete",)
 
         # The regex that should be used to match in
         # urls the value for %s is determined by the bundle
-        self.item_regex_base = '(?P<%(name)s_pk>\d+)/'
+        self.item_regex_base = "(?P<%(name)s_pk>\d+)/"
 
         # the models that views are based on.
         # If not give all items are ignored.
@@ -97,7 +99,7 @@ class Meta(object):
         # be included when finding a parent. Only used if parent_field is
         self.parent_lookups = None
 
-        self.add_kwargs = {'force_add': True}
+        self.add_kwargs = {"force_add": True}
 
         # Kwargs that get passed to all views
         self.default_kwargs = {}
@@ -107,10 +109,11 @@ class Meta(object):
         allowed.extend(list(self.other_attributes))
 
         if meta:
-            for k in [x for x in dir(meta) \
-                        if x in allowed or \
-                        x.endswith('_kwargs') or \
-                        x.endswith('_regex_base')]:
+            for k in [
+                x
+                for x in dir(meta)
+                if x in allowed or x.endswith("_kwargs") or x.endswith("_regex_base")
+            ]:
 
                 v = getattr(meta, k)
                 if type(v) == type({}) and getattr(self, k, None):
@@ -135,19 +138,23 @@ class Meta(object):
         for k in self.view_attributes:
             if hasattr(self, k):
                 data[k] = getattr(self, k)
-        data.update(getattr(self, '%s_kwargs' % name, {}))
+        data.update(getattr(self, "%s_kwargs" % name, {}))
         return data
 
 
 class VersionMeta(object):
-    item_views = ('edit', 'versions')
-    live_views = ('delete', 'publish', 'unpublish', 'versions')
-    action_views = ('delete', 'publish', 'unpublish')
+    item_views = ("edit", "versions")
+    live_views = ("delete", "publish", "unpublish", "versions")
+    action_views = ("delete", "publish", "unpublish")
+
 
 class Orderable(object):
     """
     Allows rows to be reordered on the 'main' list page.
     """
-    main_kwargs = {'change_fields': ('order',),
-                   'base_template': 'cms/base_bundle_view.html',
-                   'can_sort': False}
+
+    main_kwargs = {
+        "change_fields": ("order",),
+        "base_template": "cms/base_bundle_view.html",
+        "can_sort": False,
+    }

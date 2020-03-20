@@ -16,7 +16,7 @@ def switch_state(request):
 
     # Get redirect location
     # Don't go to non local paths
-    url = request.GET.get('redirect_to', '/')
-    if url.startswith('http'):
-        url = '/'
+    url = request.GET.get("redirect_to", "/")
+    if url.startswith("http"):
+        url = "/"
     return redirect(url)

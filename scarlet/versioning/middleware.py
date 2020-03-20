@@ -3,7 +3,7 @@ from builtins import object
 from . import manager
 from . import models
 
-SESSION_KEY = 'show_drafts'
+SESSION_KEY = "show_drafts"
 
 
 class StateMiddleware(object):
@@ -16,8 +16,7 @@ class StateMiddleware(object):
     def process_request(self, request):
         state = models.BaseVersionedModel.PUBLISHED
         if request.user.is_staff:
-            state = request.session.get(SESSION_KEY,
-                        models.BaseVersionedModel.DRAFT)
+            state = request.session.get(SESSION_KEY, models.BaseVersionedModel.DRAFT)
 
         manager.activate(state)
 

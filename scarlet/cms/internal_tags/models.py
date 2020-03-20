@@ -13,9 +13,10 @@ class AutoTagModel(models.Model):
             self._pending_tags = set(value)
 
     def _get_auto_tags(self):
-        if not getattr(self, '_pending_tags', None):
+        if not getattr(self, "_pending_tags", None):
             self._pending_tags = set()
         return self._pending_tags
+
     auto_tags = property(_get_auto_tags, _set_auto_tags)
 
     def add_pending_tags(self, field_tags):
@@ -29,8 +30,7 @@ class AutoTagModel(models.Model):
             for tag in needed_tags:
                 t = existing_tags.get(tag)
                 if not t:
-                    t, created = handler.get_model().objects.get_or_create(
-                        name=tag)
+                    t, created = handler.get_model().objects.get_or_create(name=tag)
 
                 if not t.pk in current_tags:
                     self.tags.add(t)

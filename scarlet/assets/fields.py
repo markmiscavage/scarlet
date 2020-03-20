@@ -1,7 +1,5 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
 import logging
 import urllib.parse
 
@@ -12,16 +10,14 @@ from django.db.models.fields import FieldDoesNotExist
 from django.core.exceptions import ObjectDoesNotExist
 
 try:
-    from ..cms.internal_tags.fields import (TaggedRelationFormField,
-                                    TaggedRelationField)
+    from ..cms.internal_tags.fields import TaggedRelationFormField, TaggedRelationField
 except ValueError:
-    from cms.internal_tags.fields import (TaggedRelationFormField,
-                                    TaggedRelationField)
+    from cms.internal_tags.fields import TaggedRelationFormField, TaggedRelationField
 
 from . import settings
 from . import utils
 from . import widgets
-from . import get_asset_model, get_image_cropper
+from . import get_image_cropper
 
 logger = logging.getLogger(__name__)
 
@@ -31,8 +27,8 @@ class AssetsFileFormField(TaggedRelationFormField):
 
     def __init__(self, **kwargs):
         # Type/Tags
-        self.asset_type = kwargs.pop('asset_type', None)
-        self.sizes = kwargs.pop('sizes', None)
+        self.asset_type = kwargs.pop("asset_type", None)
+        self.sizes = kwargs.pop("sizes", None)
         super(AssetsFileFormField, self).__init__(**kwargs)
 
     def widget_attrs(self, widget):
@@ -43,15 +39,15 @@ class AssetsFileFormField(TaggedRelationFormField):
 
 
 class AssetFieldFile(FieldFile):
-
     def __init__(self, *args, **kwargs):
         super(AssetFieldFile, self).__init__(*args, **kwargs)
-        sizes = list(getattr(self.field, 'image_sizes', []))
+        sizes = list(getattr(self.field, "image_sizes", []))
         sizes.extend(get_image_cropper().required_crops())
 
         for size in sizes:
-            setattr(self, "{0}_url".format(size),
-                    utils.partial(self._get_url, version=size))
+            setattr(
+                self, "{0}_url".format(size), utils.partial(self._get_url, version=size)
+            )
 
     def get_version(self, version, cbversion=None):
         return self._get_url(version, cbversion=cbversion)
@@ -67,8 +63,8 @@ class AssetFieldFile(FieldFile):
                 url = urllib.parse.urlunsplit(url_parts)
             if settings.USE_CACHE_BUST:
                 if not cbversion:
-                    if getattr(self.instance, 'cbversion', None):
-                        cbversion = getattr(self.instance, 'cbversion')
+                    if getattr(self.instance, "cbversion", None):
+                        cbversion = getattr(self.instance, "cbversion")
 
                 if not cbversion:
                     cbversion = utils.get_cache_bust_version(url)
@@ -76,6 +72,7 @@ class AssetFieldFile(FieldFile):
         if cbversion:
             url = "{0}?v={1}".format(url, cbversion)
         return url
+
     url = property(_get_url)
 
 
@@ -83,7 +80,7 @@ class AssetRealFileField(models.FileField):
     attr_class = AssetFieldFile
 
     def __init__(self, *args, **kwargs):
-        self.image_sizes = kwargs.pop('image_sizes', [])
+        self.image_sizes = kwargs.pop("image_sizes", [])
         super(AssetRealFileField, self).__init__(*args, **kwargs)
 
 
@@ -92,22 +89,24 @@ class AssetsFileField(TaggedRelationField):
     default_cache_field_class = AssetRealFileField
 
     def __init__(self, *args, **kwargs):
-        if 'related_name' not in kwargs:
-            kwargs['related_name'] = '+'
+        if "related_name" not in kwargs:
+            kwargs["related_name"] = "+"
 
-        if 'on_delete' not in kwargs:
-            kwargs['on_delete'] = models.PROTECT
+        if "on_delete" not in kwargs:
+            kwargs["on_delete"] = models.PROTECT
 
-        self.cache_field_class = kwargs.pop('cache_field_class',
-                                            self.default_cache_field_class)
-        self.asset_type = kwargs.pop('type', 'unknown')
-        self.denormalize = kwargs.pop('denormalize', True)
+        self.cache_field_class = kwargs.pop(
+            "cache_field_class", self.default_cache_field_class
+        )
+        self.asset_type = kwargs.pop("type", "unknown")
+        self.denormalize = kwargs.pop("denormalize", True)
 
-        image_sizes = kwargs.pop('image_sizes', [])
+        image_sizes = kwargs.pop("image_sizes", [])
         cropper = get_image_cropper()
 
         self.image_sizes = []
         from .crops import CropConfig
+
         if isinstance(image_sizes, dict):
             for k, v in list(image_sizes.items()):
                 if v and isinstance(v, dict):
@@ -118,15 +117,15 @@ class AssetsFileField(TaggedRelationField):
                 cropper.register(c)
                 self.image_sizes.append(c.name)
 
-        kwargs['to'] = settings.ASSET_MODEL
+        kwargs["to"] = settings.ASSET_MODEL
         return super(AssetsFileField, self).__init__(**kwargs)
 
     def get_formfield_defaults(self):
         # This is a fairly standard way to set up some defaults
         # while letting the caller override them.
         defaults = super(AssetsFileField, self).get_formfield_defaults()
-        defaults['asset_type'] = self.asset_type
-        defaults['sizes'] = self.image_sizes
+        defaults["asset_type"] = self.asset_type
+        defaults["sizes"] = self.image_sizes
         return defaults
 
     def contribute_to_class(self, cls, name):
@@ -135,11 +134,13 @@ class AssetsFileField(TaggedRelationField):
             try:
                 cls._meta.get_field(cache_name)
             except FieldDoesNotExist:
-                denormalize_field = self.cache_field_class(max_length=255,
-                                                editable=False,
-                                                blank=self.blank,
-                                                upload_to=utils.assets_dir,
-                                                image_sizes=self.image_sizes)
+                denormalize_field = self.cache_field_class(
+                    max_length=255,
+                    editable=False,
+                    blank=self.blank,
+                    upload_to=utils.assets_dir,
+                    image_sizes=self.image_sizes,
+                )
 
                 cls.add_to_class(cache_name, denormalize_field)
             pre_save.connect(denormalize_assets, sender=cls)
@@ -148,14 +149,14 @@ class AssetsFileField(TaggedRelationField):
         super(AssetsFileField, self).contribute_to_class(cls, name)
 
     def get_denormalized_field_name(self, name):
-        return u"{0}_cache".format(name)
+        return "{0}_cache".format(name)
 
     def deconstruct(self):
         """
         Denormalize is always false migrations
         """
         name, path, args, kwargs = super(AssetsFileField, self).deconstruct()
-        kwargs['denormalize'] = False
+        kwargs["denormalize"] = False
         return name, path, args, kwargs
 
 
@@ -174,4 +175,4 @@ def denormalize_assets(sender, instance, **kwargs):
                     else:
                         setattr(instance, cache_name, "")
             except ObjectDoesNotExist:
-                    setattr(instance, cache_name, "")
+                setattr(instance, cache_name, "")

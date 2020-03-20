@@ -28,19 +28,18 @@ class OrderField(models.PositiveIntegerField):
     """
 
     def __init__(self, *args, **kwargs):
-        if 'default' not in kwargs:
-            kwargs['default'] = 0
-        kwargs['db_index'] = True
+        if "default" not in kwargs:
+            kwargs["default"] = 0
+        kwargs["db_index"] = True
         super(OrderField, self).__init__(*args, **kwargs)
 
     def contribute_to_class(self, cls, name):
         super(OrderField, self).contribute_to_class(cls, name)
         if not cls._meta.ordering:
-            cls._meta.ordering = ('order',)
+            cls._meta.ordering = ("order",)
 
     def formfield(self, form_class=OrderFormField, **kwargs):
-        return super(OrderField, self).formfield(form_class=form_class,
-                                                 **kwargs)
+        return super(OrderField, self).formfield(form_class=form_class, **kwargs)
 
 
 class HTMLTextField(models.TextField):
@@ -49,8 +48,8 @@ class HTMLTextField(models.TextField):
     """
 
     def formfield(self, *args, **kwargs):
-        if kwargs.get('widget', None) is None:
-            kwargs['widget'] = widgets.HTMLWidget
+        if kwargs.get("widget", None) is None:
+            kwargs["widget"] = widgets.HTMLWidget
         return super(HTMLTextField, self).formfield(*args, **kwargs)
 
 
@@ -59,6 +58,7 @@ class AnnotationHTMLTextField(HTMLTextField):
     TextField that uses a WYSIWYG editor with annotation support as its
     default widget.
     """
+
     def formfield(self, *args, **kwargs):
-        kwargs['widget'] = widgets.AnnotatedHTMLWidget
+        kwargs["widget"] = widgets.AnnotatedHTMLWidget
         return super(HTMLTextField, self).formfield(*args, **kwargs)

@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from builtins import object
+
 try:
     try:
         from ..cms.views import SiteView as View
@@ -14,8 +15,8 @@ from django.utils.cache import patch_response_headers, get_max_age, patch_vary_h
 from django.conf import settings
 from . import router
 
-class CacheMixin(object):
 
+class CacheMixin(object):
     def should_cache(self):
         """
         Hook for deciding if we want to cache this request or not.
@@ -24,8 +25,7 @@ class CacheMixin(object):
         logged in and that the allow_cache attribute has not been
         set to False.
         """
-        return not self.request.user.is_staff and \
-                    getattr(self, 'allow_cache', True)
+        return not self.request.user.is_staff and getattr(self, "allow_cache", True)
 
     def set_do_not_cache(self):
         """
@@ -49,7 +49,7 @@ class CacheMixin(object):
             Unless overridden.
 
         """
-        raise NotImplementedError('get_cache_version() must be overridden')
+        raise NotImplementedError("get_cache_version() must be overridden")
 
     def get_cache_route_group(self):
         """
@@ -59,9 +59,9 @@ class CacheMixin(object):
 
         By default it uses the default route group
         """
-        return 'default'
+        return "default"
 
-    def get_cache_prefix(self, prefix=''):
+    def get_cache_prefix(self, prefix=""):
         """
         Hook for any extra data you would like
         to prepend to your cache key.
@@ -76,7 +76,7 @@ class CacheMixin(object):
             prefix += settings.CACHE_MIDDLEWARE_KEY_PREFIX
 
         if self.request.is_ajax():
-            prefix += 'ajax'
+            prefix += "ajax"
 
         return prefix
 
@@ -98,14 +98,13 @@ class CacheMixin(object):
 
     def template_response_callback(self, response):
         if self.cache_middleware:
-            response = self.cache_middleware.process_response(
-                self.request, response)
+            response = self.cache_middleware.process_response(self.request, response)
 
         # We might want to cache for longer internally than we tell clients
         max_age = get_max_age(response)
         if max_age and self.max_age < max_age:
             # Remove headers so patch_response works
-            for header in ('ETag', 'Last-Modified', 'Expires'):
+            for header in ("ETag", "Last-Modified", "Expires"):
                 if response.has_header(header):
                     del response[header]
             patch_response_headers(response, self.max_age)
@@ -113,16 +112,16 @@ class CacheMixin(object):
 
     def set_cache_middleware(self, cache_time, prefix):
         name = router.router.get_cache_name(prefix=prefix)
-        self.cache_middleware = CacheMiddleware(cache_timeout=cache_time,
-                                                  key_prefix=prefix,
-                                                cache_alias=name)
+        self.cache_middleware = CacheMiddleware(
+            cache_timeout=cache_time, key_prefix=prefix, cache_alias=name
+        )
 
     def _finalize_cached_response(self, request, response):
         headers = self.get_vary_headers(request, response)
         if headers:
             patch_vary_headers(response, headers)
 
-        if hasattr(response, 'render') and callable(response.render):
+        if hasattr(response, "render") and callable(response.render):
             response.add_post_render_callback(self.template_response_callback)
         else:
             response = self.template_response_callback(response)
@@ -149,7 +148,6 @@ class CacheView(View, CacheMixin):
     you specify here it will be replaced by this value. Defaults to 0.
     """
 
-
     cache_time = 60 * 60
     max_age = 0
 
@@ -165,16 +163,20 @@ class CacheView(View, CacheMixin):
         cache = None
         prefix = None
         if self.should_cache():
-            prefix = "%s:%s:string" % (self.get_cache_version(),
-                                self.get_cache_prefix())
+            prefix = "%s:%s:string" % (
+                self.get_cache_version(),
+                self.get_cache_prefix(),
+            )
             cache = router.router.get_cache(prefix)
             value = cache.get(prefix)
 
         if not value:
-            value = super(CacheView, self).get_as_string(request, *args,
-                                                         **kwargs)
-            if self.should_cache() and value and \
-                    getattr(self.request, '_cache_update_cache', False):
+            value = super(CacheView, self).get_as_string(request, *args, **kwargs)
+            if (
+                self.should_cache()
+                and value
+                and getattr(self.request, "_cache_update_cache", False)
+            ):
                 cache.set(prefix, value, self.cache_time)
 
         return value
@@ -196,8 +198,7 @@ class CacheView(View, CacheMixin):
         response = None
 
         if self.should_cache():
-            prefix = "%s:%s" % (self.get_cache_version(),
-                                self.get_cache_prefix())
+            prefix = "%s:%s" % (self.get_cache_version(), self.get_cache_prefix())
 
             # Using middleware here since that is what the decorator uses
             # internally and it avoids making this code all complicated with
@@ -208,7 +209,6 @@ class CacheView(View, CacheMixin):
             self.set_do_not_cache()
 
         if not response:
-            response = super(CacheView, self).dispatch(self.request, *args,
-                                                       **kwargs)
+            response = super(CacheView, self).dispatch(self.request, *args, **kwargs)
 
         return self._finalize_cached_response(request, response)

@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.admin.forms import AdminAuthenticationForm
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.views.decorators.csrf import csrf_protect
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.paginator import Paginator
 from django.views.decorators.cache import never_cache
 from django.template.response import TemplateResponse
@@ -14,7 +14,7 @@ from django.utils.translation import ugettext as _
 from django import forms
 
 from . import models
-from . forms import BaseFilterForm
+from .forms import BaseFilterForm
 
 try:
     try:
@@ -26,7 +26,7 @@ try:
 except ImportError:
     manager = None
 
-LOGIN_FORM_KEY = 'this_is_the_login_form'
+LOGIN_FORM_KEY = "this_is_the_login_form"
 
 
 class AlreadyRegistered(Exception):
@@ -65,7 +65,7 @@ class AdminSite(object):
     password_change_done_template = None
     dashboard_template = None
 
-    def __init__(self, name='default'):
+    def __init__(self, name="default"):
         self._registry = {}
         self._model_registry = {}
         self._titles = {}
@@ -79,12 +79,13 @@ class AdminSite(object):
         a model.
         """
         if model in self._model_registry:
-            raise AlreadyRegistered('The model %s is already registered' \
-                                     % model)
+            raise AlreadyRegistered("The model %s is already registered" % model)
 
         if bundle.url_params:
-            raise Exception("A primary model bundle cannot have dynamic \
-                            url_parameters")
+            raise Exception(
+                "A primary model bundle cannot have dynamic \
+                            url_parameters"
+            )
 
         self._model_registry[model] = bundle
 
@@ -100,7 +101,7 @@ class AdminSite(object):
         Unregisters the given model.
         """
         if model not in self._model_registry:
-            raise NotRegistered('The model %s is not registered' % model)
+            raise NotRegistered("The model %s is not registered" % model)
 
         del self._model_registry[model]
 
@@ -117,7 +118,7 @@ class AdminSite(object):
         """
 
         if slug in self._registry:
-            raise AlreadyRegistered('The url %s is already registered' % slug)
+            raise AlreadyRegistered("The url %s is already registered" % slug)
 
         # Instantiate the admin class to save in the registry.
         self._registry[slug] = bundle
@@ -134,7 +135,7 @@ class AdminSite(object):
         """
 
         if slug not in self._registry:
-            raise NotRegistered('The slug %s is not registered' % slug)
+            raise NotRegistered("The slug %s is not registered" % slug)
         bundle = self._registry[slug]
         if bundle._meta.model and bundle._meta.primary_model_bundle:
             self.unregister_model(bundle._meta.model)
@@ -152,21 +153,21 @@ class AdminSite(object):
         return request.user.is_active and request.user.is_staff
 
     def admin_view(self, view, cacheable=False):
-
         def inner(request, *args, **kwargs):
             if manager:
                 manager.activate(BaseVersionedModel.DRAFT)
             if not self.has_permission(request):
-                if request.path == reverse('admin:cms_logout'):
-                    index_path = reverse('admin:cms_index')
+                if request.path == reverse("admin:cms_logout"):
+                    index_path = reverse("admin:cms_index")
                     return HttpResponseRedirect(index_path)
                 return self.login(request)
             return view(request, *args, **kwargs)
+
         if not cacheable:
             inner = never_cache(inner)
         # We add csrf_protect here so this function can be used as a utility
         # function for any view, without having to repeat 'csrf_protect'.
-        if not getattr(view, 'csrf_exempt', False):
+        if not getattr(view, "csrf_exempt", False):
             inner = csrf_protect(inner)
         return update_wrapper(inner, view)
 
@@ -176,34 +177,33 @@ class AdminSite(object):
         def wrap(view, cacheable=False):
             def wrapper(*args, **kwargs):
                 return self.admin_view(view, cacheable)(*args, **kwargs)
+
             return update_wrapper(wrapper, view)
 
         # Admin-site-wide views.
         urlpatterns = [
-            url(r'^$',
-                wrap(self.index),
-                name='cms_index'),
-            url(r'^logout/$',
-                wrap(self.logout),
-                name='cms_logout'),
-            url(r'^password_change/$',
+            url(r"^$", wrap(self.index), name="cms_index"),
+            url(r"^logout/$", wrap(self.logout), name="cms_logout"),
+            url(
+                r"^password_change/$",
                 wrap(self.password_change, cacheable=True),
-                name='cms_password_change'),
-            url(r'^password_change/done/$',
+                name="cms_password_change",
+            ),
+            url(
+                r"^password_change/done/$",
                 wrap(self.password_change_done, cacheable=True),
-                name='cms_password_change_done'),
+                name="cms_password_change_done",
+            ),
         ]
 
         # Add in each model's views.
         for base, bundle in self._registry.items():
-            urlpatterns += [
-                url(r'^%s/' % base, include(bundle.get_urls()))
-            ]
+            urlpatterns += [url(r"^%s/" % base, include(bundle.get_urls()))]
         return urlpatterns
 
     @property
     def urls(self):
-        return self.get_urls(), 'admin', self.name
+        return self.get_urls(), "admin", self.name
 
     def password_change(self, request):
         """
@@ -211,28 +211,30 @@ class AdminSite(object):
 
         Uses the default auth views.
         """
-        from django.contrib.auth.views import password_change
-        url = reverse('admin:cms_password_change_done')
+        from django.contrib.auth.views import PasswordChangeView
+
+        url = reverse("admin:cms_password_change_done")
         defaults = {
-            'post_change_redirect': url,
-            'template_name': 'cms/password_change_form.html',
+            "post_change_redirect": url,
+            "template_name": "cms/password_change_form.html",
         }
         if self.password_change_template is not None:
-            defaults['template_name'] = self.password_change_template
-        return password_change(request, **defaults)
+            defaults["template_name"] = self.password_change_template
+        return PasswordChangeView.as_view(**defaults)(request)
 
     def password_change_done(self, request, extra_context=None):
         """
         Displays the "success" page after a password change.
         """
-        from django.contrib.auth.views import password_change_done
+        from django.contrib.auth.views import PasswordChangeDoneView
+
         defaults = {
-            'extra_context': extra_context or {},
-            'template_name': 'cms/password_change_done.html',
+            "extra_context": extra_context or {},
+            "template_name": "cms/password_change_done.html",
         }
         if self.password_change_done_template is not None:
-            defaults['template_name'] = self.password_change_done_template
-        return password_change_done(request, **defaults)
+            defaults["template_name"] = self.password_change_done_template
+        return PasswordChangeDoneView.as_view(**defaults)(request)
 
     @never_cache
     def logout(self, request, extra_context=None):
@@ -241,33 +243,35 @@ class AdminSite(object):
 
         This should *not* assume the user is already logged in.
         """
-        from django.contrib.auth.views import logout
+        from django.contrib.auth.views import LogoutView
+
         defaults = {
-            'extra_context': extra_context or {},
-            'template_name': 'cms/logged_out.html',
+            "extra_context": extra_context or {},
+            "template_name": "cms/logged_out.html",
         }
         if self.logout_template is not None:
-            defaults['template_name'] = self.logout_template
-        return logout(request, **defaults)
+            defaults["template_name"] = self.logout_template
+        return LogoutView.as_view(**defaults)(request)
 
     @never_cache
     def login(self, request, extra_context=None):
         """
         Displays the login form for the given HttpRequest.
         """
-        from django.contrib.auth.views import login
+        from django.contrib.auth.views import LoginView
+
         context = {
-            'title': _('Log in'),
-            'app_path': request.get_full_path(),
+            "title": _("Log in"),
+            "app_path": request.get_full_path(),
             REDIRECT_FIELD_NAME: request.get_full_path(),
         }
         context.update(extra_context or {})
         defaults = {
-            'extra_context': context,
-            'authentication_form': self.login_form or AdminAuthenticationForm,
-            'template_name': self.login_template or 'cms/login.html',
+            "extra_context": context,
+            "authentication_form": self.login_form or AdminAuthenticationForm,
+            "template_name": self.login_template or "cms/login.html",
         }
-        return login(request, **defaults)
+        return LoginView.as_view(**defaults)(request)
 
     def get_dashboard_urls(self, request):
         nav = []
@@ -314,7 +318,7 @@ class AdminSite(object):
         sections, titles = self._get_allowed_sections(dashboard)
         choices = list(zip(sections, titles))
         choices.sort(key=lambda tup: tup[1])
-        choices.insert(0, ('', 'All'))
+        choices.insert(0, ("", "All"))
 
         class SectionFilterForm(BaseFilterForm):
             section = forms.ChoiceField(required=False, choices=choices)
@@ -323,15 +327,13 @@ class AdminSite(object):
         filter_kwargs = form.get_filter_kwargs()
 
         if not filter_kwargs and not request.user.is_superuser:
-            filter_kwargs['section__in'] = sections
-        cms_logs = models.CMSLog.objects.filter(**filter_kwargs
-                                                ).order_by('-when')
+            filter_kwargs["section__in"] = sections
+        cms_logs = models.CMSLog.objects.filter(**filter_kwargs).order_by("-when")
 
-        template = self.dashboard_template or 'cms/dashboard.html'
+        template = self.dashboard_template or "cms/dashboard.html"
 
-        paginator = Paginator(cms_logs[:20 * 100], 20,
-                              allow_empty_first_page=True)
-        page_number = request.GET.get('page') or 1
+        paginator = Paginator(cms_logs[: 20 * 100], 20, allow_empty_first_page=True)
+        page_number = request.GET.get("page") or 1
         try:
             page_number = int(page_number)
         except ValueError:
@@ -339,11 +341,17 @@ class AdminSite(object):
 
         page = paginator.page(page_number)
 
-        return TemplateResponse(request, [template], {
-            'dashboard': dashboard, 'blocks': dash_blocks,
-            'page': page, 'bundle': self._registry.values()[0],
-            'form': form
-        },)
+        return TemplateResponse(
+            request,
+            [template],
+            {
+                "dashboard": dashboard,
+                "blocks": dash_blocks,
+                "page": page,
+                "bundle": list(self._registry.values())[0],
+                "form": form,
+            },
+        )
 
 
 # This global object represents the default admin site, for the common case.

@@ -79,10 +79,13 @@ class _Transaction(object):
 
     def _leave_transaction_management(self):
         transaction.leave_transaction_management(using=self.using)
-        if not connections[self.using].is_managed() and \
-                connections[self.using].features.uses_autocommit:
+        if (
+            not connections[self.using].is_managed()
+            and connections[self.using].features.uses_autocommit
+        ):
             connections[self.using]._set_isolation_level(
-                            psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+                psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT
+            )
             # Patch for bug in Django's psycopg2 backend; see:
             # https://code.djangoproject.com/ticket/16047
 
@@ -129,6 +132,7 @@ class _TransactionWrapper(object):
         def inner(*args, **kwargs):
             with _Transaction(self.using):
                 return func(*args, **kwargs)
+
         return inner
 
 
@@ -140,9 +144,9 @@ def xact(using=None):
         #   @xact
         # (not even an empty parameter list)
         return _TransactionWrapper(DEFAULT_DB_ALIAS)(using)
-            # Note that `using` here is *not* the database alias;
-            # it's the actual function
-            # being decorated.
+        # Note that `using` here is *not* the database alias;
+        # it's the actual function
+        # being decorated.
     else:
         # We end up here if xact is being used as a parameterized decorator
         # (including
@@ -153,7 +157,6 @@ def xact(using=None):
         #    with xact():
         #       ...
         return _TransactionWrapper(using)
-
 
 
 # -----------------------------------------------------------------------------

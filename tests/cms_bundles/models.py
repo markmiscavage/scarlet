@@ -7,6 +7,7 @@ from scarlet.versioning import fields
 from scarlet.versioning.models import VersionView, Cloneable
 from scarlet.cms.fields import OrderField
 
+
 class UserSite(models.Model):
     user = models.ForeignKey(User, to_field="username")
     data = models.IntegerField()
@@ -17,13 +18,14 @@ class Author(models.Model):
     bio = models.TextField()
 
     def __unicode__(self):
-        return u"%s" % (self.name, )
+        return "%s" % (self.name,)
+
 
 class DummyModel(models.Model):
     name = models.CharField(max_length=100)
 
     def __unicode__(self):
-        return u"%s" % (self.name, )
+        return "%s" % (self.name,)
 
 
 class Category(VersionView):
@@ -31,7 +33,7 @@ class Category(VersionView):
     slug = models.SlugField(max_length=150, editable=False)
 
     def __unicode__(self):
-        return u"%s" % self.category
+        return "%s" % self.category
 
 
 class Tag(models.Model):
@@ -54,7 +56,7 @@ class Post(VersionView):
     description = models.TextField(blank=True)
 
     def __unicode__(self):
-        return u"%s" % self.title
+        return "%s" % self.title
 
 
 class PostImage(Cloneable):
@@ -75,6 +77,7 @@ class Comment(VersionView):
     text = models.TextField()
 
     def __unicode__(self):
-        return u"%s" % (self.text[:20],)
+        return "%s" % (self.text[:20],)
 
-Post.register_related(related_name='postimage')
+
+Post.register_related(related_name="postimage")

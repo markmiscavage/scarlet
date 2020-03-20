@@ -32,7 +32,10 @@ from django.db.models import ManyToManyField
 from django.db.migrations import Migration
 from django.db.migrations.loader import MigrationLoader
 from django.db.migrations.autodetector import MigrationAutodetector
-from django.db.migrations.questioner import MigrationQuestioner, InteractiveMigrationQuestioner
+from django.db.migrations.questioner import (
+    MigrationQuestioner,
+    InteractiveMigrationQuestioner,
+)
 from django.db.migrations.state import ProjectState, ModelState
 from django.db.migrations.writer import MigrationWriter
 from django.utils.six import iteritems
@@ -41,13 +44,13 @@ from django.utils.module_loading import import_string
 
 from scarlet.versioning.fields import FKToVersion, M2MFromVersion
 
-class VersionedModelState(ModelState):
 
+class VersionedModelState(ModelState):
     @classmethod
     def from_model(cls, model, exclude_rels=False):
         result = ModelState.from_model(model, exclude_rels=exclude_rels)
-        if getattr(model._meta, '_is_view', False):
-            result.options['db_table'] = model._meta._base_model._meta.db_table
+        if getattr(model._meta, "_is_view", False):
+            result.options["db_table"] = model._meta._base_model._meta.db_table
         return result
 
 
@@ -63,14 +66,14 @@ class VersionedProjectState(ProjectState):
 
 
 class Command(BaseMakeMigrations):
-
     def handle(self, *app_labels, **options):
 
-        self.verbosity = int(options.get('verbosity'))
-        self.interactive = options.get('interactive')
-        self.dry_run = options.get('dry_run', False)
-        self.merge = options.get('merge', False)
-        self.empty = options.get('empty', False)
+        self.verbosity = int(options.get("verbosity"))
+        self.interactive = options.get("interactive")
+        self.dry_run = options.get("dry_run", False)
+        self.merge = options.get("merge", False)
+        self.empty = options.get("empty", False)
+        self.include_header = options.get("include_header")
 
         # Make sure the app they asked for exists
         app_labels = set(app_labels)
@@ -82,7 +85,9 @@ class Command(BaseMakeMigrations):
                 bad_app_labels.add(app_label)
         if bad_app_labels:
             for app_label in bad_app_labels:
-                self.stderr.write("App '%s' could not be found. Is it in INSTALLED_APPS?" % app_label)
+                self.stderr.write(
+                    "App '%s' could not be found. Is it in INSTALLED_APPS?" % app_label
+                )
             sys.exit(2)
 
         # Load the current graph state. Pass in None for the connection so
@@ -96,7 +101,8 @@ class Command(BaseMakeMigrations):
         # If app_labels is specified, filter out conflicting migrations for unspecified apps
         if app_labels:
             conflicts = dict(
-                (app_label, conflict) for app_label, conflict in iteritems(conflicts)
+                (app_label, conflict)
+                for app_label, conflict in iteritems(conflicts)
                 if app_label in app_labels
             )
 
@@ -105,7 +111,10 @@ class Command(BaseMakeMigrations):
                 "%s in %s" % (", ".join(names), app)
                 for app, names in list(conflicts.items())
             )
-            raise CommandError("Conflicting migrations detected (%s).\nTo fix them run 'python manage.py makemigrations --merge'" % name_str)
+            raise CommandError(
+                "Conflicting migrations detected (%s).\nTo fix them run 'python manage.py makemigrations --merge'"
+                % name_str
+            )
 
         # If they want to merge and there's nothing to merge, then politely exit
         if self.merge and not conflicts:
@@ -121,18 +130,19 @@ class Command(BaseMakeMigrations):
         autodetector = MigrationAutodetector(
             loader.project_state(),
             VersionedProjectState.from_apps(apps),
-            InteractiveMigrationQuestioner(specified_apps=app_labels, dry_run=self.dry_run),
+            InteractiveMigrationQuestioner(
+                specified_apps=app_labels, dry_run=self.dry_run
+            ),
         )
 
         # If they want to make an empty migration, make one for each app
         if self.empty:
             if not app_labels:
-                raise CommandError("You must supply at least one app label when using --empty.")
+                raise CommandError(
+                    "You must supply at least one app label when using --empty."
+                )
             # Make a fake changes() result we can pass to arrange_for_graph
-            changes = dict(
-                (app, [Migration("custom", app)])
-                for app in app_labels
-            )
+            changes = dict((app, [Migration("custom", app)]) for app in app_labels)
             changes = autodetector.arrange_for_graph(changes, loader.graph)
             self.write_migration_files(changes)
             return
@@ -149,7 +159,9 @@ class Command(BaseMakeMigrations):
             if len(app_labels) == 1:
                 self.stdout.write("No changes detected in app '%s'" % app_labels.pop())
             elif len(app_labels) > 1:
-                self.stdout.write("No changes detected in apps '%s'" % ("', '".join(app_labels)))
+                self.stdout.write(
+                    "No changes detected in apps '%s'" % ("', '".join(app_labels))
+                )
             else:
                 self.stdout.write("No changes detected")
             return

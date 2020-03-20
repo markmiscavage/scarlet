@@ -1,13 +1,18 @@
 from __future__ import unicode_literals
-default_app_config = 'scarlet.cms.apps.AppConfig'
+
+default_app_config = "scarlet.cms.apps.AppConfig"
 
 try:
+
     def autodiscover():
         from django.utils.module_loading import autodiscover_modules
         from .sites import site
 
-        autodiscover_modules('cms_bundles', register_to=site)
+        autodiscover_modules("cms_bundles", register_to=site)
+
+
 except ImportError:
+
     def autodiscover():
         """
         Copied from django source
@@ -28,7 +33,7 @@ except ImportError:
             # Attempt to import the app's admin module.
             try:
                 before_import_registry = copy.copy(site._registry)
-                import_module('%s.cms_bundles' % app)
+                import_module("%s.cms_bundles" % app)
             except Exception as e:
                 # Reset the model registry to the state before the last import as
                 # this import will have to reoccur on the next request and this
@@ -39,5 +44,5 @@ except ImportError:
                 # Decide whether to bubble up this error. If the app just
                 # doesn't have an admin module, we can ignore the error
                 # attempting to import it, otherwise we want it to bubble up.
-                if module_has_submodule(mod, 'cms_bundles'):
+                if module_has_submodule(mod, "cms_bundles"):
                     raise

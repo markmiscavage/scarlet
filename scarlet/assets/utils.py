@@ -13,6 +13,7 @@ def partial(func, *parameters, **kparms):
     def wrapped(*args, **kw):
         kw.update(kparms)
         return func(*(args + parameters), **kw)
+
     return wrapped
 
 
@@ -21,7 +22,7 @@ def assets_dir(instance, filename):
     if instance.rename_file():
         name = instance.slug
     if settings.DIRECTORY:
-        return '/'.join([settings.DIRECTORY, name + ext])
+        return "/".join([settings.DIRECTORY, name + ext])
     else:
         return instance.slug + ext
 
@@ -29,7 +30,6 @@ def assets_dir(instance, filename):
 def get_size_filename(filename, size_name):
     filename, ext = os.path.splitext(filename)
     return filename + "_" + size_name + ext
-
 
 
 def get_cache_bust_version(url):
@@ -49,5 +49,5 @@ def update_cache_bust_version(url, value=None):
         value = int(value) + 1
     else:
         value = 1
-    cache.set(key, value, 60*60*24*60)
+    cache.set(key, value, 60 * 60 * 24 * 60)
     return value

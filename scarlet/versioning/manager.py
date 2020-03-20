@@ -49,12 +49,12 @@ def deactivate():
 
     for k in connections:
         con = connections[k]
-        if hasattr(con, 'reset_schema'):
+        if hasattr(con, "reset_schema"):
             con.reset_schema()
 
 
 def get_schema():
-    return getattr(_mode, 'schema', None)
+    return getattr(_mode, "schema", None)
 
 
 class VersionManager(models.Manager):

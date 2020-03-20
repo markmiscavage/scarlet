@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 from builtins import object
 from django.conf import settings
 from django.core.cache import caches
+
 try:
     from django.utils.module_loading import import_string
 except ImportError:
@@ -16,14 +17,15 @@ class CacheRouter(object):
         return caches[self.get_cache_name(**kwargs)]
 
     def get_cache_name(self, **kwargs):
-        return 'default'
+        return "default"
 
 
 def _get_router():
-    if getattr(settings, 'CACHE_ROUTER', None):
+    if getattr(settings, "CACHE_ROUTER", None):
         router = import_string(settings.CACHE_ROUTER)
         return router()
     else:
         return CacheRouter()
+
 
 router = _get_router()

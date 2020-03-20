@@ -3,8 +3,9 @@ from __future__ import unicode_literals
 from builtins import object
 from . import router
 
+
 class CacheConfig(object):
-    ALL = 'all'
+    ALL = "all"
     return_all = False
 
     def __init__(self, values, instance_values):
@@ -37,7 +38,7 @@ class CacheGroup(object):
         assert key
         self.key = key
 
-        self.route_group = 'default'
+        self.route_group = "default"
 
         # Version expiry needs to be at least twice
         # as long as the longest lasting cache entry
@@ -47,8 +48,7 @@ class CacheGroup(object):
         self._models = {}
 
     def _get_cache(self, key):
-        return router.router.get_cache(route_group=self.route_group,
-                                           key=key)
+        return router.router.get_cache(route_group=self.route_group, key=key)
 
     def register_models(self, *models, **kwargs):
         """
@@ -83,10 +83,10 @@ class CacheGroup(object):
 
     def _get_models(self):
         return list(self._models.keys())
+
     models = property(_get_models)
 
-    def _get_cache_extras(self, klass, instance=None, extra=None,
-                         force_all=False):
+    def _get_cache_extras(self, klass, instance=None, extra=None, force_all=False):
         # Return the extra keys for this klass instance combo
         # Return self.ALL to use the main version.
         if force_all:
@@ -109,8 +109,7 @@ class CacheGroup(object):
 
         return result
 
-    def invalidate_cache(self, klass, instance=None, extra=None,
-                         force_all=False):
+    def invalidate_cache(self, klass, instance=None, extra=None, force_all=False):
         """
         Use this method to invalidate keys related to a particular
         model or instance. Invalidating a cache is really just
@@ -130,8 +129,9 @@ class CacheGroup(object):
         arguments and increment the major version for this group.
         """
 
-        values = self._get_cache_extras(klass, instance=instance,
-                                        extra=extra, force_all=force_all)
+        values = self._get_cache_extras(
+            klass, instance=instance, extra=extra, force_all=force_all
+        )
 
         if values == CacheConfig.ALL:
             self._increment_version()
@@ -150,7 +150,7 @@ class CacheGroup(object):
             # with all.
             v = self._increment_version()
 
-        return '%s.%s.%s' % (self.key, v, extra)
+        return "%s.%s.%s" % (self.key, v, extra)
 
     def get_version(self, extra=None):
         """

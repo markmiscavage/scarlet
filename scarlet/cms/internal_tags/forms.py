@@ -13,23 +13,25 @@ class TaggedRelationFilterForm(BaseFilterForm):
     """
 
     tag = forms.CharField(max_length=255, required=False)
-    required_tags = forms.CharField(max_length=255, required=False,
-                                    widget=forms.HiddenInput)
+    required_tags = forms.CharField(
+        max_length=255, required=False, widget=forms.HiddenInput
+    )
 
     def get_filter(self):
-        filter_kwargs = super(
-            TaggedRelationFilterForm, self).get_filter_kwargs()
+        filter_kwargs = super(TaggedRelationFilterForm, self).get_filter_kwargs()
         args = []
 
-        tag = filter_kwargs.pop('tag', None)
+        tag = filter_kwargs.pop("tag", None)
         if tag:
-            args.append(models.Q(tags__name__icontains=tag) | \
-                        models.Q(user_filename__icontains=tag))
+            args.append(
+                models.Q(tags__name__icontains=tag)
+                | models.Q(user_filename__icontains=tag)
+            )
 
-        required_tags = filter_kwargs.pop('required_tags', None)
+        required_tags = filter_kwargs.pop("required_tags", None)
         if required_tags:
             tags = None
-            if ',' in required_tags:
+            if "," in required_tags:
                 tags = handler.parse_tags(required_tags)
             else:
                 tags = [required_tags]
@@ -42,12 +44,13 @@ class TagFilterForm(BaseFilterForm):
     """
     Form for handling tag filtering by name
     """
+
     name = forms.CharField(max_length=255, required=False)
 
     def get_filter_kwargs(self):
         filter_kwargs = super(TagFilterForm, self).get_filter_kwargs()
-        name = filter_kwargs.pop('name', None)
+        name = filter_kwargs.pop("name", None)
         if name:
-            filter_kwargs['name__icontains'] = name
+            filter_kwargs["name__icontains"] = name
 
         return filter_kwargs

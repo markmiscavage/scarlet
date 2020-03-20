@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 from builtins import next
 from builtins import str
-from past.builtins import basestring
 from builtins import object
 
 from django import forms
@@ -19,19 +18,26 @@ from . import widgets
 from . import fields
 
 FORMFIELD_FOR_DBFIELD_DEFAULTS = {
-    models.ForeignKey:       {'widget': widgets.APIChoiceWidget},
-    models.ManyToManyField:  {'widget': widgets.APIManyChoiceWidget},
-    models.DateTimeField:    {'widget': widgets.DateTimeWidget},
-    models.DateField:        {'widget': widgets.DateWidget},
+    models.ForeignKey: {"widget": widgets.APIChoiceWidget},
+    models.ManyToManyField: {"widget": widgets.APIManyChoiceWidget},
+    models.DateTimeField: {"widget": widgets.DateTimeWidget},
+    models.DateField: {"widget": widgets.DateWidget},
 }
 
 
 class AdminList(object):
-    ASC = 'asc'
-    DESC = 'desc'
+    ASC = "asc"
+    DESC = "desc"
 
-    def __init__(self, formset, object_list, visible_fields, sort_field,
-                    order_type, model_name=None):
+    def __init__(
+        self,
+        formset,
+        object_list,
+        visible_fields,
+        sort_field,
+        order_type,
+        model_name=None,
+    ):
         self.formset = formset
         self.object_list = object_list
         self.visible_fields = visible_fields
@@ -48,9 +54,16 @@ class AdminList(object):
 
         self.auto_sort = False
         if self.formset:
-            self.auto_sort = len([x for x in \
-                                 list(formset.empty_form.fields.values()) \
-                                 if isinstance(x, fields.OrderFormField)]) > 0
+            self.auto_sort = (
+                len(
+                    [
+                        x
+                        for x in list(formset.empty_form.fields.values())
+                        if isinstance(x, fields.OrderFormField)
+                    ]
+                )
+                > 0
+            )
 
     def __iter__(self):
         if self.formset:
@@ -81,8 +94,7 @@ class AdminList(object):
                 name = label_for_field(field, model)
 
             if name == model._meta.verbose_name:
-                name = self.model_name and self.model_name or \
-                            model._meta.verbose_name
+                name = self.model_name and self.model_name or model._meta.verbose_name
 
             stype = None
             cur_sorted = False
@@ -103,7 +115,6 @@ class AdminList(object):
                         stype = self.ASC
                     else:
                         stype = self.ASC
-
 
             yield AdminListLabel(name, field, stype, cur_sorted, bool(sortable))
 
@@ -145,8 +156,8 @@ class AdminForm(object):
     def first_field(self):
         try:
             fieldset_name, fieldset_options = self.fieldsets[0]
-            field_name = fieldset_options['fields'][0]
-            if not isinstance(field_name, basestring):
+            field_name = fieldset_options["fields"][0]
+            if not isinstance(field_name, str):
                 field_name = field_name[0]
             return self.form[field_name]
         except (KeyError, IndexError):
@@ -156,8 +167,8 @@ class AdminForm(object):
         except StopIteration:
             return None
 
-class AdminFormSets(object):
 
+class AdminFormSets(object):
     def __init__(self, formsets, combined_defs):
         self.formsets = formsets
         self.combined_sets = []
@@ -167,7 +178,7 @@ class AdminFormSets(object):
             if type(combined_defs) == dict:
                 self._add_combined(combined_defs)
 
-            elif hasattr(combined_defs, '__iter__'):
+            elif hasattr(combined_defs, "__iter__"):
                 for set_def in combined_defs:
                     if not type(set_def) == dict:
                         continue
@@ -175,11 +186,9 @@ class AdminFormSets(object):
                     self._add_combined(set_def)
 
     def _add_combined(self, set_def):
-        keys = set_def.get('keys')
+        keys = set_def.get("keys")
         self.hidden_sets = self.hidden_sets.union(set(keys))
-        self.combined_sets.append(
-            CombinedMultiFormSet(self, **set_def)
-        )
+        self.combined_sets.append(CombinedMultiFormSet(self, **set_def))
 
     def visible_formsets(self):
         for v in self.combined_sets:
@@ -192,11 +201,11 @@ class AdminFormSets(object):
         for k, v in list(self.formsets.items()):
             yield k, v
 
-class CombinedMultiFormSet(object):
 
+class CombinedMultiFormSet(object):
     def __init__(self, admin_formset, keys=None, order_by=None, title=None):
         if not order_by:
-            order_by = 'order'
+            order_by = "order"
 
         self.title = title
         self.keys = keys
@@ -209,30 +218,42 @@ class CombinedMultiFormSet(object):
         return self.admin_formset.formsets
 
     def management_form(self):
-        return mark_safe(''.join([str(x.management_form) for k, x in list(self.formsets.items()) \
-                        if k in self.keys]))
+        return mark_safe(
+            "".join(
+                [
+                    str(x.management_form)
+                    for k, x in list(self.formsets.items())
+                    if k in self.keys
+                ]
+            )
+        )
 
     def non_form_errors(self):
-        return mark_safe(''.join([str(x.non_form_errors()) for k, x in list(self.formsets.items()) \
-                        if k in self.keys]))
+        return mark_safe(
+            "".join(
+                [
+                    str(x.non_form_errors())
+                    for k, x in list(self.formsets.items())
+                    if k in self.keys
+                ]
+            )
+        )
 
     def __iter__(self):
         forms = []
         for k, formset in list(self.formsets.items()):
-            forms = forms + [(x, k) for x in formset ]
+            forms = forms + [(x, k) for x in formset]
 
         forms = sorted(forms, key=lambda f: getattr(f[0].instance, self.order_by))
         for f in forms:
             yield f[0], self.formsets[f[1]]
 
 
-
 class Fieldset(object):
-    def __init__(self, form, name=None, fields=(),
-                 classes=(), description=None):
+    def __init__(self, form, name=None, fields=(), classes=(), description=None):
         self.form = form
         self.name, self.fields = name, fields
-        self.classes = u' '.join(classes)
+        self.classes = " ".join(classes)
         self.description = description
 
     def __iter__(self):
@@ -251,44 +272,38 @@ class Fieldline(object):
     def __iter__(self):
         for i, field in enumerate(self.fields):
             cls = ReadOnlyField
-            if (type(field) == str or type(field) == str) and \
-                                        field in self.form.fields:
+            if (type(field) == str or type(field) == str) and field in self.form.fields:
                 cls = AdminField
             yield cls(self.form, field, is_first=(i == 0))
 
     def errors(self):
         fields = [f for f in self.fields if f in self.form.fields]
-        return mark_safe(u'\n'.join([self.form[f].errors.as_ul()
-                         for f in fields]))
+        return mark_safe("\n".join([self.form[f].errors.as_ul() for f in fields]))
 
 
 class AdminField(object):
     def __init__(self, form, field, is_first):
         self.field = form[field]  # A django.forms.BoundField instance
         self.is_first = is_first  # Whether this field is first on the line
-        self.is_checkbox = isinstance(self.field.field.widget,
-                                      forms.CheckboxInput)
-        self.is_date = isinstance(self.field.field,
-                                      forms.DateField) or \
-                       isinstance(self.field.field,
-                                      forms.SplitDateTimeField)
+        self.is_checkbox = isinstance(self.field.field.widget, forms.CheckboxInput)
+        self.is_date = isinstance(self.field.field, forms.DateField) or isinstance(
+            self.field.field, forms.SplitDateTimeField
+        )
 
-        self.is_order_field = isinstance(self.field.field,
-                                        fields.OrderFormField)
-
+        self.is_order_field = isinstance(self.field.field, fields.OrderFormField)
 
     def label_tag(self):
         classes = []
         contents = conditional_escape(force_text(self.field.label))
         if self.is_checkbox:
-            classes.append(u'vCheckboxLabel')
+            classes.append("vCheckboxLabel")
         else:
-            contents += u':'
+            contents += ":"
         if self.field.field.required:
-            classes.append(u'required')
+            classes.append("required")
         if not self.is_first:
-            classes.append(u'inline')
-        attrs = classes and {'class': u' '.join(classes)} or {}
+            classes.append("inline")
+        attrs = classes and {"class": " ".join(classes)} or {}
         return self.field.label_tag(contents=mark_safe(contents), attrs=attrs)
 
     def errors(self):
@@ -298,7 +313,7 @@ class AdminField(object):
 class InnerField(object):
     def __init__(self, field, instance):
         if callable(field):
-            class_name = field.__name__ != '<lambda>' and field.__name__ or ''
+            class_name = field.__name__ != "<lambda>" and field.__name__ or ""
         else:
             class_name = field
 
@@ -325,14 +340,18 @@ class ReadOnlyField(object):
             attrs["class"] = "inline"
         try:
             label = self.field.label
-            return mark_safe('<label{0}>{1}:</label>'.format(
-                             conditional_escape(flatatt(attrs)),
-                             capfirst(conditional_escape(force_text(label)))))
+            return mark_safe(
+                "<label{0}>{1}:</label>".format(
+                    conditional_escape(flatatt(attrs)),
+                    capfirst(conditional_escape(force_text(label))),
+                )
+            )
         except:
-            return ''
+            return ""
 
     def errors(self):
         return ErrorList()
+
 
 def normalize_fieldsets(fieldsets):
     """
@@ -377,25 +396,25 @@ def get_sort_field(attr, model):
         if model._meta.get_field(attr):
             return attr
     except FieldDoesNotExist:
-        if isinstance(attr, basestring):
+        if isinstance(attr, str):
             val = getattr(model, attr, None)
-            if val and hasattr(val, 'sort_field'):
+            if val and hasattr(val, "sort_field"):
                 return getattr(model, attr).sort_field
         return None
 
 
 def check_unicode(instance, field):
-    if hasattr(instance, '__str__'):
+    if hasattr(instance, "__str__"):
         return instance.__str__()
-    elif hasattr(instance, '__unicode__'):
+    elif hasattr(instance, "__unicode__"):
         # Python 2 compatible
         return instance.__unicode__()
     else:
-        return ''
+        return ""
 
 
 def get_field_value(field, instance):
-    if field == '__unicode__':
+    if field == "__unicode__":
         return check_unicode(instance, field)
     try:
         f = instance._meta.get_field(field)
@@ -407,7 +426,7 @@ def get_field_value(field, instance):
         if hasattr(f, "flatchoices") and f.flatchoices:
             value = dict(f.flatchoices).get(value)
         elif isinstance(value, models.Manager):
-            value = ', '.join([str(x) for x in value.all()])
+            value = ", ".join([str(x) for x in value.all()])
 
     except models.FieldDoesNotExist:
         # For non-field values, the value is either a method, property or
@@ -421,6 +440,7 @@ def get_field_value(field, instance):
             else:
                 value = attr
     return value
+
 
 def get_field_attr(field, instance, attr, default=""):
     value = default
@@ -436,27 +456,30 @@ def get_field_attr(field, instance, attr, default=""):
                 value = getattr(p, attr, default)
     return value
 
+
 def pluralize(value, custom_plural):
     if custom_plural:
         return custom_plural
-    elif value.lower().endswith('s'):
+    elif value.lower().endswith("s"):
         return value + "es"
     else:
-        return value + 's'
+        return value + "s"
 
-def model_name(model, custom_model_name=None,
-               custom_model_name_plural=None, plural=False):
+
+def model_name(
+    model, custom_model_name=None, custom_model_name_plural=None, plural=False
+):
 
     if custom_model_name:
         value = custom_model_name
         if plural:
-            value = pluralize(custom_model_name,
-                                    custom_model_name_plural)
+            value = pluralize(custom_model_name, custom_model_name_plural)
     else:
         value = model._meta.verbose_name
         if plural:
             value = model._meta.verbose_name_plural
     return capfirst_if_needed(value)
+
 
 def capfirst_if_needed(value):
     if value and not value[0].isupper():

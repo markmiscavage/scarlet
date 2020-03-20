@@ -11,130 +11,246 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Author',
+            name="Author",
             fields=[
-                ('last_save', models.DateTimeField(editable=False)),
-                ('state', models.CharField(choices=[('published', 'published'), ('scheduled', 'scheduled'), ('draft', 'draft'), ('archived', 'archived')], editable=False, max_length=50)),
-                ('last_scheduled', models.DateTimeField(editable=False, null=True)),
-                ('date_published', models.DateTimeField(editable=False, null=True)),
-                ('user_published', models.CharField(editable=False, max_length=255, null=True)),
-                ('vid', models.AutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
+                ("last_save", models.DateTimeField(editable=False)),
+                (
+                    "state",
+                    models.CharField(
+                        choices=[
+                            ("published", "published"),
+                            ("scheduled", "scheduled"),
+                            ("draft", "draft"),
+                            ("archived", "archived"),
+                        ],
+                        editable=False,
+                        max_length=50,
+                    ),
+                ),
+                ("last_scheduled", models.DateTimeField(editable=False, null=True)),
+                ("date_published", models.DateTimeField(editable=False, null=True)),
+                (
+                    "user_published",
+                    models.CharField(editable=False, max_length=255, null=True),
+                ),
+                ("vid", models.AutoField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=255)),
             ],
         ),
         migrations.CreateModel(
-            name='AuthorBase',
+            name="AuthorBase",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_published', models.BooleanField(default=False, editable=False)),
-                ('created_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
-                ('v_last_save', models.DateTimeField(editable=False, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_published", models.BooleanField(default=False, editable=False)),
+                (
+                    "created_date",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
+                ),
+                ("v_last_save", models.DateTimeField(editable=False, null=True)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False,},
         ),
         migrations.CreateModel(
-            name='Book',
+            name="Book",
             fields=[
-                ('last_save', models.DateTimeField(editable=False)),
-                ('state', models.CharField(choices=[('published', 'published'), ('scheduled', 'scheduled'), ('draft', 'draft'), ('archived', 'archived')], editable=False, max_length=50)),
-                ('last_scheduled', models.DateTimeField(editable=False, null=True)),
-                ('date_published', models.DateTimeField(editable=False, null=True)),
-                ('user_published', models.CharField(editable=False, max_length=255, null=True)),
-                ('vid', models.AutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='version_twomodels.AuthorBase')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='BookBase',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_published', models.BooleanField(default=False, editable=False)),
-                ('created_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
-                ('v_last_save', models.DateTimeField(editable=False, null=True)),
-            ],
-            options={
-                'abstract': False,
-            },
-        ),
-        migrations.CreateModel(
-            name='Gallery',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('last_save', models.DateTimeField(editable=False)),
-                ('name', models.CharField(max_length=255)),
-            ],
-            options={
-                'abstract': False,
-            },
-        ),
-        migrations.CreateModel(
-            name='Review',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('last_save', models.DateTimeField(editable=False)),
-                ('text', models.CharField(max_length=255)),
-                ('book', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='version_twomodels.Book')),
-            ],
-            options={
-                'abstract': False,
-            },
-        ),
-        migrations.CreateModel(
-            name='Store',
-            fields=[
-                ('last_save', models.DateTimeField(editable=False)),
-                ('state', models.CharField(choices=[('published', 'published'), ('scheduled', 'scheduled'), ('draft', 'draft'), ('archived', 'archived')], editable=False, max_length=50)),
-                ('last_scheduled', models.DateTimeField(editable=False, null=True)),
-                ('date_published', models.DateTimeField(editable=False, null=True)),
-                ('user_published', models.CharField(editable=False, max_length=255, null=True)),
-                ('vid', models.AutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
-                ('books', models.ManyToManyField(to='version_twomodels.BookBase')),
+                ("last_save", models.DateTimeField(editable=False)),
+                (
+                    "state",
+                    models.CharField(
+                        choices=[
+                            ("published", "published"),
+                            ("scheduled", "scheduled"),
+                            ("draft", "draft"),
+                            ("archived", "archived"),
+                        ],
+                        editable=False,
+                        max_length=50,
+                    ),
+                ),
+                ("last_scheduled", models.DateTimeField(editable=False, null=True)),
+                ("date_published", models.DateTimeField(editable=False, null=True)),
+                (
+                    "user_published",
+                    models.CharField(editable=False, max_length=255, null=True),
+                ),
+                ("vid", models.AutoField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=255)),
+                (
+                    "author",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="version_twomodels.AuthorBase",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='StoreBase',
+            name="BookBase",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_published', models.BooleanField(default=False, editable=False)),
-                ('created_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
-                ('v_last_save', models.DateTimeField(editable=False, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_published", models.BooleanField(default=False, editable=False)),
+                (
+                    "created_date",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
+                ),
+                ("v_last_save", models.DateTimeField(editable=False, null=True)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False,},
+        ),
+        migrations.CreateModel(
+            name="Gallery",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("last_save", models.DateTimeField(editable=False)),
+                ("name", models.CharField(max_length=255)),
+            ],
+            options={"abstract": False,},
+        ),
+        migrations.CreateModel(
+            name="Review",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("last_save", models.DateTimeField(editable=False)),
+                ("text", models.CharField(max_length=255)),
+                (
+                    "book",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="version_twomodels.Book",
+                    ),
+                ),
+            ],
+            options={"abstract": False,},
+        ),
+        migrations.CreateModel(
+            name="Store",
+            fields=[
+                ("last_save", models.DateTimeField(editable=False)),
+                (
+                    "state",
+                    models.CharField(
+                        choices=[
+                            ("published", "published"),
+                            ("scheduled", "scheduled"),
+                            ("draft", "draft"),
+                            ("archived", "archived"),
+                        ],
+                        editable=False,
+                        max_length=50,
+                    ),
+                ),
+                ("last_scheduled", models.DateTimeField(editable=False, null=True)),
+                ("date_published", models.DateTimeField(editable=False, null=True)),
+                (
+                    "user_published",
+                    models.CharField(editable=False, max_length=255, null=True),
+                ),
+                ("vid", models.AutoField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=255)),
+                ("books", models.ManyToManyField(to="version_twomodels.BookBase")),
+            ],
+        ),
+        migrations.CreateModel(
+            name="StoreBase",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_published", models.BooleanField(default=False, editable=False)),
+                (
+                    "created_date",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
+                ),
+                ("v_last_save", models.DateTimeField(editable=False, null=True)),
+            ],
+            options={"abstract": False,},
         ),
         migrations.AddField(
-            model_name='store',
-            name='object',
-            field=models.ForeignKey(editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='version', to='version_twomodels.StoreBase'),
+            model_name="store",
+            name="object",
+            field=models.ForeignKey(
+                editable=False,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="version",
+                to="version_twomodels.StoreBase",
+            ),
         ),
         migrations.AddField(
-            model_name='book',
-            name='galleries',
-            field=models.ManyToManyField(to='version_twomodels.Gallery'),
+            model_name="book",
+            name="galleries",
+            field=models.ManyToManyField(to="version_twomodels.Gallery"),
         ),
         migrations.AddField(
-            model_name='book',
-            name='object',
-            field=models.ForeignKey(editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='version', to='version_twomodels.BookBase'),
+            model_name="book",
+            name="object",
+            field=models.ForeignKey(
+                editable=False,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="version",
+                to="version_twomodels.BookBase",
+            ),
         ),
         migrations.AddField(
-            model_name='author',
-            name='associates',
-            field=models.ManyToManyField(blank=True, to='version_twomodels.AuthorBase'),
+            model_name="author",
+            name="associates",
+            field=models.ManyToManyField(blank=True, to="version_twomodels.AuthorBase"),
         ),
         migrations.AddField(
-            model_name='author',
-            name='object',
-            field=models.ForeignKey(editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='version', to='version_twomodels.AuthorBase'),
+            model_name="author",
+            name="object",
+            field=models.ForeignKey(
+                editable=False,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="version",
+                to="version_twomodels.AuthorBase",
+            ),
         ),
     ]

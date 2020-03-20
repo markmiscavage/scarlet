@@ -28,18 +28,23 @@ except ValueError:
 
 
 class AssetBase(AutoTagModel):
-    UNKNOWN = 'unknown'
-    IMAGE = 'image'
-    DOCUMENT = 'document'
-    AUDIO = 'audio'
-    VIDEO = 'video'
+    UNKNOWN = "unknown"
+    IMAGE = "image"
+    DOCUMENT = "document"
+    AUDIO = "audio"
+    VIDEO = "video"
 
-    TYPES = settings.ASSET_TYPES and settings.ASSET_TYPES or \
-        ((UNKNOWN, 'Unknown'),
-        (IMAGE, 'Image'),
-        (DOCUMENT, 'Document'),
-        (AUDIO, 'Audio'),
-        (VIDEO, 'Video'),)
+    TYPES = (
+        settings.ASSET_TYPES
+        and settings.ASSET_TYPES
+        or (
+            (UNKNOWN, "Unknown"),
+            (IMAGE, "Image"),
+            (DOCUMENT, "Document"),
+            (AUDIO, "Audio"),
+            (VIDEO, "Video"),
+        )
+    )
 
     __original_file = None
 
@@ -111,7 +116,7 @@ class AssetBase(AutoTagModel):
         if self._can_crop():
             if settings.CELERY or settings.USE_CELERY_DECORATOR:
                 # this means that we are using celery
-                args = [self.pk]+list(required_crops)
+                args = [self.pk] + list(required_crops)
                 tasks.ensure_crops.apply_async(args=args, countdown=5)
             else:
                 tasks.ensure_crops(None, *required_crops, asset=self)
@@ -121,8 +126,9 @@ class AssetBase(AutoTagModel):
         Create a crop for this asset.
         """
         if self._can_crop():
-            spec = get_image_cropper().create_crop(name, self.file, x=x,
-                                                   x2=x2, y=y, y2=y2)
+            spec = get_image_cropper().create_crop(
+                name, self.file, x=x, x2=x2, y=y, y2=y2
+            )
             ImageDetail.save_crop_spec(self, spec)
 
     def save(self, *args, **kwargs):
@@ -140,7 +146,7 @@ class AssetBase(AutoTagModel):
 
         file_changed = True
         if self.pk:
-            new_value = getattr(self, 'file')
+            new_value = getattr(self, "file")
             if hasattr(new_value, "file"):
                 file_changed = isinstance(new_value.file, UploadedFile)
         else:
@@ -163,16 +169,15 @@ class AssetBase(AutoTagModel):
         if self.__original_file and self.file.name != self.__original_file.name:
             with manager.SwitchSchemaManager(None):
                 for related in self.__class__._meta.get_all_related_objects(
-                        include_hidden=True):
+                    include_hidden=True
+                ):
                     field = related.field
-                    if getattr(field, 'denormalize', None):
+                    if getattr(field, "denormalize", None):
                         cname = field.get_denormalized_field_name(field.name)
-                        if getattr(field, 'denormalize'):
-                            related.model.objects.filter(**{
-                                field.name: self.pk
-                            }).update(**{
-                                cname: self.file.name
-                            })
+                        if getattr(field, "denormalize"):
+                            related.model.objects.filter(
+                                **{field.name: self.pk}
+                            ).update(**{cname: self.file.name})
 
     def delete(self, *args, **kwargs):
         """
@@ -185,11 +190,11 @@ class AssetBase(AutoTagModel):
         self.delete_real_file(file_obj)
 
     def __str__(self):
-        return '%s' % (self.user_filename)
+        return "%s" % (self.user_filename)
 
 
 class ImageDetailBase(models.Model):
-    image = models.ForeignKey(settings.ASSET_MODEL)
+    image = models.ForeignKey(settings.ASSET_MODEL, on_delete=models.CASCADE)
     width = models.PositiveIntegerField()
     height = models.PositiveIntegerField()
 
@@ -214,14 +219,16 @@ class ImageDetailBase(models.Model):
     def save_crop_spec(cls, asset, spec, update_version=True):
         if spec:
             cdict = spec.to_dict()
-            updated = cls.objects.filter(image=asset,
-                                         name=cdict['name']).update(**cdict)
+            updated = cls.objects.filter(image=asset, name=cdict["name"]).update(
+                **cdict
+            )
             if not updated:
                 cls(image=asset, **cdict).save()
 
             if update_version:
-                asset.__class__.objects.filter(pk=asset.pk
-                        ).update(cbversion=models.F('cbversion')+1)
+                asset.__class__.objects.filter(pk=asset.pk).update(
+                    cbversion=models.F("cbversion") + 1
+                )
 
 
 class Asset(AssetBase):
@@ -230,6 +237,5 @@ class Asset(AssetBase):
 
 
 class ImageDetail(ImageDetailBase):
-
     class Meta(object):
         abstract = False

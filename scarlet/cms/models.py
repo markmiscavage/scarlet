@@ -15,6 +15,7 @@ class CMSLog(models.Model):
     * UNPUBLISH
     * SCHEDULE
     """
+
     SAVE = 0
     DELETE = 2
     PUBLISH = 3
@@ -22,11 +23,11 @@ class CMSLog(models.Model):
     SCHEDULE = 5
 
     ACTIONS = (
-        (SAVE, 'Save'),
-        (DELETE, 'Delete'),
-        (PUBLISH, 'Published'),
-        (UNPUBLISH, 'Unpublished'),
-        (SCHEDULE, 'Scheduled')
+        (SAVE, "Save"),
+        (DELETE, "Delete"),
+        (PUBLISH, "Published"),
+        (UNPUBLISH, "Unpublished"),
+        (SCHEDULE, "Scheduled"),
     )
 
     action = models.PositiveIntegerField(choices=ACTIONS)
@@ -41,4 +42,4 @@ class CMSLog(models.Model):
     when = models.DateTimeField(default=timezone.now)
 
     class Meta(object):
-        app_label = 'cms'
+        app_label = "cms"

@@ -26,9 +26,7 @@ class Schedulable(models.Model):
         the object being operated on.
         """
 
-        return {
-            'pk': self.pk
-        }
+        return {"pk": self.pk}
 
     def schedule(self, when=None, action=None, **kwargs):
         """
@@ -57,7 +55,7 @@ class Schedulable(models.Model):
                 object_args=self.get_scheduled_filter_args(),
                 when=when,
                 action=action,
-                json_args=kwargs
+                json_args=kwargs,
             ).save()
 
     def do_scheduled_update(self, action, **kwargs):
@@ -89,7 +87,7 @@ class Schedule(models.Model):
     Model to store scheduled updates.
     """
 
-    content_type = models.ForeignKey(ContentType)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_args = fields.JSONField()
 
     when = models.DateTimeField()
@@ -105,4 +103,4 @@ class Schedule(models.Model):
         self.delete()
 
     class Meta(object):
-        app_label = 'scheduling'
+        app_label = "scheduling"

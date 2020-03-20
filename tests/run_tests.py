@@ -14,68 +14,70 @@ def setup_test_environment(settings_overide, with_scarlet_blog=False):
     Specific settings for testing
     """
     apps = [
-        'django.contrib.auth',
-        'django.contrib.contenttypes',
-        'django.contrib.humanize',
-        'django.contrib.messages',
-        'django.contrib.sessions',
-        'django.contrib.sites',
-        'django.contrib.staticfiles',
-        'scarlet.cms',
-        'scarlet.assets',
-        'scarlet.accounts',
-        'scarlet.versioning',
-        'scarlet.scheduling',
-        'taggit',
-        'tests.version_models',
-        'tests.version_twomodels',
-        'tests.cms_bundles',
+        "django.contrib.auth",
+        "django.contrib.contenttypes",
+        "django.contrib.humanize",
+        "django.contrib.messages",
+        "django.contrib.sessions",
+        "django.contrib.sites",
+        "django.contrib.staticfiles",
+        "scarlet.cms",
+        "scarlet.assets",
+        "scarlet.accounts",
+        "scarlet.versioning",
+        "scarlet.scheduling",
+        "taggit",
+        "tests.version_models",
+        "tests.version_twomodels",
+        "tests.cms_bundles",
     ]
 
-    urls = 'tests.cms_bundles.urls'
+    urls = "tests.cms_bundles.urls"
     if with_scarlet_blog:
-        apps.append('scarlet_blog.blog')
-        apps.append('scarlet_blog.galleries')
-        apps.append('scarlet_blog.comments')
+        apps.append("scarlet_blog.blog")
+        apps.append("scarlet_blog.galleries")
+        apps.append("scarlet_blog.comments")
 
     settings_dict = {
-        'SECRET_KEY': "Please do not spew DeprecationWarnings",
-        'SITE_ID': 1,
-        'INSTALLED_APPS': apps,
-        'STATIC_URL': '/static/',
-        'ROOT_URLCONF': urls,
-        'USE_TZ': True,
-        'DATABASES': {
-            'default': {
-                'ENGINE': 'scarlet.versioning.postgres_backend',
-                'NAME': 'scarlet',
-                'USER': 'scarlet',
-                'PASSWORD': 'scarlet',
-                'HOST': 'scarletdb',
-                'PORT': '',
+        "SECRET_KEY": "Please do not spew DeprecationWarnings",
+        "SITE_ID": 1,
+        "INSTALLED_APPS": apps,
+        "STATIC_URL": "/static/",
+        "ROOT_URLCONF": urls,
+        "USE_TZ": True,
+        "DATABASES": {
+            "default": {
+                "ENGINE": "scarlet.versioning.postgres_backend",
+                "NAME": "scarlet",
+                "USER": "scarlet",
+                "PASSWORD": "scarlet",
+                "HOST": "scarletdb",
+                "PORT": "",
             },
         },
-        'MIDDLEWARE_CLASSES': (
-            'django.contrib.sessions.middleware.SessionMiddleware',
-            'django.contrib.auth.middleware.AuthenticationMiddleware',
-            'django.contrib.messages.middleware.MessageMiddleware'
+        "MIDDLEWARE_CLASSES": (
+            "django.contrib.sessions.middleware.SessionMiddleware",
+            "django.contrib.auth.middleware.AuthenticationMiddleware",
+            "django.contrib.messages.middleware.MessageMiddleware",
         ),
-        'TEMPLATES': [{
-            'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            'APP_DIRS': True,
-            'OPTIONS': {
-                'context_processors': [
-                    'django.contrib.auth.context_processors.auth',
-                    'django.template.context_processors.debug',
-                    'django.template.context_processors.i18n',
-                    'django.template.context_processors.media',
-                    'django.template.context_processors.static',
-                    'django.contrib.messages.context_processors.messages',
-                    'django.template.context_processors.request',
-                ],
-                'debug': True,
+        "TEMPLATES": [
+            {
+                "BACKEND": "django.template.backends.django.DjangoTemplates",
+                "APP_DIRS": True,
+                "OPTIONS": {
+                    "context_processors": [
+                        "django.contrib.auth.context_processors.auth",
+                        "django.template.context_processors.debug",
+                        "django.template.context_processors.i18n",
+                        "django.template.context_processors.media",
+                        "django.template.context_processors.static",
+                        "django.contrib.messages.context_processors.messages",
+                        "django.template.context_processors.request",
+                    ],
+                    "debug": True,
+                },
             },
-        }, ]
+        ],
     }
 
     if settings_overide:
@@ -94,7 +96,7 @@ def runtests(settings_overide, test_args):
 
     parent = os.path.dirname(os.path.abspath(__file__))
     sys.path.insert(0, parent)
-    scarlet_root = os.path.abspath(os.path.join(parent, '..'))
+    scarlet_root = os.path.abspath(os.path.join(parent, ".."))
     sys.path.insert(0, scarlet_root)
 
     settings_dict = {}
@@ -106,21 +108,26 @@ def runtests(settings_overide, test_args):
 
     with_scarlet_blog = False
     if not test_args:
-        test_args = ['tests.cms_bundles', 'tests.version_models', 'tests.version_twomodels']
+        test_args = [
+            "tests.cms_bundles",
+            "tests.version_models",
+            "tests.version_twomodels",
+        ]
         try:
-            imp.find_module('scarlet_blog')
-            test_args.append('blog')
+            imp.find_module("scarlet_blog")
+            test_args.append("blog")
             with_scarlet_blog = True
         except ImportError:
             with_scarlet_blog = False
 
-    elif 'blog' in test_args:
+    elif "blog" in test_args:
         with_scarlet_blog = True
 
     setup_test_environment(settings_dict, with_scarlet_blog=with_scarlet_blog)
     django.setup()
 
     from django.test.utils import get_runner
+
     def run_tests(test_args, verbosity, interactive):
         runner = get_runner(settings)()
         return runner.run_tests(test_args)
@@ -131,8 +138,8 @@ def runtests(settings_overide, test_args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--settings", default='')
-    parser.add_argument('args', nargs=argparse.REMAINDER)
+    parser.add_argument("--settings", default="")
+    parser.add_argument("args", nargs=argparse.REMAINDER)
     args = parser.parse_args()
 
     runtests(args.settings, args.args)
