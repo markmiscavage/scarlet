@@ -8,7 +8,7 @@ CMS Documentation
 Overview
 ========
 
-This is an attempt to create a content administration interface that is based around class based views instead of models, making it easier to implement work flows and other customizations, while keeping the short ramp-up time that django admin provides. Rewriting django admin is a lot of work and some functionality that it provides will be missing for quite some time. But hopefully the added flexibility that this gives us will be worth it.
+Scarlet is a content administration interface that is based around class based views instead of models, making it easier to implement work flows and other customizations, while keeping the short ramp-up time that django admin provides. Rewriting django admin is a lot of work and some functionality that it provides will be missing for quite some time. But hopefully the added flexibility that this gives us will be worth it.
 
 Bundles
 -------------

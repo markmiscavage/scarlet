@@ -3,6 +3,8 @@ from builtins import str
 from django.template.defaulttags import kwarg_re
 from django.template import Library, TemplateSyntaxError, Node
 from django.utils.encoding import smart_str
+from django.template.defaultfilters import stringfilter
+from django.utils.safestring import mark_safe
 
 try:
     from django.contrib.auth import get_user_model
@@ -248,3 +250,23 @@ def user_url(user, bundle):
     if bundle:
         edit = bundle.get_view_url("main", user)
     return edit
+
+
+# -- Filters:
+
+
+@register.filter
+def set_label_hidden_formset(field):
+    """
+    This filter returns `label` HTML code for `AssetsFileFormField` inside formsets.
+    For some reasons those fields are hidden when template tries to access to them
+
+    See: `templates/cms/templates/formset.html`
+    """
+    from scarlet.assets.fields import AssetsFileFormField
+    if field.field.__class__ == AssetsFileFormField:
+        css_class = ''
+        if field.field.required:
+            css_class = 'required'
+        return mark_safe('<p><label for="{0}" class="{1}">{2}:</label>'.format(field.auto_id, css_class, field.field.label))
+    return ''
