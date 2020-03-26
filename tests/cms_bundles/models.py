@@ -9,7 +9,7 @@ from scarlet.cms.fields import OrderField
 
 
 class UserSite(models.Model):
-    user = models.ForeignKey(User, to_field="username")
+    user = models.ForeignKey(User, to_field="username", on_delete=models.CASCADE)
     data = models.IntegerField()
 
 
@@ -49,7 +49,7 @@ class Post(VersionView):
     slug = models.SlugField(max_length=255, editable=False)
     body = models.TextField()
     author = models.ForeignKey(Author, on_delete=models.PROTECT)
-    category = models.ForeignKey(Category)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     tags = fields.M2MFromVersion(Tag, blank=True)
     # SEO Section
     keywords = models.TextField(blank=True)
@@ -72,7 +72,7 @@ class PostImage(Cloneable):
 
 
 class Comment(VersionView):
-    post = models.ForeignKey(Post)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     text = models.TextField()
 

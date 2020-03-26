@@ -14,6 +14,12 @@ class FKToVersion(models.ForeignKey):
 
     def __init__(self, *args, **kwargs):
         kwargs["to_field"] = "vid"
+        if kwargs.get("on_delete"):
+            on_delete = kwargs.get("on_delete")
+            del(kwargs['on_delete'])
+        else:
+            on_delete = models.CASCADE
+        args = args + (on_delete,)
         super(FKToVersion, self).__init__(*args, **kwargs)
 
     def deconstruct(self):
@@ -49,8 +55,8 @@ class M2MFromVersion(models.ManyToManyField):
         the main M2M field contribute to class is called.
         """
 
-        if isinstance(self.remote_field.to, str):
-            relation = self.remote_field.to
+        if isinstance(self.remote_field.remote_field, str):
+            relation = self.remote_field.remote_field
             try:
                 app_label, model_name = relation.split(".")
             except ValueError:
@@ -104,10 +110,10 @@ def create_many_to_many_intermediary_model(field, klass):
     """
     managed = True
     if (
-        isinstance(field.remote_field.to, str)
-        and field.remote_field.to != related.RECURSIVE_RELATIONSHIP_CONSTANT
+        isinstance(field.remote_field.related_model, str)
+        and field.remote_field.related_model != related.RECURSIVE_RELATIONSHIP_CONSTANT
     ):
-        to_model = field.remote_field.to
+        to_model = field.remote_field.related_model
         to = to_model.split(".")[-1]
 
         def set_managed(field, model, cls):
@@ -117,20 +123,20 @@ def create_many_to_many_intermediary_model(field, klass):
             field.remote_field.through._meta.managed = managed
 
         related.add_lazy_relation(klass, field, to_model, set_managed)
-    elif isinstance(field.remote_field.to, str):
+    elif isinstance(field.remote_field.related_model, str):
         to = klass._meta.object_name
         to_model = klass
         managed = klass._meta.managed
     else:
-        to = field.remote_field.to._meta.object_name
-        to_model = field.remote_field.to
+        to = field.remote_field.related_model._meta.object_name
+        to_model = field.remote_field.related_model
         managed = klass._meta.managed or to_model._meta.managed
         if issubclass(klass, VersionView):
             managed = False
 
     name = "%s_%s" % (klass._meta.object_name, field.name)
     if (
-        field.remote_field.to == related.RECURSIVE_RELATIONSHIP_CONSTANT
+        field.remote_field.remote_field == related.RECURSIVE_RELATIONSHIP_CONSTANT
         or to == klass._meta.object_name
     ):
         from_ = "from_%s" % to.lower()
@@ -167,12 +173,14 @@ def create_many_to_many_intermediary_model(field, klass):
                 related_name="%s+" % name,
                 db_tablespace=field.db_tablespace,
                 db_constraint=field.remote_field.db_constraint,
+                on_delete=models.CASCADE,
             ),
             "to": models.ForeignKey(
                 to_model,
                 related_name="%s+" % name,
                 db_tablespace=field.db_tablespace,
                 db_constraint=field.remote_field.db_constraint,
+                on_delete=models.CASCADE,
             ),
         },
     )

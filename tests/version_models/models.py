@@ -35,7 +35,9 @@ class Abstract(BaseVersionedModel, NameModel):
 
 class AbstractM2MBook(models.Model):
     books = fields.M2MFromVersion("Book", blank=True)
-    cartoon = fields.FKToVersion("Cartoon", blank=True, null=True)
+    cartoon = fields.FKToVersion(
+        "Cartoon", blank=True, null=True, on_delete=models.SET_NULL
+    )
 
     class Meta(object):
         abstract = True
@@ -49,7 +51,7 @@ class Author(VersionView, Abstract):
 class Book(VersionView, NameModel, Harmless):
     _clone_related = ["review", "galleries"]
 
-    author = models.ForeignKey(Author)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE)
     galleries = fields.M2MFromVersion("Gallery")
 
     def __unicode__(self):
@@ -57,7 +59,7 @@ class Book(VersionView, NameModel, Harmless):
 
 
 class BookNoRelated(VersionView, NameModel, Harmless):
-    author = models.ForeignKey(Author)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE)
     galleries = fields.M2MFromVersion("Gallery")
 
     def __unicode__(self):
@@ -65,7 +67,7 @@ class BookNoRelated(VersionView, NameModel, Harmless):
 
 
 class Review(Cloneable):
-    book = fields.FKToVersion(Book)
+    book = fields.FKToVersion(Book, on_delete=models.CASCADE)
     text = models.CharField(max_length=255)
 
     def __unicode__(self):

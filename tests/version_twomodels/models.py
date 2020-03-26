@@ -37,7 +37,7 @@ class BookBase(BaseModel):
 class Book(VersionModel, NameModel):
     _clone_related = ["review", "galleries"]
 
-    author = models.ForeignKey(AuthorBase)
+    author = models.ForeignKey(AuthorBase, on_delete=models.CASCADE)
     galleries = models.ManyToManyField("Gallery")
 
     class Meta(object):
@@ -46,7 +46,7 @@ class Book(VersionModel, NameModel):
 
 
 class Review(Cloneable):
-    book = models.ForeignKey(Book)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
     text = models.CharField(max_length=255)
 
     class Meta(object):

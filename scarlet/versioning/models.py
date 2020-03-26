@@ -405,7 +405,9 @@ class VersionViewMeta(SharedMeta):
 
         # Create a FK to base
         versioned_attrs["object"] = models.ForeignKey(
-            base_name, related_name=base_model.get_related_name(name)
+            base_name,
+            related_name=base_model.get_related_name(name),
+            on_delete=models.CASCADE,
         )
 
         versioned_attrs = add_managers(versioned_attrs)
@@ -576,6 +578,7 @@ class VersionModelMeta(models.base.ModelBase):
                 base_model.__name__,
                 related_name=base_model.get_related_name(name),
                 editable=False,
+                on_delete=models.CASCADE
             )
             attrs = add_managers(attrs)
 
