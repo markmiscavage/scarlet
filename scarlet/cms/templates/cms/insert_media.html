@@ -3,10 +3,10 @@
 {% block page_class %}insert-media{% endblock page_class %}
 
 {% block popup_header %}
-<ul data-tabs-container=".media-container" class="widget-tabs tabs">
-	<li><a class="active" data-tabs-content="> .images" href="#">Images</a></li>
-	<li><a data-tabs-content="> .video" href="#">Video</a></li>
-	<li><a data-tabs-content="> .audio" href="#">Audio</a></li>
+<ul data-tabs-container=".media-container" class="tabs tabs">
+  <li><a class="button active" data-tabs-content="> .images" href="#">Images</a></li>
+  <li><a class="button" data-tabs-content="> .video" href="#">Video</a></li>
+  <li><a class="button" data-tabs-content="> .audio" href="#">Audio</a></li>
 </ul>
 {% endblock popup_header %}
 
@@ -14,216 +14,229 @@
 
 <div class="media-container">
 
-	<div class="images">
+  <div class="images">
+    <ul data-tabs-container=".image-container" class="tabs sub-tabs">
+      {% if api_link %}
+        <li><a class="divider active" data-tabs-content="> .embed-url" href="#">Embed URL</a></li>
+        <li><a class="" data-tabs-content="> .library" href="#">Library</a></li>
+      {% endif %}
+    </ul>
+    <div class="image-container">
 
-		<ul data-tabs-container=".image-container" class="widget-tabs sub-tabs">
-			<li><a class="button active" data-tabs-content="> .embed-url" href="#">Embed URL</a></li>
-			{% if api_link %}
-				<li><a class="button" data-tabs-content="> .library" href="#">Library</a></li>
-			{% endif %}
-		</ul>
+      <div class="insert-image embed-url">
+        <form>
 
-		<div class="image-container">
+          <p class="row">
+            <label class="image-url full">URL:
+              <input data-attribute="src" type="text" />
+            </label>
+          </p>
 
-			<div class="widget-insert-image embed-url">
-				<form>
+          <hr>
 
-					<p class="row">
-						<label class="image-url full">URL:
-							<input data-attribute="src" type="text" />
-						</label>
-					</p>
+          <p class="row">
+            <label class="full">Title:
+              <input data-attribute="title" type="text" />
+            </label>
+          </p>
 
-					<hr>
+          <p class="row">
+            <label class="full">Alt Text:
+              <input data-attribute="alt" type="text" />
+            </label>
+          </p>
 
-					<p class="row">
-						<label class="full">Title:
-							<input data-attribute="title" type="text" />
-						</label>
-					</p>
+          <hr>
 
-					<p class="row">
-						<label class="full">Alt Text:
-							<input data-attribute="alt" type="text" />
-						</label>
-					</p>
+          <div class="row preview-container">Preview:
+            <div class="image-preview"></div>
+          </div>
 
-					<hr>
+          <p class="row">
+            <label class="col inline">Width (px):
+              <input data-attribute="width" type="text" name="width" class="image-size">
+            </label>
+            <label class="col inline">Height (px):
+              <input data-attribute="height" type="text" name="height" class="image-size">
+            </label>
+          </p>
 
-					<div class="preview-container">Preview:
-						<div class="image-preview"></div>
-					</div>
+          <p class="row">
+            <label class="inline">
+              <input type="checkbox" name="constrain" class="constrain">
+              Constrain Proportions
+            </label>
+          </p>
 
-					<p class="row">
-						<label class="col inline">Width (px):
-							<input data-attribute="width" type="text" name="width" class="image-size">
-						</label>
-						<label class="col inline">Height (px):
-							<input data-attribute="height" type="text" name="height" class="image-size">
-						</label>
-					</p>
+          <hr>
 
-					<p class="row">
-						<label class="inline">
-							<input type="checkbox" name="constrain" class="constrain">
-							Constrain Proportions
-						</label>
-					</p>
+          <div class="button-group button-group--submit">
+            <a class="button button--secondary close-popup" href="#">Cancel</a>
+            <input type="submit" class="button button--primary" name="insert" value="Insert" />
+          </div>
 
-					<hr>
+        </form>
+      </div>
 
-					<p class="submit-row">
-						<a class="button cancel" href="#">Cancel</a>
-						<input class="big" type="submit" name="insert" value="Insert" />
-					</p>
+      {% if api_link %}
+      <div class="insert-image library" style="display: none;">
+        <form>
 
-				</form>
-			</div>
+            <div class="asset" data-api="{{ api_link }}&ftype=image">
+            <div class="asset__preview" style="background-image:url({{ object.url }})"></div>
+              <h1>Hello</h1>
+              <div class="asset__actions">
+                  <div class="asset__select">
+                      <input data-respond="true" data-attribute="src" type="hidden" value="">
+                      {% if add_link %}
+                        <a class="button button--primary asset__add-link" target="_blank" href="{{ add_link }}">
+                          <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                          Upload New
+                        </a>
+                      {% endif %}
+                  </div>
+              </div>
+          </div>
 
-			{% if api_link %}
-			<div class="widget-insert-image library" style="display: none;">
-				<form>
+          <hr>
 
-						<div class="widget-asset" data-api="{{ api_link }}&ftype=image">
-							<div class="widget-asset-preview" style="background-image:url({{ object.url }})"></div>
-							<div class="widget-asset-actions">
-								<input data-respond="true" data-attribute="src" type="hidden" value="">
-								{% if add_link %}
-									<a class="button" target="_blank" href="{{ add_link }}">Upload</a>
-								{% endif %}
-							</div>
-						</div>
+          <p class="row">
+            <label class="full">Title:
+              <input data-attribute="title" type="text" />
+            </label>
+          </p>
 
-					<hr>
+          <p class="row">
+            <label class="full">Alt Text:
+              <input data-attribute="alt" type="text" />
+            </label>
+          </p>
 
-					<p class="row">
-						<label class="full">Title:
-							<input data-attribute="title" type="text" />
-						</label>
-					</p>
+          <hr>
 
-					<p class="row">
-						<label class="full">Alt Text:
-							<input data-attribute="alt" type="text" />
-						</label>
-					</p>
+          <div class="preview-container">Preview:
+            <div class="image-preview"></div>
+          </div>
 
-					<hr>
+          <p class="row">
+            <label class="col inline">Width (px):
+              <input data-attribute="width" type="text" name="width" class="image-size">
+            </label>
+            <label class="col inline">Height (px):
+              <input data-attribute="height" type="text" name="height" class="image-size">
+            </label>
+          </p>
 
-					<div class="preview-container">Preview:
-						<div class="image-preview"></div>
-					</div>
+          <p class="row">
+            <label class="inline">
+              <input type="checkbox" name="constrain" class="constrain">
+              Constrain Proportions
+            </label>
+          </p>
 
-					<p class="row">
-						<label class="col inline">Width (px):
-							<input data-attribute="width" type="text" name="width" class="image-size">
-						</label>
-						<label class="col inline">Height (px):
-							<input data-attribute="height" type="text" name="height" class="image-size">
-						</label>
-					</p>
+          <hr>
 
-					<p class="row">
-						<label class="inline">
-							<input type="checkbox" name="constrain" class="constrain">
-							Constrain Proportions
-						</label>
-					</p>
+          <div class="button-group button-group--submit">
+            <a class="button button--secondary close-popup" href="#">Cancel</a>
+            <input type="submit" class="button button--primary" name="insert" value="Insert" />
+          </div>
 
-					<hr>
+        </form>
+      </div>
+      {% endif %}
 
-					<p><a class="button cancel" href="#">Cancel</a>
-					<input class="big" type="submit" name="insert" value="Insert" /></p>
+    </div>
 
+  </div>
 
-				</form>
-			</div>
-			{% endif %}
+  <div class="video" style="display: none;">
 
-		</div>
+    <div class="video-container">
+      <div class="insert-video">
+        <form class="youtube">
 
-	</div>
+          <label class="youtube-url full">Video URL:
+            <input data-attribute="src" class="video-input" type="text" name="src">
+          </label>
 
-	<div class="video" style="display: none;">
+          <hr>
 
-		<div class="video-container">
-			<div class="widget-insert-video">
-				<form class="youtube">
+          <div class="preview-container">Preview:
+            <div class="video-preview"></div>
+          </div>
 
-					<label class="youtube-url full">Video URL:
-						<input data-attribute="src" class="video-input" type="text" name="src">
-					</label>
+          <p class="row">
+            <label class="col inline">Width (px):
+              <input data-attribute="width" type="text" name="width">
+            </label>
+            <label class="col inline">Height (px):
+              <input data-attribute="height" type="text" name="height">
+            </label>
+          </p>
 
-					<hr>
+          <label class="inline">
+            <input type="checkbox" name="constrain" class="constrain">
+            Constrain Proportions
+          </label>
 
-					<div class="preview-container">Preview:
-						<div class="video-preview"></div>
-					</div>
+          <hr>
 
-					<p class="row">
-						<label class="col inline">Width (px):
-							<input data-attribute="width" type="text" name="width">
-						</label>
-						<label class="col inline">Height (px):
-							<input data-attribute="height" type="text" name="height">
-						</label>
-					</p>
+          <div class="button-group button-group--submit">
+            <a class="button button--secondary close-popup" href="#">Cancel</a>
+            <input type="submit" class="button button--primary" name="insert" value="Insert" />
+          </div>
 
-					<label class="inline">
-						<input type="checkbox" name="constrain" class="constrain">
-						Constrain Proportions
-					</label>
+        </form>
+      </div>
+    </div>
 
-					<hr>
+  </div>
 
-					<p><a class="button cancel" href="#">Cancel</a>
-					<input class="big" type="submit" name="insert" value="Insert" /></p>
+  <div class="audio" style="display: none;">
 
-				</form>
-			</div>
-		</div>
+    <div class="audio-container">
 
-	</div>
+      {% if api_link %}
+      <div class="insert-audio">
+        <form>
 
-	<div class="audio" style="display: none;">
+          <div class="asset" data-api="{{ api_link }}&ftype=audio" data-title="{{ object.user_filename }}" data-tags="{{ asset_tags }}">
+            <div class="asset__preview" style="background-image:url({{ object.url }})"></div>
 
-		<div class="audio-container">
+              <div class="asset__actions">
+                  <div class="asset__select">
+                      <input data-respond="true" data-attribute="src" type="hidden" value="">
+                      {% if add_link %}
+                        <a class="button button--primary asset__add-link" target="_blank" href="{{ add_link }}">
+                          <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                          Upload New
+                        </a>
+                      {% endif %}
+                  </div>
+              </div>
+          </div>
 
-			{% if api_link %}
-			<div class="widget-insert-audio">
-				<form>
+          <hr>
 
-					<div class="widget-asset" data-api="{{ api_link }}&ftype=audio">
-						<div class="widget-asset-preview" style="background-image:url({{ object.url }})"></div>
-						<div class="widget-asset-actions">
-							<input data-respond="true" data-attribute="src" type="hidden" value="">
-							{% if add_link %}
-								<a class="button" target="_blank" href="{{ add_link }}">Upload</a>
-							{% endif %}
-						</div>
-					</div>
+          <div class="preview-container">
+            <div class="audio-preview">
+              <audio controls>Your browser does not support the <code>audio</code> element.</audio>
+            </div>
+          </div>
 
-					<hr>
+          <hr>
 
-					<div class="preview-container">
-						<div class="audio-preview">
-							<audio controls>Your browser does not support the <code>audio</code> element.</audio>
-						</div>
-					</div>
+          <div class="button-group button-group--submit">
+            <a class="button button--secondary close-popup" href="#">Cancel</a>
+            <input type="submit" class="button button--primary" name="insert" value="Insert" />
+          </div>
+        </form>
+      </div>
+      {% endif %}
 
-					<hr>
+    </div>
 
-					<p><a class="button cancel" href="#">Cancel</a>
-					<input class="big" type="submit" name="insert" value="Insert" /></p>
-
-
-				</form>
-			</div>
-			{% endif %}
-
-		</div>
-
-	</div>
+  </div>
 
 </div>
 

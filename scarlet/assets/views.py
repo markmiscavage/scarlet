@@ -148,7 +148,7 @@ class AssetFormView(views.FormView):
 
         asset_tags = self.request.GET.get("tags", None)
         if asset_tags:
-            initial["tags"] = asset_tags
+            initial['tags'] = asset_tags
 
         if len(initial):
             kwargs["initial"].update(initial)

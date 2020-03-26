@@ -3,7 +3,6 @@ from builtins import str
 from django.template.defaulttags import kwarg_re
 from django.template import Library, TemplateSyntaxError, Node
 from django.utils.encoding import smart_str
-from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
 
 try:

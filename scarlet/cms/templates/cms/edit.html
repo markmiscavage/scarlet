@@ -3,98 +3,117 @@
 
 {% block main_content %}
 
-	{% block form_title %}
-	{% if obj %}
-		{% if subitem %}
-			<h4 data-auto-tag="{{ view_tags }}">Edit {{ obj }}</h4>
-		{% endif %}
-	{% else %}
-		<h4>Add New {{ model_name }}</h4>
-	{% endif %}
-	{% endblock form_title %}
+  {% block form_title %}
+  {% if obj %}
+    {% if subitem %}
+      <h2 data-auto-tag="{{ view_tags }}">Edit {{ obj }}</h2>
+    {% endif %}
+  {% else %}
+    <h2>Add New {{ model_name }}</h2>
+  {% endif %}
+  {% endblock form_title %}
 
-	<form data-form-id="edit" {% if adminForm.form.is_multipart %} enctype="multipart/form-data"{% endif %} action="{{ action_url }}" method="post">
-	{% block form %}
- 		{% csrf_token %}
-		{% if adminForm.form.non_field_errors %}
-			{{ adminForm.form.non_field_errors }}
-		{% endif %}
-		<input type="hidden" name="popup" value='{{ popup }}' />
-		<input type="hidden" id="auto_tags" name="auto_tags" value='' />
-		<input type="hidden" id="view_tags" name="view_tags" value='{{ view_tags }}' />
+  <form data-form-id="edit" {% if adminForm.form.is_multipart %} enctype="multipart/form-data"{% endif %} action="{{ action_url }}" method="post">
+  {% block form %}
+    {% csrf_token %}
+    {% if adminForm.form.non_field_errors %}
+      {{ adminForm.form.non_field_errors }}
+    {% endif %}
+    <input type="hidden" name="popup" value='{{ popup }}' />
+    <input type="hidden" id="auto_tags" name="auto_tags" value='' />
+    <input type="hidden" id="view_tags" name="view_tags" value='{{ view_tags }}' />
 
-		{% for fieldset in adminForm %}
-		<fieldset>
-			{% if fieldset.name %}<legend>{{ fieldset.name }}</legend>{% endif %}
-			{% if fieldset.description %}
-				<div class="description">{{ fieldset.description|safe }}</div>
-			{% endif %}
+    {% for fieldset in adminForm %}
+    <fieldset>
+      {% if fieldset.name %}<legend>{{ fieldset.name }}</legend>{% endif %}
+      {% if fieldset.description %}
+        <div class="description">{{ fieldset.description|safe }}</div>
+      {% endif %}
+      {% for line in fieldset %}
+        {% for field in line %}
+          <div class='field-row {% if field.is_autoslug %}auto-slug{% endif %} {% if field.is_date %}date{% endif %} {% if field.is_checkbox %}checkbox{% endif %} {% if field.errors %}error-field{% endif %}'
+            {% for attr, value in field.label_attrs.items %}
+            data-label-{{attr}}="{{ value }}"
+            {% endfor %}
+            {% if field.field.id_for_label %}
+            data-label-for="{{ field.field.id_for_label }}"
+            {% endif %}
+            data-label-value="{{ field.label_contents }}"
 
-			{% for line in fieldset %}
-				{% for field in line %}
-					<p class="{% if field.is_date %}date{% endif %} {% if field.is_checkbox %}checkbox{% endif %} {% if field.errors %}error-field{% endif %}">
-						{{ field.label_tag }}
-						{% if field.field.help_text %}<em class="help">{{ field.field.help_text|safe }}</em>{% endif %}
-						{{ field.field }}
-					</p>
-					{{ field.errors }}
-				{% endfor %}
-			{% endfor %}
-		</fieldset>
-		{% endfor %}
-	{% endblock form %}
+            {% if field.field_tag %}
+              {% for attr, value in field.field_attrs.items %}
+              data-{{field.field_tag}}-{{attr}}="{{ value }}"
+              {% endfor %}
+              {% if field.field.value %}
+                data-{{field.field_tag}}-value="{{field.field.value}}"
+              {% endif %}
+            {% endif %}
+              <label>{{ field.label_tag }}</label>
+              {% if field.field.help_text %}<em class="help">{{ field.field.help_text|safe }}</em>{% endif %}
+              {{ field.field }}
+            {{ field.errors }}
+          </div>
+        {% endfor %}
+      {% endfor %}
+    </fieldset>
+    {% endfor %}
+  {% endblock form %}
 
-	{% block formsets %}
+  {% block formsets %}
 
-		{% if formsets %}
-			{% for title, formset in formsets.visible_formsets %}
-                {% if title %}
-        			<legend class="widget-formset-title">{{ title }}:</legend>
-                {% endif %}
+    {% if formsets %}
+      {% for title, formset in formsets.visible_formsets %}
+        <fieldset class="formset" data-prefix="{{ formset.prefix }}">
+          {% if title %}
+          <legend class="formset__title">{{ title }}:</legend>
+          {% endif %}
 
-				<fieldset class="widget-formset" data-prefix="{{ formset.prefix }}">
-					{{ formset.management_form }}
-					{{ formset.non_form_errors }}
+          {{ formset.management_form }}
+          {{ formset.non_form_errors }}
 
-					<div class="widget-formset-forms">
-	                    {% if formset.combined %}
-						    {% for form, fset in formset %}
-							    <div class="widget-formset-form" data-prefix="{{ fset.prefix }}">
-								    {% include "cms/formset.html" with form=form formset=fset %}
-							    </div>
-						    {% endfor %}
-	                    {% else %}
-						    {% for form in formset %}
-							    <div class="widget-formset-form" data-prefix="{{ formset.prefix }}">
-								    {% include "cms/formset.html" with form=form formset=formset %}
-							    </div>
-						    {% endfor %}
-	                    {% endif %}
-                    </div>
-				</fieldset>
-			{% endfor %}
+          <div class="formset__forms">
+            {% if formset.combined %}
+              {% for form, fset in formset %}
+                <div class="formset__form" data-prefix="{{ fset.prefix }}" data-module-type="{{ form.instance.icon_kind }}" data-module-name="{{ form.instance.name }}" >
+                  {% include "cms/formset.html" with form=form formset=fset %}
+                </div>
+              {% endfor %}
+            {% else %}
+              {% for form in formset %}
+                <div class="formset__form" data-prefix="{{ formset.prefix }}" data-module-type="{{ form.instance.icon_kind }}" data-module-name="{{ form.instance.name }}" >
+                  {% include "cms/formset.html" with form=form formset=formset %}
+                </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </fieldset>
+      {% endfor %}
 
-			<div class="widget-formset-controls {% if formsets.formsets|length > 1 %}dropdown{% endif %}">
-				<ul>
-			        {% for title, formset in formsets.all_formsets %}
-				        <li data-count="{{ formset.count }}" data-prefix="{{ formset.prefix }}" class="widget-formset-add button">
-				        	{{ title }}
-							<script type="text/html" data-prefix="{{ formset.prefix }}" class="widget-formset-form-template">
-							{% include "cms/formset.html" with form=formset.empty_form formset=formset %}
-							</script>
-				        </li>
-			        {% endfor %}
-		        </ul>
-		        <span class="select-label">Add a new module<span class="select-arrow"></span></span>
-		    </div>
-		{% endif %}
-	{% endblock formsets %}
+      <div class="formset__controls">
+        {% if formsets.formsets|length > 1 %}
+          <div class="formset__select"></div>
+        {% else %}
+          {% for title, formset in formsets.all_formsets %}
+            <div class="formset__button--add button button--primary">Add {{ title }}</div>
+          {% endfor %}
+        {% endif %}
+      </div>
 
-	{% block submit %}
-		<p class="submit-row">
-			<a class="button close-popup" href="{{ cancel_url }}">Cancel</a>
-			<input class="big" type="submit" value="Save" />
-		</p>
-	</form>
-	{% endblock submit %}
+      {% for title, formset in formsets.all_formsets %}
+        <div class="formset__type" data-text="{{ title }}" data-count="{{ formset.count }}" data-prefix="{{ formset.prefix }}">
+          <script type="text/html" data-prefix="{{ formset.prefix }}" class="formset__form-template">
+            {% include "cms/formset.html" with form=formset.empty_form formset=formset %}
+          </script>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endblock formsets %}
+
+  {% block submit %}
+    <div class="button-group button-group--submit">
+      <a class="button button--secondary close-popup" href="{{ cancel_url }}">Cancel</a>
+      <input class="button button--primary" type="submit" value="Save" />
+    </div>
+  </form>
+  {% endblock submit %}
 {% endblock %}

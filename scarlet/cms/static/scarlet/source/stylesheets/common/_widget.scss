@@ -1,0 +1,17 @@
+.widget-asset {
+	br {
+		height: 10px;
+	}
+
+	&-preview {
+		width: 100px;
+		height: 100px;
+	}
+
+	&-simple-preview {
+		height: 100px;
+		width: 100px;
+		display: block;
+		margin-bottom: 10px;
+	}
+}
