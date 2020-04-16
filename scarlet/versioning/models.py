@@ -50,8 +50,8 @@ class Cloneable(models.Model):
         old_m2ms = {}
         for field in self._meta.local_many_to_many:
             if (
-                field.rel.through
-                and field.rel.through._meta.auto_created
+                field.remote_field.through
+                and field.remote_field.through._meta.auto_created
                 and field.name not in self.clone_related
             ):
                 man = getattr(self, field.name)
@@ -108,10 +108,9 @@ class Cloneable(models.Model):
         Creates the same m2m relationships that the old
         object had.
         """
-
         for k, v in list(old_m2ms.items()):
             if v:
-                setattr(self, k, v)
+                getattr(self, k).set(v)
 
     def _clone_reverses(self, old_reverses):
         """

@@ -69,7 +69,7 @@ class RenderResponse(object):
         kwargs = self.update_kwargs(request, **kwargs)
         return render(request, self.template, kwargs)
 
-    def redirect(self, request, url, **kwargs):
+    def redirect(self, request, url, renderer=None, **kwargs):
         """
         Hook for changing redirect behavior. Should
         return a HttpResponse object. Default implementation

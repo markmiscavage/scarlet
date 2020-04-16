@@ -362,7 +362,7 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
             m2ms = [f.name for f in form.instance._meta.many_to_many]
             m2ms.extend(
                 [
-                    f.field.rel.related_name
+                    f.field.attname
                     for f in [
                         f
                         for f in form.instance._meta.get_fields(include_hidden=True)

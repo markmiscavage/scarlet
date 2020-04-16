@@ -653,16 +653,9 @@ class ModelCMSMixin(object):
                 cache = self.model._meta.init_name_map()
                 field, mod, direct, m2m = cache[self.parent_field]
             else:
-                # 1.10
-                if DJANGO_VERSION[1] >= 10:
-                    field = self.model._meta.get_field(self.parent_field)
-                    m2m = field.is_relation and field.many_to_many
-                    direct = not field.auto_created or field.concrete
-                else:
-                    # 1.8 and 1.9
-                    field, mod, direct, m2m = self.model._meta.get_field(
-                        self.parent_field
-                    )
+                field = self.model._meta.get_field(self.parent_field)
+                m2m = field.is_relation and field.many_to_many
+                direct = not field.auto_created or field.concrete
 
             to = None
             field_name = None
@@ -690,20 +683,20 @@ class ModelCMSMixin(object):
                     to = rel.field.remote_field.to
                     field_name = self.parent_field
                 else:
-                    try:
-                        from django.db.models.fields.related import ForeignObjectRel
+                    from django.db.models.fields.related import ForeignObjectRel
 
-                        if isinstance(rel.remote_field, ForeignObjectRel):
-                            to = rel.remote_field.related_model
-                        else:
-                            to = rel.remote_field.model
-                    except ImportError:
+                    if isinstance(rel.rel, ForeignObjectRel):
+                        to = rel.rel.related_model
+                    else:
                         to = rel.rel.model
-                    field_name = rel.remote_field.field.name
+                    field_name = rel.rel.field.name
             else:
                 to = field.rel.to
                 if main_key == "pk":
-                    to_field = field.remote_field.field_name
+                    try:
+                        to_field = field.remote_field.field_name
+                    except AttributeError:
+                        to_field = field.remote_field.attname
                     if to_field == "vid":
                         to_field = "object_id"
                 else:

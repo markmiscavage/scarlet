@@ -33,18 +33,34 @@ class Abstract(BaseVersionedModel, NameModel):
         abstract = True
 
 
+class Author(VersionView, Abstract):
+    def __str__(self):
+        return self.name
+
+
+class Cartoon(VersionView, NameModel):
+    author = models.ForeignKey(
+        Author, related_name="works", blank=True, null=True, on_delete=models.SET_NULL
+    )
+
+    def __str__(self):
+        return self.name
+
+
 class AbstractM2MBook(models.Model):
     books = fields.M2MFromVersion("Book", blank=True)
     cartoon = fields.FKToVersion(
-        "Cartoon", blank=True, null=True, on_delete=models.SET_NULL
+        Cartoon, blank=True, null=True, on_delete=models.SET_NULL
     )
 
     class Meta(object):
         abstract = True
 
 
-class Author(VersionView, Abstract):
-    def __unicode__(self):
+class Gallery(Cloneable):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
         return self.name
 
 
@@ -52,17 +68,17 @@ class Book(VersionView, NameModel, Harmless):
     _clone_related = ["review", "galleries"]
 
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    galleries = fields.M2MFromVersion("Gallery")
+    galleries = fields.M2MFromVersion(Gallery)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
 class BookNoRelated(VersionView, NameModel, Harmless):
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    galleries = fields.M2MFromVersion("Gallery")
+    galleries = fields.M2MFromVersion(Gallery)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -70,19 +86,12 @@ class Review(Cloneable):
     book = fields.FKToVersion(Book, on_delete=models.CASCADE)
     text = models.CharField(max_length=255)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.text
 
 
 class Store(VersionView, NameModel, AbstractM2MBook):
     pass
-
-
-class Gallery(Cloneable):
-    name = models.CharField(max_length=255)
-
-    def __unicode__(self):
-        return self.name
 
 
 class NoReverse(VersionView, NameModel):
@@ -93,20 +102,11 @@ class RM2M(Cloneable):
     no = models.ManyToManyField(NoReverse)
 
 
-class Cartoon(VersionView, NameModel):
-    author = models.ForeignKey(
-        Author, related_name="works", blank=True, null=True, on_delete=models.SET_NULL
-    )
-
-    def __unicode__(self):
-        return self.name
-
-
 class Image(Cloneable):
     name = models.CharField(max_length=255)
     cartoons = models.ManyToManyField(Cartoon)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 

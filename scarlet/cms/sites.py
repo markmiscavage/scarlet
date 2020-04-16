@@ -215,7 +215,7 @@ class AdminSite(object):
 
         url = reverse("admin:cms_password_change_done")
         defaults = {
-            "post_change_redirect": url,
+            "success_url": url,
             "template_name": "cms/password_change_form.html",
         }
         if self.password_change_template is not None:

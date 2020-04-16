@@ -410,7 +410,7 @@ class RadioDateTimeWidget(widgets.RadioSelect):
     def get_renderer(self, date_widget, name, value, attrs=None):
         return DateRenderer(name, value, attrs, self.choices, date_widget=date_widget)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         widget = self.date_class()
         date_widget = widget.render(name, value, attrs=attrs)
         return self.get_renderer(

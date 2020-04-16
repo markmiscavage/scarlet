@@ -14,12 +14,22 @@ class FKToVersion(models.ForeignKey):
 
     def __init__(self, *args, **kwargs):
         kwargs["to_field"] = "vid"
+        # Two cases that should only be caused from an upgrade
+        # of an old project where certain params weren't required
         if kwargs.get("on_delete"):
             on_delete = kwargs.get("on_delete")
-            del(kwargs['on_delete'])
+            del kwargs["on_delete"]
         else:
             on_delete = models.CASCADE
-        args = args + (on_delete,)
+
+        if kwargs.get("to"):
+            to = kwargs.get("to")
+            del kwargs["to"]
+        else:
+            to = args[0]
+
+        args = (to, on_delete)
+
         super(FKToVersion, self).__init__(*args, **kwargs)
 
     def deconstruct(self):
@@ -54,9 +64,8 @@ class M2MFromVersion(models.ManyToManyField):
         This check is needed because this is called before
         the main M2M field contribute to class is called.
         """
-
-        if isinstance(self.remote_field.remote_field, str):
-            relation = self.remote_field.remote_field
+        if isinstance(related.resolve_relation(klass, self.remote_field.model), str):
+            relation = related.resolve_relation(klass, self.remote_field.model)
             try:
                 app_label, model_name = relation.split(".")
             except ValueError:
@@ -73,7 +82,9 @@ class M2MFromVersion(models.ManyToManyField):
                     app_label, model_name, seed_cache=False, only_installed=False
                 )
             except LookupError:
-                pass
+                print(
+                    "LookupError: Unable to find model %s.%s." % (app_label, model_name)
+                )
 
             if model:
                 self.remote_field.model = model
@@ -94,10 +105,12 @@ class M2MFromVersion(models.ManyToManyField):
 
         # Set the through field
         if not self.remote_field.through and not cls._meta.abstract:
-            self.remote_field.through = create_many_to_many_intermediary_model(
-                self, cls
-            )
-
+            (
+                self.remote_field.through,
+                from_model,
+                to_model,
+            ) = create_many_to_many_intermediary_model(self, cls)
+            self.remote_field.through_fields = ("from", "to")
         # Do the rest
         super(M2MFromVersion, self).contribute_to_class(cls, name)
 
@@ -109,34 +122,33 @@ def create_many_to_many_intermediary_model(field, klass):
     to avoid problems between version combined models.
     """
     managed = True
+    temp_to_model = related.resolve_relation(klass, field.remote_field.model)
     if (
-        isinstance(field.remote_field.related_model, str)
-        and field.remote_field.related_model != related.RECURSIVE_RELATIONSHIP_CONSTANT
+        isinstance(temp_to_model, str)
+        and temp_to_model != related.RECURSIVE_RELATIONSHIP_CONSTANT
     ):
-        to_model = field.remote_field.related_model
+        to_model = temp_to_model
         to = to_model.split(".")[-1]
 
-        def set_managed(field, model, cls):
-            managed = model._meta.managed or cls._meta.managed
-            if issubclass(cls, VersionView):
-                managed = False
-            field.remote_field.through._meta.managed = managed
+        def set_managed(model, related, through):
+            through._meta.managed = model._meta.managed or related._meta.managed
 
-        related.add_lazy_relation(klass, field, to_model, set_managed)
-    elif isinstance(field.remote_field.related_model, str):
+        lazy_name = "%s_%s" % (klass._meta.object_name, field.name)
+        related.lazy_related_operation(set_managed, klass, to_model, lazy_name)
+    elif isinstance(temp_to_model, str):
         to = klass._meta.object_name
         to_model = klass
         managed = klass._meta.managed
     else:
-        to = field.remote_field.related_model._meta.object_name
-        to_model = field.remote_field.related_model
+        to = temp_to_model._meta.object_name
+        to_model = temp_to_model
         managed = klass._meta.managed or to_model._meta.managed
         if issubclass(klass, VersionView):
             managed = False
 
     name = "%s_%s" % (klass._meta.object_name, field.name)
     if (
-        field.remote_field.remote_field == related.RECURSIVE_RELATIONSHIP_CONSTANT
+        temp_to_model == related.RECURSIVE_RELATIONSHIP_CONSTANT
         or to == klass._meta.object_name
     ):
         from_ = "from_%s" % to.lower()
@@ -144,6 +156,7 @@ def create_many_to_many_intermediary_model(field, klass):
     else:
         from_ = klass._meta.object_name.lower()
         to = to.lower()
+
     meta = type(
         "Meta",
         (object,),
@@ -162,25 +175,29 @@ def create_many_to_many_intermediary_model(field, klass):
     )
 
     # Construct and return the new class.
-    return type(
-        str(name),
-        (models.Model,),
-        {
-            "Meta": meta,
-            "__module__": klass.__module__,
-            "from": FKToVersion(
-                klass,
-                related_name="%s+" % name,
-                db_tablespace=field.db_tablespace,
-                db_constraint=field.remote_field.db_constraint,
-                on_delete=models.CASCADE,
-            ),
-            "to": models.ForeignKey(
-                to_model,
-                related_name="%s+" % name,
-                db_tablespace=field.db_tablespace,
-                db_constraint=field.remote_field.db_constraint,
-                on_delete=models.CASCADE,
-            ),
-        },
+    return (
+        type(
+            str(name),
+            (models.Model,),
+            {
+                "Meta": meta,
+                "__module__": klass.__module__,
+                "from": FKToVersion(
+                    klass,
+                    related_name="%s+" % name,
+                    db_tablespace=field.db_tablespace,
+                    db_constraint=field.remote_field.db_constraint,
+                    on_delete=models.CASCADE,
+                ),
+                "to": models.ForeignKey(
+                    to_model,
+                    related_name="%s+" % name,
+                    db_tablespace=field.db_tablespace,
+                    db_constraint=field.remote_field.db_constraint,
+                    on_delete=models.CASCADE,
+                ),
+            },
+        ),
+        klass,
+        to_model,
     )

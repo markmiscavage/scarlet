@@ -412,7 +412,8 @@ class Migration(migrations.Migration):
                 (
                     "object",
                     models.ForeignKey(
-                        related_name="version_version", to="version_models.Author_base"
+                        related_name="version_version", to="version_models.Author_base", 
+                        on_delete=django.db.models.deletion.CASCADE,
                     ),
                 ),
             ],
@@ -468,7 +469,7 @@ class Migration(migrations.Migration):
                 ),
                 ("name", models.CharField(max_length=255)),
                 ("vid", models.AutoField(serialize=False, primary_key=True)),
-                ("author", models.ForeignKey(to="version_models.Author")),
+                ("author", models.ForeignKey(to="version_models.Author", on_delete=django.db.models.deletion.CASCADE,)),
             ],
             options={"managed": True,},
             bases=(
@@ -526,7 +527,7 @@ class Migration(migrations.Migration):
                 ),
                 ("name", models.CharField(max_length=255)),
                 ("vid", models.AutoField(serialize=False, primary_key=True)),
-                ("author", models.ForeignKey(to="version_models.Author")),
+                ("author", models.ForeignKey(to="version_models.Author", on_delete=django.db.models.deletion.CASCADE,)),
             ],
             options={"managed": True,},
             bases=(
@@ -597,7 +598,8 @@ class Migration(migrations.Migration):
                 (
                     "object",
                     models.ForeignKey(
-                        related_name="version_version", to="version_models.Cartoon_base"
+                        related_name="version_version", to="version_models.Cartoon_base",
+                        on_delete=django.db.models.deletion.CASCADE,
                     ),
                 ),
             ],
@@ -692,7 +694,8 @@ class Migration(migrations.Migration):
                 (
                     "object",
                     models.ForeignKey(
-                        related_name="version_version", to="version_models.CustomModel"
+                        related_name="version_version", to="version_models.CustomModel",
+                        on_delete=django.db.models.deletion.CASCADE,
                     ),
                 ),
             ],
@@ -772,6 +775,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         related_name="version_version",
                         to="version_models.NoReverse_base",
+                        on_delete=django.db.models.deletion.CASCADE,
                     ),
                 ),
             ],
@@ -887,7 +891,8 @@ class Migration(migrations.Migration):
                 (
                     "object",
                     models.ForeignKey(
-                        related_name="version_version", to="version_models.Store_base"
+                        related_name="version_version", to="version_models.Store_base",
+                        on_delete=django.db.models.deletion.CASCADE
                     ),
                 ),
             ],
@@ -910,7 +915,8 @@ class Migration(migrations.Migration):
             model_name="book_version",
             name="object",
             field=models.ForeignKey(
-                related_name="version_version", to="version_models.Book_base"
+                related_name="version_version", to="version_models.Book_base",
+                on_delete=django.db.models.deletion.CASCADE,
             ),
             preserve_default=True,
         ),
@@ -918,7 +924,8 @@ class Migration(migrations.Migration):
             model_name="booknorelated_version",
             name="object",
             field=models.ForeignKey(
-                related_name="version_version", to="version_models.BookNoRelated_base"
+                related_name="version_version", to="version_models.BookNoRelated_base",
+                on_delete=django.db.models.deletion.CASCADE,
             ),
             preserve_default=True,
         ),

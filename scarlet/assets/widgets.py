@@ -47,11 +47,11 @@ class AssetsFileWidget(TaggedRelationWidget):
                     )
         return sizes
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         obj = self.obj_for_value(value)
-        print(dir(obj.file))
+        # print(dir(obj.file))
         # Go directly to parent of APIChoiceWidget to get input
-        hidden_input = super(APIChoiceWidget, self).render(name, value, attrs=attrs)
+        hidden_input = super(APIChoiceWidget, self).render(name, value, attrs=attrs, renderer=None)
 
         context = {
             "hidden_input": hidden_input,
@@ -73,9 +73,9 @@ class RawImageWidget(ClearableFileInput):
         "%(initial_text)s: %(initial)s %(clear_template)s<br />%(input)s"
     )
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         thumbnail = None
-        data = super(RawImageWidget, self).render(name, value, attrs)
+        data = super(RawImageWidget, self).render(name, value, attrs, renderer=None)
 
         if value and hasattr(value, "admin_url"):
             thumbnail = value.admin_url()
