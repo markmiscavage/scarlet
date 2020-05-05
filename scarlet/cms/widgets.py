@@ -233,6 +233,7 @@ class DateWidget(widgets.DateInput):
         args["data-date-format"] = translate_format(self.get_format())
         args["data-timezone"] = timezone.get_current_timezone_name()
         args["data-locale"] = translation.get_language()
+        args["autocomplete"] = 'off'
         return args
 
     def value_from_datadict(self, data, files, name):
