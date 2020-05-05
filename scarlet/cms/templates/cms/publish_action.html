@@ -1,8 +1,7 @@
 {% extends base %}
 {% load cms %}
 {% block main_content %}
-
-<form action="{{ action_url }}" method="post">
+<form action="{{ action_url }}" method="post" class="publish">
         {% csrf_token %}
     {% bundle_url bundle "main_list" as cancel_url %}
         {% ifequal queryset|length 1 %}

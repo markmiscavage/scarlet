@@ -1,0 +1,14 @@
+.publish {  
+  input[type=radio]{
+    display: inline-block;
+  }
+
+  .hasDatepicker {
+    display: none;
+  }
+
+  input[name="when_rdi"]:checked + input {
+    display: block;
+    max-width: 250px;
+  }
+}
