@@ -30,20 +30,10 @@ const ImageCropper = View.extend({
   setupCropper() {
     this.$original.cropper({
       data: this.setInitialCroparea(),
-      // ready: this.cropperReady.bind(this),
-      // crop: this.cropperClone.bind(this),
-      cropmove: this.updateCropArea.bind(this),
+      // cropmove: this.updateCropArea.bind(this),
       aspectRatio: this.cropScale.w / this.cropScale.h,
       autoCropArea: 1,
-      background: true,
-      cropBoxMovable: true,
-      cropBoxResizable: true,
-      dragMode: 'crop',
-      guides: true,
-      highlight: true,
-      modal: false,
       responsive: true,
-      restore: true,
       viewMode: 1,
       zoomable: false,
     });
