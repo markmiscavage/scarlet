@@ -13,6 +13,7 @@ import ImageCropper from 'views/ImageCropper';
 import InsertImage from 'views/InsertImage';
 import InsertVideo from 'views/InsertVideo';
 import InsertAudio from 'views/InsertAudio';
+import Multiple from 'views/Multiple';
 import Select from 'views/Select';
 import SelectApi from 'views/SelectApi';
 import SelectAsset from 'views/SelectAsset';
@@ -167,6 +168,12 @@ const App = View.extend({
 
     $('.image-cropper').each((i, dom) => {
       const imageCropper = new ImageCropper({
+        el: dom,
+      }).render();
+    });
+
+    $('.selectize-control.multi').each((i, dom) => {
+      const multiple = new Multiple({
         el: dom,
       }).render();
     });
