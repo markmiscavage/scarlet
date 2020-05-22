@@ -6,6 +6,11 @@ of the conventions of the Django Admin and extends them to enable a superset of
 functionality. There are however some trade offs with using Scarlet; Postgres
 9.1+ is the only supported RDBM.
 
+If you'd like to contribute here how to set up development a dev environment:
+
+https://bitbucket.org/markmiscavage/scarlet_demo/src/develop/docs/developer_setup.rst
+
+
 Cool Stuff
 ==
 
