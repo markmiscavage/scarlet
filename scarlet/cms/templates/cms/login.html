@@ -41,14 +41,14 @@
   <body>
     <div class="login">
       <img src="{{ STATIC_URL }}scarlet/build/images/logo-scarlet-2.png" class="login__logo--main" />
-    {% if form.errors and not form.non_field_errors and not form.this_is_the_login_form.errors %}
+    {% if form.errors and not form.non_field_errors and not form.errors %}
     <p class="errornote">
     {% blocktrans count counter=form.errors.items|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
     </p>
     {% endif %}
 
-    {% if form.non_field_errors or form.this_is_the_login_form.errors %}
-    {% for error in form.non_field_errors|add:form.this_is_the_login_form.errors %}
+    {% if form.non_field_errors or form.errors %}
+    {% for error in form.non_field_errors|add:form.errors %}
     <p class="errornote">
         {{ error }}
     </p>
@@ -57,13 +57,13 @@
 
       <form action="" method="post" id="login-form" class="login__form">{% csrf_token %}
         <div class="field-row">
-          {% if not form.this_is_the_login_form.errors %}{{ form.username.errors }}{% endif %}
+          {% if not form.errors %}{{ form.username.errors }}{% endif %}
           <label for="id_username" class="required">{% trans 'Username:' %}</label> {{ form.username }}
         </div>
         <div class="field-row">
-          {% if not form.this_is_the_login_form.errors %}{{ form.password.errors }}{% endif %}
+          {% if not form.errors %}{{ form.password.errors }}{% endif %}
           <label for="id_password" class="required">{% trans 'Password:' %}</label> {{ form.password }}
-          <input type="hidden" name="this_is_the_login_form" value="1" />
+          <input type="hidden" name="login_form" value="1" />
           <input type="hidden" name="next" value="{{ next }}" />
         </div>
         <div class="button-group button-group--submit">
