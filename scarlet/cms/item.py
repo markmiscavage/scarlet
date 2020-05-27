@@ -422,13 +422,12 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
 
             url = self.get_object_url()
             self.log_action(self.object, CMSLog.SAVE, url=url)
-            msg = self.write_message()
 
         # get old and new tags
         if not new_object and changed_tags and old_tags:
             tag_handler.update_changed_tags(changed_tags, old_tags)
 
-        return self.success_response(msg)
+        return self.success_response()
 
     def success_response(self, message=None):
         """
