@@ -126,7 +126,7 @@ class Cloneable(models.Model):
                 for sub_obj in sub_objs:
                     if ctype != "m2m" and not attrs:
                         field = sub_obj._meta.get_field(field_name)
-                        attrs = {field.column: getattr(self, field.rel.field_name)}
+                        attrs = {field.column: getattr(self, field.remote_field.field_name)}
                     sub_obj._clone(**attrs)
 
                 if ctype == "m2m":
@@ -182,9 +182,10 @@ class Cloneable(models.Model):
             self._delete_reverse(reverse)
 
         for field in self._meta.local_many_to_many:
+            # from IPython import embed;embed()
             if (
-                field.rel.through
-                and field.rel.through._meta.auto_created
+                field.remote_field.through
+                and field.remote_field.through._meta.auto_created
                 and not field.name in self.clone_related
             ):
                 man = getattr(self, field.name)
