@@ -15,6 +15,7 @@ const BatchActions = View.extend({
     this.$actions = this.$el.find('[data-type=batch-action]');
     this.$batchCheck = this.$el.find('[data-type=batch-check-row]');
     this.$selectAll = this.$el.find('[data-type=batch-check-all]');
+    this.$actions.on('click', this.handleActions.bind(this));
   },
 
   selectAll(e) {
@@ -35,6 +36,12 @@ const BatchActions = View.extend({
 
     this.toggleActions();
     this.updateActionUrl(idIndex);
+  },
+
+  handleActions(event){
+    if($(event.currentTarget).is('.button--disabled')){
+      event.preventDefault();
+    }
   },
 
   toggleActions() {
