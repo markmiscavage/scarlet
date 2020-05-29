@@ -12,10 +12,12 @@ const Multiple = View.extend({
 
   createAddButton() {
     const url = this.$el.data('add');
+    let name = this.$el.parent().find('select').attr('name');
+    name = name.charAt(name.length-1) == 's' ? name.slice(0, -1) : name;
     const add = $('<a>')
       .attr('href', url)
       .addClass('button button--primary')
-      .html(`<i class="fa fa-plus-circle" aria-hidden="true"></i>Add ${this.name}`);
+      .html(`<i class="fa fa-plus-circle" aria-hidden="true"></i>Add ${name}`);
 
     this.$el.after(add).parent().addClass('formset__field--has-add-button');
     this.$el.parent().find('.button').on('click', this.handlePopup.bind(this));
