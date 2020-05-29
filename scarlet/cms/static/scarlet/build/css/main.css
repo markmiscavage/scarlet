@@ -2987,7 +2987,7 @@ button,
   font-family: "Open Sans", sans-serif;
   font-size: 12px;
   float: left;
-  width: 50%; }
+  width: 100%; }
   .footer-main__logo p:last-of-type {
     float: right;
     text-align: right; }
