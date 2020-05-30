@@ -48,7 +48,7 @@
     {% endif %}
 
     {% if form.non_field_errors or form.errors %}
-    {% for error in form.non_field_errors|add:form.errors %}
+    {% for error in form.non_field_errors %}
     <p class="errornote">
         {{ error }}
     </p>
