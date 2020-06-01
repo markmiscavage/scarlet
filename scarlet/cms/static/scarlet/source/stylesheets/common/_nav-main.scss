@@ -78,7 +78,8 @@
 
 .nav-main__sublist {
 	@include flyout($hover-selector: '.nav-main__item');
-	left: -8px;
+    left: -8px;
+    pointer-events: none;
 
 	// .fa-caret-up
 	&:before {

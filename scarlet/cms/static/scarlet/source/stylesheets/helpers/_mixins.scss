@@ -118,6 +118,7 @@ $spacer: 1;
     top: 100%;
     opacity: 1;
     z-index: 1;
+    pointer-events: auto;
 
     // transition-in effect
     transition: top 250ms, opacity 200ms 50ms;
