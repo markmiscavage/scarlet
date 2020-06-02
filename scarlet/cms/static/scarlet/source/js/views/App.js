@@ -123,10 +123,9 @@ const App = View.extend({
     // Bind Popup triggers
     handlePopup();
     // Editor
-    $('.editor:not(.editor--rendered)').each((i, dom) => {
-      const editor = new Editor({
-        el: dom,
-      }).render();
+    $('.editor').each((i, dom) => {
+      const editor = new Editor();
+      editor.render(dom);
     });
 
     // Select

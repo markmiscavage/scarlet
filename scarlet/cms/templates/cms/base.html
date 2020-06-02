@@ -22,6 +22,9 @@
     {# Mobile viewport optimized: j.mp/bplateviewport #}
     <meta name="viewport" content="width=1024" />
 
+   <!-- Main Quill library -->
+   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
     {# Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons #}
 
     {# CSS: implied media="all" #}
@@ -130,8 +133,7 @@
         </p>
         {% endblock %}
     </footer>
-    <script src="{{ STATIC_URL }}scarlet/build/js/libs/wysihtml.js"></script>
-    <script src="{{ STATIC_URL }}scarlet/build/js/libs/wysihtml.toolbar.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 
 
     {% endblock popup_footer %}

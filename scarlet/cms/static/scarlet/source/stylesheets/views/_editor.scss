@@ -1,6 +1,4 @@
-@import '../vendor/wysihtml5';
-
-.editor__textarea {
+.editor__textarea, .ql-editor {
 	background-color: $gray-light;
 	padding: 10px;
 
@@ -8,7 +6,6 @@
 		font-size: 22px;
 		font-family: AvenirRoman;
 		color: $blue;
-		line-height: 1.2;
 	}
 
 	h1 {
@@ -194,4 +191,14 @@
 .wysihtml-sandbox {
 	height: 400px;
 	width: 100%;
+}
+
+
+.ql-toolbar {
+  button{
+    min-width: 0;
+  }
+  .ql-formats:nth-child(1) div{
+    display: none;
+  }
 }
