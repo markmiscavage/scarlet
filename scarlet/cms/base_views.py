@@ -435,7 +435,6 @@ class ModelCMSMixin(object):
         to call. Otherwise the widget is removed and the default
         select widget will be used instead.
         """
-
         overides = self.get_formfield_overrides()
 
         # If we've got overrides for the formfield defined, use 'em. **kwargs
@@ -449,14 +448,14 @@ class ModelCMSMixin(object):
         mbundle = None
         extra = kwargs.pop("widget_kwargs", {})
         widget = kwargs.get("widget")
-        if kwargs.get("widget"):
+        if widget:
             if (
                 widget
                 and isinstance(widget, type)
                 and issubclass(widget, widgets.APIChoiceWidget)
             ):
                 mbundle = self.bundle.admin_site.get_bundle_for_model(
-                    db_field.remote_field.remote_field
+                    db_field.remote_field.model
                 )
                 if mbundle:
                     widget = widget(db_field.remote_field, **extra)

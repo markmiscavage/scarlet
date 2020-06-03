@@ -88,7 +88,7 @@ class ChoiceInput(SubWidget):
     def __str__(self):
         return self.render()
 
-    def render(self, name=None, value=None, attrs=None):
+    def render(self, name=None, value=None, attrs=None, renderer=None):
         if self.id_for_label:
             label_for = format_html(' for="{}"', self.id_for_label)
         else:
@@ -303,7 +303,7 @@ class TimeChoiceWidget(widgets.Select):
             data = datetime.datetime.now().strftime("%H:%M:%S")
         return data
 
-    def render(self, name, value, attrs=None, choices=()):
+    def render(self, name, value, attrs=None, renderer=None, choices=()):
         if value:
             if type(value) == type("") or type(value) == type(""):
                 try:
@@ -317,7 +317,7 @@ class TimeChoiceWidget(widgets.Select):
                     choices = list(choices)
                     choices.append((value_str, value.strftime(self.repr_format)))
         return super(TimeChoiceWidget, self).render(
-            name, value, attrs=attrs, choices=choices
+            name, value, attrs=attrs, renderer=None, choices=choices
         )
 
 
@@ -342,7 +342,7 @@ class SplitDateTime(widgets.SplitDateTimeWidget):
 class DateRadioInput(RadioChoiceInput):
     label_text = "At a specific date and time"
 
-    def render(self, name=None, value=None, attrs=None, choices=()):
+    def render(self, name=None, value=None, attrs=None, renderer=None, choices=()):
         attrs = attrs or self.attrs
         if "id" in self.attrs:
             label_for = ' for="%s_%s"' % (self.attrs["id"], self.index)
@@ -413,7 +413,7 @@ class RadioDateTimeWidget(widgets.RadioSelect):
 
     def render(self, name, value, attrs=None, renderer=None):
         widget = self.date_class()
-        date_widget = widget.render(name, value, attrs=attrs)
+        date_widget = widget.render(name, value, attrs=attrs, renderer=renderer)
         return self.get_renderer(
             date_widget, self.get_radio_key(name), self.DATE, {}
         ).render()
@@ -477,8 +477,9 @@ class APIChoiceWidget(widgets.Input):
         extra_query_kwargs=None,
     ):
         super(APIChoiceWidget, self).__init__(attrs=attrs)
+        #TODO: Follow new django convention and rename rel to remote_field.
         self.rel = rel
-        self.model = self.rel.to
+        self.model = self.rel.model
         self.db = using
 
         self.extra_query_kwargs = extra_query_kwargs
@@ -489,9 +490,9 @@ class APIChoiceWidget(widgets.Input):
         self._api_link = api_url
         self._add_link = add_url
 
-    def render(self, name, value, attrs=None, choices=()):
+    def render(self, name, value, attrs=None, renderer=None, choices=()):
         data = {
-            "input": super(APIChoiceWidget, self).render(name, value, attrs=attrs),
+            "input": super(APIChoiceWidget, self).render(name, value, attrs=attrs, renderer=renderer),
             "value": conditional_escape(self.label_for_value(value)),
             "link": self.get_api_link(),
             "add_link": self.get_add_link(),
@@ -686,7 +687,7 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
         model,
         attrs=None,
         using=None,
-        limit_choices_to=None,
+        limit_choices_to={},
         view="main",
         api_url="",
         add_view="add",
@@ -720,7 +721,7 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
         that this foreign key points to.
         """
         if admin_site:
-            bundle = admin_site.get_bundle_for_model(self.model.to)
+            bundle = admin_site.get_bundle_for_model(self.model.model)
 
             if bundle:
                 self._api_link = self._get_bundle_link(bundle, self.view, request.user)
@@ -728,7 +729,7 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
                     bundle, self.add_view, request.user
                 )
 
-    def render(self, name, value, attrs=None, choices=()):
+    def render(self, name, value, attrs=None, renderer=None, choices=()):
         final_attrs = self.build_attrs(attrs, {name: name})
         data = {
             "api_link": self.get_api_link(),
@@ -740,7 +741,7 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
 
     def get_options(self, value, name, key=None):
         if not key:
-            key = self.model.get_related_field().name
+            key = self.model.model._meta.pk.name
 
         values = []
         if value is not None:
@@ -748,7 +749,7 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
                 kwargs = {"{0}__in".format(key): value}
                 if self.limit_choices_to:
                     kwargs.update(self.limit_choices_to)
-                objs = self.model.to._default_manager.using(self.db).filter(**kwargs)
+                objs = self.model.model._default_manager.using(self.db).filter(**kwargs)
                 for obj in objs:
                     d = {
                         "text": force_text(obj),
@@ -760,7 +761,7 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
                         % d
                     )
                     values.append(line)
-            except ValueError:
+            except Exception:
                 pass
 
         if not values:

@@ -256,10 +256,10 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         # something to do with this change 
         # https://docs.djangoproject.com/en/3.0/releases/2.0/#form-fields-no-longer-accept-optional-arguments-as-positional-arguments
         form = model_forms.modelform_factory(model, **params)
-        if model and not self.form_class:
-            fc = self.customize_form_widgets(form, fields=fields)
-            params["form"] = fc
-            form = model_forms.modelform_factory(model, **params)
+        # if model and not self.form_class:
+        #     fc = self.customize_form_widgets(form, fields=fields)
+        #     params["form"] = fc
+        #     form = model_forms.modelform_factory(model, **params)
 
         return form
 
