@@ -94,7 +94,8 @@ class CropConfig(object):
         if ratio > 1 and not upscale:
             return
 
-        x, x2, y, y2 = int(x), int(x2), int(y), int(y2)
+        # A point can't have a negative value 
+        x, x2, y, y2 = max(0,int(x)), max(0,int(x2)), max(0,int(y)), max(0,int(y2))
         return CropSpec(
             name=self.name,
             editable=self.editable,
