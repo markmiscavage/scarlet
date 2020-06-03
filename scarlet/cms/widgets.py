@@ -741,7 +741,7 @@ class APIManyChoiceWidget(APIChoiceWidget, widgets.SelectMultiple):
 
     def get_options(self, value, name, key=None):
         if not key:
-            key = self.model.model._meta.pk.name
+            key = self.model.get_related_field().name
 
         values = []
         if value is not None:
