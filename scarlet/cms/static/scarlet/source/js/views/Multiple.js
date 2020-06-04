@@ -5,6 +5,10 @@ import { clickOpenPopup } from 'helpers/WindowPopup';
 
 const Multiple = View.extend({
   initialize() {
+    // Back-end was able to create AddButton 
+    // TODO - Multiple doesn't do anything anymore. Might need to be remove (TBC)  
+    return;
+    
     // button should have a data-add attribute
     this.$el.data('add', 'http://localhost:8000/admin/blog/tags/add/');    
     this.createAddButton();
