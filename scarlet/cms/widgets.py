@@ -214,7 +214,7 @@ class DateWidget(widgets.DateInput):
         super(DateWidget, self).__init__(*args, **kwargs)
         self.attrs["class"] = self.bc
         if not "format" in kwargs:
-            self.format = None
+            self.format = settings.DATE_INPUT_FORMATS
 
     def get_format(self):
         if self.format:
