@@ -136,14 +136,16 @@ const SelectApi = View.extend({
    */
   addItem(value, $item) {
     if (this.isMultiple) {
-      this.selectize.$input.after(
-        $('<input />', {
-          name: this.name,
-          value: $item.attr('data-id'),
-          'data-title': $item.attr('data-value'),
-          type: 'hidden',
-        }),
-      );
+      if(value){
+        this.selectize.$input.after(
+          $('<input />', {
+            name: this.name,
+            value: $item.attr('data-id'),
+            'data-title': $item.attr('data-value'),
+            type: 'hidden',
+          }),
+        );
+      }      
     } else if ($item.attr('data-id') !== this.singleInput.val()) {
       this.singleInput.val($item.attr('data-id'));
     }
@@ -270,11 +272,13 @@ const SelectApi = View.extend({
     const data = [];
     this.$el.find(`input[name=${this.name}]`).each((key, item) => {
       const title = this.isMultiple ? $(item).data('title') : this.$el.data('title');
-      data.push({
-        id: $(item).val(),
-        text: title,
-        value: title,
-      });
+      if(title){
+        data.push({
+          id: $(item).val(),
+          text: title,
+          value: title,
+        });
+      }      
     });
     return data;
   },
