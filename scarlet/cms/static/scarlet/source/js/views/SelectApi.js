@@ -155,14 +155,15 @@ const SelectApi = View.extend({
    * Window open trigger
    * @param  {object} event object
    */
-  openPopup(input) {
-    const url = `${this.addUrl}&addInput=${input}`;
+
+  openPopup(e) {
+    e.preventDefault();
     const width = 1025;
     const height = 600;
     const left = screen.width ? (screen.width - width) / 2 : 0;
     const top = screen.height ? (screen.height - height) / 2 : 0;
     const pop = new WindowPopup(
-      url,
+      this.addUrl,
       'addImage',
       [
         `width=${width}`,
@@ -177,7 +178,7 @@ const SelectApi = View.extend({
         'toolbar=no',
         'resizable=no',
       ].join(','),
-      cb,
+      function(){},
     );
     pop.request();
 
