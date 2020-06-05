@@ -72,7 +72,7 @@
             {% for f in list.labels %}
               <th class="{% if f.sortable %}sortable{% endif %}">
               {% if f.sortable %}
-                <a href="{{query_string}}sf={{f.attr}}&ot={{f.order_type}}" class="sort {% if f.cur_sorted %}{{f.order_type}}{% endif %}">
+                <a data-id="{{f.attr}}" data-type={{f.order_type}} href="" class="sort {% if f.cur_sorted %}{{f.order_type}}{% endif %}">
                   {{ f.name|capfirst }}
                   {% if f.order_type == "asc" %}
                     <i class="fa fa-caret-down" aria-hidden="true"></i>
