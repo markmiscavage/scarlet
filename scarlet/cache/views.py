@@ -10,6 +10,15 @@ try:
 except ImportError:
     from django.views.generic import View
 
+try:
+    try:
+        from ..cms.views.list import ListView
+    except ValueError:
+        from cms.views.list import ListView
+except ImportError:
+    from django.views.generic.list import ListView
+
+
 from django.middleware.cache import CacheMiddleware
 from django.utils.cache import patch_response_headers, get_max_age, patch_vary_headers
 from django.conf import settings
@@ -17,6 +26,10 @@ from . import router
 
 
 class CacheMixin(object):
+
+    cache_time = 60 * 60
+    max_age =  0
+
     def should_cache(self):
         """
         Hook for deciding if we want to cache this request or not.
@@ -126,30 +139,8 @@ class CacheMixin(object):
         else:
             response = self.template_response_callback(response)
         return response
+    
 
-
-class CacheView(View, CacheMixin):
-    """
-    A class based view that overrides the default dispatch
-    method to determine the cache_prefix.
-
-    If the cms view is available this class will inherit from there
-    otherwise it will inherit from django's generic class View.
-
-    :param cache_time: How long should we cache this attribute. \
-    This gets passed to django middleware and determines the \
-    expiry of the actual cache. Defaults to 1 hour.
-
-    :param max_age: Django will set the max_age header to match the \
-    amount of time left before the cache will expire. \
-    When using long caches that can be invalidated this is not ideal. \
-    This will over ride that behavior ensuring that if django \
-    tries to set a max_age header that is greater that whatever \
-    you specify here it will be replaced by this value. Defaults to 0.
-    """
-
-    cache_time = 60 * 60
-    max_age = 0
 
     def get_as_string(self, request, *args, **kwargs):
         """
@@ -212,3 +203,10 @@ class CacheView(View, CacheMixin):
             response = super(CacheView, self).dispatch(self.request, *args, **kwargs)
 
         return self._finalize_cached_response(request, response)
+
+
+class CacheView(View, CacheMixin):
+    pass 
+
+class CacheListView(ListView, CacheMixin):
+    pass
