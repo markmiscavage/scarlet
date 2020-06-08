@@ -114,7 +114,7 @@
     }
   },
   "scripts": {
-    "start": "node ./webpack-server.js",
+    "start": "npm run clean && webpack --config webpack.dev.config.js --watch",
     "save-prebuild": "npm run lint",
     "build": "npm run clean && webpack --config webpack.prod.config.js",
     "clean": "rimraf ./scarlet/cms/static/scarlet/build",
