@@ -1,0 +1,4 @@
+django-taggit==1.2.0
+django>=2.2.11,<3.0
+
+Sphinx==2.4.4  
