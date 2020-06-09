@@ -90,6 +90,7 @@ docs/_build/*
 MANIFEST
 builder/*
 env
+.envrc
 
 # Webpack
 webpack-stats.json
