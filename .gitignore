@@ -46,6 +46,7 @@ build/buildinfo.properties
 build/config/buildinfo.properties
 
 # Unit test / coverage reports
+coverage/*
 .coverage
 .tox
 
