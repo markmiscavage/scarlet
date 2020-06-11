@@ -95,7 +95,6 @@ class Cloneable(models.Model):
         object that we need to clone. Uses self.clone_related
         to find those objects.
         """
-
         old_reverses = {"m2m": {}, "reverse": {}}
         for reverse in self.clone_related:
             ctype, name, l = self._gather_reverse(reverse)
@@ -116,7 +115,6 @@ class Cloneable(models.Model):
         """
         Clones all the objects that were previously gathered.
         """
-
         for ctype, reverses in list(old_reverses.items()):
             for parts in list(reverses.values()):
                 sub_objs = parts[1]
@@ -130,7 +128,7 @@ class Cloneable(models.Model):
                     sub_obj._clone(**attrs)
 
                 if ctype == "m2m":
-                    setattr(self, field_name, sub_objs)
+                    getattr(self, field_name).set(sub_objs)
 
     def prep_for_clone(self):
         """
@@ -160,15 +158,29 @@ class Cloneable(models.Model):
             self.prep_for_clone()
             self.validate_unique()
             # Prevent last save from changing
-            self.save(last_save=self.last_save)
-
+            try:
+                self.save(last_save=self.last_save)
+            except ValueError:
+                # Prior to Django 1.8 it was allowed to save the _id field of an object
+                # without the object itself being saved yet, but now that raises a  
+                # ValueError. So we are reacting to the error by looking up all FK  
+                # objects in the database and setting them prior to save. 
+                try:
+                    from . import fields
+                except:
+                    import fields
+                fks = [f.name for f in self._meta.get_fields() if isinstance(f, fields.FKToVersion)]
+                for fk in fks:
+                    setattr(self, fk, type(getattr(self, fk)).objects.get(vid=attrs.get(fk+'_id')))
+                self.save(last_save=self.last_save)
             # save m2ms
             self._set_m2ms(old_m2ms)
             # Prevent last save from changing
             self.save(last_save=self.last_save)
-
             # save reverses
             self._clone_reverses(old_reverses)
+
+
 
     def _delete_reverses(self):
         """

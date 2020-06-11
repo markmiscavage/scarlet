@@ -42,7 +42,7 @@ class JSONField(models.TextField):
 
     def get_db_prep_value(self, value, connection, prepared=False):
         """Convert JSON object to a string"""
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             return value
         return json.dumps(value, **self.dump_kwargs)
 
