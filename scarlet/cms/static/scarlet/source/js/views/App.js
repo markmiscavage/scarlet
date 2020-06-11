@@ -107,7 +107,7 @@ const App = View.extend({
     });
 
     // SORTABLE
-    $('table').each((i, dom) => {
+    $('tbody[draggable]').each((i, dom) => {
       const sortable = new Sortable({
         el: dom,
       }).render();
