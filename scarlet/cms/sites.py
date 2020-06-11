@@ -150,7 +150,6 @@ class AdminSite(object):
 
         Currently checks that the user is active and a staff member.
         """
-        #from IPython import embed;embed()
         return request.user.is_active and request.user.is_staff
 
     def admin_view(self, view, cacheable=False):
