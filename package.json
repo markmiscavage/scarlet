@@ -21,6 +21,7 @@
     "moment": "^2.18.1",
     "select2": "^4.0.3",
     "selectize": "^0.12.4",
+    "sortablejs": "^1.10.2",
     "wysihtml": "^0.6.0-beta1"
   },
   "devDependencies": {
