@@ -17,7 +17,7 @@ const Multiple = View.extend({
           width : 'auto', 
           opacity: 1,
         });
-      }, 50);      
+      }, 25);      
     } else{
       this.$el.find('input').attr("placeholder", "");
     }
