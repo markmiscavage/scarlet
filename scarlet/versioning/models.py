@@ -166,6 +166,7 @@ class Cloneable(models.Model):
                 # ValueError. So we are reacting to the error by looking up all FK  
                 # objects in the database and setting them prior to save. 
                 try:
+                    # Needed to avoid circular import.
                     from . import fields
                 except:
                     import fields
