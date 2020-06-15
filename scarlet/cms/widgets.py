@@ -467,7 +467,7 @@ class APIChoiceWidget(widgets.Input):
 
     def __init__(
         self,
-        rel,
+        remote_field,
         attrs=None,
         using=None,
         view="main",
@@ -477,9 +477,8 @@ class APIChoiceWidget(widgets.Input):
         extra_query_kwargs=None,
     ):
         super(APIChoiceWidget, self).__init__(attrs=attrs)
-        #TODO: Follow new django convention and rename rel to remote_field.
-        self.rel = rel
-        self.model = self.rel.model
+        self.remote_field = remote_field
+        self.model = self.remote_field.model
         self.db = using
 
         self.extra_query_kwargs = extra_query_kwargs
@@ -509,7 +508,7 @@ class APIChoiceWidget(widgets.Input):
         that can be used in a query string and returned as
         a dictionary.
         """
-        qs = url_params_from_lookup_dict(self.rel.limit_choices_to)
+        qs = url_params_from_lookup_dict(self.remote_field.limit_choices_to)
         if not qs:
             qs = {}
 
@@ -593,7 +592,7 @@ class APIChoiceWidget(widgets.Input):
         on that object. Otherwise a blank string is returned.
         """
         if not key:
-            key = self.rel.get_related_field().name
+            key = self.remote_field.get_related_field().name
 
         if value is not None:
             try:

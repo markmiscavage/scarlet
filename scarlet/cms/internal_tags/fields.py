@@ -70,7 +70,7 @@ class TaggedRelationWidget(APIModelChoiceWidget):
 
     def obj_for_value(self, value, key="pk"):
         if not key:
-            key = self.rel.get_related_field().name
+            key = self.remote_field.get_related_field().name
 
         if value is not None:
             try:
