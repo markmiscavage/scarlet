@@ -17,6 +17,21 @@ const Editor = View.extend({
     //
     this.setupEditor();
     this.attachCommands();
+    $('form[data-form-id=edit] .button-group--submit .button--primary').on('click', this.onSubmitForm.bind(this));
+  },
+
+  onSubmitForm(){
+    // If Wysiwyg is empty, show native textarea error
+    if(this.$textarea.val().length == 0){
+      this.$textarea.show();
+      this.$textarea.on('keyup', this.onTextAreaKeydown.bind(this));
+    }
+  },
+
+  onTextAreaKeydown(e){
+    this.$textarea.hide();    
+    this.$textarea.off('keyup', this.onTextAreaKeydown.bind(this));
+    $('iframe')[0].contentWindow.document.body.focus();
   },
 
   setupEditor() {
