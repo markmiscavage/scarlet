@@ -808,7 +808,7 @@ class HTMLWidget(widgets.Textarea):
 
     def render(self, *args, **kwargs):
         text = super(HTMLWidget, self).render(*args, **kwargs)
-        return mark_safe(u"<div class=\"editor\">{1} {0}</div>".format(text, render_to_string(self.template)))
+        return mark_safe(u"<div class=\"editor\">{1} <div class=\"editor__content\">{0}</div></div>".format(text, render_to_string(self.template)))
 
 
 class AnnotatedHTMLWidget(widgets.MultiWidget):
