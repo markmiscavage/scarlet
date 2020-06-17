@@ -105,12 +105,10 @@ class M2MFromVersion(models.ManyToManyField):
 
         # Set the through field
         if not self.remote_field.through and not cls._meta.abstract:
-            (
-                self.remote_field.through,
-                from_model,
-                to_model,
-            ) = create_many_to_many_intermediary_model(self, cls)
-            self.remote_field.through_fields = ("from", "to")
+            self.remote_field.through = create_many_to_many_intermediary_model(
+                self, cls
+            )
+
         # Do the rest
         super(M2MFromVersion, self).contribute_to_class(cls, name)
 
@@ -175,29 +173,25 @@ def create_many_to_many_intermediary_model(field, klass):
     )
 
     # Construct and return the new class.
-    return (
-        type(
-            str(name),
-            (models.Model,),
-            {
-                "Meta": meta,
-                "__module__": klass.__module__,
-                "from": FKToVersion(
-                    klass,
-                    related_name="%s+" % name,
-                    db_tablespace=field.db_tablespace,
-                    db_constraint=field.remote_field.db_constraint,
-                    on_delete=models.CASCADE,
-                ),
-                "to": models.ForeignKey(
-                    to_model,
-                    related_name="%s+" % name,
-                    db_tablespace=field.db_tablespace,
-                    db_constraint=field.remote_field.db_constraint,
-                    on_delete=models.CASCADE,
-                ),
-            },
-        ),
-        klass,
-        to_model,
+    return type(
+        str(name),
+        (models.Model,),
+        {
+            "Meta": meta,
+            "__module__": klass.__module__,
+            "from": FKToVersion(
+                klass,
+                related_name="%s+" % name,
+                db_tablespace=field.db_tablespace,
+                db_constraint=field.remote_field.db_constraint,
+                on_delete=models.CASCADE,
+            ),
+            "to": models.ForeignKey(
+                to_model,
+                related_name="%s+" % name,
+                db_tablespace=field.db_tablespace,
+                db_constraint=field.remote_field.db_constraint,
+                on_delete=models.CASCADE,
+            ),
+        },
     )

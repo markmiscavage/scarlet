@@ -43,7 +43,6 @@ module.exports = {
   context: PATHS.src,
   devtool: null,
   target: 'web',
-  watch: true,
   entry: {
     main: [
       'babel-polyfill',

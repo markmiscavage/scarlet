@@ -111,7 +111,9 @@ const SelectAsset = View.extend({
     $('.asset__edit-link').attr('href', `${this.baseUrl}${value}/edit`);
     this.linkifyCrops();
     this.$preview.css('background-image', `url(${$item.attr('data-thumb')})`);
+
     if ($item.attr('data-src')) {
+      $('.asset__edit-link').removeClass('disabled button--disabled');
       this.$input.attr('data-src', $item.attr('data-src'));
     }
   },
@@ -241,7 +243,12 @@ const SelectAsset = View.extend({
   },
 
   handlePopup(e) {
-    // e.preventDefault();
+    if(!this.$input.attr('data-src') && $(e.currentTarget).is('.asset__edit-link')){
+      e.preventDefault();
+      return;
+    }
+
+    // 
     // clickOpenModal(e, 'modal-add-asset', this.setSelected.bind(this), this.autoTags)
     clickOpenPopup(e, this.setSelected.bind(this));
 

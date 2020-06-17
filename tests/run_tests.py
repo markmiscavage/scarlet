@@ -27,6 +27,7 @@ def setup_test_environment(settings_overide, with_scarlet_blog=False):
         "scarlet.versioning",
         "scarlet.scheduling",
         "taggit",
+        "webpack_loader",
         "tests.version_models",
         "tests.version_twomodels",
         "tests.cms_bundles",
@@ -55,8 +56,10 @@ def setup_test_environment(settings_overide, with_scarlet_blog=False):
                 "PORT": "",
             },
         },
-        "MIDDLEWARE_CLASSES": (
+        "MIDDLEWARE": (
+            'django.middleware.security.SecurityMiddleware',
             "django.contrib.sessions.middleware.SessionMiddleware",
+            'django.middleware.common.CommonMiddleware',
             "django.contrib.auth.middleware.AuthenticationMiddleware",
             "django.contrib.messages.middleware.MessageMiddleware",
         ),

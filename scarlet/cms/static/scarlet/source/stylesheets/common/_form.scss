@@ -132,6 +132,10 @@ fieldset {
 		color: $red;
 	}
 }
+  
+.errornote{
+  color: $red;
+}
 
 .messagelist {
 	@include heading-medium;

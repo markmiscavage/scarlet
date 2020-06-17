@@ -117,6 +117,10 @@
 	}
 }
 
+.wysihtml-command-active{
+  background: $gray-light;
+}
+
 .editor__buttons {
 	@include microfix;
 

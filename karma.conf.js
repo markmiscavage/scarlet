@@ -25,6 +25,7 @@ module.exports = function (config) {
     webpackServer: {
       noInfo: true 
     },
-    singleRun:false
+    singleRun:true,
+    autoWatch:true
   });
 };

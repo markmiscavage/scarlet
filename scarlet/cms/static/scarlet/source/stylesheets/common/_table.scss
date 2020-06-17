@@ -49,15 +49,14 @@ table {
     }
   }
 
-  tr {
-
-
+  tbody[draggable=true] {    
+    tr:hover td{
+      background-color: $bg-primary;
+    }
   }
 
   tbody {
-
     tr {
-
       &:hover {
         background-color: $bg-primary;
       }

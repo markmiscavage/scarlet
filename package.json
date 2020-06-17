@@ -21,6 +21,7 @@
     "moment": "^2.18.1",
     "select2": "^4.0.3",
     "selectize": "^0.12.4",
+    "sortablejs": "^1.10.2",
     "wysihtml": "^0.6.0-beta1"
   },
   "devDependencies": {
@@ -114,7 +115,7 @@
     }
   },
   "scripts": {
-    "start": "node ./webpack-server.js",
+    "start": "npm run clean && webpack --config webpack.dev.config.js --watch",
     "save-prebuild": "npm run lint",
     "build": "npm run clean && webpack --config webpack.prod.config.js",
     "clean": "rimraf ./scarlet/cms/static/scarlet/build",

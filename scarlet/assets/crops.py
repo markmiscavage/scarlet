@@ -43,9 +43,9 @@ class CropConfig(object):
     def _adjust_coordinates(self, ratio, current_size, needed_size):
         if not ratio:
             ratio = 1
-        diff = current_size - (needed_size//ratio)
+        diff = current_size - (needed_size/ratio)
         if diff:
-            adjust = int(diff//2)
+            adjust = int(diff/2)
         else:
             adjust = 0
         return adjust
@@ -67,8 +67,8 @@ class CropConfig(object):
             y2 = h
 
         if self.width and self.height:
-            ry = self.height//h
-            rx = self.width//w
+            ry = self.height/h
+            rx = self.width/w
             if rx < ry:
                 ratio = ry
                 adjust = self._adjust_coordinates(ratio, w, self.width)
@@ -83,18 +83,19 @@ class CropConfig(object):
             width = self.width
             height = self.height
         elif self.width:
-            ratio = self.width//w
+            ratio = self.width/w
             width = self.width
             height = int(h * ratio)
         else:
-            ratio = self.height//h
+            ratio = self.height/h
             width = int(w * ratio)
             height = self.height
 
         if ratio > 1 and not upscale:
             return
 
-        x, x2, y, y2 = int(x), int(x2), int(y), int(y2)
+        # A point can't have a negative value 
+        x, x2, y, y2 = max(0,int(x)), max(0,int(x2)), max(0,int(y)), max(0,int(y2))
         return CropSpec(
             name=self.name,
             editable=self.editable,

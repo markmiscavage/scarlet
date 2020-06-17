@@ -226,7 +226,6 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
             "exclude": exclude,
             "formfield_callback": self.formfield_for_dbfield,
         }
-
         if self.form_class:
             if issubclass(self.form_class, forms.ModelForm) and getattr(
                 self.form_class._meta, "model", None
@@ -249,6 +248,9 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
                 # from that
                 model = self.get_queryset().model
 
+        # If a form_class hasn't been explicitly defined  
+        # customize_form_widgets still needs to be called so 
+        # widgets get updated links
         return model_forms.modelform_factory(model, **params)
 
     def get_form_kwargs(self):

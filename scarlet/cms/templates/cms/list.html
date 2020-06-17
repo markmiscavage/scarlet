@@ -72,7 +72,7 @@
             {% for f in list.labels %}
               <th class="{% if f.sortable %}sortable{% endif %}">
               {% if f.sortable %}
-                <a href="{{query_string}}sf={{f.attr}}&ot={{f.order_type}}" class="sort {% if f.cur_sorted %}{{f.order_type}}{% endif %}">
+                <a data-id="{{f.attr}}" data-type={{f.order_type}} href="" class="sort {% if f.cur_sorted %}{{f.order_type}}{% endif %}">
                   {{ f.name|capfirst }}
                   {% if f.order_type == "asc" %}
                     <i class="fa fa-caret-down" aria-hidden="true"></i>
@@ -85,25 +85,25 @@
               {% endif %}
               </th>
             {% endfor %}
-          {% else %}
-              <th>{{ model_name_plural }} is empty.</th>
+          {% else %}            
+              <th>No {{ model_name_plural }} found.</th>
           {% endif %}
     </tr>
     </thead>
 
-    <tbody>
+    <tbody {% if list.auto_sort %} draggable="true"{% endif %}>
     {% for row in list %}
     {% if show_form %}
       {{ row.form.non_field_errors }}
     {% endif %}
 
-    <tr{% if list.auto_sort %} draggable="true"{% endif %}>
+    <tr>
     {% if actions %}
-    <td class="checkbox">
+    <td class="checkbox {% if list.auto_sort %}draggable{% endif %}">
       <input type="checkbox" data-type="batch-check-row" name ="{{ checkbox_name }}" value="{{ row.instance.pk }}" />
     </td>
     {% endif %}
-      <td class="actions {% if list.auto_sort %}draggable{% endif %}">
+      <td class="actions ">
       {% for action_link in action_links %}
         {% bundle_url bundle action_link.0 object=row.instance follow_parent=False as url %}
         {% if url %}

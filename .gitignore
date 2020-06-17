@@ -46,6 +46,7 @@ build/buildinfo.properties
 build/config/buildinfo.properties
 
 # Unit test / coverage reports
+coverage/*
 .coverage
 .tox
 
@@ -89,6 +90,9 @@ docs/_build/*
 MANIFEST
 builder/*
 env
+.envrc
 
 # Webpack
 webpack-stats.json
+
+build

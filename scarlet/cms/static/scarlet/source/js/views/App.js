@@ -19,6 +19,7 @@ import SelectApi from 'views/SelectApi';
 import SelectAsset from 'views/SelectAsset';
 import SelectTags from 'views/SelectTags';
 import Sortable from 'views/Sortable';
+import SortLink from 'views/SortLink';
 import Tabs from 'views/Tabs';
 import { handlePopup } from 'helpers/WindowPopup';
 
@@ -106,8 +107,14 @@ const App = View.extend({
     });
 
     // SORTABLE
-    $('table').each((i, dom) => {
+    $('tbody[draggable]').each((i, dom) => {
       const sortable = new Sortable({
+        el: dom,
+      }).render();
+    });
+
+    $('a.sort').each((i, dom) => {
+      const sorting = new SortLink({
         el: dom,
       }).render();
     });
