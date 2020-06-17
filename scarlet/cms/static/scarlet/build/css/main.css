@@ -2327,6 +2327,8 @@ table {
       color: #191919; }
     table th.sortable .fa {
       margin-left: 10px; }
+  table tbody[draggable=true] tr:hover td {
+    background-color: #eee; }
   table tbody tr:hover {
     background-color: #eee; }
   table.is-empty,
@@ -2391,6 +2393,19 @@ input[type=radio] {
     border-radius: 50%;
     margin-right: 30px; }
 
+input[type=checkbox] {
+  position: relative; }
+  input[type=checkbox]:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 70px;
+    height: 35px;
+    background: rgba(255, 0, 255, 0);
+    -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%); }
+
 legend {
   font-family: "Raleway", sans-serif;
   font-weight: 300;
@@ -2432,6 +2447,9 @@ fieldset > div:not(:last-of-type) {
   padding: 0; }
   .errorlist li {
     color: #f00; }
+
+.errornote {
+  color: #f00; }
 
 .messagelist {
   font-family: "Raleway", sans-serif;
@@ -2517,8 +2535,7 @@ button,
 
 .button-group--actions {
   padding-bottom: 20px;
-  border-bottom: #eee 1px solid;
-  margin-bottom: 30px; }
+  border-bottom: #eee 1px solid; }
 
 .button-group--submit {
   padding-top: 40px;
@@ -2568,6 +2585,7 @@ button,
     top: 100%;
     opacity: 1;
     z-index: 1;
+    pointer-events: auto;
     -webkit-transition: top 250ms, opacity 200ms 50ms;
     transition: top 250ms, opacity 200ms 50ms; }
   .filters__form label:not(first-of-type) {
@@ -2738,6 +2756,7 @@ button,
       top: 100%;
       opacity: 1;
       z-index: 1;
+      pointer-events: auto;
       -webkit-transition: top 250ms, opacity 200ms 50ms;
       transition: top 250ms, opacity 200ms 50ms; }
   .header-object__actions-list:empty {
@@ -2939,11 +2958,13 @@ button,
   z-index: -1;
   -webkit-transition: top 250ms, opacity 200ms 50ms;
   transition: top 250ms, opacity 200ms 50ms;
-  left: -8px; }
+  left: -8px;
+  pointer-events: none; }
   .nav-main__item:hover .nav-main__sublist {
     top: 100%;
     opacity: 1;
     z-index: 1;
+    pointer-events: auto;
     -webkit-transition: top 250ms, opacity 200ms 50ms;
     transition: top 250ms, opacity 200ms 50ms; }
   .nav-main__sublist:before {
@@ -3214,6 +3235,9 @@ th:nth-child(1) {
     display: block;
     font: 14px/1 Consolas, "Lucida Console", Monaco, monospace; }
 
+.wysihtml-command-active {
+  background: #eee; }
+
 .editor__buttons:before, .editor__buttons:after {
   content: "";
   display: table; }
@@ -3277,6 +3301,9 @@ th:nth-child(1) {
 .wysihtml-sandbox {
   height: 400px;
   width: 100%; }
+
+.formset__forms.ui-sortable .formset__form {
+  background: white; }
 
 .formset__form {
   margin-bottom: 40px;
@@ -3899,8 +3926,19 @@ body.modal__body {
     color: #f00; }
 
 .selectize-control.multi .selectize-input > div {
+  position: relative;
   margin: 0 8px 3px 0;
-  padding: 6px 12px; }
+  padding: 6px 16px 6px 12px; }
+  .selectize-control.multi .selectize-input > div:hover i {
+    opacity: 1; }
+  .selectize-control.multi .selectize-input > div i {
+    position: absolute;
+    -webkit-transition: opacity 350ms;
+    transition: opacity 350ms;
+    opacity: 0;
+    top: 0;
+    right: 0;
+    padding: 2px; }
 
 .select-asset__item {
   position: relative; }
@@ -4397,5 +4435,15 @@ visit http://jqueryui.com/themeroller/?ffDefault=Helvetica%2CArial%2Csans-serif&
 
 .insert-media {
   padding: 10px 0 0; }
+
+.publish input[type=radio] {
+  display: inline-block; }
+
+.publish .hasDatepicker {
+  display: none; }
+
+.publish input[name="when_rdi"]:checked + input {
+  display: block;
+  max-width: 250px; }
 
 /*# sourceMappingURL=main.css.map*/
