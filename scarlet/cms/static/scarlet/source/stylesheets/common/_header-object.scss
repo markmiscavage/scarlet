@@ -9,16 +9,17 @@
 }
 
 .header-object__breadcrumb {
-  @include text-default;
+  @include open-sans;
   color: $gray;
   font-size: 18px;
   position: absolute;
   left: 30px;
   top: 0;
+  font-size: 15px;
 
-  &:before {
+  i {
     color: $red;
-    font-size: 15px;
+    
     margin-right: 6px;
   }
 }
