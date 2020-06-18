@@ -168,13 +168,17 @@
     <div class="pagination">
       <span class="page-links">
         {% if page_obj.has_previous %}
-          <a href="{{query_string}}page={{ page_obj.previous_page_number }}" title="Previous">w</a>
+          <a href="{{query_string}}page={{ page_obj.previous_page_number }}" class="pagination__previous" title="Previous">
+            <i class="fa fa-chevron-left"></i>
+          </a>
         {% endif %}
-        <span class="page-current">
+        <span class="pagination__current-page">
           Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
         </span>
         {% if page_obj.has_next %}
-          <a href="{{query_string}}page={{ page_obj.next_page_number }}" title="Next">e</a>
+          <a href="{{query_string}}page={{ page_obj.next_page_number }}" class="pagination__next" title="Next">
+            <i class="fa fa-chevron-right"></i>
+          </a>
         {% endif %}
       </span>
     </div>
