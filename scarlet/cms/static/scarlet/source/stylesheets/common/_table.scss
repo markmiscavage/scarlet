@@ -6,13 +6,19 @@ table {
   th,
   td {
     padding: 10px;
-
+    vertical-align: top;
     &:first-of-type:not(:only-child) {
       padding-left: $padding-width;
     }
 
     &:last-of-type:not(:only-child) {
       padding-right: $padding-width;
+    }
+
+    &.checkbox{
+      width: 70px;
+      padding: 10px !important;
+      text-align: center;
     }
   }
 
