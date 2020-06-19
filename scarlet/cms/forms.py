@@ -4,7 +4,7 @@ from django import forms
 from django.db.models import Q, F
 from django.core.validators import EMPTY_VALUES
 
-from . import widgets
+from . import widgets, settings
 
 
 class BaseFilterForm(forms.Form):
@@ -182,7 +182,11 @@ class WhenForm(forms.Form):
     Set a 'when' DateTimeField that is not required.
     """
 
-    when = forms.DateTimeField(widget=widgets.RadioDateTimeWidget, required=False)
+    when = forms.DateTimeField(
+        widget=widgets.RadioDateTimeWidget,
+        input_formats=settings.DATETIME_INPUT_FORMATS,
+        required=False,
+    )
 
 
 class MassActionForm(forms.ModelForm):
@@ -231,5 +235,5 @@ class LazyFormSetFactory(object):
         if "form" in self.kwargs:
             self.kwargs["form"] = form_processor(self.kwargs["form"])
         else:
-            self.kwargs['exclude'] = []
+            self.kwargs["exclude"] = []
         return self.args[0](*self.args[1:], **self.kwargs)
