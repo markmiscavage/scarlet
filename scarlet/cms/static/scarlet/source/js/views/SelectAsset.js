@@ -226,10 +226,14 @@ const SelectAsset = View.extend({
 
     const node = this.$('a.button');
     const params = this.destructParams(node[0].search);
-    let tags = ($(this.$el).data('tags') || '').toLowerCase().split(',');
+    let tags;
+    if($(this.$el).data('tags')){
+      tags = ($(this.$el).data('tags')).toLowerCase().split(',');
+      // autoTags doesn't exist at this point so the following line can't work.
+      //tags = tags.concat(this.autoTags); 
+      params.tags = encodeURIComponent(tags.join(','));
+    }    
 
-    tags = tags.concat(this.autoTags);
-    params.tags = encodeURIComponent(tags.join(','));
     node[0].search = this.constructParams(params);
   },
 
