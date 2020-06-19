@@ -77,25 +77,16 @@
 
         </form>
       </div>
-
       {% if api_link %}
       <div class="insert-image library" style="display: none;">
-        <form>
-
+        <form>            
             <div class="asset" data-api="{{ api_link }}&ftype=image">
-            <div class="asset__preview" style="background-image:url({{ object.url }})"></div>
-              <div class="asset__actions">
-                  <div class="asset__select">
-                      <input data-respond="true" data-attribute="src" type="hidden" value="">
-                      {% if add_link %}
-                        <a class="button button--primary asset__add-link" target="_blank" href="{{ add_link }}">
-                          <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                          Upload New
-                        </a>
-                      {% endif %}
-                  </div>
+              <div class="asset__preview" style="background-image:url({{ object.url }})"></div>             
+              <div class="asset__select">
+                {{ hidden_input }}   
+                <input data-respond="true" data-attribute="src" type="hidden" value="">                      
               </div>
-          </div>
+            </div>
 
           <hr>
 

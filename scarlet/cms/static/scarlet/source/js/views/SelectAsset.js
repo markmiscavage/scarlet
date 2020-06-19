@@ -13,7 +13,10 @@ const SelectAsset = View.extend({
     this.url = this.$el.data('api');
     this.addOpen = false;
     this.id = this.$input[0].defaultValue;
-    this.baseUrl = $('.asset__edit-link').data().base;
+
+    if($('.asset__edit-link').length){
+      this.baseUrl = $('.asset__edit-link').data().base;
+    }
   },
 
   /**
