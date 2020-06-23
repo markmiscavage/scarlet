@@ -21,6 +21,11 @@ def preview(obj):
         if thumbnail:
             return mark_safe('<img src="{0}" />'.format(thumbnail))
 
+    if obj.type == obj.UNKNOWN:
+        fullsize = obj.file.url
+        if fullsize:
+            return mark_safe('<img src="{0}" style="max-width: 100px" />'.format(fullsize))
+
     return ""
 
 
