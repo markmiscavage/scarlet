@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   // extractStyles: true,
 
@@ -14,5 +16,5 @@ module.exports = {
   //   use: ['css-loader', 'sass-loader'],
   // }),
 
-  fontAwesomeCustomizations: './scarlet/cms/static/scarlet/source/stylesheets/vendor/_font-awesome.scss',
+  fontAwesomeCustomizations: path.join(__dirname, 'scarlet/cms/static/scarlet/source/stylesheets/vendor/_font-awesome.scss'),
 }
