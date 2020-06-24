@@ -28,6 +28,11 @@ const COPY_PATHS = [
     from: 'js/views/editor/lib/wysihtml.toolbar.js',
     to: `${PATHS.static}/js/libs`,
   },
+  {
+    context: PATHS.src,
+    from: 'fonts',
+    to: `${PATHS.static}/fonts`,
+  }
 ];
 
 const AUTOPREFIXER_CONFIG = {
