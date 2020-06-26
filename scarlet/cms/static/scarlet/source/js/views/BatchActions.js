@@ -8,8 +8,7 @@ const BatchActions = View.extend({
   },
 
   initialize() {
-    this.idList = [];
-    this.inputs = this.$el.find('tbody td.checkbox input');
+    this.idList = [];    
     $.each(this.$el.find('td'), function(i, el){
       var str = $(el).text();
       str = str.replace(/\s/g, '').toLowerCase(); // remove space characters
@@ -32,9 +31,16 @@ const BatchActions = View.extend({
   },
 
   selectAll(e) {
+    var selectAllChecked = this.$selectAll.prop('checked');
     this.$batchCheck.each(function() {
-      $(this).trigger('click');
+      $(this).prop('checked', selectAllChecked);
     });
+
+    if(selectAllChecked){
+      this.enableActions();
+    } else{
+      this.disableActions();
+    }
   },
 
   selectRow(e) {
