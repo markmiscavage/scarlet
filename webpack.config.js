@@ -28,6 +28,11 @@ const COPY_PATHS = [
     from: 'js/views/editor/lib/wysihtml.toolbar.js',
     to: `${PATHS.static}/js/libs`,
   },
+  {
+    context: PATHS.src,
+    from: 'fonts',
+    to: `${PATHS.static}/fonts`,
+  }
 ];
 
 const AUTOPREFIXER_CONFIG = {
@@ -125,7 +130,7 @@ function createWebpackLoaders() {
       },
     },
     {
-      test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+      test: /\.(ttf|eot|svg|woff|woff2|otf)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
       loader: 'file-loader',
       options: {
         name: 'fonts/[name].[ext]',

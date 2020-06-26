@@ -117,7 +117,8 @@
   "scripts": {
     "start": "npm run clean && webpack --config webpack.dev.config.js --watch",
     "save-prebuild": "npm run lint",
-    "build": "npm run clean && webpack --config webpack.prod.config.js",
+    "build": "npm run clean && BUILD_ENV=dev webpack --config webpack.prod.config.js",
+    "buildProd": "npm run clean && BUILD_ENV=prod webpack --config webpack.prod.config.js",
     "clean": "rimraf ./scarlet/cms/static/scarlet/build",
     "lint": "standard",
     "test": "karma start karma.conf.js"
