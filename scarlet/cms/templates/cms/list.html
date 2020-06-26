@@ -46,7 +46,7 @@
       {% if actions %}
       <div class="divider">
         {% for url, option in actions %}
-          <a class="button disabled button--disabled" data-type="batch-action" href="{{ url }}?_selected=">{{ option }}</a>
+          <a class="button disabled button--disabled" data-type="batch-action" data-action="{{ option|lower }}" href="{{ url }}?_selected=">{{ option }}</a>
         {% endfor %}
       </div>
       {% endif %}
