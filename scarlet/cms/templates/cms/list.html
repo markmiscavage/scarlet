@@ -65,7 +65,7 @@
     <thead>
     <tr>
       {% if actions and not list.empty %}
-        <th class="checkbox"><input type="checkbox" data-type="batch-check-all" /></th>
+        <th class="checkbox"><input type="checkbox" data-type="batch-check-all" autocomplete="off" /></th>
         <th>ACTIONS</th>
       {% endif %}
           {% if not list.empty %}
@@ -100,7 +100,7 @@
     <tr>
     {% if actions %}
     <td class="checkbox {% if list.auto_sort %}draggable{% endif %}">
-      <input type="checkbox" data-type="batch-check-row" name ="{{ checkbox_name }}" value="{{ row.instance.pk }}" />
+      <input type="checkbox" data-type="batch-check-row" name ="{{ checkbox_name }}" value="{{ row.instance.pk }}" autocomplete="off" />
     </td>
     {% endif %}
       <td class="actions ">
