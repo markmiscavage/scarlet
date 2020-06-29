@@ -80,7 +80,7 @@ const SelectApi = View.extend({
   renderOption(isLoading) {
     return {
       item: (item, escape) => {
-        return `<div class="item" data-id="${item.id}" >${escape(item.text)}</div>`;
+        return `<div class="item item--${this.name}" data-id="${item.id}" >${escape(item.text)}</div>`;
       },
       option: (item, escape) => {
         return `<div data-id=${item.id}>${escape(item.text)}</div>`;
@@ -136,7 +136,7 @@ const SelectApi = View.extend({
    */
   addItem(value, $item) {
     if (this.isMultiple) {
-      if(value){
+      if (value) {
         this.selectize.$input.after(
           $('<input />', {
             name: this.name,
@@ -145,7 +145,7 @@ const SelectApi = View.extend({
             type: 'hidden',
           }),
         );
-      }      
+      }
     } else if ($item.attr('data-id') !== this.singleInput.val()) {
       this.singleInput.val($item.attr('data-id'));
     }
@@ -164,7 +164,7 @@ const SelectApi = View.extend({
     const top = screen.height ? (screen.height - height) / 2 : 0;
     const pop = new WindowPopup(
       this.addUrl,
-      'addImage',
+      `${this.name}`,
       [
         `width=${width}`,
         `height=${height}`,
@@ -178,7 +178,19 @@ const SelectApi = View.extend({
         'toolbar=no',
         'resizable=no',
       ].join(','),
-      function(){},
+      function (cbObj) {
+
+        if (this.name == 'tags') {
+          this.cbObj = cbObj;
+          addTag(this.name, cbObj.text, cbObj.id);
+
+          // add 'remove' capabilty
+          var removeTagEles = document.querySelectorAll('.remove--tag');
+          for (var i = 0; i < removeTagEles.length; i++) {
+            removeTagEles[i].addEventListener("click", removeTag.bind(this), false);
+          }
+        }
+      },
     );
     pop.request();
 
@@ -273,16 +285,37 @@ const SelectApi = View.extend({
     const data = [];
     this.$el.find(`input[name=${this.name}]`).each((key, item) => {
       const title = this.isMultiple ? $(item).data('title') : this.$el.data('title');
-      if(title){
+      if (title) {
         data.push({
           id: $(item).val(),
           text: title,
           value: title,
         });
-      }      
+      }
     });
     return data;
   },
 });
 
 export default SelectApi;
+
+function removeTag() {
+  document.querySelector(`[data-title=${this.cbObj.text}]`).remove();
+  document.querySelector(`[data-value=${this.cbObj.text}]`).remove();
+};
+
+function addTag(fieldName, text, id) {
+  var temp = document.createElement('div');
+
+  var hiddenInputFields = document.querySelectorAll(`*[name=${fieldName}]`);
+  var lastHiddenInput = hiddenInputFields[hiddenInputFields.length - 1];
+  var newHiddenInput = `<input name="${fieldName}" value="${id}" data-title="${text}" type="hidden">`;
+  temp.innerHTML = newHiddenInput;
+  lastHiddenInput.parentNode.append(temp.firstChild);
+
+  var domTags = document.querySelectorAll(`.item--tags`);
+  var lastDomTag = domTags[domTags.length - 1];
+  var newDomTag = `<div class="item item--tags" data-id="${id}" data-value="${text}">${text}<a href="javascript:void(0)" class="remove--tag" tabindex="-1" title="Remove">×</a></div>`;
+  temp.innerHTML = newDomTag;
+  lastDomTag.parentNode.append(temp.firstChild);
+}

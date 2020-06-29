@@ -117,7 +117,6 @@
   margin-right: 10px;
 }
 
-
 //-- selectize tags --//
 
 .selectize-control.multi .selectize-input  {
@@ -134,7 +133,8 @@
       color: $blue;
     }
 
-    .remove {
+    .remove,
+    .remove--tag {
       border: none;
       color: $gray;
       font-size: 20px;
@@ -144,6 +144,18 @@
         background-color: $white;
         color: $red;
       }
+    }
+    .remove--tag {
+      z-index: 1;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 17px;
+      text-align: center;
+      font-weight: bold;
+      text-decoration: none;
+      vertical-align: middle;
     }
   }
 
