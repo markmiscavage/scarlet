@@ -182,12 +182,12 @@ const SelectApi = View.extend({
 
         if (this.name == 'tags') {
           this.cbObj = cbObj;
-          addTag(this.name, cbObj.text, cbObj.id);
+          cbAddTag(this.name, cbObj.text, cbObj.id);
 
           // add 'remove' capabilty
           var removeTagEles = document.querySelectorAll('.remove--tag');
           for (var i = 0; i < removeTagEles.length; i++) {
-            removeTagEles[i].addEventListener("click", removeTag.bind(this), false);
+            removeTagEles[i].addEventListener("click", cbRemoveTag.bind(this), false);
           }
         }
       },
@@ -299,23 +299,26 @@ const SelectApi = View.extend({
 
 export default SelectApi;
 
-function removeTag() {
+function cbRemoveTag() {
   document.querySelector(`[data-title=${this.cbObj.text}]`).remove();
   document.querySelector(`[data-value=${this.cbObj.text}]`).remove();
 };
 
-function addTag(fieldName, text, id) {
+function cbAddTag(fieldName, text, id) {
+  var selectorFieldName = `*[name=${fieldName}]`;
+  var markUpFieldName = `<input name="${fieldName}" value="${id}" data-title="${text}" type="hidden">`;
+  addTagToDom(selectorFieldName, markUpFieldName);
+
+  var selectorDomTags = `.item--tags`;
+  var markUpDomTag = `<div class="item item--tags" data-id="${id}" data-value="${text}">${text}<a href="javascript:void(0)" class="remove--tag" tabindex="-1" title="Remove">×</a></div>`;
+  addTagToDom(selectorDomTags, markUpDomTag);
+}
+
+function addTagToDom(selector, newEle) {
   var temp = document.createElement('div');
 
-  var hiddenInputFields = document.querySelectorAll(`*[name=${fieldName}]`);
-  var lastHiddenInput = hiddenInputFields[hiddenInputFields.length - 1];
-  var newHiddenInput = `<input name="${fieldName}" value="${id}" data-title="${text}" type="hidden">`;
-  temp.innerHTML = newHiddenInput;
-  lastHiddenInput.parentNode.append(temp.firstChild);
-
-  var domTags = document.querySelectorAll(`.item--tags`);
-  var lastDomTag = domTags[domTags.length - 1];
-  var newDomTag = `<div class="item item--tags" data-id="${id}" data-value="${text}">${text}<a href="javascript:void(0)" class="remove--tag" tabindex="-1" title="Remove">×</a></div>`;
-  temp.innerHTML = newDomTag;
-  lastDomTag.parentNode.append(temp.firstChild);
+  var selectorEles = document.querySelectorAll(`${selector}`);
+  var lastSelectorEle = selectorEles[selectorEles.length - 1];
+  temp.innerHTML = newEle;
+  lastSelectorEle.parentNode.append(temp.firstChild);
 }
