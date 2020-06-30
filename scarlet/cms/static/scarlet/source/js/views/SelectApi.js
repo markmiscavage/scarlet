@@ -190,7 +190,7 @@ const SelectApi = View.extend({
           }
         }
 
-        // TODO: add handler for category submit
+        // add handler for category submit
         if (this.name == 'category') {
           this.cbObj = cbObj;
           cbAddCategory(this.name, cbObj.text, cbObj.id);
@@ -318,11 +318,11 @@ function cbRemoveTag() {
 };
 
 function cbAddTag(fieldName, text, id) {
-  var selectorFieldName = `*[name=${fieldName}]`;
+  var selectorFieldName = `[for="id_${fieldName}"]`;
   var markUpFieldName = `<input name="${fieldName}" value="${id}" data-title="${text}" type="hidden">`;
   addEleToDom(selectorFieldName, markUpFieldName);
 
-  var selectorDomTags = `.item--tags`;
+  var selectorDomTags = `[for="id_${fieldName}"] ~ .selectize-control .selectize-input input`;
   var markUpDomTag = `<div class="item item--tags" data-id="${id}" data-value="${text}">${text}<a href="javascript:void(0)" class="remove--tag" tabindex="-1" title="Remove">×</a></div>`;
   addEleToDom(selectorDomTags, markUpDomTag);
 }
@@ -331,14 +331,17 @@ function addEleToDom(selector, newEle) {
   var temp = document.createElement('div');
 
   var selectorEles = document.querySelectorAll(`${selector}`);
-  if (selectorEles) {
+  if (selectorEles.length > 0) {
     var lastSelectorEle = selectorEles[selectorEles.length - 1];
     temp.innerHTML = newEle;
-    lastSelectorEle.parentNode.append(temp.firstChild);
+    if (lastSelectorEle) {
+      lastSelectorEle.style.display = 'none';
+      console.log(lastSelectorEle);
+      lastSelectorEle.after(temp.firstChild);
+    }
   }
 }
 
-// TODO: handle category modal submit
 function cbAddCategory(fieldName, text, id) {
   var categoryEle = document.querySelector(`.item--${fieldName}`);
   if (categoryEle) {
@@ -351,7 +354,6 @@ function cbAddCategory(fieldName, text, id) {
   if (categoryInputEle) {
     categoryInputEle.setAttribute('value', id);
   }
-
 
   var selectorCategory = `#id_${fieldName} + .selectize-control.single .selectize-dropdown-content div`;
   var markUpSelectedCategory = `<div data-id="${id}" data-selectable="" data-value="${text}" class="selected active">${text}</div>`
