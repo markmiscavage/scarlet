@@ -191,10 +191,10 @@ const SelectApi = View.extend({
         }
 
         // TODO: add handler for category submit
-        // if (this.name == 'category') {
-        //   this.cbObj = cbObj;
-        //   cbAddCategory(this.name, cbObj.text, cbObj.id);
-        // }
+        if (this.name == 'category') {
+          this.cbObj = cbObj;
+          cbAddCategory(this.name, cbObj.text, cbObj.id);
+        }
       },
     );
     pop.request();
@@ -339,7 +339,6 @@ function addEleToDom(selector, newEle) {
 }
 
 // TODO: handle category modal submit
-/*
 function cbAddCategory(fieldName, text, id) {
   var categoryEle = document.querySelector(`.item--${fieldName}`);
   if (categoryEle) {
@@ -347,6 +346,12 @@ function cbAddCategory(fieldName, text, id) {
     categoryEle.setAttribute('data-value', text);
     categoryEle.innerHTML = text;
   }
+
+  var categoryInputEle = document.querySelector(`#id_${fieldName}`);
+  if (categoryInputEle) {
+    categoryInputEle.setAttribute('value', id);
+  }
+
 
   var selectorCategory = `#id_${fieldName} + .selectize-control.single .selectize-dropdown-content div`;
   var markUpSelectedCategory = `<div data-id="${id}" data-selectable="" data-value="${text}" class="selected active">${text}</div>`
@@ -358,4 +363,3 @@ function cbAddCategory(fieldName, text, id) {
     selectizedEle.setAttribute('value', text);
   }
 }
-*/
