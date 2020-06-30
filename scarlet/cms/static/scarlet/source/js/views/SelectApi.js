@@ -179,7 +179,6 @@ const SelectApi = View.extend({
         'resizable=no',
       ].join(','),
       function (cbObj) {
-
         if (this.name == 'tags') {
           this.cbObj = cbObj;
           cbAddTag(this.name, cbObj.text, cbObj.id);
@@ -190,6 +189,12 @@ const SelectApi = View.extend({
             removeTagEles[i].addEventListener("click", cbRemoveTag.bind(this), false);
           }
         }
+
+        // TODO: add handler for category submit
+        // if (this.name == 'category') {
+        //   this.cbObj = cbObj;
+        //   cbAddCategory(this.name, cbObj.text, cbObj.id);
+        // }
       },
     );
     pop.request();
@@ -299,26 +304,58 @@ const SelectApi = View.extend({
 
 export default SelectApi;
 
+// handle tags modal submit
 function cbRemoveTag() {
-  document.querySelector(`[data-title=${this.cbObj.text}]`).remove();
-  document.querySelector(`[data-value=${this.cbObj.text}]`).remove();
+  var titleEle = document.querySelector(`[data-title=${this.cbObj.text}]`);
+  var valueEle = document.querySelector(`[data-value=${this.cbObj.text}]`);
+
+  if (titleEle) {
+    titleEle.remove();
+  }
+  if (valueEle) {
+    valueEle.remove();
+  }
 };
 
 function cbAddTag(fieldName, text, id) {
   var selectorFieldName = `*[name=${fieldName}]`;
   var markUpFieldName = `<input name="${fieldName}" value="${id}" data-title="${text}" type="hidden">`;
-  addTagToDom(selectorFieldName, markUpFieldName);
+  addEleToDom(selectorFieldName, markUpFieldName);
 
   var selectorDomTags = `.item--tags`;
   var markUpDomTag = `<div class="item item--tags" data-id="${id}" data-value="${text}">${text}<a href="javascript:void(0)" class="remove--tag" tabindex="-1" title="Remove">×</a></div>`;
-  addTagToDom(selectorDomTags, markUpDomTag);
+  addEleToDom(selectorDomTags, markUpDomTag);
 }
 
-function addTagToDom(selector, newEle) {
+function addEleToDom(selector, newEle) {
   var temp = document.createElement('div');
 
   var selectorEles = document.querySelectorAll(`${selector}`);
-  var lastSelectorEle = selectorEles[selectorEles.length - 1];
-  temp.innerHTML = newEle;
-  lastSelectorEle.parentNode.append(temp.firstChild);
+  if (selectorEles) {
+    var lastSelectorEle = selectorEles[selectorEles.length - 1];
+    temp.innerHTML = newEle;
+    lastSelectorEle.parentNode.append(temp.firstChild);
+  }
 }
+
+// TODO: handle category modal submit
+/*
+function cbAddCategory(fieldName, text, id) {
+  var categoryEle = document.querySelector(`.item--${fieldName}`);
+  if (categoryEle) {
+    categoryEle.setAttribute('data-id', id);
+    categoryEle.setAttribute('data-value', text);
+    categoryEle.innerHTML = text;
+  }
+
+  var selectorCategory = `#id_${fieldName} + .selectize-control.single .selectize-dropdown-content div`;
+  var markUpSelectedCategory = `<div data-id="${id}" data-selectable="" data-value="${text}" class="selected active">${text}</div>`
+  addEleToDom(selectorCategory, markUpSelectedCategory);
+
+  var selectizedEle = document.querySelector(`[for="id_${fieldName}"] + .selectized`);
+  if (selectizedEle) {
+    selectizedEle.setAttribute('data-title', text);
+    selectizedEle.setAttribute('value', text);
+  }
+}
+*/
