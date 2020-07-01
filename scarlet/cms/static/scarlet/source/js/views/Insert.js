@@ -64,11 +64,10 @@ const Insert = View.extend({
     const ratio = (value - this.vars.size[dimension]) / this.vars.size[dimension] + 1;
 
 		// Sets the opposing axis based on the ratio difference in value.
-    this.vars.size[opposite] = Math.round(oppositeValue * ratio);
+    this.vars.size[opposite] = oppositeValue * ratio;
 
 		// Updates the proportion attribute.
-    this.setAttribute(opposite, this.vars.size[opposite]);
-    this.setAttribute(opposite, this.vars.size[opposite]);
+    this.setAttribute(opposite, Math.round(this.vars.size[opposite]));
   },
 
 	// Helper to set a given attribute
