@@ -91,7 +91,7 @@
     </tr>
     </thead>
 
-    <tbody {% if list.auto_sort %} draggable="true"{% endif %}>
+    <tbody {% if list.auto_sort %} data-current-page="{{ page_obj.number }}" data-per-page="{{page_obj.paginator.per_page}}" draggable="true"{% endif %}>
     {% for row in list %}
     {% if show_form %}
       {{ row.form.non_field_errors }}
