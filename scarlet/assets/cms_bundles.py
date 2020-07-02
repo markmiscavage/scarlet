@@ -24,23 +24,23 @@ def preview(obj):
     return ""
 
 
-class CropBundle(bundles.BlankBundle):
-    navigation = bundles.PARENT
-    object_view = bundles.PARENT
+# class CropBundle(bundles.BlankBundle):
+#     navigation = bundles.PARENT
+#     object_view = bundles.PARENT
 
-    edit_asset = bundles.URLAlias(bundle_attr=bundles.PARENT, alias_to="edit")
+#     edit_asset = bundles.URLAlias(bundle_attr=bundles.PARENT, alias_to="edit")
 
-    main = views.ListView(
-        allow_empty=False,
-        base_template="cms/partial.html",
-        base_filter_kwargs={"editable": True},
-    )
-    edit = CropVersionView()
+#     main = views.ListView(
+#         allow_empty=False,
+#         base_template="cms/partial.html",
+#         base_filter_kwargs={"editable": True},
+#     )
+#     edit = CropVersionView()
 
-    class Meta(object):
-        parent_field = "image"
-        model = models.ImageDetail
-        edit_regex_base = "(?P<%(group_name)s_pk>[a-zA-z0-9_.-]+)/%(attname)s/"
+#     class Meta(object):
+#         parent_field = "image"
+#         model = models.ImageDetail
+#         edit_regex_base = "(?P<%(group_name)s_pk>[a-zA-z0-9_.-]+)/%(attname)s/"
 
 
 class AssetBundle(bundles.Bundle):
@@ -49,12 +49,13 @@ class AssetBundle(bundles.Bundle):
         display_fields=(preview, "title", "user_filename", "modified", "type")
     )
     add = AssetFormView(force_add=True, form_class=forms.UploadAssetForm)
-    edit = AssetFormView(form_class=forms.UpdateAssetForm)
-    crop = CropView(default_template="assets/crop.html")
-    crops = CropBundle.as_subbundle(name="crops")
+    edit = AssetFormView(form_class=forms.UpdateAssetCropForm)#form_class=forms.UpdateAssetForm)
+    # crop = CropView(default_template="assets/crop.html")
+    # crops = CropBundle.as_subbundle(name="crops")
 
     class Meta(object):
-        item_views = ("edit", "crop", "crops", "delete")
+        #item_views = ("edit", "crop", "crops", "delete")
+        item_views = ("edit", "delete")
         primary_model_bundle = True
         model = get_asset_model()
 

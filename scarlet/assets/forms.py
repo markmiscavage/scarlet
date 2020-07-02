@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 from builtins import object
+import json
 from django import forms
 from django.db import models
 
@@ -38,6 +39,45 @@ class UpdateAssetForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(UpdateAssetForm, self).__init__(*args, **kwargs)
         self.fields["tags"].widget.attrs["class"] = "widget-tags"
+
+
+class UpdateAssetCropForm(forms.ModelForm):
+    """
+    Form for handling asset updates including crops
+    """
+
+    crops = forms.CharField(required=False, widget=forms.HiddenInput())
+
+    class Meta(object):
+        model = get_asset_model()
+        fields = ("file", "tags")
+
+    def __init__(self, *args, **kwargs):
+        super(UpdateAssetCropForm, self).__init__(*args, **kwargs)
+        self.fields["tags"].widget.attrs["class"] = "widget-tags"
+
+    def clean(self):
+        cleaned_data = super(UpdateAssetCropForm, self).clean()
+        if "crops" in cleaned_data.keys():
+            if cleaned_data.get("crops") != "":
+                try:
+                    crops_json = json.loads(cleaned_data.get("crops"))
+                    for crop in crops_json:
+                        required_keys = ["name", "x", "x1", "y", "y1"]
+                        for key in required_keys:
+                            if key not in crop.keys():
+                                raise forms.ValidationError(
+                                    "Could not find required keys for all crops", code="invalid"
+                                )
+
+                    cleaned_data["crops"] = crops_json
+                except json.JSONDecodeError:
+                    raise forms.ValidationError(
+                        "Unable to decode crop JSON", code="invalid"
+                    )
+            else:
+                del cleaned_data["crops"]
+        return cleaned_data
 
 
 class AssetFilterForm(TaggedRelationFilterForm):

@@ -690,7 +690,7 @@ class ModelCMSMixin(object):
                         to = rel.rel.model
                     field_name = rel.rel.field.name
             else:
-                to = field.rel.to
+                to = field.remote_field.model
                 if main_key == "pk":
                     try:
                         to_field = field.remote_field.field_name
