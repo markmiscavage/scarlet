@@ -12,6 +12,7 @@ const ImageCropper = View.extend({
     };
   },
 
+
   render() {
     this.$original = this.$(`${this.classPrefix}original`);
     this.$preview = this.$(`${this.classPrefix}preview`);
@@ -30,7 +31,7 @@ const ImageCropper = View.extend({
   setupCropper() {
     this.$original.cropper({
       data: this.setInitialCroparea(),
-      // cropmove: this.updateCropArea.bind(this),
+      cropmove: this.updateCropArea.bind(this),
       aspectRatio: this.cropScale.w / this.cropScale.h,
       autoCropArea: 1,
       responsive: true,
@@ -151,54 +152,9 @@ const ImageCropper = View.extend({
 
   updateCropArea(coords) {
     const data = this.$original.cropper('getData');
-    clearTimeout(this.refreshTimeout);
 
     if (parseInt(data.width, 10) < 0) {
       return;
-    }
-
-    let scale = this.getScale(),
-      width,
-      height;
-
-    if (!this.constrainRatio) {
-      if (this.constrainHeight) {
-        // update preview width
-        width = Math.round(scale.scaleY * data.width);
-
-        this.$preview
-          .find('.mask')
-          .css({
-            width: `${width}px`,
-          })
-          .end()
-          .find('strong')
-          .text(`${width} x ${this.cropScale.h}`);
-      } else if (this.constrainWidth) {
-        // update preview height
-        height = Math.round(scale.scaleX * data.height);
-
-        this.$mask
-          .css({
-            height: `${height}px`,
-          })
-          .end()
-          .find('strong')
-          .text(`${this.cropScale.w} x ${height}`);
-      } else {
-        // update preview height and width
-        height = Math.round(scale.scaleY * data.height);
-        width = Math.round(scale.scaleX * data.width);
-
-        this.$mask
-          .css({
-            width: `${width}px`,
-            height: `${height}px`,
-          })
-          .end()
-          .find('strong')
-          .text(`${width} x ${height}`);
-      }
     }
 
     this.setCropCoords(data);

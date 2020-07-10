@@ -35,6 +35,17 @@ button,
 		}
 	}
 
+	&--tertiary {
+		color: $white;
+		background-color: $red-pom;
+
+		&.active,
+		&:hover {
+			color: $white;
+			background-color: $red-pom-dark;
+		}
+	}
+
 	&--disabled {
 		color: $white;
 		cursor: default;

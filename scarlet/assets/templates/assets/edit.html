@@ -4,8 +4,12 @@
 {% block formsets %}
 {% if crops %}
 	<div class="crop-info">
-		<h2>Crops</h2>
-    <p>Select a crop from the drop down to begin editing.</p>
+		<p>Select a crop from the drop down to begin editing. Make sure you <strong class="color--red">apply crop</strong> after editting and <strong class="color--blue">save</strong> when you're done</p>
+		<input type="hidden" class="crop-values" name="name" value>
+		<input type="hidden" class="crop-values" name="x" value data-property='x'>
+		<input type="hidden" class="crop-values" name="x2" value data-property='x2'>
+		<input type="hidden" class="crop-values" name="y" value data-property='y'>
+		<input type="hidden" class="crop-values" name="y2" value data-property='y2'>
 		<ul class="asset__crop-list">
 			{% for crop in crops %}
 				<li class="row" data-width={{crop.width}} data-height={{crop.height}} data-x={{crop.x}} data-y={{crop.y}}  data-x2={{crop.x2}} data-y2={{crop.y2}}>
