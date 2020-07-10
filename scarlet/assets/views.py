@@ -163,10 +163,10 @@ class AssetFormView(views.FormView):
                     img = img_details.get(name=crop.get("name"))
                     img.image.create_crop(
                         crop.get("name"),
-                        crop.get("x"),
-                        crop.get("x1"),
-                        crop.get("y"),
-                        crop.get("y1"),
+                        int(crop.get("x")),
+                        int(crop.get("x2")),
+                        int(crop.get("y")),
+                        int(crop.get("y2")),
                     )
         return super(AssetFormView, self).form_valid(form, formsets)
 

@@ -63,7 +63,7 @@ class UpdateAssetCropForm(forms.ModelForm):
                 try:
                     crops_json = json.loads(cleaned_data.get("crops"))
                     for crop in crops_json:
-                        required_keys = ["name", "x", "x1", "y", "y1"]
+                        required_keys = ["name", "x", "x2", "y", "y2"]
                         for key in required_keys:
                             if key not in crop.keys():
                                 raise forms.ValidationError(
