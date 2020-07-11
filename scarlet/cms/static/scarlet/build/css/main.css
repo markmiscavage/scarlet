@@ -3195,6 +3195,15 @@ th:nth-child(1) {
   .apply-crop.clicked .check {
     opacity: 1; }
 
+.preview-image {
+  display: block;
+  float: left;
+  clear: left;
+  margin-top: 20px; }
+
+.apply-crop--hidden ~ .preview-image {
+  display: none; }
+
 .wysihtml5-sandbox {
   color: #0084ff;
   font-size: 18px;

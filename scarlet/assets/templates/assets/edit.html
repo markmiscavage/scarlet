@@ -12,7 +12,19 @@
 		<input type="hidden" class="crop-values" name="y2" value data-property='y2'>
 		<ul class="asset__crop-list">
 			{% for crop in crops %}
-				<li class="row" data-name={{crop.name}} data-width={{crop.width}} data-height={{crop.height}} data-x={{crop.x}} data-y={{crop.y}}  data-x2={{crop.x2}} data-y2={{crop.y2}}>
+				<li class="row"
+						data-name={{crop.name}}
+						data-width={{crop.width}}
+						data-height={{crop.height}}
+						data-x={{crop.x}}
+						data-y={{crop.y}}
+						data-x2={{crop.x2}}
+						data-y2={{crop.y2}}
+						{% with crop.name as cropName %}
+							{% if cropName %}
+								data-crop-preivew={{ obj.file.url }}
+							{% endif %}
+						{% endwith %}>
 					<div class="col">{{ crop.name }}</div>
 					<div class="col">{{ crop.width }}x{{ crop.height }} (px)</div>
 					<div class="col">

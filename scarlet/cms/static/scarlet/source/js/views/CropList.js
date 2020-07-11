@@ -10,7 +10,6 @@ const CropList = View.extend({
     this.getListItems();
     $('.asset__crop-list').hide();
     this.url = $('.widget-asset-simple').find('a')[0].href;
-    console.log('URL', this.url);
 
     this.addApplyCropBtn();
     this.initializeElements();
@@ -18,15 +17,20 @@ const CropList = View.extend({
   },
 
   addApplyCropBtn() {
+    this.originalImageLink = document.querySelector('.widget-asset-simple a');
+    this.fileName = document.querySelector('input[name=name]').value;
     var btnGroup = document.querySelector('.button-group--submit');
     if (btnGroup) {
-      var btnApply = `<a class="button button--tertiary apply-crop apply-crop--hidden">Apply Crop
-                        <span class='check'>
-                          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
-                            <polyline class="path check" fill="none" stroke="#f00" stroke-width="10" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
-                          </svg>
-                        </span>
-                      </a>`;
+      var btnApply = `<div class="crop-buttons">
+                        <a class="button button--tertiary apply-crop apply-crop--hidden">Apply Crop
+                          <span class='check'>
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                              <polyline class="path check" fill="none" stroke="#f00" stroke-width="10" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
+                            </svg>
+                          </span>
+                        </a>
+                        <a class="preview-image" href="${this.originalImageLink.href}" target="_blank">Preview Cropped Image</a>
+                      </div>`;
       var temp = document.createElement("div");
       temp.innerHTML = btnApply;
       btnGroup.prepend(temp.childNodes[0]);
@@ -36,8 +40,10 @@ const CropList = View.extend({
   initializeElements() {
     this.cropObj = [];
     this.btnApplyCrop = document.querySelector('.apply-crop');
+    this.linkPreview = document.querySelector('.preview-image');
     this.inputCropValues = document.querySelectorAll('input.crop-values');
     this.inputCrops = document.querySelector('input[name=crops]');
+    this.inputFileName = document.querySelector('input[name=name]');
   },
 
   addEventListeners() {
@@ -49,6 +55,16 @@ const CropList = View.extend({
     var eleHeader = document.querySelector('.header-object__breadcrumb');
     if (eleHeader) {
       eleHeader.scrollIntoView();
+    }
+  },
+
+  updateCroppedPreviewUrl() {
+    this.currentLinkPreview = document.querySelector(`li[data-name=${this.inputFileName.value}]`);
+    if (this.linkPreview.href) {
+      var linkPreviewUrl = this.currentLinkPreview.getAttribute('data-crop-preivew').split('.')[0];
+      var linkPreviewFiletype = this.currentLinkPreview.getAttribute('data-crop-preivew').split('.')[1];
+      var linkPreviewCropped = `${linkPreviewUrl}_${this.inputFileName.value}.${linkPreviewFiletype}`;
+      this.linkPreview.href = linkPreviewCropped;
     }
   },
 
@@ -86,7 +102,7 @@ const CropList = View.extend({
 
     // show user that interaction
     this.btnApplyCrop.classList.add('clicked');
-    setTimeout(function() {
+    setTimeout(function () {
       this.btnApplyCrop.classList.remove('clicked');
     }.bind(this), 2000);
   },
@@ -175,6 +191,9 @@ const CropList = View.extend({
     if (this.btnApplyCrop.classList.contains('apply-crop--hidden')) {
       this.btnApplyCrop.classList.remove('apply-crop--hidden');
     }
+
+    // update crop preview url
+    this.updateCroppedPreviewUrl();
   },
 
   onChange() {

@@ -49,3 +49,14 @@
 		opacity: 1;
 	}
 }
+
+.preview-image {
+	display: block;
+	float: left;
+	clear: left;
+	margin-top: 20px;
+}
+
+.apply-crop--hidden ~ .preview-image {
+	display: none;
+}
