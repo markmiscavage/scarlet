@@ -78,12 +78,12 @@ const handlePopup = function() {
  * For Click to open window
  * @param  {object} event
  * @param  {Function} callback
+ * @param  {object} windowSize
  */
-const clickOpenPopup = function(e, cb) {
+const clickOpenPopup = function(e, cb, windowSize) {
   e.preventDefault();
   const url = $(e.currentTarget).attr('href');
-  const options =
-    'menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=500,width=800';
+  const options = `menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=${windowSize.height},width=${windowSize.width}`;
   const windowPopup = new WindowPopup(url, 'assetWindow', options, data => {
     cb(data);
   });

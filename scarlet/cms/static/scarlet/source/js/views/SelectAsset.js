@@ -254,10 +254,13 @@ const SelectAsset = View.extend({
       e.preventDefault();
       return;
     }
+    var windowSize = {
+      'width': screen.width / 2,
+      'height': screen.height
+    };
 
-    // 
     // clickOpenModal(e, 'modal-add-asset', this.setSelected.bind(this), this.autoTags)
-    clickOpenPopup(e, this.setSelected.bind(this));
+    clickOpenPopup(e, this.setSelected.bind(this), windowSize);
 
     // LIST APPROACH
     // if(this.addOpen){

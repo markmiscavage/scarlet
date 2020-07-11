@@ -42,6 +42,14 @@ const CropList = View.extend({
 
   addEventListeners() {
     this.btnApplyCrop.addEventListener('click', this.handleApplyCropClick.bind(this));
+    window.addEventListener('DOMContentLoaded', this.scrollToHeadline);
+  },
+
+  scrollToHeadline() {
+    var eleHeader = document.querySelector('.header-object__breadcrumb');
+    if (eleHeader) {
+      eleHeader.scrollIntoView();
+    }
   },
 
   handleApplyCropClick() {
@@ -130,11 +138,10 @@ const CropList = View.extend({
           fieldName.value = item.name;
         }
 
-        return `<div class="crop-list__item" data-width="${item.width}" data-height="${item.height}" data-x="${item.x}" data-y="${item.y}" data-x2="${item.x2}" data-y2="${item.y2}">${item.name
-          ? `<span class="crop-list__name">${escape(item.name)}</span>`
-          : ''}${item.dimensions
-            ? `<span class="crop-list__dimensions">${escape(item.dimensions)}</span>`
-            : ''}</div>`;
+        return `<div class="crop-list__item" data-name="${item.name}" data-width="${item.width}" data-height="${item.height}" data-x="${item.x}" data-y="${item.y}" data-x2="${item.x2}" data-y2="${item.y2}">
+          ${item.name ? `<span class="crop-list__name">${escape(item.name)}</span>` : ''}
+          ${item.dimensions ? `<span class="crop-list__dimensions">${escape(item.dimensions)}</span>` : ''}
+        </div>`;
       },
       option: (item, escape) => {
         const label = item.name || item.dimensions;
