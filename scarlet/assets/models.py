@@ -37,13 +37,7 @@ class AssetBase(AutoTagModel):
     TYPES = (
         settings.ASSET_TYPES
         and settings.ASSET_TYPES
-        or (
-            (UNKNOWN, "Unknown"),
-            (IMAGE, "Image"),
-            (DOCUMENT, "Document"),
-            (AUDIO, "Audio"),
-            (VIDEO, "Video"),
-        )
+        or ((IMAGE, "Image"), (DOCUMENT, "Document"))
     )
 
     __original_file = None
