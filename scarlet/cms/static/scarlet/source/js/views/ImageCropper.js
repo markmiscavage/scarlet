@@ -46,7 +46,6 @@ const ImageCropper = View.extend({
   setCropBox() {
     this.cropDiemensions = this.getInitialCroparea();
     this.cropper.setCropBoxData(this.cropDiemensions);
-    console.log(this.cropDiemensions);
   },
 
   // iterate over coordinate property keys

@@ -108,6 +108,9 @@ const CropList = View.extend({
     setTimeout(function () {
       this.btnApplyCrop.classList.remove('clicked');
     }.bind(this), 2000);
+
+    // TODO: update current data attributes for the current image so when user reloads it, it shows the current applied crop
+
   },
 
   handleCropFormSubmit() {
