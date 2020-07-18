@@ -44,10 +44,13 @@ const CropList = View.extend({
     this.inputCropValues = document.querySelectorAll('input.crop-values');
     this.inputCrops = document.querySelector('input[name=crops]');
     this.inputFileName = document.querySelector('input[name=name]');
+    this.btnCropFormSubmit = document.querySelector('.crop-info ~ .button-group--submit .button--primary');
+    this.btnCropFormLoading = document.querySelector('.crop-info ~ .button-group--submit .button__loading-overlay');
   },
 
   addEventListeners() {
     this.btnApplyCrop.addEventListener('click', this.handleApplyCropClick.bind(this));
+    this.btnCropFormSubmit.addEventListener('click', this.handleCropFormSubmit.bind(this));
     window.addEventListener('DOMContentLoaded', this.scrollToHeadline);
   },
 
@@ -105,6 +108,10 @@ const CropList = View.extend({
     setTimeout(function () {
       this.btnApplyCrop.classList.remove('clicked');
     }.bind(this), 2000);
+  },
+
+  handleCropFormSubmit() {
+    this.btnCropFormLoading.classList.add('button__loading-overlay--active');
   },
 
   render() {

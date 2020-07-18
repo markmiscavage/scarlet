@@ -72,7 +72,21 @@ const ImageCropper = View.extend({
 
     // set DOM vars used in calculations
     this.cropperBox = document.querySelector('.cropper-wrap-box');
-    this.cropperCanvasHeight = document.querySelector('.cropper-canvas').style.transform.replace(/[^\d.]/g, '')
+    this.cropperCanvasStyleTransform = document.querySelector('.cropper-canvas').style.transform;
+
+    // get canvas height to add to top position and set the crop ratio used to calculate width/height
+    this.cropperCanvasHeight = 0;
+    if (this.cropperCanvasStyleTransform.indexOf('translateY') >= 0) {
+      this.cropperCanvasHeight = document.querySelector('.cropper-canvas').style.transform.replace(/[^\d.]/g, '');
+      this.cropRatio = this.cropperBox.clientWidth / this.$original[0].naturalWidth;
+    }
+
+    // get canvas width to add to left position and set the crop ratio used to calculate width/height
+    this.cropperCanvasWidth = 0;
+    if (this.cropperCanvasStyleTransform.indexOf('translateX') >= 0) {
+      this.cropperCanvasWidth = document.querySelector('.cropper-canvas').style.transform.replace(/[^\d.]/g, '');
+      this.cropRatio = this.cropperBox.clientHeight / this.$original[0].naturalHeight;
+    }
 
     // set the crop ratio
     this.cropRatioW = this.cropperBox.clientWidth / this.$original[0].naturalWidth;
@@ -87,10 +101,10 @@ const ImageCropper = View.extend({
 
     // define crop object
     const obj = {
-      left: this.cropLeft * this.cropRatioW,
-      top: this.cropTop * this.cropRatioW + parseFloat(this.cropperCanvasHeight),
-      width: this.cropWidth * this.cropRatioW,
-      height: this.cropHeight * this.cropRatioW,
+      left: this.cropLeft * this.cropRatio + parseFloat(this.cropperCanvasWidth),
+      top: this.cropTop * this.cropRatio + parseFloat(this.cropperCanvasHeight),
+      width: this.cropWidth * this.cropRatio,
+      height: this.cropHeight * this.cropRatio,
     };
 
     return obj;

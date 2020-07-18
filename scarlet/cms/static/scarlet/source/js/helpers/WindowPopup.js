@@ -82,7 +82,10 @@ const handlePopup = function() {
  */
 const clickOpenPopup = function(e, cb, windowSize) {
   e.preventDefault();
-  const url = $(e.currentTarget).attr('href');
+  let url = $(e.currentTarget).attr('href');
+  if (url.indexOf('popup') < 0) {
+    url = `${url}?popup=1`;
+  }
   const options = `menubar=no,location=no,resizable=no,scrollbars=yes,status=no,height=${windowSize.height},width=${windowSize.width}`;
   const windowPopup = new WindowPopup(url, 'assetWindow', options, data => {
     cb(data);

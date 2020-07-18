@@ -112,8 +112,13 @@
 
   {% block submit %}
     <div class="button-group button-group--submit">
-      <a class="button button--secondary close-popup" href="{{ cancel_url }}">Cancel</a>
-      <input class="button button--primary" type="submit" value="Save" />
+      <div class="button_inner-container">
+        <a class="button button--secondary close-popup" href="{{ cancel_url }} ">Cancel</a>
+        <input class="button button--primary" type="submit" value="Save" />
+        <div class="button__loading-overlay">
+          <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+        </div>
+      </div>
     </div>
   </form>
   {% endblock submit %}
