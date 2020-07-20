@@ -2132,6 +2132,9 @@ svg {
   svg .type {
     fill: #000; }
 
+polygon.bar {
+  fill: #f00; }
+
 .actions__action {
   display: inline-block;
   width: 12px;
@@ -2344,6 +2347,7 @@ table {
 input[type=text],
 input[type=file],
 input[type=password],
+input[type=number],
 textarea {
   background-color: #eee;
   display: block;
@@ -2351,6 +2355,7 @@ textarea {
   td input[type=text], td
   input[type=file], td
   input[type=password], td
+  input[type=number], td
   textarea {
     display: inline-block;
     width: auto; }

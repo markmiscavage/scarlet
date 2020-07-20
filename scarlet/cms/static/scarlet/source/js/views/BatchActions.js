@@ -8,20 +8,39 @@ const BatchActions = View.extend({
   },
 
   initialize() {
-    this.idList = [];
+    this.idList = [];    
+    $.each(this.$el.find('td'), function(i, el){
+      var str = $(el).text();
+      str = str.replace(/\s/g, '').toLowerCase(); // remove space characters
+      if(str === 'published' || str === 'unpublished'){
+        var checkbox = $(el).parent().find('td.checkbox input');
+        if(checkbox){
+          checkbox.attr('data-status', str.toLowerCase())
+        }
+      }
+    });
   },
 
   render() {
     this.$actions = this.$el.find('[data-type=batch-action]');
+    this.$actionPublish = this.$el.find('[data-action=publish]');
+    this.$actionUnpublish = this.$el.find('[data-action=unpublish]');
     this.$batchCheck = this.$el.find('[data-type=batch-check-row]');
     this.$selectAll = this.$el.find('[data-type=batch-check-all]');
     this.$actions.on('click', this.handleActions.bind(this));
   },
 
   selectAll(e) {
+    var selectAllChecked = this.$selectAll.prop('checked');
     this.$batchCheck.each(function() {
-      $(this).trigger('click');
+      $(this).prop('checked', selectAllChecked);
     });
+
+    if(selectAllChecked){
+      this.enableActions();
+    } else{
+      this.disableActions();
+    }
   },
 
   selectRow(e) {
@@ -53,7 +72,26 @@ const BatchActions = View.extend({
   },
 
   enableActions() {
+
+    var hasItemPublished, hasItemUnpublished
+    $.each(this.$el.find('tbody td.checkbox input:checked'), function(i, checkbox){
+      if($(checkbox).data('status') === "published"){
+        hasItemPublished = true;
+      } else if($(checkbox).data('status') === "unpublished"){
+        hasItemUnpublished = true;
+      }
+    });
+
     this.$actions.removeClass('button--disabled').addClass('button--primary');
+    if(hasItemPublished !== hasItemUnpublished){
+      if(hasItemPublished){
+        this.$actionPublish.addClass('button--disabled');
+      } 
+      
+      if(hasItemUnpublished){
+        this.$actionUnpublish.addClass('button--disabled');
+      } 
+    }
   },
 
   disableActions() {
