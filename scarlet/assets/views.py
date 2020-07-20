@@ -148,12 +148,27 @@ class AssetFormView(views.FormView):
 
         asset_tags = self.request.GET.get("tags", None)
         if asset_tags:
-            initial['tags'] = asset_tags
+            initial["tags"] = asset_tags
 
         if len(initial):
             kwargs["initial"].update(initial)
 
         return kwargs
+
+    def form_valid(self, form, formsets):
+        if self.object:
+            img_details = self.object.imagedetail_set.all()
+            if 'crops' in form.cleaned_data:
+                for crop in form.cleaned_data.get("crops"):
+                    img = img_details.get(name=crop.get("name"))
+                    img.image.create_crop(
+                        crop.get("name"),
+                        int(crop.get("x")),
+                        int(crop.get("x2")),
+                        int(crop.get("y")),
+                        int(crop.get("y2")),
+                    )
+        return super(AssetFormView, self).form_valid(form, formsets)
 
     def success_response(self, message=None):
         if hasattr(self.object.file, "admin_url"):

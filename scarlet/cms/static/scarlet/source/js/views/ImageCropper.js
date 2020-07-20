@@ -1,5 +1,6 @@
 import { View } from 'backbone';
-import cropper from 'cropper';
+import Cropper from 'cropperjs';
+
 import imagesready from 'imagesready';
 
 const ImageCropper = View.extend({
@@ -28,47 +29,23 @@ const ImageCropper = View.extend({
   },
 
   setupCropper() {
-    this.$original.cropper({
-      data: this.setInitialCroparea(),
-      // cropmove: this.updateCropArea.bind(this),
+    this.cropper = new Cropper(this.$original[0], {
       aspectRatio: this.cropScale.w / this.cropScale.h,
-      autoCropArea: 1,
+      cropmove: this.updateCropArea.bind(this),
+      autoCrop: true,
       responsive: true,
       viewMode: 1,
       zoomable: false,
     });
+
+    this.$original[0].addEventListener('ready', function () {
+      this.setCropBox();
+    }.bind(this));
   },
 
-  cropperReady() {
-    const $clone = this.$original.clone().removeClass('cropper-hidden');
-    $clone.css({
-      display: 'block',
-      width: '100%',
-      minWidth: 0,
-      minHeight: 0,
-      maxWidth: 'none',
-      maxHeight: 'none',
-    });
-    this.$preview
-      .css({
-        width: '300px',
-        overflow: 'hidden',
-      })
-      .html($clone);
-  },
-
-  cropperClone(e) {
-    const imageData = this.$original.cropper('getImageData');
-    const previewAspectRatio = e.width / e.height;
-    const previewWidth = this.$preview.width();
-    const previewHeight = previewWidth / previewAspectRatio;
-    const imageScaledRatio = e.width / previewWidth;
-    this.$preview.height(previewHeight).find('img').css({
-      width: imageData.naturalWidth / imageScaledRatio,
-      height: imageData.naturalHeight / imageScaledRatio,
-      marginLeft: -e.x / imageScaledRatio,
-      marginTop: -e.y / imageScaledRatio,
-    });
+  setCropBox() {
+    this.cropDiemensions = this.getInitialCroparea();
+    this.cropper.setCropBoxData(this.cropDiemensions);
   },
 
   // iterate over coordinate property keys
@@ -83,25 +60,52 @@ const ImageCropper = View.extend({
     }
   },
 
-  // set initial croparea from (x,y,x2,y2) field values
-  setInitialCroparea() {
+  // get initial croparea from (x,y,x2,y2) field values
+  getInitialCroparea() {
     const data = $('.crop-list__item').data();
     const coords = this.buildMap(data);
-    console.log(coords);
+
     for (const [key, value] of coords) {
       this.cropCoords[key] = value;
     }
-    console.log('COORS', this.cropCoords);
-    console.log('get scale', this.getScale());
-    // this.$original.css({ width: coords.get('width') });
+
+    // set DOM vars used in calculations
+    this.cropperBox = document.querySelector('.cropper-wrap-box');
+    this.cropperCanvasStyleTransform = document.querySelector('.cropper-canvas').style.transform;
+
+    // get canvas height to add to top position and set the crop ratio used to calculate width/height
+    this.cropperCanvasHeight = 0;
+    if (this.cropperCanvasStyleTransform.indexOf('translateY') >= 0) {
+      this.cropperCanvasHeight = document.querySelector('.cropper-canvas').style.transform.replace(/[^\d.]/g, '');
+      this.cropRatio = this.cropperBox.clientWidth / this.$original[0].naturalWidth;
+    }
+
+    // get canvas width to add to left position and set the crop ratio used to calculate width/height
+    this.cropperCanvasWidth = 0;
+    if (this.cropperCanvasStyleTransform.indexOf('translateX') >= 0) {
+      this.cropperCanvasWidth = document.querySelector('.cropper-canvas').style.transform.replace(/[^\d.]/g, '');
+      this.cropRatio = this.cropperBox.clientHeight / this.$original[0].naturalHeight;
+    }
+
+    // set the crop ratio
+    this.cropRatioW = this.cropperBox.clientWidth / this.$original[0].naturalWidth;
+
+    // set crop height and width
+    this.cropWidth = coords.get('x2') - coords.get('x');
+    this.cropHeight = coords.get('y2') - coords.get('y');
+
+    //set left and top
+    this.cropLeft = coords.get('x');
+    this.cropTop = coords.get('y');
+
+    // define crop object
     const obj = {
-      x: coords.get('x'),
-      y: coords.get('y'),
-      width: coords.get('width'),
-      height: coords.get('height'),
-      ...this.getScale(),
+      left: this.cropLeft * this.cropRatio + parseFloat(this.cropperCanvasWidth),
+      top: this.cropTop * this.cropRatio + parseFloat(this.cropperCanvasHeight),
+      width: this.cropWidth * this.cropRatio,
+      height: this.cropHeight * this.cropRatio,
     };
-    console.log('OBJECT', obj);
+
     return obj;
   },
 
@@ -123,6 +127,13 @@ const ImageCropper = View.extend({
         $coord.attr('value', this.cropCoords[prop]);
       }
     });
+
+    // update crop name
+    this.inputCurrentCropName = document.querySelector('.crop-values[name=name]');
+    this.currentCropName = document.querySelector('.crop-info .selectized [selected]').innerHTML
+    if (this.inputCurrentCropName) {
+      this.inputCurrentCropName.value = this.currentCropName;
+    }
   },
 
   getScale() {
@@ -150,55 +161,10 @@ const ImageCropper = View.extend({
   },
 
   updateCropArea(coords) {
-    const data = this.$original.cropper('getData');
-    clearTimeout(this.refreshTimeout);
+    const data = this.cropper.getData();
 
     if (parseInt(data.width, 10) < 0) {
       return;
-    }
-
-    let scale = this.getScale(),
-      width,
-      height;
-
-    if (!this.constrainRatio) {
-      if (this.constrainHeight) {
-        // update preview width
-        width = Math.round(scale.scaleY * data.width);
-
-        this.$preview
-          .find('.mask')
-          .css({
-            width: `${width}px`,
-          })
-          .end()
-          .find('strong')
-          .text(`${width} x ${this.cropScale.h}`);
-      } else if (this.constrainWidth) {
-        // update preview height
-        height = Math.round(scale.scaleX * data.height);
-
-        this.$mask
-          .css({
-            height: `${height}px`,
-          })
-          .end()
-          .find('strong')
-          .text(`${this.cropScale.w} x ${height}`);
-      } else {
-        // update preview height and width
-        height = Math.round(scale.scaleY * data.height);
-        width = Math.round(scale.scaleX * data.width);
-
-        this.$mask
-          .css({
-            width: `${width}px`,
-            height: `${height}px`,
-          })
-          .end()
-          .find('strong')
-          .text(`${width} x ${height}`);
-      }
     }
 
     this.setCropCoords(data);
