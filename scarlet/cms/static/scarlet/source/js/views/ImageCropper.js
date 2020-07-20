@@ -127,6 +127,13 @@ const ImageCropper = View.extend({
         $coord.attr('value', this.cropCoords[prop]);
       }
     });
+
+    // update crop name
+    this.inputCurrentCropName = document.querySelector('.crop-values[name=name]');
+    this.currentCropName = document.querySelector('.crop-info .selectized [selected]').innerHTML
+    if (this.inputCurrentCropName) {
+      this.inputCurrentCropName.value = this.currentCropName;
+    }
   },
 
   getScale() {

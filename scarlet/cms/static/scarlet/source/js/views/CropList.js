@@ -46,6 +46,7 @@ const CropList = View.extend({
     this.inputFileName = document.querySelector('input[name=name]');
     this.btnCropFormSubmit = document.querySelector('.crop-info ~ .button-group--submit .button--primary');
     this.btnCropFormLoading = document.querySelector('.crop-info ~ .button-group--submit .button__loading-overlay');
+    this.assetCropList = document.querySelector('.asset__crop-list');
   },
 
   addEventListeners() {
@@ -109,8 +110,21 @@ const CropList = View.extend({
       this.btnApplyCrop.classList.remove('clicked');
     }.bind(this), 2000);
 
-    // TODO: update current data attributes for the current image so when user reloads it, it shows the current applied crop
+    // update current data attributes for the current image so when user reloads it via dropdown, it shows the current applied crop
+    this.currentAsset = this.assetCropList.querySelector(`[data-name=${this.cropObjBuilder.name}]`);
+    if (this.currentAsset) {
+      for (var key in this.cropObjBuilder) {
+        if (key != 'name') { // don't overwrite name data attribute
+          this.currentAsset.setAttribute(`data-${key}`, this.cropObjBuilder[key]);
+          this.cropListItem = document.querySelector('.crop-list__item');
 
+          // save applied crop into current session
+          if (this.cropListItem) {
+            this.cropListItem.setAttribute(`data-${key}`, this.cropObjBuilder[key]);
+          }
+        }
+      }
+    }
   },
 
   handleCropFormSubmit() {
