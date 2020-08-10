@@ -35,6 +35,7 @@ Other methods to know are:
  * :py:meth:`purge_archives <versioning.models.BaseVersionedModel.purge_archives>`: Purge older archived items.
  * :py:meth:`status_line <versioning.models.BaseVersionedModel.status_line>`: Returns a status line for an item.
 
+Versioning also adds two additional signals (published_signal & published_delete_signal) on top of Django's default signals. These signals can be used to add additional behavior when an admin publishes or deletes content, such as invalidating caches or rendering templates.
 
 Uniqueness
 ----------
