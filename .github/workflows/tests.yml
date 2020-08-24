@@ -15,7 +15,7 @@ jobs:
         python-version: '3.x'
     - name: Set up PostgreSQL
       run: |
-        sudo apt-get install postgresql postgresql-contrib libpq-dev python3-psycopg2
+        sudo apt-get install postgresql postgresql-contrib libpq-dev python3-dev python3-psycopg2
         sudo service postgresql start
         sudo -u postgres bash -c "psql -c \"CREATE USER scarlet WITH PASSWORD 'scarlet';\""
         sudo -u postgres bash -c "psql -c \"ALTER USER scarlet WITH SUPERUSER;\""
