@@ -7,6 +7,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:10.8
+        env:
+          POSTGRES_USER: scarlet
+          POSTGRES_PASSWORD: scarlet
+          POSTGRES_DB: scarlet
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.x
@@ -18,5 +34,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install .
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Run migrations
+        run: python manage.py migrate
     - name: Run tests
       run: ./tests/run-tests.sh
