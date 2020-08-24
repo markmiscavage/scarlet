@@ -12,6 +12,7 @@ jobs:
         image: postgres:10.8
         env:
           POSTGRES_USER: scarlet
+          POSTGRES_HOST: localhost
           POSTGRES_PASSWORD: scarlet
           POSTGRES_DB: scarlet
         ports:
