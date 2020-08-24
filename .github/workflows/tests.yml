@@ -14,9 +14,9 @@ jobs:
       with:
         python-version: '3.x'
     - name: Set up PostgreSQL
-        run: |
-          sudo apt-get install postgresql libpq-dev
-          sudo service postgresql start
+      run: |
+        sudo apt-get install postgresql libpq-dev
+        sudo service postgresql start
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
