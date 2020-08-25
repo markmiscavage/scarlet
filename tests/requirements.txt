@@ -1,0 +1,4 @@
+django-coverage-plugin==1.8.0  # https://github.com/nedbat/django_coverage_plugin
+django-webpack-loader==0.7.0
+pytest-django==3.8.0  # https://github.com/pytest-dev/pytest-django
+psycopg2-binary==2.8.5
