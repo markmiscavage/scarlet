@@ -1988,7 +1988,7 @@ body {
 
 a {
   text-decoration: none;
-  color: #b8b8b8; }
+  color: #666; }
   a:hover {
     color: #f00; }
 
@@ -2431,7 +2431,7 @@ legend {
   margin-bottom: 40px; }
 
 label {
-  color: #b8b8b8;
+  color: #666;
   font-size: 18px;
   font-weight: normal;
   display: block;
@@ -2755,7 +2755,7 @@ button,
 
 .header-object__breadcrumb {
   font-family: "Open Sans", sans-serif;
-  color: #b8b8b8;
+  color: #666;
   font-size: 18px;
   position: absolute;
   left: 30px;
@@ -2776,7 +2776,7 @@ button,
   text-align: right;
   font-size: 12px; }
   .header-object__tools p {
-    color: #b8b8b8;
+    color: #666;
     margin-bottom: 15px; }
     .header-object__tools p span {
       position: relative;
@@ -2785,7 +2785,7 @@ button,
       .header-object__tools p span:after {
         content: '';
         display: inline-block;
-        background-color: #b8b8b8;
+        background-color: #666;
         width: 1px;
         height: 9px;
         top: 50%;
@@ -3078,7 +3078,7 @@ button,
 
 .nav-main__sublist-link {
   display: block;
-  color: #b8b8b8;
+  color: #666;
   cursor: pointer; }
   .nav-main__sublist-link:active, .nav-main__sublist-link:hover {
     color: #f00; }
