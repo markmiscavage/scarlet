@@ -2348,6 +2348,8 @@ input[type=text],
 input[type=file],
 input[type=password],
 input[type=number],
+input[type=url],
+input[type=email],
 textarea {
   background-color: #eee;
   display: block;
@@ -2356,6 +2358,8 @@ textarea {
   input[type=file], td
   input[type=password], td
   input[type=number], td
+  input[type=url], td
+  input[type=email], td
   textarea {
     display: inline-block;
     width: auto; }
@@ -2363,7 +2367,9 @@ textarea {
 input[type=text],
 input[type=file],
 input[type=password],
-input[type=number] {
+input[type=number],
+input[type=url],
+input[type=email] {
   line-height: 38px;
   text-indent: 10px;
   margin-top: 10px; }
