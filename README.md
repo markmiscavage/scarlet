@@ -52,23 +52,23 @@ Then, simply run the following :
 ```
   npm install
 ```
-Which install all necessary packages for front-end part.
+Which installs all necessary packages for front-end part.
 
 For usage as static generated css/js run:
 ```
   npm run build
 ```
 
-For make changes and generate css/js files after save run:
+To make changes and generate css/js files after save run:
 ```
   npm run start
 ```
-Before push to PR run:
+Before you push to PR run:
 ```
   npm run buildProd
 ```
 
-For test and linter run:
+To test and lint run:
 ```
   npm run lint
   npm run test
