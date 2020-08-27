@@ -94,5 +94,6 @@ env
 
 # Webpack
 webpack-stats.json
+*.map
 
 build
