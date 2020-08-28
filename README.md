@@ -41,17 +41,35 @@ Once Pillow is installed, Scarlet can be installed via *pip*.
 Usage
 ==
 
-This project runs with Node.js 8.x. [Node Version Manager](https://github.com/nvm-sh/nvm  ) allows developers to switch from one node.js version to another : 
+This project runs with Node.js 8.x. [Node Version Manager](https://github.com/nvm-sh/nvm  ) allows developers to switch from one node.js version to another :
 
 ```
   nvm use
 ```
 
-Then, simply run the following : 
+Then, simply run the following :
 
 ```
   npm install
+```
+Which installs all necessary packages for front-end part.
+
+For usage as static generated css/js run:
+```
   npm run build
 ```
 
-At the moment, the start task doesn't work at the moment. 
+To make changes and generate css/js files after save run:
+```
+  npm run start
+```
+Before you push to PR run:
+```
+  npm run buildProd
+```
+
+To test and lint run:
+```
+  npm run lint
+  npm run test
+```
