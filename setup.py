@@ -79,7 +79,7 @@ setup(
         "Environment :: Web Environment",
         "Framework :: Django",
         "Intended Audience :: Developers",
-        "License :: OSI Ap oved :: MIT License",
+        "License :: OSI Approved :: MIT License",
         "Operating System :: POSIX",
         "Programming Language :: Python",
     ],
