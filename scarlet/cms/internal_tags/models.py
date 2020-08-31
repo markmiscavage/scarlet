@@ -7,6 +7,8 @@ from . import handler
 
 class AutoTagModel(models.Model):
     tags = handler.get_tag_manager()
+    tags.verbose_name = "Search Tags"
+    tags.help_text = "Search tags are used to prefilter assets when including an asset on your object"
 
     def _set_auto_tags(self, value):
         if value:
