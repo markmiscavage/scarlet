@@ -64,8 +64,8 @@ for dirpath, dirnames, filenames in os.walk(
         packages.append(".".join(fullsplit(dirpath, base_path=base_path)))
 
 setup(
-    name="scarlet",
-    version=__import__("scarlet").__version__,
+    name="scarletcms",
+    version=__import__("scarletcms").__version__,
     description="A replacement for the Django Admin, focused on Content Management",
     author="Mark Miscavage",
     author_email="mark.miscavage@wonderful.com",
