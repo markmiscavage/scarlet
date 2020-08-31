@@ -65,7 +65,7 @@ for dirpath, dirnames, filenames in os.walk(
 
 setup(
     name="scarletcms",
-    version=__import__("scarletcms").__version__,
+    version=__import__("scarlet").__version__,
     description="A replacement for the Django Admin, focused on Content Management",
     author="Mark Miscavage",
     author_email="mark.miscavage@wonderful.com",
