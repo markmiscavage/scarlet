@@ -1,0 +1,27 @@
+name: tests
+
+on:
+  [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Set up PostgreSQL
+      run: |
+        sudo apt-get install postgresql postgresql-contrib libpq-dev python3-pip
+        sudo service postgresql start
+        sudo -u postgres bash -c "psql -c \"CREATE USER scarlet WITH PASSWORD 'scarlet';\""
+        sudo -u postgres bash -c "psql -c \"ALTER USER scarlet WITH SUPERUSER;\""
+    - name: Install dependencies
+      run: |
+        pip install .
+        if [ -f tests/requirements.txt ]; then pip install -r tests/requirements.txt; fi
+    - name: Run tests
+      run: ./tests/run-tests.sh

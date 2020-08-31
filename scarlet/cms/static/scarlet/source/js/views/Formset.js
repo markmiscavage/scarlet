@@ -48,7 +48,6 @@ const Formset = View.extend({
     // this.enableSort();
     this.bindControls();
     const $editor = $(this).find('.wysihtml-sandbox').contents().find('body');
-    console.log('EDITOR', $editor);
     $editor.keypress(e => {
       console.log('keypress', e);
     });
@@ -87,7 +86,9 @@ const Formset = View.extend({
   add(formsetType) {
     const clone = $('<div>')
       .addClass('formset__form added-with-js')
-      .attr('data-prefix', formsetType);
+      .attr('data-prefix', formsetType)
+      .attr('data-module-type', '')
+      .attr('data-module-name', '');
     let html = $(`.formset__form-template[data-prefix="${formsetType}"]`).html();
 
     html = html.replace(/(__prefix__)/g, this.count(formsetType));

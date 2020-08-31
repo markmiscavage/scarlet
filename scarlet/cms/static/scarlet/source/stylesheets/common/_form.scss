@@ -2,6 +2,8 @@ input[type=text],
 input[type=file],
 input[type=password],
 input[type=number],
+input[type=url],
+input[type=email],
 textarea {
 	background-color: $bg-primary;
 	display: block;
@@ -16,7 +18,9 @@ textarea {
 input[type=text],
 input[type=file],
 input[type=password],
-input[type=number] {
+input[type=number],
+input[type=url],
+input[type=email] {
 	line-height: 38px;
 	text-indent: 10px;
 	margin-top: 10px;
@@ -84,7 +88,7 @@ legend {
 }
 
 label {
-	color: $gray;
+	color: $gray-dark;
 	font-size: 18px;
 	font-weight: normal;
 	display: block;
@@ -133,7 +137,7 @@ fieldset {
 		color: $red;
 	}
 }
-  
+
 .errornote{
   color: $red;
 }

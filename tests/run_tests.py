@@ -52,7 +52,7 @@ def setup_test_environment(settings_overide, with_scarlet_blog=False):
                 "NAME": "scarlet",
                 "USER": "scarlet",
                 "PASSWORD": "scarlet",
-                # "HOST": "scarletdb",
+                "HOST": "localhost",
                 "PORT": "",
             },
         },

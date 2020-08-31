@@ -10,7 +10,7 @@
 
 .header-object__breadcrumb {
   @include open-sans;
-  color: $gray;
+  color: $gray-dark;
   font-size: 18px;
   position: absolute;
   left: 30px;
@@ -19,7 +19,7 @@
 
   i {
     color: $red;
-    
+
     margin-right: 6px;
   }
 }
@@ -37,11 +37,11 @@
   font-size: 12px;
 
   p {
-    color: $gray;
+    color: $gray-dark;
     margin-bottom: 15px;
 
     span {
-      @include divider($color: $gray);
+      @include divider($color: $gray-dark);
     }
   }
 
