@@ -25,6 +25,9 @@ class UploadAssetForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(UploadAssetForm, self).__init__(*args, **kwargs)
         self.fields["tags"].widget.attrs["class"] = "widget-tags"
+        self.fields["tags"].label = "Search Tags"
+        self.fields["tags"].help_text = \
+            "Search tags are used to prefilter assets when including an asset on your object"
 
 
 class UpdateAssetForm(forms.ModelForm):
@@ -39,6 +42,9 @@ class UpdateAssetForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(UpdateAssetForm, self).__init__(*args, **kwargs)
         self.fields["tags"].widget.attrs["class"] = "widget-tags"
+        self.fields["tags"].label = "Search Tags"
+        self.fields["tags"].help_text = \
+            "Search tags are used to prefilter assets when including an asset on your object"
 
 
 class UpdateAssetCropForm(forms.ModelForm):
