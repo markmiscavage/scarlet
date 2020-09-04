@@ -8,18 +8,18 @@ const Multiple = View.extend({
   },
 
   onChange(){
-    if(this.$el.find('.has-items').length == 0){
-      this.$el.find('input').attr("placeholder", "Select one");
+    if (this.$el.find('.has-items').length == 0) {
+      this.$el.find('input').attr('placeholder', 'Select one');
       setTimeout(() => {
         this.$el.find('input').css({
           position: 'relative',
-          left: '0', 
-          width : 'auto', 
+          left: '0',
+          width: 'auto',
           opacity: 1,
         });
-      }, 25);      
-    } else{
-      this.$el.find('input').attr("placeholder", "");
+      }, 25);
+    } else {
+      this.$el.find('input').attr('placeholder', '');
     }
   }
 });

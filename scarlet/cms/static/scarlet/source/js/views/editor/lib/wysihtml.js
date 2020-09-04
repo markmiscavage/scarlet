@@ -18454,7 +18454,6 @@ wysihtml.views.Textarea = wysihtml.views.View.extend(
 				? document.getElementById(editableElement)
 				: editableElement
 
-			console.log('editableElement', this.editableElement)
 			this.config = wysihtml.lang
 				.object({})
 				.merge(this.defaults)

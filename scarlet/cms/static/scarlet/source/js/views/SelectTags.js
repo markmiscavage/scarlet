@@ -1,5 +1,4 @@
 import { View } from 'backbone';
-import selectize from 'selectize';
 
 const SelectTags = View.extend({
   initialize() {

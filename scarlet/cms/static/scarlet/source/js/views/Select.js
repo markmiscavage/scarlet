@@ -1,8 +1,7 @@
 import { View } from 'backbone'
-import selectize from 'selectize'
 
 const Select = View.extend({
-  render() {    
+  render() {
     var self = this;
     this.selectize = this.$el.selectize({
       selectOnTab: true,
@@ -10,7 +9,7 @@ const Select = View.extend({
       onItemAdd(value, item) {
         if(self.isMulti){
           self.populate(item);
-        }        
+        }
       },
       onInitialize() {
         self.isMulti = self.$el.next().is('.selectize-control.multi');
@@ -18,7 +17,7 @@ const Select = View.extend({
           $.each(self.$el.next().find('.item'), function(index, item){
             self.populate(item);
           });
-        }        
+        }
       },
       onChange(e) {
         const $parentForm = this.$input.parents('form')
