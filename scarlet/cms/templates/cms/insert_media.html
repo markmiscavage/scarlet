@@ -3,11 +3,13 @@
 {% block page_class %}insert-media{% endblock page_class %}
 
 {% block popup_header %}
+<!--
 <ul data-tabs-container=".media-container" class="tabs tabs">
   <li><a class="button active" data-tabs-content="> .images" href="#">Images</a></li>
   <li><a class="button" data-tabs-content="> .video" href="#">Video</a></li>
   <li><a class="button" data-tabs-content="> .audio" href="#">Audio</a></li>
 </ul>
+-->
 {% endblock popup_header %}
 
 {% block content %}
@@ -79,12 +81,12 @@
       </div>
       {% if api_link %}
       <div class="insert-image library" style="display: none;">
-        <form>            
+        <form>
             <div class="asset" data-api="{{ api_link }}&ftype=image">
-              <div class="asset__preview" style="background-image:url({{ object.url }})"></div>             
+              <div class="asset__preview" style="background-image:url({{ object.url }})"></div>
               <div class="asset__select">
-                {{ hidden_input }}   
-                <input data-respond="true" data-attribute="src" type="hidden" value="">                      
+                {{ hidden_input }}
+                <input data-respond="true" data-attribute="src" type="hidden" value="">
               </div>
             </div>
 
