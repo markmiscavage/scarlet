@@ -1,7 +1,5 @@
 import { View } from 'backbone';
-import selectize from 'selectize';
 import Modal from 'helpers/Modal';
-import WindowPopup from 'helpers/WindowPopup';
 
 const SelectApi = View.extend({
   /**
@@ -39,7 +37,6 @@ const SelectApi = View.extend({
       labelField: 'text',
       searchField: 'text',
       create: this.create.bind(this),
-      render: this.renderOption(this.isLoading),
       onItemAdd: this.addItem.bind(this),
       load: this.load.bind(this),
       render: this.renderOption(this.isLoading),
@@ -77,7 +74,7 @@ const SelectApi = View.extend({
    * Prepare Selectize options
    * @return {object}
    */
-  renderOption(isLoading) {
+  renderOption (isLoading) {
     return {
       item: (item, escape) => {
         return `<div class="item" data-id="${item.id}" >${escape(item.text)}</div>`;
@@ -98,8 +95,8 @@ const SelectApi = View.extend({
    * @param  {string}
    * @param  {function}
    */
-  create(input, callback) {
-    this.openPopup(input);
+  create (input, callback) {
+    this.openPopup(input)
   },
 
   /**
@@ -108,7 +105,7 @@ const SelectApi = View.extend({
    * @param  {Function}  callback function
    * @return {function}  return callback
    */
-  load(query, callback) {
+  load (query, callback) {
     if (!query.length && this.isMultiple) return callback();
     this.isLoading = true;
     $.ajax({
@@ -134,7 +131,7 @@ const SelectApi = View.extend({
    * @param {string}
    * @param {object}
    */
-  addItem(value, $item) {
+  addItem (value, $item) {
     if (this.isMultiple) {
       if(value){
         this.selectize.$input.after(
@@ -145,7 +142,7 @@ const SelectApi = View.extend({
             type: 'hidden',
           }),
         );
-      }      
+      }
     } else if ($item.attr('data-id') !== this.singleInput.val()) {
       this.singleInput.val($item.attr('data-id'));
     }
@@ -156,55 +153,32 @@ const SelectApi = View.extend({
    * @param  {object} event object
    */
 
-  openPopup(e) {
-    e.preventDefault();
-    const width = 1025;
-    const height = 600;
-    const left = screen.width ? (screen.width - width) / 2 : 0;
-    const top = screen.height ? (screen.height - height) / 2 : 0;
-    const pop = new WindowPopup(
-      this.addUrl,
-      'addImage',
-      [
-        `width=${width}`,
-        `height=${height}`,
-        `top=${top}`,
-        `left=${left}`,
-        'scrollbars=yes',
-        'location=no',
-        'directories=no',
-        'status=no',
-        'menubar=no',
-        'toolbar=no',
-        'resizable=no',
-      ].join(','),
-      function(){},
-    );
-    pop.request();
+  openPopup (tag) {
+    let modal = new Modal(this.addUrl, 'modal-add-' + this.name, false, (data) => {
+      let item = {
+        id: data.id,
+        text: data.text,
+        value: data.text
+      }
+      this.selectize.addOption(item)
+      this.selectize.addItem(item.value, false)
+    },(data) => {
+      this.selectize.unlock()
+    })
 
-    // // TODO(JM) use case for Modal
-    // let modal = new Modal(url, 'modal-add-' + this.name, false, (data) => {
-    //   let item = {
-    //     id: data.id,
-    //     text: data.text,
-    //     value: data.text
-    //   }
-    //   this.selectize.addOption(item)
-    //   this.selectize.addItem(item.value, false)
-    // },(data) => {
-    //   this.selectize.unlock()
-    // })
-    //
-    // modal.open()
-    //
-    // return false
+    if (typeof tag == 'string') {
+      modal.open(tag)
+    } else {
+      modal.open()
+    }
+    return false
   },
 
   /**
    * On Removing selected item in multi select
    * @param  {string}
    */
-  removeItem(value) {
+  removeItem (value) {
     this.selectize.$input.siblings(`[data-title=${value}]`).remove();
   },
 
@@ -213,7 +187,7 @@ const SelectApi = View.extend({
    * @param  {object}
    * @return {object}
    */
-  transformResults(response) {
+  transformResults (response) {
     this.fields = [];
     this.params = [];
 
@@ -279,7 +253,7 @@ const SelectApi = View.extend({
           text: title,
           value: title,
         });
-      }      
+      }
     });
     return data;
   },

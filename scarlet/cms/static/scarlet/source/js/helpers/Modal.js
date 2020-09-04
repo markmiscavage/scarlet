@@ -143,7 +143,7 @@ class Modal {
 /**
  * @param  {string} url - url to load in modal
  * @param  {string} name - name of modal
- * @param  {object} options - dialot options overrieds
+ * @param  {object} options - dialog options overrides
  * @return {object}	dialog node dom element
  */
 function buildDialog(url, name, options) {
