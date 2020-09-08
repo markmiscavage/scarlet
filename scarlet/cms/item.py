@@ -248,8 +248,8 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
                 # from that
                 model = self.get_queryset().model
 
-        # If a form_class hasn't been explicitly defined  
-        # customize_form_widgets still needs to be called so 
+        # If a form_class hasn't been explicitly defined
+        # customize_form_widgets still needs to be called so
         # widgets get updated links
         return model_forms.modelform_factory(model, **params)
 
@@ -429,7 +429,8 @@ class FormView(ModelCMSMixin, ModelFormMixin, ModelCMSView):
         if not new_object and changed_tags and old_tags:
             tag_handler.update_changed_tags(changed_tags, old_tags)
 
-        return self.success_response()
+        msg = f"{self.object} saved"
+        return self.success_response(message=msg)
 
     def success_response(self, message=None):
         """
