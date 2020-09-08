@@ -1,6 +1,4 @@
 import { View } from 'backbone';
-import selectize from 'selectize';
-import { clickOpenModal } from 'helpers/Modal';
 import { clickOpenPopup } from 'helpers/WindowPopup';
 
 const SelectAsset = View.extend({
@@ -46,7 +44,7 @@ const SelectAsset = View.extend({
     this.tag();
     this.autoTag();
     this.linkifyCrops();
-    $('.asset__edit-link').attr('href', `${this.baseUrl}${this.id}/edit`);
+    $('.asset__edit-link').attr('href', `${this.baseUrl}${this.id}/edit/`);
   },
 
   /**
@@ -233,9 +231,9 @@ const SelectAsset = View.extend({
     if($(this.$el).data('tags')){
       tags = ($(this.$el).data('tags')).toLowerCase().split(',');
       // autoTags doesn't exist at this point so the following line can't work.
-      //tags = tags.concat(this.autoTags); 
+      //tags = tags.concat(this.autoTags);
       params.tags = encodeURIComponent(tags.join(','));
-    }    
+    }
 
     node[0].search = this.constructParams(params);
   },
