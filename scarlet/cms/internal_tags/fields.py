@@ -21,7 +21,7 @@ class TaggedRelationWidget(APIModelChoiceWidget):
     def __init__(self, *args, **kwargs):
         from . import handler
 
-        super(TaggedRelationWidget, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self.attrs:
             self.tags = handler.tags_to_string(self.attrs.pop("tags", []))
             self.required_tags = handler.tags_to_string(
@@ -49,7 +49,7 @@ class TaggedRelationWidget(APIModelChoiceWidget):
         destination url treats it as a popup.
         """
 
-        url = super(TaggedRelationWidget, self).get_add_link()
+        url = super().get_add_link()
         if url:
             qs = self.get_add_qs()
             if qs:
@@ -95,13 +95,14 @@ class TaggedRelationFormField(forms.ModelChoiceField):
         if not isinstance(widget_instance, type) and not isinstance(
             widget_instance, self.widget
         ):
-            attrs = {}
-            attrs["tags"] = self.tags
-            attrs["required_tags"] = self.required_tags
+            attrs = {
+                "tags": self.tags,
+                "required_tags": self.required_tags,
+            }
             widget_instance = self.widget(queryset.model, attrs=attrs)
 
         kwargs["widget"] = widget_instance
-        super(TaggedRelationFormField, self).__init__(queryset, **kwargs)
+        super().__init__(queryset, **kwargs)
 
     def widget_attrs(self, widget):
         widget.required = self.required
@@ -121,7 +122,7 @@ class TaggedRelationField(models.ForeignKey):
             else:
                 self.tags = tuple(self.required_tags)
 
-        return super(TaggedRelationField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def get_formfield_defaults(self):
         return {
@@ -135,10 +136,10 @@ class TaggedRelationField(models.ForeignKey):
         # while letting the caller override them.
         defaults = self.get_formfield_defaults()
         defaults.update(kwargs)
-        return super(TaggedRelationField, self).formfield(**defaults)
+        return super().formfield(**defaults)
 
     def contribute_to_class(self, cls, *args, **kwargs):
-        super(TaggedRelationField, self).contribute_to_class(cls, *args, **kwargs)
+        super().contribute_to_class(cls, *args, **kwargs)
         pre_save.connect(save_auto_tags, sender=cls)
 
 
