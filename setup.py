@@ -71,7 +71,7 @@ setup(
     author_email="mark.miscavage@wonderful.com",
     url="https://github.com/markmiscavage/scarlet",
     license="MIT",
-    install_requires=["django-taggit==1.2.0", "django>=2.2.11,<3.0"],
+    install_requires=["django-taggit==1.3.0", "django>=2.2.11,<3.0"],
     packages=packages,
     cmdclass={"build_py": my_build_py},
     classifiers=[
