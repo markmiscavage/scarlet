@@ -109,7 +109,7 @@ const SelectAsset = View.extend({
    * @param  {object}
    */
   onSelect(value, $item) {
-    $('.asset__edit-link').attr('href', `${this.baseUrl}${value}/edit`);
+    $('.asset__edit-link').attr('href', `${this.baseUrl}${value}/edit/`);
     this.linkifyCrops();
     this.$preview.css('background-image', `url(${$item.attr('data-thumb')})`);
 
