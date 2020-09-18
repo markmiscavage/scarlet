@@ -233,7 +233,7 @@ const SelectApi = View.extend({
     const add = $('<a>')
       .attr('href', url)
       .addClass('button button--primary')
-      .html(`<i class="fa fa-plus-circle" aria-hidden="true"></i>Add ${this.name}`);
+      .html(`<i class="fa fa-plus-circle" aria-hidden="true"></i>Add ${this.placeholder}`);
 
     this.$el.after(add).parent().addClass('formset__field--has-add-button');
     add.on('click', this.openPopup.bind(this));
