@@ -65,6 +65,7 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
 
     object = None
     action_name = None
+    show_navigation = False
 
     def render(self, *args, **kwargs):
         if "action" not in kwargs:
@@ -75,11 +76,14 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
         return super(ActionView, self).render(*args, **kwargs)
 
     def get_navigation(self):
-        if not self.object and self.name not in self.bundle._meta.action_views:
-            if self.bundle.parent:
-                return self.bundle.parent.get_navigation(self.request, **self.kwargs)
-            return None
-        return super(ActionView, self).get_navigation()
+        nav = None
+        if self.show_navigation:
+            if not self.object and self.name not in self.bundle._meta.action_views:
+                if self.bundle.parent:
+                    nav = self.bundle.parent.get_navigation(self.request, **self.kwargs)
+            else:
+                nav = super(ActionView, self).get_navigation()
+        return nav
 
     def process_action(self, request, queryset):
         """
