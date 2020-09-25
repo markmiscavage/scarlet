@@ -82,7 +82,7 @@ class ActionView(ModelCMSMixin, MultipleObjectMixin, ModelCMSView):
                 if self.bundle.parent:
                     nav = self.bundle.parent.get_navigation(self.request, **self.kwargs)
             else:
-                nav = super(ActionView, self).get_navigation()
+                nav = super().get_navigation()
         return nav
 
     def process_action(self, request, queryset):
